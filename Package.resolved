@@ -1,0 +1,16 @@
+{
+  "object": {
+    "pins": [
+      {
+        "package": "Par",
+        "repositoryURL": "https://github.com/musesum/Par.git",
+        "state": {
+          "branch": null,
+          "revision": "80a32eff95839015e1db76a6d0a290c0b58ed13d",
+          "version": "0.1.1"
+        }
+      }
+    ]
+  },
+  "version": 1
+}
