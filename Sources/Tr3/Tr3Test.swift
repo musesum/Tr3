@@ -10,7 +10,7 @@ import Par
 
 public class Tr3Test {
 
-    static let shared = Tr3Test()
+    public static let shared = Tr3Test()
 
     var countTotal = 0
     var countError = 0

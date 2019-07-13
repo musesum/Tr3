@@ -247,7 +247,7 @@ extension Tr3 {
         return nil
     }
 
-    func findPath(_ path: String) -> Tr3? {
+    public func findPath(_ path: String) -> Tr3? {
 
         if path == "" { return self }
 

@@ -60,6 +60,23 @@ public class Tr3Val: Comparable, Tr3ValProtocal {
     func addFlag(_ flag_: Tr3ValFlags) {
         valFlags.insert(flag_)
     }
+    func quoteVal()->String? {
+        if let v = val as? Tr3ValQuote {
+            return v.quoteVal
+        }
+        return nil
+    }
+    func rectVal() -> CGRect? {
+        if let v = val as? Tr3ValTupple, v.size >= 4 {
+            let x = v.nums[0].num
+            let y = v.nums[1].num
+            let w = v.nums[2].num
+            let h = v.nums[3].num
+            let rect = CGRect(x:x, y:y, with:w, height:h)
+            return rect
+        }
+        return nil
+    }
 }
 
 
