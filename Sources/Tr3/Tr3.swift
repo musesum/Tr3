@@ -31,13 +31,13 @@ public class Tr3: Hashable {
 
     public static func == (lhs: Tr3, rhs: Tr3) -> Bool { return lhs.id == rhs.id  }
 
-    convenience init(_ name_:String,_ type_:Tr3Type = .name) {
+    public convenience init(_ name_:String,_ type_:Tr3Type = .name) {
         self.init()
         name = name_
         type = type_
     }
 
-    convenience init(deepcopy: Tr3, parent parent_:Tr3) {
+    public convenience init(deepcopy: Tr3, parent parent_:Tr3) {
 
         self.init()
         parent = parent_
@@ -50,7 +50,7 @@ public class Tr3: Hashable {
         val         = deepcopy.val?.copy() ?? nil
         edgeDefs    = deepcopy.edgeDefs.copy()
     }
-    convenience init(with val_: Tr3Val) { self.init() ; val = val_.copy() }
+    public convenience init(with val_: Tr3Val) { self.init() ; val = val_.copy() }
 
     public func makeTr3From(parAny:ParAny) -> Tr3 {
 
