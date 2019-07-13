@@ -6,6 +6,8 @@
 //
 
 import Foundation
+import CoreGraphics
+
 protocol Tr3ValProtocal {
 
     func printVal() -> String
@@ -61,18 +63,18 @@ public class Tr3Val: Comparable, Tr3ValProtocal {
         valFlags.insert(flag_)
     }
     func quoteVal()->String? {
-        if let v = val as? Tr3ValQuote {
-            return v.quoteVal
+        if let v = self as? Tr3ValQuote {
+            return v.quoteVal()
         }
         return nil
     }
     func rectVal() -> CGRect? {
-        if let v = val as? Tr3ValTupple, v.size >= 4 {
-            let x = v.nums[0].num
-            let y = v.nums[1].num
-            let w = v.nums[2].num
-            let h = v.nums[3].num
-            let rect = CGRect(x:x, y:y, with:w, height:h)
+        if let v = self as? Tr3ValTuple, v.size >= 4 {
+            let x = CGFloat(v.nums[0].num)
+            let y = CGFloat(v.nums[1].num)
+            let w = CGFloat(v.nums[2].num)
+            let h = CGFloat(v.nums[3].num)
+            let rect = CGRect(x:x, y:y, width:w, height:h)
             return rect
         }
         return nil
