@@ -22,7 +22,7 @@ public class Tr3Parse {
         makeParTr3()
     }
 
-    func parseFile(_ name:String,_ ext: String) -> ParNode {
+    public func parseFile(_ name:String,_ ext: String) -> ParNode {
         return ParNode("")
     }
 
@@ -35,7 +35,7 @@ public class Tr3Parse {
         return ""
     }
 
-    func parseTr3(_ tr3:Tr3, _ filename:String) {
+    public func parseTr3(_ tr3:Tr3, _ filename:String) {
         let script = read(filename,".tr3")
         print(filename)
         let success = parseScript(tr3, script, whitespace: "\n\t ")
@@ -303,10 +303,10 @@ public class Tr3Parse {
     /// - parameter root: starting node from which to attach subtree
     /// - parameter script: text of script to convert into subtree
     /// - parameter whitespace: default is single line, may add \n for multiline script
-    func parseScript(_ root     : Tr3,
-                     _ script   : String,
-                     whitespace : String = "\t ",
-                     printGraph : Bool = false) -> Bool {
+    public func parseScript(_ root     : Tr3,
+                            _ script   : String,
+                            whitespace : String = "\t ",
+                            printGraph : Bool = false) -> Bool {
 
         let parStr = ParStr(script)
         parStr.whitespace = whitespace
