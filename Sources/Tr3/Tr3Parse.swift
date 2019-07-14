@@ -29,9 +29,9 @@ public class Tr3Parse {
     func read(_ filename: String, _ ext:String) -> String {
         if let url = Bundle.main.url(forResource: filename, withExtension: ext) {
             do { return try String(contentsOf: url) }
-            catch { print("*** \(#function) error:\(error) loading contents of:\(url)") }
+            catch { print("*** ParStr::\(#function) error:\(error) loading contents of:\(url)") }
         }
-        else { print("*** \(#function) file:\(filename).\(ext) not found") }
+        else { print("*** ParStr::\(#function) file:\(filename).\(ext) not found") }
         return ""
     }
 
