@@ -1,41 +1,42 @@
-import XCTest
+//
+//  Tr3Parse+test.swift
+//  Par iOS
+//
+//  Created by warren on 4/12/19.
+//
+
+import Foundation
 import Par
 
-@testable import Tr3
+public class Tr3Test {
 
-class Resource {
-    static var resourcePath = "./Tests/Resources"
-
-    let name: String
-    let type: String
-
-    init(name: String, type: String) {
-        self.name = name
-        self.type = type
-    }
-
-    var path: String {
-        guard let path: String = Bundle(for: Swift.type(of: self)).path(forResource: name, ofType: type) else {
-            let filename: String = type.isEmpty ? name : "\(name).\(type)"
-            return "\(Resource.resourcePath)/\(filename)"
-        }
-        return path
-    }
-}
-
-final class Tr3Tests: XCTestCase {
+    public static let shared = Tr3Test()
 
     var countTotal = 0
     var countError = 0
     var tr3Parse = Tr3Parse()
 
+    public func testSuite() {
+        
+        testParseShort()
+        testParse()
+        testPassthrough()
+        testTernary1()
+        testTernary2()
+        testTernary3()
+        testInherit()
+        testEdges()
+        testSky()
+
+        print("\n━━━━━━━━━━━━━━━━━━━━━━ \(countTotal) tests with \(countError) errors ━━━━━━━━━━━━━━━━━━━━━━" )
+    }
 
     /// compare expected with actual result and print error strings
     /// with 🚫 marker at beginning of non-matching section
     ///
     /// - parameter script: expected output
     /// - parameter script: actual output
-    ///
+    /// 
     func testCompare(_ expected:String, _ actual:String, echo:Bool = false) {
         if echo {
             print ("⟹ " + expected, terminator:"")
@@ -72,15 +73,15 @@ final class Tr3Tests: XCTestCase {
         }
         countTotal += 1
     }
-
+    
     func testParseShort() {
-        countTotal = 0
+
         // error test("a.b { c d } a.e:b { f g } ", "√ { a { b { c d } e { c d f g } } }")
 
         test("a.b { c d } a.e:a.b { f g } ", "√ { a { b { c d } e { c d f g } } }")
 
         test("a { b c } d:a { e f } g:d { h i } j:g { k l }",
-             "√ { a { b c } d { b c e f } g { b c e f h i } j { b c e f h i k l } }")
+        "√ { a { b c } d { b c e f } g { b c e f h i } j { b c e f h i k l } }")
 
         test("a { b { c {c1 c2} d } b.c { c2:2 c3 } }",
              "√ { a { b { c { c1 c2:2 c3 } d } } }")
@@ -110,13 +111,13 @@ final class Tr3Tests: XCTestCase {
                 " z { b?>(z.b.d z.c.d) { d<-(b ? 5 | c ? 6) e } " +
                 "     c?>(z.b.d z.c.d) { d<-(b ? 1 | c ? 2) e } } z.b.d<-(b ? 5 | c ? 6) }" +
             "")
-         XCTAssertEqual(countError,0)
-    }
 
+    }
+    
     /// compare script with expected output and print an error if they don't match
     ///
     func testParse() {
-        countTotal = 0
+
         print("\n━━━━━━━━━━━━━━━━━━━━━━ quote ━━━━━━━━━━━━━━━━━━━━━━\n")
         test("a:\"yo\"", "√ { a:\"yo\" }")
         test("a { b:\"bb\" }", "√ { a { b:\"bb\" } }")
@@ -220,7 +221,7 @@ final class Tr3Tests: XCTestCase {
         test("a b w <->(a ? 1 : b ? 2 : 3)", "√ { a?>w b?>w w<->(a ? 1 : b ? 2 : 3) }"  )
 
         print("\n━━━━━━━━━━━━━━━━━━━━━━ ternary conditionals ━━━━━━━━━━━━━━━━━━━━━━\n")
-
+        
         test("a1 b1 a2 b2 w <- (a1 == a2 ? 1 : b1 == b2 ? 2 : 3)", "√{ a1?>w b1?>w a2?>w b2?>w w<-(a1 == a2 ? 1 : b1 == b2 ? 2 : 3 ) }")
 
         test("d {a1 a2}:{b1 b2}:{c1 c2} h <- (d.a1 ? b1 ? c1 : 1)",
@@ -443,7 +444,6 @@ final class Tr3Tests: XCTestCase {
             ~~<->.. }
         """)
         //Tr3Log.dump()
-        XCTAssertEqual(countError,0)
     }
 
     var result = ""
@@ -471,7 +471,7 @@ final class Tr3Tests: XCTestCase {
     }
 
     func testPassthrough() { print("\n━━━━━━━━━━━━━━━━━━━━━━ \(#function) ━━━━━━━━━━━━━━━━━━━━━━\n")
-        countError = 0
+
         let script = "a:(0...1=0)<-b b<-c c:(0...10)<-a"
         print("\n" + script)
 
@@ -489,11 +489,10 @@ final class Tr3Tests: XCTestCase {
             testAct("a:0.1","a:0.1 b:0.1 c:1.0") { a.setVal(0.1, .activate) }
             testAct("b:0.2","b:0.2 a:0.2 c:2.0") { b.setVal(0.2, .activate) }
         }
-         XCTAssertEqual(countError,0)
     }
 
     func testTernary1() { print("\n━━━━━━━━━━━━━━━━━━━━━━ \(#function) ━━━━━━━━━━━━━━━━━━━━━━\n")
-        countError = 0
+
         let script = "a b c w:0 <- (a ? 1 : b ? 2 : c ? 3)"
         print("\n" + script)
 
@@ -513,13 +512,11 @@ final class Tr3Tests: XCTestCase {
             testAct("b:0","w:2.0")  { b.setVal(0,[.create,.activate]) }
             testAct("c!", "w:3.0 ") { c.activate() }
 
-            testCompare(" √ { a:0?>w b:0?>w c?>w w:3<-(a ? 1 : b ? 2 : c ? 3) }", root.dumpScript(session:true), echo:true)
+             testCompare(" √ { a:0?>w b:0?>w c?>w w:3<-(a ? 1 : b ? 2 : c ? 3) }", root.dumpScript(session:true), echo:true)
         }
-         XCTAssertEqual(countError,0)
     }
-
     func testTernary2() { print("\n━━━━━━━━━━━━━━━━━━━━━━ \(#function) ━━━━━━━━━━━━━━━━━━━━━━\n")
-        countError = 0
+
         let script = "a:0 x:10 y:20 w <- (a ? x : y)"
         print("\n" + script)
 
@@ -545,11 +542,10 @@ final class Tr3Tests: XCTestCase {
 
             testCompare("√ { a:0?>w x:12╌>w y:22->w w:y<-(a ? x : y) }", root.dumpScript(session:true), echo:true)
         }
-         XCTAssertEqual(countError,0)
     }
 
     func testTernary3() { print("\n━━━━━━━━━━━━━━━━━━━━━━ \(#function) ━━━━━━━━━━━━━━━━━━━━━━\n")
-        countError = 0
+
         let script = "a x:10 y:20 w <-> (a ? x : y)"
         print("\n" + script)
 
@@ -572,12 +568,21 @@ final class Tr3Tests: XCTestCase {
 
             testCompare("√ { a:1?>w x:4<->w y:3<╌>w w:4<->(a ? x : y) }", root.dumpScript(session:true), echo:true)
         }
-         XCTAssertEqual(countError,0)
     }
 
+    func testInherit() { print("\n━━━━━━━━━━━━━━━━━━━━━━ \(#function) ━━━━━━━━━━━━━━━━━━━━━━\n")
+
+        let root = Tr3("√")
+        func parseFile(_ fileName:String) { tr3Parse.parseTr3(root,fileName) }
+
+         parseFile("multiline")
+         parseFile("multimerge")
+        let actual = root.makeScript()
+        print(actual)
+    }
 
     func testEdges() { print("\n━━━━━━━━━━━━━━━━━━━━━━ \(#function) ━━━━━━━━━━━━━━━━━━━━━━\n")
-        countError = 0
+
         let root = Tr3("√")
         //let script = "x.xx y.yy a.b c:a { d <- (x ? x.xx | y ? y.yy) } e:c f:e g:f"
         //let script = "x.xx y.yy a.b c:a e:c f:e g:f ~b <- (x ? x.xx | y ? y.yy) "
@@ -592,25 +597,10 @@ final class Tr3Tests: XCTestCase {
             let d3Script = root.makeD3Script()
             print(d3Script)
         }
-         XCTAssertEqual(countError,0)
-    }
-    #if false
-    /// currently cannot bundle resource with Swift package
-    
-    func testInherit() { print("\n━━━━━━━━━━━━━━━━━━━━━━ \(#function) ━━━━━━━━━━━━━━━━━━━━━━\n")
-        countError = 0
-        let root = Tr3("√")
-        func parseFile(_ fileName:String) { tr3Parse.parseTr3(root,fileName) }
-
-        parseFile("multiline")
-        parseFile("multimerge")
-        let actual = root.makeScript()
-        print(actual)
-        XCTAssertEqual(countError,0)
     }
 
-    func testSky() { print("\n━━━━━━━━━━━━━━━━━━━━━━ \(#function) ━━━━━━━━━━━━━━━━━━━━━━\n")
-        countError = 0
+     func testSky() { print("\n━━━━━━━━━━━━━━━━━━━━━━ \(#function) ━━━━━━━━━━━━━━━━━━━━━━\n")
+
         let root = Tr3("√")
         func parseFile(_ fileName:String) { tr3Parse.parseTr3(root,fileName) }
 
@@ -631,7 +621,7 @@ final class Tr3Tests: XCTestCase {
 
         parseFile("control.shader.plane")
         parseFile("control.cell.shift")
-
+        
         // parseFile("control.shader.tile")
         // parseFile("control.shader.weave")
 
@@ -656,7 +646,7 @@ final class Tr3Tests: XCTestCase {
 
         let actual = root.makeScript(0,pretty:true)
         let planned =
-#"""
+"""
 √ {
     sky {
         main {
@@ -892,26 +882,12 @@ final class Tr3Tests: XCTestCase {
         }
     }
 }
-"""#
+"""
         testCompare(planned, actual, echo:true)
         //print(actual)
         let d3Script = root.makeD3Script()
         print(d3Script)
-         XCTAssertEqual(countError,0)
+        
     }
-#endif
-
-    static var allTests = [
-
-
-            ("testParseShort",testParseShort),
-            ("testParse",testParse),
-            ("testPassthrough",testPassthrough),
-            ("testTernary1",testTernary1),
-            ("testTernary2",testTernary2),
-            ("testTernary3",testTernary3),
-            ("testEdges",testEdges),
-            //("testInherit",testInherit),
-            //("testSky",testSky),
-    ]
+    
 }

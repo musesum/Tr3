@@ -8,6 +8,26 @@
 import Foundation
 import Par
 
+class Resource {
+    static var resourcePath = "../Resources"
+
+    let name: String
+    let type: String
+
+    init(name: String, type: String) {
+        self.name = name
+        self.type = type
+    }
+
+    var path: String {
+        let bundle = Bundle(for: Swift.type(of: self))
+        guard let path: String = bundle.path(forResource: name, ofType: type) else {
+            let filename: String = type.isEmpty ? name : "\(name).\(type)"
+            return "\(Resource.resourcePath)/\(filename)"
+        }
+        return path
+    }
+}
 
 public class Tr3Parse {
 
@@ -17,7 +37,7 @@ public class Tr3Parse {
     var tr3Par = [String:Tr3PriorParAny]()
 
     public init() {
-        rootParNode = Par.shared.parse("Tr3", "par")
+        rootParNode = Par.shared.parse(script:Tr3Par)
         rootParNode.reps.repMax = Int.max
         makeParTr3()
     }
@@ -26,17 +46,21 @@ public class Tr3Parse {
         return ParNode("")
     }
 
+
     func read(_ filename: String, _ ext:String) -> String {
-        if let url = Bundle.main.url(forResource: filename, withExtension: ext) {
-            do { return try String(contentsOf: url) }
-            catch { print("*** ParStr::\(#function) error:\(error) loading contents of:\(url)") }
+
+        let resource = Resource(name: filename, type: ext)
+        do {
+            let resourcePath = resource.path
+            return try String(contentsOfFile: resourcePath) }
+        catch {
+            print("*** ParStr::\(#function) error:\(error) loading contents of:\(resource.path)")
         }
-        else { print("*** ParStr::\(#function) file:\(filename).\(ext) not found") }
         return ""
     }
 
     public func parseTr3(_ tr3:Tr3, _ filename:String) {
-        let script = read(filename,".tr3")
+        let script = read(filename,"tr3")
         print(filename)
         let success = parseScript(tr3, script, whitespace: "\n\t ")
         if success  { print(" ✓") }

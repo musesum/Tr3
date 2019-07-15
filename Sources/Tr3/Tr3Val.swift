@@ -62,13 +62,13 @@ public class Tr3Val: Comparable, Tr3ValProtocal {
     func addFlag(_ flag_: Tr3ValFlags) {
         valFlags.insert(flag_)
     }
-    func quoteVal()->String? {
+    func val()->String? {
         if let v = self as? Tr3ValQuote {
-            return v.quoteVal()
+            return v.quote
         }
         return nil
     }
-    func rectVal() -> CGRect? {
+    func val() -> CGRect? {
         if let v = self as? Tr3ValTuple, v.size >= 4 {
             let x = CGFloat(v.nums[0].num)
             let y = CGFloat(v.nums[1].num)
@@ -76,6 +76,12 @@ public class Tr3Val: Comparable, Tr3ValProtocal {
             let h = CGFloat(v.nums[3].num)
             let rect = CGRect(x:x, y:y, width:w, height:h)
             return rect
+        }
+        return nil
+    }
+    func val() -> CGFloat? {
+         if let v = self as? Tr3ValScalar {
+            return CGFloat(v.num)
         }
         return nil
     }
