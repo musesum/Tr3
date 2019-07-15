@@ -7,6 +7,7 @@
 
 import Foundation
 import CoreGraphics
+import Par
 
 protocol Tr3ValProtocal {
 
@@ -18,10 +19,7 @@ protocol Tr3ValProtocal {
 
 public class Tr3Val: Comparable, Tr3ValProtocal {
 
-    static var nextId = 0
-    static func getNextId() -> Int { nextId += 1 ; return nextId }
-
-    var id = Tr3Val.getNextId()
+    var id = Visitor.nextId()
     var tr3: Tr3?  // tr3 that declared and contains this value
     var valFlags = Tr3ValFlags(rawValue:0) // which combination of the following?
 

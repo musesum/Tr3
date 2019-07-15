@@ -6,12 +6,11 @@
 //
 
 import Foundation
+import Par
 
 public class Tr3Edge {
 
-    static var nextId = 0
-    static func getNextId() -> Int { nextId += 1 ; return nextId }
-    var id = Tr3.getNextId()
+    var id = Visitor.nextId()
 
     var edgeFlags = Tr3EdgeFlags()
     var active    = true
