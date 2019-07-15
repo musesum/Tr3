@@ -22,7 +22,7 @@ public class Tr3: Hashable {
     var edgeDefs = Tr3EdgeDefs()   // for a<-(b.*++), this saves "++" and "b.*)
     var tr3Edges = [Tr3Edge]() // some edges are defined by another Tr3
 
-    var callbacks = [Tr3ValCall]() // during activate callback and return with Tr3Val ((Tr3Val?)->(Tr3Val?))
+    var callbacks = [Tr3Visitor]() // during activate callback and return with Tr3Val ((Tr3Val?)->(Tr3Val?))
     var type = Tr3Type.unknown
     var bound = false // after binding edges
 

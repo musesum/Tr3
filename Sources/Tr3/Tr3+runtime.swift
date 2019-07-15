@@ -34,7 +34,7 @@ extension Tr3 {
 
         if visitor.newVisit(id) {
             for callback in callbacks {
-                callback(val)
+                callback(self,visitor)
             }
             for tr3Edge in tr3Edges {
                 if tr3Edge.active {

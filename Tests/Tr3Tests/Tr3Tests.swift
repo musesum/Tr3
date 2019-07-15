@@ -481,9 +481,9 @@ final class Tr3Tests: XCTestCase {
             let b = root.findPath("b"),
             let c = root.findPath("c") {
 
-            a.callbacks.append({ val in self.addCallResult(a,val) })
-            b.callbacks.append({ val in self.addCallResult(b,val) })
-            c.callbacks.append({ val in self.addCallResult(c,val) })
+            a.callbacks.append({ tr3,_ in self.addCallResult(a,tr3.val!) })
+            b.callbacks.append({ tr3,_ in self.addCallResult(b,tr3.val!) })
+            c.callbacks.append({ tr3,_ in self.addCallResult(c,tr3.val!) })
 
             testAct("c:5.0","c:5.0 b:5.0 a:0.5") { c.setVal(5.0, .activate) }
             testAct("a:0.1","a:0.1 b:0.1 c:1.0") { a.setVal(0.1, .activate) }
@@ -506,7 +506,7 @@ final class Tr3Tests: XCTestCase {
 
             testCompare("√ { a?>w b?>w c?>w w:0<-(a ? 1 : b ? 2 : c ? 3) }", root.dumpScript(session:true), echo:true)
 
-            w.callbacks.append({ val in self.addCallResult(w,val) })
+            w.callbacks.append({ tr3,_ in self.addCallResult(w,tr3.val!) })
             testAct("a!", "w:1.0 ") { a.activate() }
             testAct("a:0","w:1.0")  { a.setVal(0,[.create,.activate]) }
             testAct("b!", "w:2.0 ") { b.activate() }
@@ -532,7 +532,7 @@ final class Tr3Tests: XCTestCase {
 
             testCompare("√ { a:0?>w x:10╌>w y:20╌>w w<-(a ? x : y) }", root.dumpScript(session:true), echo:true)
 
-            w.callbacks.append({ val in self.addCallResult(w,val) })
+            w.callbacks.append({ tr3,_ in self.addCallResult(w,tr3.val!) })
             testAct("a:0","w:20.0")  { a.setVal(0,.activate) }
             testAct("x:11","")       { x.setVal(11,.activate) }
             testAct("y:21","w:21.0") { y.setVal(21,.activate) }
@@ -562,9 +562,9 @@ final class Tr3Tests: XCTestCase {
 
             testCompare("√ { a?>w x:10<╌>w y:20<╌>w w<->(a ? x : y) }", root.dumpScript(session:true), echo:true)
 
-            w.callbacks.append({ val in self.addCallResult(w,val) })
-            x.callbacks.append({ val in self.addCallResult(x,val) })
-            y.callbacks.append({ val in self.addCallResult(y,val) })
+            w.callbacks.append({ tr3,_ in self.addCallResult(w,tr3.val!) })
+            x.callbacks.append({ tr3,_ in self.addCallResult(x,tr3.val!) })
+            y.callbacks.append({ tr3,_ in self.addCallResult(y,tr3.val!) })
             testAct("a:0","w:20.0 y:20.0") { a.setVal(0,[.create,.activate]) }
             testAct("w:3","w:3.0 y:3.0")  { w.setVal(3,[.create,.activate]) }
             testAct("a:1","w:3.0 x:3.0") { a.setVal(1,.activate) }
