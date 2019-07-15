@@ -68,7 +68,7 @@ public class Tr3: Hashable {
     ///
     ///  - parameter visitor: the same "_:_" clone may be attached to multiple parent before consolication.
     ///     So, use visitor pattern to avoid multiple visits
-    public func attachDeep(_ tr3:Tr3, _ visitor: Visitor) {
+    func attachDeep(_ tr3:Tr3, _ visitor: Visitor) {
         if visitor.newVisit(id) {
             if children.count == 0 {
                 tr3.parent = self
@@ -119,6 +119,9 @@ public class Tr3: Hashable {
         return child
     }
 
+    public func addCallback(_ callback:@escaping Tr3Visitor) {
+        callbacks.append(callback)
+    }
     public func parentPath(_ depth:Int = 2, withId:Bool = false) -> String {
         var path = name
         if withId { path += "." + String(id) }
