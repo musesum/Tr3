@@ -1,5 +1,6 @@
 
 import Foundation
+import CoreGraphics
 
 extension Tr3 {
 
