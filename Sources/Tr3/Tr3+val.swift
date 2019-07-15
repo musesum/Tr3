@@ -36,4 +36,26 @@ extension Tr3 {
         }
         return nil
     }
+    
+    public func CGPointVal() -> CGPoint? {
+
+        if let v = val as? Tr3ValTuple, v.size >= 2 {
+            let x = CGFloat(v.nums[0].num)
+            let y = CGFloat(v.nums[1].num)
+
+            let p = CGPoint(x:x, y:y)
+            return p
+        }
+        return nil
+    }
+    public func CGSizeVal() -> CGSize? {
+        if let v = val as? Tr3ValTuple, v.size >= 2 {
+            let w = CGFloat(v.nums[0].num)
+            let h = CGFloat(v.nums[1].num)
+
+            let s = CGSize(width:w, height:h)
+            return s
+        }
+        return nil
+    }
 }
