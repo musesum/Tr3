@@ -1,0 +1,6 @@
+control.record {
+    base {
+        type  : "record"
+        title : "Record"
+    }
+}

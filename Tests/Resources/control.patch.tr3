@@ -1,0 +1,26 @@
+control.patch {
+    base {
+        type  : "patch"
+        title : "Patches"
+        frame : (x:0 y:0 w:270 h:226)
+        icon  : "control.patch.png"
+    }
+    elements {
+        
+        ruleOn  {
+            type  : "switch"
+            title : "Active"
+            frame : (x:216 y:6 w:48 h:32)
+            icon  : "control.patch.png"
+            value : (0...1) <- (elements~value ? 1)
+        }
+        changed {
+            type  : "twist"
+            title : "Changed"
+            frame : (x:10 y:52 w:56 h:44)
+            icon  : (off:"control.flip.original.png" on:"control.flip.delta.png")
+            lag   : 0
+            value : (0...1)
+        }
+    }
+}

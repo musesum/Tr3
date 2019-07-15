@@ -1,0 +1,16 @@
+control.cell.rule.gas : _controlSpeed {
+    base {
+        title : "Gas"
+        icon  : "control.cell.rule.gas.png"
+    }
+    shader {
+        cellGas : "cell.rule.gas.metal" {
+            version : (0...1=0) <- elements.version.value
+            on      : (0...1=0) <- elements.ruleOn.value
+            type    : "compute"
+        }
+    }
+    elements {
+        ruleOn.icon   : "control.cell.rule.gas.png"
+    }
+}

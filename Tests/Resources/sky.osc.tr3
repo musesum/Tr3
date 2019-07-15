@@ -1,0 +1,20 @@
+sky.osc {
+    in  { host port:8000 message}
+    out { host port:9000 message}
+    brush {size color} : (0...1)
+    accxyz : (x y z):(-1...1)
+    msaremote { accelerometer : (x y z):(-1...1) }
+    tuio {
+        prev[10]:(x y z f)
+        next[10]:(x y z f)
+    }
+    midi {
+        note {
+            number   : (0...127)
+            velocity : (0...127)
+            channel  : (1...16)
+            duration
+        }
+    }
+    manos[10]:(x y z):(0...1)
+}

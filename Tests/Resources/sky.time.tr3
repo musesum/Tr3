@@ -1,0 +1,17 @@
+sky.time {
+    clock {
+        frame
+        status
+        lock : (0...1)    { fps : (0...12000=24) base : (0...10000=1)}
+        fps : (0...120=20) { now : (0...200) }
+    }
+    adsr { global attack decay sustain release}:(on amp dur):(0...1=1)
+    lfo[4]:{
+        type    : (1...4=1)
+        radians : (1...8=2)
+        amp     : (0...255=200)
+        dur
+        count
+    }
+    beat[4]:{new rec stop play span now sync tick}
+}

@@ -1,0 +1,4 @@
+sky.cell {
+    go : (0...1=1)
+    now :"average"
+}

@@ -1,0 +1,39 @@
+_controlRule : _controlBase {
+
+    base {
+        type  : "rule"
+        title : "Rule" // name
+        frame : (x:0 y:0 w:320 h:168)
+    }
+
+    elements {
+
+        version {
+            type  : "segment"
+            title : "Version"
+            frame : (x:70 y:52 w:192 h:44)
+            value : (1...2=1) //<-> cell.rule.<name>.version
+        }
+        fillZero {
+            type  : "trigger"
+            title : "clear 0"
+            frame : (x:10 y:108 w:44 h:44)
+            icon  : "control.drop.clear.png"
+            value : (0...1=0) -> sky.cell.rule.zero
+        }
+        fillOne {
+            type  : "trigger"
+            title : "clear 0xFFFF"
+            frame : (x:266 y:108 w:44 h:44)
+            icon  : "control.drop.gray.png"
+            value : (0...1=0) -> sky.cell.rule.one
+        }
+        plane  {
+            type  : "slider"
+            title : "Rule Plane"
+            frame : (x:70 y:108 w:192 h:44)
+            icon  : "control.pearl.white.png"
+            value : (0...1=0) -> control.shader^uniform.shift
+        }
+    }
+}

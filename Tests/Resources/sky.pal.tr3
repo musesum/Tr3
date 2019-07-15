@@ -1,0 +1,35 @@
+sky.pal {
+    status {
+        dyna  : (0...11=0)
+        bw    : (%2)
+        bwVal : (0...200=100)
+    }
+    cycle {
+        step : (-55...55=0)
+        ofs : (%256)
+        inc : (-16...16=0)
+        div : (1...30=4)
+    }
+    change {
+        changes : 0 // use user chanages
+        realpal : (0...1) // new pipeline
+        xfade   : (0...255=128)
+        mix
+        smooth  : (1...255=255)
+        insert
+        zeno    : (0...1)
+        remove
+        back
+        add     : (0...8)
+    }
+    ripple {
+        pulse : (8...240=239)
+        width : (16...255=12)
+        hue   : (%360=0)
+        sat   : (0...100=100)
+        val   : (0...100=100)
+        dur   : (0...4=0.08) // duration
+    }
+    pal0 : "= k k + r o y g b i v" // bacK start/end  + Red Orange Yellow Green Blue Indigo Violet
+    pal1 : "= k k + w z"           // bacK start/end + White with Zeno recursion
+}

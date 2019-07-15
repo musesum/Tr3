@@ -1,0 +1,22 @@
+sky.pal.pals {
+    kroygivvk : "= k k + r o y g b i v"  kroygbivkz : "= k k + r o y g b i v z"
+    kroygbivw : "= k w + r o y g b i v"  kroygbivwz : "= k w + r o y g b i v z"
+    wroygbivk : "= w k + r o y g b i v"  wroygbivkz : "= w k + r o y g b i v z"
+    wroygbivw : "= w w + r o y g b i v"  wroygbivwz : "= w w + r o y g b i v z"
+    rainbow   : "= r o y g b i v r"      rainbowz   : "= r o y g b i v r z"
+    
+    krk  : "= k k + r"    krw  : "= k w + r"   wrk  : "= w k + r"   wrk  : "= w k + r"   krkz  : "= k k + r z"
+    krok : "= k k + ro"   krow : "= k w + ro"  wrok : "= w k + ro"  wrok : "= w k + ro"  krokz : "= k k + ro z"
+    kok  : "= k k + o"    kow  : "= k w + o"   wok  : "= w k + o"   wok  : "= w k + o"   kokz  : "= k k + o z"
+    koyk : "= k k + oy"   koyw : "= k w + oy"  woyk : "= w k + oy"  woyk : "= w k + oy"  koykz : "= k k + oy z"
+    kyk  : "= k k + y"    kyw  : "= k w + y"   wyk  : "= w k + y"   wyk  : "= w k + y"   kykz  : "= k k + y z"
+    kygk : "= k k + yg"   kygw : "= k w + yg"  wygk : "= w k + yg"  wygk : "= w k + yg"  kygkz : "= k k + yg z"
+    kgk  : "= k k + g"    kgw  : "= k w + g"   wgk  : "= w k + g"   wgk  : "= w k + g"   kgkz  : "= k k + g z"
+    kgbk : "= k k + gb"   kgbw : "= k w + gb"  wgbk : "= w k + gb"  wgbk : "= w k + gb"  kgbkz : "= k k + gb z"
+    kbk  : "= k k + b"    kbw  : "= k w + b"   wbk  : "= w k + b"   wbk  : "= w k + b"   kbkz  : "= k k + b z"
+    kbik : "= k k + bi"   kbiw : "= k w + bi"  wbik : "= w k + bi"  wbik : "= w k + bi"  kbikz : "= k k + gb z"
+    kik  : "= k k + i"    kiw  : "= k w + i"   wik  : "= w k + i"   wik  : "= w k + i"   kikz  : "= k k + i z"
+    kivk : "= k k + iv"   kivw : "= k w + iv"  wivk : "= w k + iv"  wivk : "= w k + iv"  kivkz : "= k k + gb z"
+    kvk  : "= k k + v"    kvw  : "= k w + v"   wvk  : "= w k + v"   wvk  : "= w k + v"   kvkz  : "= k k + v z"
+    kvrk : "= k k + vr"   kvrw : "= k w + vr"  wvrk : "= w k + vr"  wvrk : "= w k + vr"  kvrkz : "= k k + gb z"
+}

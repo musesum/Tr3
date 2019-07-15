@@ -1,0 +1,8 @@
+control.information {
+    base {
+        type  : "info"
+        title : "Information"
+        icon  : "control.information.png"
+    }
+    html : "html/info.html"
+}

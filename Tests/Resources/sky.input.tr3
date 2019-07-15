@@ -1,0 +1,8 @@
+sky.input {
+    shake
+    azimuth : (x y):(-1...1=0)
+    force   : (0...0.5=0)
+    accel   : (x y z):(-0.3...0.3) { on : (0...1) }
+    radius  : (1...64=9)    // majorRadiu
+}
+

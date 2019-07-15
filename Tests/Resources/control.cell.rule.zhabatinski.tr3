@@ -1,0 +1,18 @@
+control.cell.rule.zhabatinski : _controlSpeed {
+    base {
+        title : "Zhabatinski"
+        icon  : "control.cell.rule.zhabatinski.png"
+    }
+    shader {
+        cellZhabatinski : "cell.zhabatinski.metal" {
+            version : (0...1=0) <- elements.version.value
+            bits    : (2..4=3) // bits/repeat 2:7 3:11 4:19
+            repeat  : 11
+            on      : (0...1=0) <- elements.ruleOn.value
+            type    : "compute"
+        }
+    }
+    elements {
+        ruleOn.icon : "control.cell.rule.zhabatinski.png"
+    }
+}

@@ -1,0 +1,52 @@
+control.cell.shift : _controlBase {
+    base {
+        type  : "cell"
+        title : "Shift"
+        frame : (x:0 y:0 w:270 h:226)
+        icon  : "control.shift.png"
+    }
+
+    elements {
+        
+        ruleOn  {
+            frame : (x:216 y:6 w:48 h:32)
+            icon  : "control.shift.png"
+            value : (0...1=0) <-> sky.cell.rule.shift.on
+        }
+        shiftBox {
+            type   : "box"
+            title  : "Screen Shift"
+            frame  : (x:86 y:52 w:128 h:128)
+            radius : 10
+            tap2   : (-1 -1)
+            lag    : .5
+            value  : (x y):(0...1=0.5) <-> sky.input.azimuth //<- sky.input.accel -> shader.cellDraw.scroll
+            master : (0...1) // user touched this directly
+        }
+        brushTilt {
+            type  : "switch"
+            title : "Brush Tilt"
+            frame : (x:10 y:52 w:66 h:44)
+            icon  : "control.pen.tilt.png"
+            value : (0...1=0) -> sky.draw.brush.tilt
+        }
+        accelTilt  {
+            type  : "switch"
+            title : "Accelerometer Tilt"
+            frame : (x:10 y:112 w:66 h:44)
+            icon  : "control.shift.png"
+            value : (0...1) <-> sky.input.accel.on
+        }
+        ruleOn.value    : 0 <- (brushTilt.value ? 1 | accelTilt.value ? 1)
+        brushTilt.value : 0 <- (accelTilt.value ? 0 | shiftBox.master ? 0)
+        accelTilt.value : 0 <- (brushTilt.value ? 0 | shiftBox.master ? 0)
+    }
+    shader {
+        cellDraw   : "cell.draw.metal" {
+            version : (0...1=0)     <- elements.version.value
+            scroll  : (x y):(0...1) <- elements.shiftBox.value
+            on      : (0...1=0)     <- elements.ruleOn.value
+            type    : "draw"
+        }
+    }
+}
