@@ -37,6 +37,13 @@ extension Tr3 {
         return nil
     }
 
+    public func DoubleVal() -> Double? {
+        if let v = val as? Tr3ValScalar {
+            return Double(v.num)
+        }
+        return nil
+    }
+
     public func CGPointVal() -> CGPoint? {
 
         if let v = val as? Tr3ValTuple, v.size >= 2 {
