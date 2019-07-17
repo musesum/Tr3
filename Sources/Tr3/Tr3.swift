@@ -8,7 +8,7 @@ import Par
 
 public class Tr3: Hashable {
 
-    var id = Visitor.nextId()
+    public var id = Visitor.nextId()
 
     public var name = ""
     public var parent: Tr3? = nil      // parent tr3
