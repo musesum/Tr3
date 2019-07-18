@@ -11,7 +11,6 @@ import Par
 
 public class Tr3ValTuple: Tr3Val {
 
-    var size = 0 // number of values
     var names = [String]()
     var nums = [Tr3ValScalar]() // current values
     var dflt: Tr3Val? = nil  // default value applied to each element
@@ -28,7 +27,6 @@ public class Tr3ValTuple: Tr3Val {
         if let v = tr3Val as? Tr3ValTuple {
 
             valFlags = v.valFlags
-            size  = v.size
             names.append(contentsOf: v.names)
             nums.append(contentsOf: v.nums)
             dflt = v.dflt
@@ -43,7 +41,6 @@ public class Tr3ValTuple: Tr3Val {
         let x = Tr3ValScalar(with: Float(p.x))
         let y = Tr3ValScalar(with: Float(p.y))
         nums = [x,y]
-        size = 2
     }
     override func copy() -> Tr3ValTuple {
         return Tr3ValTuple(with: self)
@@ -51,7 +48,7 @@ public class Tr3ValTuple: Tr3Val {
 
     public static func < (lhs: Tr3ValTuple, rhs: Tr3ValTuple) -> Bool {
 
-        if rhs.size == 0 || rhs.size != lhs.size {
+        if rhs.nums.count == 0 || rhs.nums.count != lhs.nums.count {
             return false
         }
         var lsum = Float(0)

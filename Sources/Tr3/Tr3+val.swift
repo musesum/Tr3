@@ -12,7 +12,7 @@ extension Tr3 {
     }
 
     public func CGRectVal() -> CGRect? {
-        if let v = val as? Tr3ValTuple, v.size >= 4 {
+        if let v = val as? Tr3ValTuple, v.nums.count >= 4 {
             let x = CGFloat(v.nums[0].num)
             let y = CGFloat(v.nums[1].num)
             let w = CGFloat(v.nums[2].num)
@@ -46,7 +46,7 @@ extension Tr3 {
 
     public func CGPointVal() -> CGPoint? {
 
-        if let v = val as? Tr3ValTuple, v.size >= 2 {
+        if let v = val as? Tr3ValTuple, v.nums.count >= 2 {
             let x = CGFloat(v.nums[0].num)
             let y = CGFloat(v.nums[1].num)
 
@@ -60,7 +60,7 @@ extension Tr3 {
 
         if let v = val as? Tr3ValTuple,
             let d = v.dflt as? Tr3ValTuple,
-            d.size >= 2 {
+            d.nums.count >= 2 {
 
             let x = CGFloat(d.nums[0].num)
             let y = CGFloat(d.nums[1].num)
@@ -72,7 +72,7 @@ extension Tr3 {
     }
     
     public func CGSizeVal() -> CGSize? {
-        if let v = val as? Tr3ValTuple, v.size >= 2 {
+        if let v = val as? Tr3ValTuple, v.nums.count >= 2 {
             let w = CGFloat(v.nums[0].num)
             let h = CGFloat(v.nums[1].num)
 
@@ -86,7 +86,7 @@ extension Tr3 {
         if visitor.newVisit(id) {
             if options.contains(.changed),
                 let v = val as? Tr3ValTuple,
-                v.size >= 2  {
+                v.nums.count >= 2  {
                 
                 let x = CGFloat(v.nums[0].num)
                 let y = CGFloat(v.nums[1].num)
