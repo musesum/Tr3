@@ -83,6 +83,7 @@ extension Tr3 {
     }
     
     public func setVal(_ p:CGPoint, _ options:Tr3SetOptions, _ visitor:Visitor) {
+
         if visitor.newVisit(id) {
             if options.contains(.changed),
                 let v = val as? Tr3ValTuple,
@@ -96,6 +97,9 @@ extension Tr3 {
                 cacheVal = p
                 Tr3Cache.add(self,options,visitor)
                 return
+            }
+            else {
+                setVal(p,options)
             }
         }
     }
