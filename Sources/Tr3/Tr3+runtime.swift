@@ -12,6 +12,10 @@ extension Tr3 {
 
     func setVal(_ any: Any?,_ setOp: Tr3SetOptions) {
 
+        /// clean up scaffolding from parsing a Ternary, redo scaffolding later
+        if let _ = val as? Tr3ValPath {
+            val = nil
+        }
         if let val = val {
             val.setVal(any)
         }
@@ -19,6 +23,7 @@ extension Tr3 {
             passthrough = false
             if let any = any {
                 switch any {
+                case let v as Int:      val = Tr3ValScalar(with:Float(v))
                 case let v as Float:    val = Tr3ValScalar(with:v)
                 case let v as CGFloat:  val = Tr3ValScalar(with:Float(v))
                 case let v as CGPoint:  val = Tr3ValTuple(with:v)
@@ -55,7 +60,6 @@ extension Tr3 {
         return nil
     }
 
-
     /// Some nodes have no value of its own, acting as a switch
     /// to merely point to the the value, as it moves through.
     /// If the node has a value, then remap between scalar ranges.
@@ -75,7 +79,7 @@ extension Tr3 {
             if passthrough {
                 val = fromVal;
             }
-                // remap value
+            // remap value
             else if let val = val {
                 
                 val.setVal(fromVal)

@@ -99,7 +99,6 @@ public class Tr3ValScalar: Tr3Val {
     public static func <  (lhs: Tr3ValScalar, rhs:Tr3ValScalar) -> Bool { return lhs.num <  rhs.num }
     public static func != (lhs: Tr3ValScalar, rhs:Tr3ValScalar) -> Bool { return lhs.num != rhs.num }
 
-
     func withinRange() {
 
         if valFlags.contains(.modu) { num = fmodf(num, max) }
@@ -163,13 +162,17 @@ public class Tr3ValScalar: Tr3Val {
             switch any {
             case let v as Float:   setFloat(v)
             case let v as CGFloat: setFloat(v)
+            case let v as Double:  setFloat(v)
+            case let v as Int:      setFloat(v)
             default: print("*** mismatched setVal(\(any))")
             }
         }
     }
 
-    func setFloat(_ v:CGFloat) { num =  Float(v) ; withinRange() }
-    func setFloat(_ v:Float)   { num =  v ; withinRange() }
-    func increment()         { num += 1    ; withinRange() }
-    func decrement()         { num -= 1    ; withinRange() }
+    func setFloat(_ v:Int)      { num =  Float(v) ; withinRange() }
+    func setFloat(_ v:Double)   { num =  Float(v) ; withinRange() }
+    func setFloat(_ v:CGFloat)  { num =  Float(v) ; withinRange() }
+    func setFloat(_ v:Float)    { num =  v ; withinRange() }
+    func increment()            { num += 1 ; withinRange() }
+    func decrement()            { num -= 1 ; withinRange() }
 }

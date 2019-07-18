@@ -566,9 +566,9 @@ final class Tr3Tests: XCTestCase {
             x.addCallback { tr3,_ in self.addCallResult(x,tr3.val!) }
             y.addCallback { tr3,_ in self.addCallResult(y,tr3.val!) }
             testAct("a:0","w:20.0 y:20.0") { a.setVal(0,[.create,.activate]) }
-            testAct("w:3","w:3.0 y:3.0")  { w.setVal(3,[.create,.activate]) }
-            testAct("a:1","w:3.0 x:3.0") { a.setVal(1,.activate) }
-            testAct("w:4","w:4.0 x:4.0") { w.setVal(4,[.activate]) }
+            testAct("w:3","w:3.0 y:3.0")   { w.setVal(3,[.create,.activate]) }
+            testAct("a:1","w:3.0 x:3.0")   { a.setVal(1,.activate) }
+            testAct("w:4","w:4.0 x:4.0")   { w.setVal(4,[.activate]) }
 
             testCompare("√ { a:1?>w x:4<->w y:3<╌>w w:4<->(a ? x : y) }", root.dumpScript(session:true), echo:true)
         }

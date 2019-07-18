@@ -5,15 +5,13 @@
 //  Created by warren on 4/4/19.
 //
 
-import Foundation
+import QuartzCore
 import Par
 
-/**
- Test vector length between two tuples of n dimension sum(vals[i] * vals[i])
- */
+
 public class Tr3ValTuple: Tr3Val {
 
-    var size = 0       // number of values
+    var size = 0 // number of values
     var names = [String]()
     var nums = [Tr3ValScalar]() // current values
     var dflt: Tr3Val? = nil  // default value applied to each element
