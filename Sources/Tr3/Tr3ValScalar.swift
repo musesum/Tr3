@@ -128,30 +128,27 @@ public class Tr3ValScalar: Tr3Val {
         return (num != oldNum)
     }
 
-    override func setVal(_ fromVal: Tr3Val) {
+    func setFromScalar(_ v: Tr3ValScalar) {
 
-        if let fr = fromVal as? Tr3ValScalar {
+        if (   valFlags.contains(.thru) ||   valFlags.contains(.upto)) &&
+            (v.valFlags.contains(.thru) || v.valFlags.contains(.upto)) {
 
-            if (    valFlags.contains(.thru) ||    valFlags.contains(.upto)) &&
-                (fr.valFlags.contains(.thru) || fr.valFlags.contains(.upto)) {
+            let toMax   = (  valFlags.contains(.upto) ?   max-1 :   max)
+            let frMax   = (v.valFlags.contains(.upto) ? v.max-1 : v.max)
+            let toRange = toMax -   min
+            let frRange = frMax - v.min
+            num = (v.num - v.min) * (toRange / frRange) + min
+        }
+        else if valFlags.contains(.modu) {
 
-                let toMax   = (   valFlags.contains(.upto) ?    max-1 :    max)
-                let frMax   = (fr.valFlags.contains(.upto) ? fr.max-1 : fr.max)
-                let toRange = toMax -    min
-                let frRange = frMax - fr.min
-                num = (fr.num - fr.min) * (toRange / frRange) + min
-            }
-            else if valFlags.contains(.modu) {
-
-                min = 0
-                max = fmaxf(1,max)
-                num = fmodf(fr.num,max)
-                //span = 1
-            }
-            else {
-                num = fr.num
-                withinRange()
-            }
+            min = 0
+            max = fmaxf(1,max)
+            num = fmodf(v.num,max)
+            //span = 1
+        }
+        else {
+            num = v.num
+            withinRange()
         }
     }
 
@@ -159,10 +156,11 @@ public class Tr3ValScalar: Tr3Val {
 
         if let any = any {
             switch any {
+            case let v as Tr3ValScalar: setFromScalar(v)
             case let v as Float:   setFloat(v)
             case let v as CGFloat: setFloat(v)
             case let v as Double:  setFloat(v)
-            case let v as Int:      setFloat(v)
+            case let v as Int:     setFloat(v)
             default: print("*** mismatched setVal(\(any))")
             }
         }

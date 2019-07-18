@@ -28,8 +28,8 @@ public class Tr3ValEmbed: Tr3Val {
     override func dumpVal(prefix:String = " ", parens:Bool = true, session:Bool = false) -> String  {
         return scriptVal(prefix:prefix, parens:parens)
     }
-    override func setVal(_ from: Tr3Val) {
-        if let v = from as? Tr3ValEmbed {
+    override func setVal(_ any: Any?) {
+        if let v = any as? Tr3ValEmbed {
             embed = v.embed
         }
     }
