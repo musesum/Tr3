@@ -56,6 +56,7 @@ public class Tr3ValPath: Tr3Val {
        return prefix + script.with(trailing:" ")
     }
     override func setVal(_ from: Tr3Val) {
+         //TODO: is ever used during runtime?
     }
 
 }

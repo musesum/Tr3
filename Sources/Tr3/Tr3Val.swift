@@ -55,10 +55,14 @@ public class Tr3Val: Comparable, Tr3ValProtocal {
     func copy() -> Tr3Val {
         return Tr3Val(with:self)
     }
-    func setVal(_ fromVal: Tr3Val) {
-    }
     func addFlag(_ flag_: Tr3ValFlags) {
         valFlags.insert(flag_)
+    }
+    func setVal(_ fromVal: Tr3Val) {
+        assertionFailure("setVal needs override")
+    }
+    func setVal(_ from: Any?) {
+        assertionFailure("setVal needs override")
     }
 }
 

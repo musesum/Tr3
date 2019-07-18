@@ -11,20 +11,21 @@ public class Tr3: Hashable {
     public var id = Visitor.nextId()
 
     public var name = ""
-    public var parent: Tr3? = nil      // parent tr3
-    public var children = [Tr3]()      // expanded tr3 from  wheres~tr3
+    public var parent: Tr3? = nil   // parent tr3
+    public var children = [Tr3]()   // expanded tr3 from  wheres~tr3
 
-    var pathrefs: [Tr3]?        // b in `a.b <-> c` for `a{b{c}} a.b <-> c
-    var passthrough = false      // does not have a Tr3Val yet, so pass through events
+    var pathrefs: [Tr3]?            // b in `a.b <-> c` for `a{b{c}} a.b <-> c
+    var passthrough = false         // does not have a Tr3Val yet, so pass through events
     
     public var val: Tr3Val? = nil
+    var cacheVal: Any? = nil // cached value is drained
 
-    var edgeDefs = Tr3EdgeDefs()   // for a<-(b.*++), this saves "++" and "b.*)
-    var tr3Edges = [Tr3Edge]() // some edges are defined by another Tr3
+    var edgeDefs = Tr3EdgeDefs()    // for a<-(b.*++), this saves "++" and "b.*)
+    var tr3Edges = [Tr3Edge]()      // some edges are defined by another Tr3
 
-    var callbacks = [Tr3Visitor]() // during activate callback and return with Tr3Val ((Tr3Val?)->(Tr3Val?))
+    var callbacks = [Tr3Visitor]()  // during activate callback and return with Tr3Val ((Tr3Val?)->(Tr3Val?))
     var type = Tr3Type.unknown
-    var bound = false // after binding edges
+    var bound = false               // after binding edges
 
     public func hash(into hasher: inout Hasher) {  hasher.combine(id)  }
 
@@ -178,7 +179,6 @@ public class Tr3: Hashable {
             print("*** \(#function) no edgeDefs to add edge")
         }
     }
-
 
 }
 

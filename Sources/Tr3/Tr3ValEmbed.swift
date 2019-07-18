@@ -29,6 +29,9 @@ public class Tr3ValEmbed: Tr3Val {
         return scriptVal(prefix:prefix, parens:parens)
     }
     override func setVal(_ from: Tr3Val) {
+        if let v = from as? Tr3ValEmbed {
+            embed = v.embed
+        }
     }
 
 }

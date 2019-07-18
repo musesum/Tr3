@@ -27,8 +27,8 @@ public class Tr3ValScalar: Tr3Val {
     }
     init(with num_:Float) {
         super.init()
-        min = Swift.min(num_,0.0)
-        max = Swift.max(num_,1.0)
+        min = fmin(num_,0.0)
+        max = fmax(num_,1.0)
         num = num_
     }
     init (with tr3Val: Tr3ValScalar) {
@@ -156,7 +156,20 @@ public class Tr3ValScalar: Tr3Val {
             }
         }
     }
-    func setFloat(_ num_:Float) { num =  num_ ; withinRange() }
-    func increment()            { num += 1    ; withinRange() }
-    func decrement()            { num -= 1    ; withinRange() }
+
+    override func setVal(_ any: Any?) {
+
+        if let any = any {
+            switch any {
+            case let v as Float:   setFloat(v)
+            case let v as CGFloat: setFloat(v)
+            default: print("*** mismatched setVal(\(any))")
+            }
+        }
+    }
+
+    func setFloat(_ v:CGFloat) { num =  Float(v) ; withinRange() }
+    func setFloat(_ v:Float)   { num =  v ; withinRange() }
+    func increment()         { num += 1    ; withinRange() }
+    func decrement()         { num -= 1    ; withinRange() }
 }

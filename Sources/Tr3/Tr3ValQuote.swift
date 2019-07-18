@@ -36,6 +36,14 @@ public class Tr3ValQuote: Tr3Val {
         return scriptVal(prefix:prefix, parens:parens)
     }
     override func setVal(_ from: Tr3Val) {
+        if let f = from as? Tr3ValQuote {
+            quote = f.quote
+        }
+    }
+    override func setVal(_ from: Any?) {
+        if let v = from as? String {
+            quote = v
+        }
     }
 
 }

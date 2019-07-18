@@ -23,7 +23,7 @@ public class Tr3ValTuple: Tr3Val {
         super.init()
     }
     
-    override init (with tr3Val: Tr3Val) {
+    override init(with tr3Val: Tr3Val) {
 
         super.init(with: tr3Val)
 
@@ -36,13 +36,21 @@ public class Tr3ValTuple: Tr3Val {
             dflt = v.dflt
         }
         else {
-
             valFlags = .scalar // use default values
         }
+    }
+    convenience init(with p: CGPoint) {
+        self.init()
+        names = ["x","y"]
+        let x = Tr3ValScalar(with: Float(p.x))
+        let y = Tr3ValScalar(with: Float(p.y))
+        nums = [x,y]
+        size = 2
     }
     override func copy() -> Tr3ValTuple {
         return Tr3ValTuple(with: self)
     }
+
     public static func < (lhs: Tr3ValTuple, rhs: Tr3ValTuple) -> Bool {
 
         if rhs.size == 0 || rhs.size != lhs.size {
@@ -55,6 +63,7 @@ public class Tr3ValTuple: Tr3Val {
         for val in rhs.nums { rsum += val.num * val.num }
         return lsum < rsum
     }
+
     override func printVal() -> String {
         var script = "("
         for num in nums {
@@ -96,6 +105,7 @@ public class Tr3ValTuple: Tr3Val {
         script += script.parenSpace() // always have single trailing space
         return script
     }
+
     override func dumpVal(prefix:String = ":", parens:Bool, session:Bool = false) -> String  {
         if session {
             var script = prefix
@@ -118,9 +128,6 @@ public class Tr3ValTuple: Tr3Val {
         return nums.last ?? nil
     }
 
-    override func setVal(_ fromVal: Tr3Val) {
-    }
-    
     func addPath(_ p:ParAny) {
 
         if let value = p.next.first?.value {
