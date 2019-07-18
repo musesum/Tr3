@@ -150,4 +150,23 @@ public class Tr3ValTuple: Tr3Val {
             isName = !isName
         }
     }
+    override func setVal(_ any: Any?) {
+
+        if let any = any {
+            switch any {
+            case let v as CGPoint:
+                if nums.count >= 2 {
+                    nums[0].num = Float(v.x)
+                    nums[1].num = Float(v.y)
+                }
+                else {
+                    print("*** mismatched nums(\(v))")
+                }
+            case let v as Tr3ValTuple:
+                nums = v.nums
+                names = v.names
+            default: print("*** mismatched setVal(\(any))")
+            }
+        }
+    }
 }

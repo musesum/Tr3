@@ -104,6 +104,7 @@ extension Tr3 {
         }
     }
 
+    
     public func flushCache(_ opt:Tr3SetOptions, _ visitor:Visitor) {
 
         var optNow = opt
