@@ -29,7 +29,7 @@ tr3 : left right* {
     tuple : "(" (nameNums | names | nums) ")" tupVal? {
         names    : name{2,}
         nums     : num{2,}
-        nameNums : (name ":" num){2,}
+        nameNums : (name ":" num){1,}
         tupVal   : ":" (scalar1 | tuple)
     }
     edges : edgeOp (edgePar | edgeItem) comment* {
