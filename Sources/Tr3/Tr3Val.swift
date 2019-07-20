@@ -58,7 +58,7 @@ public class Tr3Val: Comparable, Tr3ValProtocal {
     func addFlag(_ flag_: Tr3ValFlags) {
         valFlags.insert(flag_)
     }
-    func setVal(_ from: Any?) {
+    public func setVal(_ from: Any?) {
         assertionFailure("setVal needs override")
     }
 }

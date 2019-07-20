@@ -150,7 +150,7 @@ public class Tr3ValTuple: Tr3Val {
             isName = !isName
         }
     }
-    override func setVal(_ any: Any?) {
+    public override func setVal(_ any: Any?) {
 
         if let any = any {
             switch any {

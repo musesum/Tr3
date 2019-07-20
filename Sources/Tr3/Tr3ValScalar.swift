@@ -152,7 +152,7 @@ public class Tr3ValScalar: Tr3Val {
         }
     }
 
-    override func setVal(_ any: Any?) {
+    public override func setVal(_ any: Any?) {
 
         if let any = any {
             switch any {
