@@ -30,6 +30,7 @@ extension Tr3ValTern {
         }
 
         func forTernPathVal(_ val:Tr3Val?, call: @escaping CallTern) {
+
             if let pathTr3s = (val as? Tr3ValTern)?.pathTr3s {
                 for pathTr3 in pathTr3s {
                     if let tern = pathTr3.val as? Tr3ValTern {
@@ -117,7 +118,7 @@ extension Tr3ValTern {
                          _ nextTr3 : Tr3,
                          _ visitor : Visitor) {
 
-        changeRadio(prevTr3,nextTr3,visitor)
+        changeRadio(prevTr3, nextTr3, visitor)
         radioPrev?.changeRadioPrev(prevTr3, nextTr3, visitor)
     }
 

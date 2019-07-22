@@ -10,33 +10,50 @@ import Par // visitor
 
 extension Tr3 {
 
-    func setVal(_ any: Any?,_ setOp: Tr3SetOptions) {
+    func setVal(_ any: Any,_ options: Tr3SetOptions,_ visitor:Visitor = Visitor(0)) {
 
         /// clean up scaffolding from parsing a Ternary, redo scaffolding later
         if let _ = val as? Tr3ValPath {
             val = nil
         }
-        if let val = val {
-            val.setVal(any)
+        if options.contains(.cache) {
+            Tr3Cache.add(self,any,options,visitor)
         }
-        else if setOp.contains(.create) {
-            passthrough = false
-            if let any = any {
-                switch any {
-                case let v as Int:      val = Tr3ValScalar(with:Float(v))
-                case let v as Float:    val = Tr3ValScalar(with:v)
-                case let v as CGFloat:  val = Tr3ValScalar(with:Float(v))
-                case let v as CGPoint:  val = Tr3ValTuple(with:v)
-                case let v as String:   val = Tr3ValQuote(with:v)
-                default: print("*** unknown val(\(any))")
-                }
+        // any is a Tr3Val
+        else if let fromVal = any as? Tr3Val {
+            // no defined value, so activate will pass fromVal onto edge successors
+            if passthrough {
+                val = fromVal
+            }
+                // set my val to fromVal, with rescaling
+            else if let val = val {
+                val.setVal(fromVal)
             }
         }
-        if setOp.contains(.activate) {
-            activate()
+        // any is not a Tr3Val, so pass onto my Tr3Val if it exists
+        else if let val = val {
+            val.setVal(any)
+        }
+            // I don't have a Tr3Val yet, so maybe create one for me
+        else if options.contains(.create) {
+            passthrough = false
+
+            switch any {
+            case let v as Int:      val = Tr3ValScalar(with:Float(v))
+            case let v as Float:    val = Tr3ValScalar(with:v)
+            case let v as CGFloat:  val = Tr3ValScalar(with:Float(v))
+            case let v as CGPoint:  val = Tr3ValTuple(with:v)
+            case let v as String:   val = Tr3ValQuote(with:v)
+            default: print("*** unknown val(\(any))")
+            }
+        }
+        // maybe pass along my Tr3Val to other Tr3Nodes and callbacks
+        if options.contains(.activate) {
+            activate(visitor)
         }
     }
 
+    /// pass along
     func activate(_ visitor: Visitor = Visitor(0)) { //func bang() + func allEvents(_ event: Tr3Event) {
 
         if visitor.newVisit(id) {

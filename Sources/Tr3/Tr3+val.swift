@@ -82,38 +82,4 @@ extension Tr3 {
         return nil
     }
     
-    public func setVal(_ p:CGPoint, _ options:Tr3SetOptions, _ visitor:Visitor) {
-
-        if visitor.newVisit(id) {
-            if options.contains(.changed),
-                let v = val as? Tr3ValTuple,
-                v.nums.count >= 2  {
-                
-                let x = CGFloat(v.nums[0].num)
-                let y = CGFloat(v.nums[1].num)
-                if p.x == x, p.y == y { return }
-            }
-            if options.contains(.cache) {
-                cacheVal = p
-                Tr3Cache.add(self,options,visitor)
-                return
-            }
-            else {
-                setVal(p,options)
-            }
-        }
-    }
-
-    
-    public func flushCache(_ opt:Tr3SetOptions, _ visitor:Visitor) {
-
-        var optNow = opt
-        optNow.remove(.cache)
-
-        if cacheVal != nil {
-
-            setVal(cacheVal,opt)
-            cacheVal = nil
-        }
-    }
 }

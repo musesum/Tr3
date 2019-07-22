@@ -8,8 +8,9 @@
 import Foundation
 import Par
 
-struct Tr3OptVisit {
+struct Tr3CacheItem {
     var tr3: Tr3
+    var any: Any // value to set to Tr3.val
     var opt: Tr3SetOptions
     var visit: Visitor
 }
@@ -18,13 +19,14 @@ struct Tr3OptVisit {
 /// double buffer list of cache items
 public class Tr3Cache {
 
-    static var caches = [[Tr3OptVisit](),[Tr3OptVisit]()]
+    static var cache = [[Tr3CacheItem](),[Tr3CacheItem]()]
     static var input = 0
     static var output = 1
     static var flushing = false
 
-    
-    static func flip() {
+
+    /// Tr3Cache double buffers input and output
+    static func flipInputOut() {
         input  ^= 1
         output ^= 1
     }
@@ -32,25 +34,26 @@ public class Tr3Cache {
     static func flush() {
 
         if flushing == false {
+
             flushing = true
+            flipInputOut()
+            let cacheOut = cache[output]
 
-            flip()
-            let cache = caches[output]
-            for tov in cache {
+            for cache in cacheOut {
 
-                tov.tr3.flushCache(tov.opt,tov.visit)
+                let tr3 = cache.tr3
+                let any = cache.any
+                let opt = cache.opt
+                let visit = cache.visit
+
+                tr3.setVal(any,opt,visit)
             }
             flushing = false
         }
     }
 
-    static func add(_ tr3:Tr3,_ opt:Tr3SetOptions,_ visitor:Visitor) {
-        let tov = Tr3OptVisit(tr3:tr3,opt:opt,visit:visitor)
-        caches[input].append(tov)
+    static func add(_ tr3:Tr3,_ any: Any, _ opt:Tr3SetOptions,_ visitor:Visitor) {
+        let cacheItem = Tr3CacheItem(tr3:tr3, any:any, opt:opt, visit:visitor)
+        cache[input].append(cacheItem)
     }
-
-
 }
-
-
-
