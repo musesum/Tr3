@@ -23,24 +23,25 @@ extension Tr3 {
         return nil
     }
 
-    public func CGFloatVal() -> CGFloat? {
-        if let v = val as? Tr3ValScalar {
-            return CGFloat(v.num)
-        }
-        return nil
-    }
-
     public func FloatVal() -> Float? {
         if let v = val as? Tr3ValScalar {
             return v.num
         }
+        else if let v = val as? Tr3ValTuple {
+            if v.nums.count >= 1 {
+                return v.nums[0].num
+            }
+        }
         return nil
     }
 
+    public func CGFloatVal() -> CGFloat? {
+        if let f = FloatVal() { return CGFloat(f) }
+        return nil
+    }
+    
     public func DoubleVal() -> Double? {
-        if let v = val as? Tr3ValScalar {
-            return Double(v.num)
-        }
+        if let f = FloatVal() { return Double(f) }
         return nil
     }
 

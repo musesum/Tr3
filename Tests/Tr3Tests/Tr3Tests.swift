@@ -470,6 +470,23 @@ final class Tr3Tests: XCTestCase {
         countTotal += 1
     }
 
+    func testTuple() { print("\n━━━━━━━━━━━━━━━━━━━━━━ \(#function) ━━━━━━━━━━━━━━━━━━━━━━\n")
+
+        countError = 0
+        let script = "a:(x:0)<-c b:(y:0) <-c c:(x:0 y:0)"
+        print("\n" + script)
+
+        let root = Tr3("√")
+        if tr3Parse.parseScript(root, script),
+            let c = root.findPath("c") {
+            let p = CGPoint(x:1,y:2)
+            c.setVal(p, .activate)
+            let result =  root.dumpScript(session:true)
+
+            testCompare("√ { a:(1)<-c b:(2)<-c c:(1 2) }", result, echo:true)
+        }
+        XCTAssertEqual(countError,0)
+    }
     func testPassthrough() { print("\n━━━━━━━━━━━━━━━━━━━━━━ \(#function) ━━━━━━━━━━━━━━━━━━━━━━\n")
         countError = 0
         let script = "a:(0...1=0)<-b b<-c c:(0...10)<-a"
@@ -906,6 +923,8 @@ final class Tr3Tests: XCTestCase {
 
             ("testParseShort",testParseShort),
             ("testParse",testParse),
+            
+            ("testTuple",testTuple),
             ("testPassthrough",testPassthrough),
             ("testTernary1",testTernary1),
             ("testTernary2",testTernary2),

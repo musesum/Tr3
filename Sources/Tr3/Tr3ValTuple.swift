@@ -107,7 +107,7 @@ public class Tr3ValTuple: Tr3Val {
             if nums.count > 0 {
                 script += "("
                 for num in nums {
-                    script += script.parenSpace() + num.scriptVal(prefix:"", parens: false)
+                    script += script.parenSpace() + String(format:"%g",num.num)
                 }
                 script = script.with(trailing:")")
             }
@@ -152,19 +152,54 @@ public class Tr3ValTuple: Tr3Val {
     }
     public override func setVal(_ any: Any?) {
 
-        if let any = any {
-            switch any {
-            case let v as CGPoint:
-                if nums.count >= 2 {
-                    nums[0].num = Float(v.x)
-                    nums[1].num = Float(v.y)
-                }
-                else {
-                    print("*** mismatched nums(\(v))")
-                }
-            case let v as Tr3ValTuple:
+        func setFloat(_ v:Float) {
+            if nums.count >= 1 { nums[0].num = v }
+            else { print("*** mismatched nums(\(v))")  }
+        }
+        func setPoint(_ v:CGPoint) {
+            if nums.count >= 2 {
+                nums[0].num = Float(v.x)
+                nums[1].num = Float(v.y)
+            }
+            else {
+                print("*** mismatched nums(\(v))")
+            }
+        }
+        func setTuple(_ v:Tr3ValTuple) {
+
+            if nums.count == v.nums.count {
                 nums = v.nums
                 names = v.names
+            }
+            else {
+                setNamed(v)
+            }
+        }
+        /// this is O(n^2) which can slow for large tuples
+        ///
+        ///     // usually used for
+        ///     a(x:0) <- c(x:0 y:0)
+        ///     b(y:0) <- c(x:0 y:0)
+        ///
+        func setNamed(_ v:Tr3ValTuple) {
+            for j in 0 ..< v.names.count {
+                for i in 0 ..< names.count {
+                    if names[i] == v.names[j] {
+                        nums[i] = v.nums[j]
+                    }
+                }
+            }
+        }
+
+        // begin -------------------------
+
+        if let any = any {
+            switch any {
+            case let v as Float:        setFloat(v)
+            case let v as CGFloat:      setFloat(Float(v))
+            case let v as Double:       setFloat(Float(v))
+            case let v as CGPoint:      setPoint(v)
+            case let v as Tr3ValTuple:  setTuple(v)
             default: print("*** mismatched setVal(\(any))")
             }
         }
