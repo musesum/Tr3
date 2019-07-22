@@ -10,7 +10,7 @@ import Par // visitor
 
 extension Tr3 {
 
-    func setVal(_ any: Any,_ options: Tr3SetOptions,_ visitor:Visitor = Visitor(0)) {
+    public func setVal(_ any: Any,_ options: Tr3SetOptions,_ visitor:Visitor = Visitor(0)) {
 
         /// clean up scaffolding from parsing a Ternary, redo scaffolding later
         if let _ = val as? Tr3ValPath {
