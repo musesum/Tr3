@@ -84,21 +84,22 @@ extension Tr3 {
     func setEdgeVal(_ fromVal: Tr3Val?,_ visitor: Visitor) {
         
         // already have visited left tr3
-        if visitor.visited.contains(id) { return }
-        
+        if visitor.visited.contains(id) {
+            return
+        }
         if let fromVal = fromVal {
             
-            // no value so pass though values from right edge
+            // no defined value so pass though any incoming edge values
             if val == nil {
                 passthrough = true
             }
-            // passing through, value may still rescale successive edge
+
+            // hold pass through value, which is referred by outgoiing edges
             if passthrough {
-                val = fromVal;
+                val = fromVal
             }
             // remap value
             else if let val = val {
-                
                 val.setVal(fromVal)
             }
         }
