@@ -82,5 +82,12 @@ extension Tr3 {
         }
         return nil
     }
+    public func BoolVal() -> Bool {
+        if let v = val as? Tr3ValScalar {
+            return v.num > 0
+        }
+        return false
+    }
+
     
 }
