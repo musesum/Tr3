@@ -31,7 +31,7 @@ class Resource {
 
 public class Tr3Parse {
 
-    static let shared = Tr3Parse()
+    public static let shared = Tr3Parse()
 
     public var rootParNode: ParNode!
     var tr3Par = [String:Tr3PriorParAny]()
