@@ -34,6 +34,17 @@ extension Tr3 {
         }
         return nil
     }
+    public func IntVal() -> Int? {
+        if let v = val as? Tr3ValScalar {
+            return Int(v.num)
+        }
+        else if let v = val as? Tr3ValTuple {
+            if v.nums.count >= 1 {
+                return Int(v.nums[0].num)
+            }
+        }
+        return nil
+    }
 
     public func CGFloatVal() -> CGFloat? {
         if let f = FloatVal() { return CGFloat(f) }
