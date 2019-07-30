@@ -12,7 +12,8 @@ extension Tr3 {
 
     public func setVal(_ any: Any,_ options: Tr3SetOptions,_ visitor:Visitor = Visitor(0)) {
 
-        /// clean up scaffolding from parsing a Ternary, redo scaffolding later
+        /// clean up scaffolding from parsing a Ternary,
+        /// todo: redo scaffolding instead of overloading val
         if let _ = val as? Tr3ValPath {
             val = nil
         }
@@ -54,7 +55,7 @@ extension Tr3 {
     }
 
     /// pass along
-    func activate(_ visitor: Visitor = Visitor(0)) { //func bang() + func allEvents(_ event: Tr3Event) {
+    public func activate(_ visitor: Visitor = Visitor(0)) { //func bang() + func allEvents(_ event: Tr3Event) {
 
         if visitor.newVisit(id) {
             for callback in callbacks {
@@ -90,18 +91,13 @@ extension Tr3 {
         if let fromVal = fromVal {
             
             // no defined value so pass though any incoming edge values
-            if val == nil {
-                passthrough = true
-            }
+            if val == nil {  passthrough = true }
 
             // hold pass through value, which is referred by outgoiing edges
-            if passthrough {
-                val = fromVal
-            }
-            // remap value
-            else if let val = val {
-                val.setVal(fromVal)
-            }
+            if passthrough { val = fromVal }
+
+            // otherwise remap value
+            else if let val = val {  val.setVal(fromVal) }
         }
     }
 }
