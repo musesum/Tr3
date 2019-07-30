@@ -89,15 +89,10 @@ extension Tr3 {
             return
         }
         if let fromVal = fromVal {
-            
-            // no defined value so pass though any incoming edge values
-            if val == nil {  passthrough = true }
 
-            // hold pass through value, which is referred by outgoiing edges
-            if passthrough { val = fromVal }
-
-            // otherwise remap value
-            else if let val = val {  val.setVal(fromVal) }
+            if val == nil { passthrough = true } // no defined value so pass though
+            if passthrough { val = fromVal } // hold passthrough value,for successors to rescale
+            else if let val = val {  val.setVal(fromVal) }  // otherwise scale value now
         }
     }
 }
