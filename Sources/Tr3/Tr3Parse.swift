@@ -47,7 +47,7 @@ public class Tr3Parse {
     }
 
 
-    func read(_ filename: String, _ ext:String) -> String {
+    public func read(_ filename: String, _ ext:String) -> String {
 
         let resource = Resource(name: filename, type: ext)
         do {
