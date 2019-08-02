@@ -61,10 +61,10 @@ public class Tr3Parse {
 
     public func parseTr3(_ tr3:Tr3, _ filename:String) {
         let script = read(filename,"tr3")
-        print(filename)
+        print(filename, terminator:" ")
         let success = parseScript(tr3, script, whitespace: "\n\t ")
-        if success  { print(" ✓") }
-        else        { print(" 🚫 parse failed") }
+        if success  { print("✓") }
+        else        { print("🚫 parse failed") }
     }
 
     /// create a dictionary of parsing closures as a global dispatch
