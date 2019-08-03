@@ -76,7 +76,8 @@ final class Tr3Tests: XCTestCase {
     func testParseShort() {
         countTotal = 0
         // error test("a.b { c d } a.e:b { f g } ", "√ { a { b { c d } e { c d f g } } }")
-
+        test("a:(x y):(0...1=0.5)","√ { a:(x y):(0...1=0.5) }")
+        
         test("a.b { c d } a.e:a.b { f g } ", "√ { a { b { c d } e { c d f g } } }")
 
         test("a { b c } d:a { e f } g:d { h i } j:g { k l }",
@@ -147,6 +148,7 @@ final class Tr3Tests: XCTestCase {
         test("a:%2 b:(%2)","√ { a:(%2) b:(%2) }")
 
         print("\n━━━━━━━━━━━━━━━━━━━━━━ tr3 tuples ━━━━━━━━━━━━━━━━━━━━━━\n")
+        test("a:(x y):(0...1=0.5)","√ { a:(x y):(0...1=0.5) }")
         test("a:(x y):(1...2)","√ { a:(x y):(1...2) }")
         test("b:(x y):(-1. 2.)","√ { b:(x y):(-1 2) }")
         test("c:(x:3 y:+4)","√ { c:(x:3 y:4) }")
@@ -470,7 +472,7 @@ final class Tr3Tests: XCTestCase {
         countTotal += 1
     }
 
-    func testTuple() { print("\n━━━━━━━━━━━━━━━━━━━━━━ \(#function) ━━━━━━━━━━━━━━━━━━━━━━\n")
+    func testTuple1() { print("\n━━━━━━━━━━━━━━━━━━━━━━ \(#function) ━━━━━━━━━━━━━━━━━━━━━━\n")
 
         countError = 0
         let script = "a:(x:0)<-c b:(y:0) <-c c:(x:0 y:0)"
@@ -487,6 +489,37 @@ final class Tr3Tests: XCTestCase {
         }
         XCTAssertEqual(countError,0)
     }
+
+    func testTuple2() { print("\n━━━━━━━━━━━━━━━━━━━━━━ \(#function) ━━━━━━━━━━━━━━━━━━━━━━\n")
+
+        Par.trace = true
+        Par.trace2 = true
+        countError = 0
+        let script = "a:(x y):(0...1=0)"
+        print("\n" + script)
+        let p0 = CGPoint(x:1, y:1)
+        var p1 = CGPoint.zero
+
+        let root = Tr3("√")
+        if tr3Parse.parseScript(root, script),
+            let a = root.findPath("a") {
+
+            a.addCallback { tr3,_ in
+                p1 = tr3.CGPointVal() ?? .zero
+                print("p0:\(p0) => p1:\(p1)")
+            }
+
+            a.setVal(p0, [.activate])
+
+            let result =  root.dumpScript(session:true)
+
+            testCompare("√ { a:(x y):(0..1=0) }", result, echo:true)
+        }
+        XCTAssertEqual(p0,p1)
+        Par.trace = false
+        Par.trace2 = false
+    }
+
     func testPassthrough() { print("\n━━━━━━━━━━━━━━━━━━━━━━ \(#function) ━━━━━━━━━━━━━━━━━━━━━━\n")
         countError = 0
         let script = "a:(0...1=0)<-b b<-c c:(0...10)<-a"
@@ -591,7 +624,6 @@ final class Tr3Tests: XCTestCase {
         }
          XCTAssertEqual(countError,0)
     }
-
 
     func testEdges() { print("\n━━━━━━━━━━━━━━━━━━━━━━ \(#function) ━━━━━━━━━━━━━━━━━━━━━━\n")
         countError = 0
@@ -916,20 +948,19 @@ final class Tr3Tests: XCTestCase {
         print(d3Script)
          XCTAssertEqual(countError,0)
     }
-#endif
+    #endif
 
     static var allTests = [
 
-
-            ("testParseShort",testParseShort),
-            ("testParse",testParse),
-            
-            ("testTuple",testTuple),
-            ("testPassthrough",testPassthrough),
-            ("testTernary1",testTernary1),
-            ("testTernary2",testTernary2),
-            ("testTernary3",testTernary3),
-            ("testEdges",testEdges),
+//            ("testParseShort",testParseShort),
+//            ("testParse",testParse),
+//            ("testTuple1",testTuple1),
+            ("testTuple2",testTuple2),
+//            ("testPassthrough",testPassthrough),
+//            ("testTernary1",testTernary1),
+//            ("testTernary2",testTernary2),
+//            ("testTernary3",testTernary3),
+//            ("testEdges",testEdges),
             //("testInherit",testInherit),
             //("testSky",testSky),
     ]

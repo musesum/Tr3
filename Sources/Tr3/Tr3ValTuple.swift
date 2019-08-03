@@ -117,11 +117,11 @@ public class Tr3ValTuple: Tr3Val {
             return scriptVal(prefix: prefix, parens: parens)
         }
     }
-
-    func getVal() -> Tr3Val? {
-        if dflt != nil { return dflt }
-        return nums.last ?? nil
-    }
+//
+//    func getVal() -> Tr3Val? {
+//        if dflt != nil { return dflt }
+//        return nums.last ?? nil
+//    }
 
     func addPath(_ p:ParAny) {
 
@@ -152,18 +152,23 @@ public class Tr3ValTuple: Tr3Val {
     }
     public override func setVal(_ any: Any?) {
 
+        /// top off nums with proper number of scalars
+        func insureNums(count insureCount:Int) {
+            if nums.count <= insureCount { return }
+            let newScalar = dflt as? Tr3ValScalar ?? Tr3ValScalar(with:0)
+            for _ in nums.count ..< insureCount {
+                nums.append(newScalar)
+            }
+        }
         func setFloat(_ v:Float) {
-            if nums.count >= 1 { nums[0].num = v }
-            else { print("*** mismatched nums(\(v))")  }
+            insureNums(count: 1)
+            nums[0].num = v
         }
         func setPoint(_ v:CGPoint) {
-            if nums.count >= 2 {
-                nums[0].num = Float(v.x)
-                nums[1].num = Float(v.y)
-            }
-            else {
-                print("*** mismatched nums(\(v))")
-            }
+
+            insureNums(count: 2)
+            nums[0].num = Float(v.x)
+            nums[1].num = Float(v.y)
         }
         func setTuple(_ v:Tr3ValTuple) {
 

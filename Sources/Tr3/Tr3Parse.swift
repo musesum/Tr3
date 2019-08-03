@@ -197,7 +197,7 @@ public class Tr3Parse {
             case "quote"  : tr3.val = Tr3ValQuote(with:parAny.getFirstValue())
             case "scalar" : tr3.val = Tr3ValScalar()
             case "data"   : tr3.val = Tr3ValData()
-            case "tuple" : tr3.val = Tr3ValTuple()
+            case "tuple"  : tr3.val = Tr3ValTuple()
             default       : break
             }
         }
