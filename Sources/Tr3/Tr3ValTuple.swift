@@ -14,7 +14,6 @@ public class Tr3ValTuple: Tr3Val {
     var names = [String]()
     var nums = [Tr3ValScalar]() // current values
     var dflt: Tr3Val? = nil  // default value applied to each element
-    var parseFlag = Tr3ValFlags.init(rawValue: 0)
 
     override init () {
         super.init()
@@ -81,14 +80,16 @@ public class Tr3ValTuple: Tr3Val {
             script = script.with(trailing:")")
         }
         else {
-            if names.count > 0 {
+            let showNames = valFlags.contains(.tupNames) && names.count > 0
+            let showNums = valFlags.contains(.tupNums) &&  nums.count > 0
+            if showNames {
                 script += "("
                 for name in names {
                     script += script.parenSpace() + name
                 }
-                script += nums.count > 0 ? "):" : ")"
+                script += showNums ? "):" : ")"
             }
-            if nums.count > 0 {
+            if showNums {
                 script += "("
                 for num in nums {
                     script += script.parenSpace() + num.scriptVal(prefix:"", parens: false)
@@ -151,13 +152,22 @@ public class Tr3ValTuple: Tr3Val {
         }
     }
     public override func setVal(_ any: Any?) {
-
+        
         /// top off nums with proper number of scalars
         func insureNums(count insureCount:Int) {
-            if nums.count <= insureCount { return }
-            let newScalar = dflt as? Tr3ValScalar ?? Tr3ValScalar(with:0)
-            for _ in nums.count ..< insureCount {
-                nums.append(newScalar)
+            if nums.count < insureCount {
+                if dflt is Tr3ValScalar {
+                    valFlags.insert(.dflt)
+                }
+                else {
+                    dflt =  Tr3ValScalar(with:Float(0))
+                }
+                if names.count > 0 {
+                    valFlags.insert(.tupNames)
+                }
+                for _ in nums.count ..< insureCount {
+                    nums.append(dflt as! Tr3ValScalar)
+                }
             }
         }
         func setFloat(_ v:Float) {

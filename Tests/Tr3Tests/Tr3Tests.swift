@@ -511,9 +511,10 @@ final class Tr3Tests: XCTestCase {
 
             a.setVal(p0, [.activate])
 
-            let result =  root.dumpScript(session:true)
-
-            testCompare("√ { a:(x y):(0..1=0) }", result, echo:true)
+            let result0 =  root.dumpScript(session:true)
+            testCompare("√ { a:(1 1) }", result0, echo:true)
+             let result1 =  root.dumpScript(session:false)
+            testCompare("√ { a:(x y):(0...1=0) }", result1, echo:true)
         }
         XCTAssertEqual(p0,p1)
         Par.trace = false
