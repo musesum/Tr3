@@ -151,25 +151,27 @@ public class Tr3ValTuple: Tr3Val {
             isName = !isName
         }
     }
-    public override func setVal(_ any: Any?) {
-        
-        /// top off nums with proper number of scalars
-        func insureNums(count insureCount:Int) {
-            if nums.count < insureCount {
-                if dflt is Tr3ValScalar {
-                    valFlags.insert(.dflt)
-                }
-                else {
-                    dflt =  Tr3ValScalar(with:Float(0))
-                }
-                if names.count > 0 {
-                    valFlags.insert(.tupNames)
-                }
-                for _ in nums.count ..< insureCount {
-                    nums.append(dflt as! Tr3ValScalar)
-                }
+
+    /// top off nums with proper number of scalars
+    func insureNums(count insureCount:Int) {
+        if nums.count < insureCount {
+            if dflt is Tr3ValScalar {
+                valFlags.insert(.dflt)
+            }
+            else {
+                dflt =  Tr3ValScalar(with:Float(0))
+            }
+            if names.count > 0 {
+                valFlags.insert(.tupNames)
+            }
+            for _ in nums.count ..< insureCount {
+                nums.append(dflt as! Tr3ValScalar)
             }
         }
+    }
+    public override func setVal(_ any: Any?) {
+        
+
         func setFloat(_ v:Float) {
             insureNums(count: 1)
             nums[0].num = v
@@ -187,6 +189,7 @@ public class Tr3ValTuple: Tr3Val {
                 names = v.names
             }
             else {
+
                 setNamed(v)
             }
         }
@@ -197,6 +200,10 @@ public class Tr3ValTuple: Tr3Val {
         ///     b(y:0) <- c(x:0 y:0)
         ///
         func setNamed(_ v:Tr3ValTuple) {
+
+            // make sure there are enough nums to receive from v
+            insureNums(count: v.names.count)
+
             for j in 0 ..< v.names.count {
                 for i in 0 ..< names.count {
                     if names[i] == v.names[j] {
