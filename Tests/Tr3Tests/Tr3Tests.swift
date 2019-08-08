@@ -75,8 +75,8 @@ final class Tr3Tests: XCTestCase {
 
     func testPathProto() {
         countError = 0
-        test("a { b { c } } a.b <-> c ", "√ { a { b<->a.b.c { c } } } ")
         test("a.b { c d } e:a { b.c:0 }", "√ { a { b { c d } } e { b { c:0 d } } }")
+        test("a { b { c } } a.b <-> c ", "√ { a { b<->a.b.c { c } } } ")
         test("a { b { c d } } e { b { c d } b:0 }" , "√ { a { b { c d } } e { b:0 { c d } } }")
 
         test("a {b c}:{d e}:{f g}:{i j} a.b~f <- (f.i ? f.j : 0) ",

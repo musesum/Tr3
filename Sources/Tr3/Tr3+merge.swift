@@ -247,10 +247,6 @@ extension Tr3 {
     func bindChildren() {
         // add clones to children with
         var kids = [Tr3]()
-
-        if name == "e" {
-            print("yo")
-        }
         for child in children {
 
             switch child.type {

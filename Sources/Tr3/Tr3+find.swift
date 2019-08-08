@@ -105,7 +105,7 @@ extension Tr3 {
         if name == prefix, type == .name {
             return findPathTr3s(wildcard + suffix, [.children])
         }
-        else if name == prefix, wildcard == "", let parent = parent {
+        else if name == prefix, wildcard == "", type == .proto, let parent = parent {
             return parent.findPathTr3s(path, findFlags)
         }
         else if prefix == "", let parent = parent {
