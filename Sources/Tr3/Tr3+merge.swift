@@ -44,7 +44,7 @@ extension Tr3 {
                 sibling.name == merge.name {
 
                 foundDuplicate = true
-                type = .remove
+                merge.type = .remove
 
                 sibling.val = merge.val
                 sibling.edgeDefs = merge.edgeDefs
@@ -143,6 +143,7 @@ extension Tr3 {
     }
 
     func bindFindPath() -> [Tr3]? {
+
         let found = findAnchor(name, [.parents,.children])
 
         if found.count == 1, found.first?.id == id,
@@ -225,10 +226,10 @@ extension Tr3 {
     }
     /// find duplicates in children and merge their children
     /// a,a in `a.b { c d } a.e { f g }`
-    func mergeChildren(_ children:[Tr3]) {
+    func mergeChildren(_ kids :[Tr3]) {
         // some children were copied or promoted so fix their parent
         var nameTr3 = [String:Tr3]()
-        for child in children {
+        for child in kids {
             child.parent = self
             if let prior = nameTr3[child.name] {
                 prior.val = child.val // override value but keep children order
@@ -245,36 +246,111 @@ extension Tr3 {
 
     func bindChildren() {
         // add clones to children with
-        var allChildren = [Tr3]()
+        var kids = [Tr3]()
 
+        if name == "e" {
+            print("yo")
+        }
         for child in children {
 
             switch child.type {
 
-            case .path:   allChildren.append(contentsOf: child.bindPath())
-            case .many:   allChildren.append(contentsOf: child.bindMany())
-            case .proto:  allChildren.append(contentsOf: child.bindProto())
-            case .name:   allChildren.append(contentsOf: child.bindName())
+            case .path:   kids.append(contentsOf: child.bindPath())
+            case .many:   kids.append(contentsOf: child.bindMany())
+            case .proto:  kids.append(contentsOf: child.bindProto())
+            case .name:   kids.append(contentsOf: child.bindName())
 
             case .remove: break
 
-            default:      allChildren.append(child)
+            default:      kids.append(child)
             }
         }
         LogTr3Merge("","\n")
-        mergeChildren(allChildren)
-        children = allChildren.filter { $0.type != .remove }
+        mergeChildren(kids)
+        children = kids.filter { $0.type != .remove }
     }
 
-    func bindDeepTr3() {
+    func bindBottomUp() {
 
         // depth first bind from bottom up
         for child in children {
             if child.children.count > 0 {
-                child.bindDeepTr3()
+                child.bindBottomUp()
             }
         }
        bindChildren()
+    }
+
+    func expandDotPath() {
+
+        var index = 0
+
+        /// split path into a solo child that
+        /// inherits original's children and edges
+        ///
+        ///     a.b:0 <- c { d } // becomes
+        ///     a { b:0 <- c { d } }
+        func spawnChild(from suf: String) {
+
+             let newTr3 = Tr3(String(suf))   // make new tr3 from path suffix
+            newTr3.children = children      // transfer children to new tr3
+            newTr3.parent = self
+
+            newTr3.edgeDefs = edgeDefs
+            edgeDefs = Tr3EdgeDefs()
+
+            newTr3.tr3Edges = tr3Edges
+            tr3Edges = [Tr3Edge]()
+
+            children = [newTr3]             // make newTr3 my only child
+            newTr3.val = val ; val = nil    // transfer my value to newTr3
+        }
+        /// recoursively split path into solo child, grand, etc
+        ///
+        ///     a.b.c         // becomes after 1st pass:
+        ///     a { b.c }     // becomes after 2nd pass:
+        ///     a { b { c } } // as final result
+        ///
+        func divideAndContinue() {
+
+            if index > 0 {
+
+                let prefix = name.prefix(index)
+                let sufCount = name.count-index-1
+
+                if sufCount > 0 { // split `a.b.c` into `a`, `b.c`
+
+                    let suffix = name.suffix(sufCount) // make suffix substring
+                    spawnChild(from: String(suffix))
+
+                    name = String(prefix)   // change name to only prefix
+                    type = .name            // change my type to .name
+                    expandDotPath()         // continue with `b.c`
+                }
+                else { // special case with `a.`
+
+                    name = String(prefix)   // trim trailing .
+                    type = .name            // change my type to .name
+                }
+            }
+        }
+        if name.contains("~") { return }
+        for s in name {
+            switch s {
+            case "~": return
+            case ":": return
+            case ".": return divideAndContinue()
+            default: index += 1
+            }
+        }
+    }
+    func bindTopDown() {
+        if type != .proto {
+            expandDotPath()
+        }
+        for child in children {
+            child.bindTopDown()
+        }
     }
 
     /// activate or deactivate edges for ternaries 
@@ -336,7 +412,8 @@ extension Tr3 {
     }
     /// bind root of tree and its subtree graph
     public func bindRoot() {
-        bindDeepTr3()
+        bindTopDown()
+        bindBottomUp()
         bindUnexpandedProto()
         bindEdges()
         bindTerns()

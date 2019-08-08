@@ -101,8 +101,12 @@ extension Tr3 {
 
         let deeperFlags = findFlags.intersection([.children,.makePath])
 
+
         if name == prefix, type == .name {
             return findPathTr3s(wildcard + suffix, [.children])
+        }
+        else if name == prefix, wildcard == "", let parent = parent {
+            return parent.findPathTr3s(path, findFlags)
         }
         else if prefix == "", let parent = parent {
             return parent.findPathTr3s(wildcard + suffix, deeperFlags)
@@ -132,6 +136,7 @@ extension Tr3 {
         if findFlags.contains(.children) {
             for child in children {
                 if child.type == .remove { continue }
+                if child.type == .proto { continue }
                 if child.name == prefix { return child }
             }
         }

@@ -73,43 +73,45 @@ final class Tr3Tests: XCTestCase {
         countTotal += 1
     }
 
+    func testPathProto() {
+        countError = 0
+        test("a { b { c } } a.b <-> c ", "√ { a { b<->a.b.c { c } } } ")
+        test("a.b { c d } e:a { b.c:0 }", "√ { a { b { c d } } e { b { c:0 d } } }")
+        test("a { b { c d } } e { b { c d } b:0 }" , "√ { a { b { c d } } e { b:0 { c d } } }")
+
+        test("a {b c}:{d e}:{f g}:{i j} a.b~f <- (f.i ? f.j : 0) ",
+             "√ { a { b { d { f<-(f.i ? f.j : 0 ) { i?>b.d.f j->b.d.f } g { i j } }" +
+                "         e { f<-(f.i ? f.j : 0 ) { i?>b.e.f j->b.e.f } g { i j } } }" +
+                "     c { d { f { i j } g { i j } }" +
+                "         e { f { i j } g { i j } } } } a.b~f<-(f.i ? f.j : 0 ) }" +
+            "")
+
+        XCTAssertEqual(countError,0)
+    }
+
     func testParseShort() {
         countTotal = 0
+
         // error test("a.b { c d } a.e:b { f g } ", "√ { a { b { c d } e { c d f g } } }")
-        test("a:(x y):(0...1=0.5)","√ { a:(x y):(0...1=0.5) }")
+
         
         test("a.b { c d } a.e:a.b { f g } ", "√ { a { b { c d } e { c d f g } } }")
 
         test("a { b c } d:a { e f } g:d { h i } j:g { k l }",
              "√ { a { b c } d { b c e f } g { b c e f h i } j { b c e f h i k l } }")
 
-        test("a { b { c {c1 c2} d } b.c { c2:2 c3 } }",
-             "√ { a { b { c { c1 c2:2 c3 } d } } }")
-
         test("a { b c }    h:a { i j }","√ { a { b c } h { b c i j } }")
         test("a { b c } \n h:a { i j }","√ { a { b c } h { b c i j } }")
 
-        test("ab { a:1 b:2 } cd:ab { a:3 c:4 d:5 } ef:cd { b:6 d:7 e:8 f:9 }",
-             "√ { ab { a:1 b:2 } cd { a:3 b:2 c:4 d:5 } ef { a:3 b:6 c:4 d:7 e:8 f:9 } }")
-
-        test("ab { a:1 b:2 } ab:{ c:4 d:5 }","√ { ab { a:1 b:2 c:4 d:5 } }")
-
-        test("ab { a:1 b:2 } cd { c:4 d:5 } ab~.:cd",
-             "√ { ab { a:1 { c:4 d:5 } b:2 { c:4 d:5 } } cd { c:4 d:5 } }")
-
-        test("a.b { _c { c1 c2 } c:_c { d e } }","√ { a { b { _c { c1 c2 } c { c1 c2 d e } } } }")
-        test("a.b { _c { c1 c2 } c { d e }:_c }","√ { a { b { _c { c1 c2 } c { d e c1 c2 } } } }")
-
-        test("a b c w <-(a ? 1 : b ? 2 : c ? 3)", "√ { a?>w b?>w c?>w w<-(a ? 1 : b ? 2 : c ? 3) }")
-
-        //        test("a {b c}:{d <-(b ? 1 | c ? 2) e }",
-        //             "√ { a { b?>(a.b.d a.c.d) { d<-(b ? 1 | c ? 2) e } c?>(a.b.d a.c.d) { d<-(b ? 1 | c ? 2 ) e } } }")
+        test("a {b c}:{d <-(b ? 1 | c ? 2) e }",
+             "√ { a { b?>(a.b.d a.c.d) { d<-(b ? 1 | c ? 2) e } " +
+            "         c?>(a.b.d a.c.d) { d<-(b ? 1 | c ? 2) e } } }")
 
         test("a {b c}:{d <-(b ? 1 | c ? 2) e } z:a z.b.d <- (b ? 5 | c ? 6)",
              "√ { a { b?>(a.b.d a.c.d) { d<-(b ? 1 | c ? 2) e } " +
                 "     c?>(a.b.d a.c.d) { d<-(b ? 1 | c ? 2) e } } " +
                 " z { b?>(z.b.d z.c.d) { d<-(b ? 5 | c ? 6) e } " +
-                "     c?>(z.b.d z.c.d) { d<-(b ? 1 | c ? 2) e } } z.b.d<-(b ? 5 | c ? 6) }" +
+                "     c?>(z.b.d z.c.d) { d<-(b ? 1 | c ? 2) e } } }" +
             "")
          XCTAssertEqual(countError,0)
     }
@@ -192,7 +194,7 @@ final class Tr3Tests: XCTestCase {
         test("a b c -> b", "√ { a b c->b }")
         test("a { a1 a2 } w <- a.* ", "√ { a { a1 a2 } w<-(a.a1 a.a2) }")
         test("a { b { c } } a <-> .* ", "√ { a<->a.b { b { c } } }")
-        test("a { b { c } } a.b <-> c ", "√ { a { b<->a.b.c { c } } a.b<->c} ")
+        test("a { b { c } } a.b <-> c ", "√ { a { b<->a.b.c { c } } } ")
         test("a { b { c } } a~~ <-> .* ", "√ { a<->a.b { b<->a.b.c { c } } a~~ <-> .* }")
         test("a { b { c } } ~~ <-> .. ", "√ { a<->√ { b<->a { c<->a.b } } ~~ <-> .. }")
 
@@ -309,12 +311,12 @@ final class Tr3Tests: XCTestCase {
                 "x<-(w~c ? c~. : w~d ? d~.) }" +
             "")
 
-        print("\n━━━━━━━━━━━━━━━━━━━━━━ robot ━━━━━━━━━━━━━━━━━━━━━━\n")
+        print("\n━━━━━━━━━━━━━━━━━━━━━━ avatar ━━━━━━━━━━━━━━━━━━━━━━\n")
 
-        test("robot {left right}:{shoulder.elbow.wrist {thumb index middle ring pinky}:{meta prox dist} hip.knee.ankle.toes} " +
+        test("avatar {left right}:{shoulder.elbow.wrist {thumb index middle ring pinky}:{meta prox dist} hip.knee.ankle.toes} " +
             "~~:{ pos:(x y z r s t) }",
              """
-            √ { robot {
+            √ { avatar {
                 left {
                     shoulder {
                         elbow {
@@ -356,14 +358,14 @@ final class Tr3Tests: XCTestCase {
             """)
 
 
-        test("robot {left right}:{shoulder.elbow.wrist {thumb index middle ring pinky}:{meta prox dist} hip.knee.ankle.toes} " +
+        test("avatar {left right}:{shoulder.elbow.wrist {thumb index middle ring pinky}:{meta prox dist} hip.knee.ankle.toes} " +
             "~~ <-> .. " +
             "~~:{pos:(x y z):(0...1) angle:(roll pitch yaw):(%360) mm:(0...3000)})",
              """
-         √ { robot<->√ {
-            left<->robot {
-                shoulder<->robot.left {
-                    elbow<->robot.left.shoulder {
+         √ { avatar<->√ {
+            left<->avatar {
+                shoulder<->avatar.left {
+                    elbow<->avatar.left.shoulder {
                         wrist<->left.shoulder.elbow {
                             thumb<->shoulder.elbow.wrist {
                                 meta<->elbow.wrist.thumb { pos:(x y z):(0...1) angle:(roll pitch yaw):(%360) mm:(0...3000) }
@@ -393,17 +395,17 @@ final class Tr3Tests: XCTestCase {
                             pos:(x y z):(0...1) angle:(roll pitch yaw):(%360) mm:(0...3000) }
                         pos:(x y z):(0...1) angle:(roll pitch yaw):(%360) mm:(0...3000) }
                     pos:(x y z):(0...1) angle:(roll pitch yaw):(%360) mm:(0...3000) }
-                hip<->robot.left {
-                    knee<->robot.left.hip {
+                hip<->avatar.left {
+                    knee<->avatar.left.hip {
                         ankle<->left.hip.knee {
                             toes<->hip.knee.ankle { pos:(x y z):(0...1) angle:(roll pitch yaw):(%360) mm:(0...3000) }
                             pos:(x y z):(0...1) angle:(roll pitch yaw):(%360) mm:(0...3000) }
                         pos:(x y z):(0...1) angle:(roll pitch yaw):(%360) mm:(0...3000) }
                     pos:(x y z):(0...1) angle:(roll pitch yaw):(%360) mm:(0...3000) }
                 pos:(x y z):(0...1) angle:(roll pitch yaw):(%360) mm:(0...3000) }
-            right<->robot {
-                shoulder<->robot.right {
-                    elbow<->robot.right.shoulder {
+            right<->avatar {
+                shoulder<->avatar.right {
+                    elbow<->avatar.right.shoulder {
                         wrist<->right.shoulder.elbow {
                             thumb<->shoulder.elbow.wrist {
                                 meta<->elbow.wrist.thumb { pos:(x y z):(0...1) angle:(roll pitch yaw):(%360) mm:(0...3000) }
@@ -433,8 +435,8 @@ final class Tr3Tests: XCTestCase {
                             pos:(x y z):(0...1) angle:(roll pitch yaw):(%360) mm:(0...3000) }
                         pos:(x y z):(0...1) angle:(roll pitch yaw):(%360) mm:(0...3000) }
                     pos:(x y z):(0...1) angle:(roll pitch yaw):(%360) mm:(0...3000) }
-                hip<->robot.right {
-                    knee<->robot.right.hip {
+                hip<->avatar.right {
+                    knee<->avatar.right.hip {
                         ankle<->right.hip.knee {
                             toes<->hip.knee.ankle { pos:(x y z):(0...1) angle:(roll pitch yaw):(%360) mm:(0...3000) }
                             pos:(x y z):(0...1) angle:(roll pitch yaw):(%360) mm:(0...3000) }
@@ -472,9 +474,12 @@ final class Tr3Tests: XCTestCase {
         countTotal += 1
     }
 
+
+
     func testTuple1() { print("\n━━━━━━━━━━━━━━━━━━━━━━ \(#function) ━━━━━━━━━━━━━━━━━━━━━━\n")
 
         countError = 0
+        // selectively set tuples by name, ignore the reset
         let script = "a:(x:0)<-c b:(y:0) <-c c:(x:0 y:0)"
         print("\n" + script)
 
@@ -953,16 +958,17 @@ final class Tr3Tests: XCTestCase {
 
     static var allTests = [
 
-//            ("testParseShort",testParseShort),
-//            ("testParse",testParse),
-//            ("testTuple1",testTuple1),
-            ("testTuple2",testTuple2),
-//            ("testPassthrough",testPassthrough),
-//            ("testTernary1",testTernary1),
-//            ("testTernary2",testTernary2),
-//            ("testTernary3",testTernary3),
-//            ("testEdges",testEdges),
-            //("testInherit",testInherit),
-            //("testSky",testSky),
+        ("testPathProto",testPathProto),
+        ("testParseShort",testParseShort),
+        ("testParse",testParse),
+        ("testTuple1",testTuple1),
+        ("testTuple2",testTuple2),
+        ("testPassthrough",testPassthrough),
+        ("testTernary1",testTernary1),
+        ("testTernary2",testTernary2),
+        ("testTernary3",testTernary3),
+        ("testEdges",testEdges),
+        //("testInherit",testInherit),
+        //("testSky",testSky),
     ]
 }
