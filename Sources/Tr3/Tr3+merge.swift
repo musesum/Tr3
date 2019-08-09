@@ -214,7 +214,7 @@ extension Tr3 {
                 }
                 // found sibling with same name so merge
                 if sibling.name == name {
-                   parent.mergeDuplicate(self)
+                   parent.mergeDuplicate(self) 
                      LogTr3Merge("2:" + self.name)
                     return []
                 }
@@ -245,8 +245,10 @@ extension Tr3 {
     }
 
     func bindChildren() {
+
         // add clones to children with
         var kids = [Tr3]()
+
         for child in children {
 
             switch child.type {
@@ -291,6 +293,9 @@ extension Tr3 {
              let newTr3 = Tr3(String(suf))   // make new tr3 from path suffix
             newTr3.children = children      // transfer children to new tr3
             newTr3.parent = self
+            for child in newTr3.children {
+                child.parent = newTr3
+            }
 
             newTr3.edgeDefs = edgeDefs
             edgeDefs = Tr3EdgeDefs()
