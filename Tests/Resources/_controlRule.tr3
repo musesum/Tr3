@@ -33,7 +33,7 @@ _controlRule : _controlBase {
             title : "Rule Plane"
             frame : (x:70 y:108 w:192 h:44)
             icon  : "control.pearl.white.png"
-            value : (0...1=0) -> control.shader^uniform.shift
+            value : (0...1=0) -> control.shader~uniform.shift
         }
     }
 }

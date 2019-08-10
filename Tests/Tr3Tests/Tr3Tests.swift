@@ -73,6 +73,85 @@ final class Tr3Tests: XCTestCase {
         countTotal += 1
     }
 
+
+    func testSkyControl() {
+        countError = 0
+        test("""
+            _controlBase {
+
+                base {
+                    type  : "unknown"
+                    title : "Unknown"
+                    frame : (x:0 y:0 w:320 h:176)
+                    icon  : "control.ring.white.png"
+                }
+                elements {
+
+                    ruleOn  {
+                        type  : "switch"
+                        title : "Active"
+                        frame : (x:266 y:6 w:48 h:32)
+                        lag   : 0
+                        value : (0...1=0)
+                    }
+                }
+                //on <-> elements.ruleOn.value
+            }
+            _controlRule : _controlBase {
+
+                base {
+                    type  : "rule"
+                    title : "Rule" // name
+                    frame : (x:0 y:0 w:320 h:168)
+                }
+
+                elements {
+
+                    version {
+                        type  : "segment"
+                        title : "Version"
+                        frame : (x:70 y:52 w:192 h:44)
+                        value : (1...2=1) //<-> cell.rule.<name>.version
+                    }
+                    fillZero {
+                        type  : "trigger"
+                        title : "clear 0"
+                        frame : (x:10 y:108 w:44 h:44)
+                        icon  : "control.drop.clear.png"
+                        value : (0...1=0) -> sky.cell.rule.zero
+                    }
+                    fillOne {
+                        type  : "trigger"
+                        title : "clear 0xFFFF"
+                        frame : (x:266 y:108 w:44 h:44)
+                        icon  : "control.drop.gray.png"
+                        value : (0...1=0) -> sky.cell.rule.one
+                    }
+                    plane  {
+                        type  : "slider"
+                        title : "Rule Plane"
+                        frame : (x:70 y:108 w:192 h:44)
+                        icon  : "control.pearl.white.png"
+                        value : (0...1=0) -> control.shader~uniform.shift
+                    }
+                }
+            }
+            """,
+            """
+             √ { _controlBase { base { type:"unknown" title:"Unknown" frame:(x:0 y:0 w:320 h:176) icon:"control.ring.white.png" }
+             elements { ruleOn { type:"switch" title:"Active" frame:(x:266 y:6 w:48 h:32) lag:0 value:(0...1=0) } } }
+             _controlRule { base { type:"rule" title:"Rule" frame:(x:0 y:0 w:320 h:168) icon:"control.ring.white.png" }
+                 elements {
+                     ruleOn { type:"switch" title:"Active" frame:(x:266 y:6 w:48 h:32) lag:0 value:(0...1=0) }
+                     version { type:"segment" title:"Version" frame:(x:70 y:52 w:192 h:44) value:(1...2=1) }
+                     fillZero { type:"trigger" title:"clear 0" frame:(x:10 y:108 w:44 h:44) icon:"control.drop.clear.png" value:(0...1=0) -> sky.cell.rule.zero }
+                     fillOne { type:"trigger" title:"clear 0xFFFF" frame:(x:266 y:108 w:44 h:44) icon:"control.drop.gray.png" value:(0...1=0) -> sky.cell.rule.one }
+                     plane { type:"slider" title:"Rule Plane" frame:(x:70 y:108 w:192 h:44) icon:"control.pearl.white.png" value:(0...1=0) -> control.shader~uniform.shift } } } }
+
+             """)
+
+            XCTAssertEqual(countError,0)
+    }
     func testPathProto() {
         countError = 0
         test("a.b.c { b { d } }", "√ { a { b { c { b { d } } } } }")
@@ -310,8 +389,11 @@ final class Tr3Tests: XCTestCase {
                 "b { c?>x { e { g╌>x h╌>x } f { g╌>x h╌>x } } d?>x { e { g╌>x h╌>x } f { g╌>x h╌>x } } } } " +
                 "x<-(w~c ? c~. : w~d ? d~.) }" +
             "")
+        XCTAssertEqual(countError,0)
+    }
+    func testAvatar() { print("\n━━━━━━━━━━━━━━━━━━━━━━ avatar ━━━━━━━━━━━━━━━━━━━━━━\n")
 
-        print("\n━━━━━━━━━━━━━━━━━━━━━━ avatar ━━━━━━━━━━━━━━━━━━━━━━\n")
+        countError = 0
 
         test("avatar {left right}:{shoulder.elbow.wrist {thumb index middle ring pinky}:{meta prox dist} hip.knee.ankle.toes} " +
             "~~:{ pos:(x y z r s t) }",
@@ -458,6 +540,7 @@ final class Tr3Tests: XCTestCase {
         if val.first == " " { val.removeFirst() }
         result += tr3.name + ":" + val + " "
     }
+
     /// setup new result string, call the action, print the appeneded result
     func testAct(_ before:String,_ after:String, callTest: @escaping CallVoid) {
         result = before + " ⟹ "
@@ -473,8 +556,6 @@ final class Tr3Tests: XCTestCase {
         }
         countTotal += 1
     }
-
-
 
     func testTuple1() { print("\n━━━━━━━━━━━━━━━━━━━━━━ \(#function) ━━━━━━━━━━━━━━━━━━━━━━\n")
 
@@ -958,9 +1039,11 @@ final class Tr3Tests: XCTestCase {
 
     static var allTests = [
 
+        ("testSkyControl",testSkyControl),
         ("testPathProto",testPathProto),
         ("testParseShort",testParseShort),
         ("testParse",testParse),
+        ("testAvatar",testAvatar),
         ("testTuple1",testTuple1),
         ("testTuple2",testTuple2),
         ("testPassthrough",testPassthrough),
