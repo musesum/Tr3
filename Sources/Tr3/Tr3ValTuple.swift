@@ -210,6 +210,7 @@ public class Tr3ValTuple: Tr3Val {
             for j in 0 ..< v.names.count {
                 for i in 0 ..< names.count {
                     if names[i] == v.names[j] {
+                        insureNums(count: i+1)
                         nums[i] = v.nums[j]
                     }
                 }
