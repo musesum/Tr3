@@ -32,7 +32,6 @@ extension Tr3 {
             return true
         }
         return false 
-
     }
     public func makeScript(_ i: Int = 0, pretty: Bool = false) -> String {
 

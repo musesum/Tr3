@@ -194,7 +194,9 @@ public class Tr3ValTuple: Tr3Val {
         func setTuple(_ v:Tr3ValTuple) {
 
             if nums.count == v.nums.count {
-                nums = v.nums
+                for i in 0..<v.nums.count {
+                    nums[i].setFromScalar(v.nums[i])
+                }
                 names = v.names
             }
             else {
@@ -221,7 +223,7 @@ public class Tr3ValTuple: Tr3Val {
                 for i in 0 ..< names.count {
                     if names[i] == v.names[j] {
                         insureNums(count: i+1)
-                        nums[i] = v.nums[j]
+                        nums[i].setFromScalar(v.nums[j])
                     }
                 }
             }
