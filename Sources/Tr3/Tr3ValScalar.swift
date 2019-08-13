@@ -39,6 +39,9 @@ public class Tr3ValScalar: Tr3Val {
         min  = tr3Val.min
         max  = tr3Val.max
         dflt = tr3Val.dflt
+        if valFlags.contains(.dflt) {
+            num = dflt
+        }
     }
     override func copy() -> Tr3Val {
         return Tr3ValScalar(with: self)

@@ -202,7 +202,7 @@ public class Tr3ValTuple: Tr3Val {
         func setNamed(_ v:Tr3ValTuple) {
 
             // if no names to map, then make insure that there are enough numbers
-            if names.isEmpty || v.names.isEmpty || nums.count < v.nums.count {
+            if names.isEmpty || v.names.isEmpty {
                 insureNums(count: max(v.names.count, v.nums.count))
             }
             // this is Ot(n^2), but is OK when n is small

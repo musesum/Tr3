@@ -565,14 +565,15 @@ final class Tr3Tests: XCTestCase {
         print("\n" + script)
 
         let root = Tr3("√")
+
         if tr3Parse.parseScript(root, script),
             let c = root.findPath("c") {
-            let p = CGPoint(x:1,y:2)
-            c.setVal(p, .activate)
+            c.setVal(CGPoint(x:1,y:2), .activate)
             let result =  root.dumpScript(session:true)
 
             testCompare("√ { a:(1)<-c b:(2)<-c c:(1 2) }", result, echo:true)
         }
+
         XCTAssertEqual(countError,0)
     }
 
