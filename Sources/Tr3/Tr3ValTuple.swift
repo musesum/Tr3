@@ -173,8 +173,7 @@ public class Tr3ValTuple: Tr3Val {
         }
     }
     func setDefaults() {
-        if valFlags.contains(.tupDflt),
-            dflt is Tr3ValScalar {
+        if dflt is Tr3ValScalar {
             insureNums(count: names.count)
         }
     }

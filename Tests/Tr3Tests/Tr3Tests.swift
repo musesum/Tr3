@@ -75,28 +75,28 @@ final class Tr3Tests: XCTestCase {
     func testParseShort() {
           countTotal = 0
 
-//        test("a:(x y):(0...1=0.5)","a:(0.5,0.5)",session: true)
+        test("a:(x y):(0...1=0.5)","√ { a:(0.5 0.5) }",session: true)
 
-//          // error test("a.b { c d } a.e:b { f g } ", "√ { a { b { c d } e { c d f g } } }")
-//
-//          test("a.b { c d } a.e:a.b { f g } ", "√ { a { b { c d } e { c d f g } } }")
-//
-//          test("a { b c } d:a { e f } g:d { h i } j:g { k l }",
-//               "√ { a { b c } d { b c e f } g { b c e f h i } j { b c e f h i k l } }")
-//
-//          test("a { b c }    h:a { i j }","√ { a { b c } h { b c i j } }")
-//          test("a { b c } \n h:a { i j }","√ { a { b c } h { b c i j } }")
-//
-//          test("a {b c}:{d <-(b ? 1 | c ? 2) e }",
-//               "√ { a { b?>(a.b.d a.c.d) { d<-(b ? 1 | c ? 2) e } " +
-//              "         c?>(a.b.d a.c.d) { d<-(b ? 1 | c ? 2) e } } }")
-//
-//          test("a {b c}:{d <-(b ? 1 | c ? 2) e } z:a z.b.d <- (b ? 5 | c ? 6)",
-//               "√ { a { b?>(a.b.d a.c.d) { d<-(b ? 1 | c ? 2) e } " +
-//                  "     c?>(a.b.d a.c.d) { d<-(b ? 1 | c ? 2) e } } " +
-//                  " z { b?>(z.b.d z.c.d) { d<-(b ? 5 | c ? 6) e } " +
-//                  "     c?>(z.b.d z.c.d) { d<-(b ? 1 | c ? 2) e } } }" +
-//              "")
+          // error test("a.b { c d } a.e:b { f g } ", "√ { a { b { c d } e { c d f g } } }")
+
+          test("a.b { c d } a.e:a.b { f g } ", "√ { a { b { c d } e { c d f g } } }")
+
+          test("a { b c } d:a { e f } g:d { h i } j:g { k l }",
+               "√ { a { b c } d { b c e f } g { b c e f h i } j { b c e f h i k l } }")
+
+          test("a { b c }    h:a { i j }","√ { a { b c } h { b c i j } }")
+          test("a { b c } \n h:a { i j }","√ { a { b c } h { b c i j } }")
+
+          test("a {b c}:{d <-(b ? 1 | c ? 2) e }",
+               "√ { a { b?>(a.b.d a.c.d) { d<-(b ? 1 | c ? 2) e } " +
+              "         c?>(a.b.d a.c.d) { d<-(b ? 1 | c ? 2) e } } }")
+
+          test("a {b c}:{d <-(b ? 1 | c ? 2) e } z:a z.b.d <- (b ? 5 | c ? 6)",
+               "√ { a { b?>(a.b.d a.c.d) { d<-(b ? 1 | c ? 2) e } " +
+                  "     c?>(a.b.d a.c.d) { d<-(b ? 1 | c ? 2) e } } " +
+                  " z { b?>(z.b.d z.c.d) { d<-(b ? 5 | c ? 6) e } " +
+                  "     c?>(z.b.d z.c.d) { d<-(b ? 1 | c ? 2) e } } }" +
+              "")
            XCTAssertEqual(countError,0)
       }
 
