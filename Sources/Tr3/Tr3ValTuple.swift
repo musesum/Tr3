@@ -151,7 +151,7 @@ public class Tr3ValTuple: Tr3Val {
             isName = !isName
         }
     }
-
+    
     /// top off nums with proper number of scalars
     func insureNums(count insureCount:Int) {
         if nums.count < insureCount {
@@ -159,16 +159,26 @@ public class Tr3ValTuple: Tr3Val {
                 valFlags.insert(.dflt)
             }
             else {
-                dflt =  Tr3ValScalar(with:Float(0))
+                dflt = Tr3ValScalar(with:Float(0))
             }
-            if names.count > 0 {
-                valFlags.insert(.tupNames)
-            }
-            for _ in nums.count ..< insureCount {
-                nums.append(dflt as! Tr3ValScalar)
+            if let dflt = dflt as? Tr3ValScalar {
+                if names.count > 0 {
+                    valFlags.insert(.tupNames)
+                }
+                for _ in nums.count ..< insureCount {
+                    let num = dflt.copy() as! Tr3ValScalar
+                    nums.append(num)
+                }
             }
         }
     }
+    func setDefaults() {
+        if valFlags.contains(.tupDflt),
+            dflt is Tr3ValScalar {
+            insureNums(count: names.count)
+        }
+    }
+
     public override func setVal(_ any: Any?) {
         
 
@@ -193,6 +203,7 @@ public class Tr3ValTuple: Tr3Val {
                 setNamed(v)
             }
         }
+
         /// this is O(n^2) which can slow for large tuples
         ///
         ///     // usually used for

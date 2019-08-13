@@ -355,7 +355,7 @@ extension Tr3 {
     }
 
     /// activate or deactivate edges for ternaries 
-    func bindTerns() {
+    func bindTernaries() {
         for edgeDef in edgeDefs.edgeDefs {
             
             if  let ternVal = edgeDef.defVal as? Tr3ValTern,
@@ -365,7 +365,7 @@ extension Tr3 {
             }
         }
         for child in children {
-            child.bindTerns()
+            child.bindTernaries()
         }
     }
     func bindEdges() {
@@ -403,21 +403,38 @@ extension Tr3 {
             bindChildren()
         }
     }
+    ///
+    func bindDefaults() {
+        if let val = val as? Tr3ValTuple {
+            val.setDefaults()
+        }
+        for child in children {
+            child.bindDefaults()
+        }
+    }
+
     /// while loading multiple files, binding will revisit previously bound subgraph.
     /// So, skip binding prior subgraph to prevent creating duplicate edges.
     func bindGraph() {
         bound = true
+        if let val = val as? Tr3ValTuple {
+            val.setDefaults()
+        }
         for child in children {
             child.bindGraph()
         }
     }
     /// bind root of tree and its subtree graph
     public func bindRoot() {
+
         bindTopDown()
         bindBottomUp()
         bindUnexpandedProto()
+
+        // these next binds could be combined
         bindEdges()
-        bindTerns()
+        bindTernaries()
+        bindDefaults()
         bindGraph()
     }
 }
