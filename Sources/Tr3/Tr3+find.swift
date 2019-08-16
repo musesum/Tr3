@@ -95,7 +95,7 @@ extension Tr3 {
     }
 
     /// find preexisting item 
-    func findAnchor(_ path:String, _ findFlags:Tr3FindFlags) -> [Tr3] {
+    public func findAnchor(_ path:String, _ findFlags:Tr3FindFlags) -> [Tr3] {
 
         let (prefix,wildcard,suffix) = path.splitWild(".*~")
 
