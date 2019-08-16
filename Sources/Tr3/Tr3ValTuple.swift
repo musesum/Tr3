@@ -178,8 +178,10 @@ public class Tr3ValTuple: Tr3Val {
         }
     }
 
-    public override func setVal(_ any: Any?) {
+    public override func setVal(_ any: Any?,_ options:Any? = nil) {
         
+        // from contains normalized values 0...1
+        let zero1 = (options as? Tr3SetOptions ?? []).contains(.zero1)
 
         func setFloat(_ v:Float) {
             insureNums(count: 1)

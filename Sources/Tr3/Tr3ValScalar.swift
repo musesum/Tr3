@@ -113,14 +113,14 @@ public class Tr3ValScalar: Tr3Val {
 
     func setRangeFrom01(_ val_:Float) {
 
-        if      valFlags.contains(.modu) { num = fmodf(val_,fmaxf(1,max)) }
+        if      valFlags.contains(.modu) { num = fmod(val_,fmax(1,max)) }
         else if valFlags.contains(.upto) { num = val_ * (max - min - 1) + min }
         else                             { num = val_ * (max - min)     + min }
     }
 
     func rangeTo01() -> Float {
 
-        if      valFlags.contains(.modu) { return fmodf(num,max) / fmaxf(1, max-1) }
+        if      valFlags.contains(.modu) { return fmod(num,max) / fmaxf(1, max-1) }
         else if valFlags.contains(.thru) { return (num - min) / fmaxf(1, max - min) }
         else                             { return (num - min) / fmaxf(1, max - min - 1) }
     }
@@ -155,16 +155,19 @@ public class Tr3ValScalar: Tr3Val {
         }
     }
 
-    public override func setVal(_ any: Any?) {
+    public override func setVal(_ from: Any?, _ options:Any? = nil) {
 
-        if let any = any {
-            switch any {
+        // from contains normalized values 0...1
+        let zero1 = (options as? Tr3SetOptions ?? []).contains(.zero1)
+
+        if let val = from {
+            switch val {
             case let v as Tr3ValScalar: setFromScalar(v)
-            case let v as Float:   setFloat(v)
-            case let v as CGFloat: setFloat(v)
-            case let v as Double:  setFloat(v)
-            case let v as Int:     setFloat(v)
-            default: print("*** mismatched setVal(\(any))")
+            case let v as Float:   zero1 ? setFloat01(v) : setFloat(v)
+            case let v as CGFloat: zero1 ? setFloat01(v) : setFloat(v)
+            case let v as Double:  zero1 ? setFloat01(v) : setFloat(v)
+            case let v as Int:     zero1 ? setFloat01(v) : setFloat(v)
+            default: print("*** mismatched setVal(\(val))")
             }
         }
     }
@@ -173,6 +176,12 @@ public class Tr3ValScalar: Tr3Val {
     func setFloat(_ v:Double)   { num =  Float(v) ; withinRange() }
     func setFloat(_ v:CGFloat)  { num =  Float(v) ; withinRange() }
     func setFloat(_ v:Float)    { num =  v ; withinRange() }
+
+    func setFloat01(_ v:Int)    { setRangeFrom01(Float(v)) }
+    func setFloat01(_ v:Double) { setRangeFrom01(Float(v)) }
+    func setFloat01(_ v:CGFloat){ setRangeFrom01(Float(v)) }
+    func setFloat01(_ v:Float)  { setRangeFrom01(v) }
+
     func increment()            { num += 1 ; withinRange() }
     func decrement()            { num -= 1 ; withinRange() }
 }

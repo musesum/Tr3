@@ -33,7 +33,7 @@ extension Tr3 {
         }
         // any is not a Tr3Val, so pass onto my Tr3Val if it exists
         else if let val = val {
-            val.setVal(any)
+            val.setVal(any, options)
         }
             // I don't have a Tr3Val yet, so maybe create one for me
         else if options.contains(.create) {

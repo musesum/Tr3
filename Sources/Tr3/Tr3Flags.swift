@@ -22,11 +22,12 @@ public struct Tr3SetOptions: OptionSet {
 
     public let rawValue: Int
 
-    public static let sneak    = Tr3SetOptions(rawValue: 1 << 0) // : 1 quietly set value, no trigger
-    public static let activate = Tr3SetOptions(rawValue: 1 << 1) // : 2 trigger event
+    public static let activate = Tr3SetOptions(rawValue: 1 << 0) // : 1 trigger event
+    public static let sneak    = Tr3SetOptions(rawValue: 1 << 1) // : 2 quietly set value, no trigger
     public static let cache    = Tr3SetOptions(rawValue: 1 << 2) // : 4 cache for next frame update
     public static let changed  = Tr3SetOptions(rawValue: 1 << 3) // : 8 bang only when changed
     public static let create   = Tr3SetOptions(rawValue: 1 << 4) // :16 create a new value
+    public static let zero1    = Tr3SetOptions(rawValue: 1 << 5) // :32 source value normalized 0...1
 
     public init(rawValue:Int) { self.rawValue = rawValue }
 }
