@@ -25,7 +25,6 @@ public class Tr3: Hashable {
 
     var callbacks = [Tr3Visitor]()  // during activate callback and return with Tr3Val ((Tr3Val?)->(Tr3Val?))
     var type = Tr3Type.unknown
-    var bound = false               // after binding edges
 
     public func hash(into hasher: inout Hasher) {  hasher.combine(id)  }
 

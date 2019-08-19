@@ -10,7 +10,6 @@ import Foundation
 extension Tr3EdgeDef {
 
     func connectNewEdge(_ leftTr3:Tr3,_ rightTr3:Tr3) {
-        if leftTr3.bound { return } // skip bound prototypes
         let edge = Tr3Edge(self, leftTr3, rightTr3)
         leftTr3.tr3Edges.append(edge)
         rightTr3.tr3Edges.append(edge)

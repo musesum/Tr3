@@ -413,17 +413,7 @@ extension Tr3 {
         }
     }
 
-    /// while loading multiple files, binding will revisit previously bound subgraph.
-    /// So, skip binding prior subgraph to prevent creating duplicate edges.
-    func bindGraph() {
-        bound = true
-        if let val = val as? Tr3ValTuple {
-            val.setDefaults()
-        }
-        for child in children {
-            child.bindGraph()
-        }
-    }
+    
     /// bind root of tree and its subtree graph
     public func bindRoot() {
 
@@ -435,6 +425,5 @@ extension Tr3 {
         bindEdges()
         bindTernaries()
         bindDefaults()
-        bindGraph()
     }
 }
