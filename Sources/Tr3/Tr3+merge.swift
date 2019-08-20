@@ -286,6 +286,10 @@ extension Tr3 {
     ///
     public func expandDotPath() {
 
+        if name == "version.value" {
+            print("*** version.value")
+        }
+
         var index = 0
 
         /// split path into a solo child that
