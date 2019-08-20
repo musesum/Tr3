@@ -279,7 +279,12 @@ extension Tr3 {
        bindChildren()
     }
 
-    func expandDotPath() {
+    /// Expand pure path `a.b.c` into `a { b { c } }` --
+    /// do no allow search paths `a~b` or prototypes `a:b`
+    ///
+    /// - note: May override public to debug specific paths.
+    ///
+    public func expandDotPath() {
 
         var index = 0
 
