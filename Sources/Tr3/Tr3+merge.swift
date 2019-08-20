@@ -297,6 +297,7 @@ extension Tr3 {
         ///
         ///     a.b:0 <- c { d } // becomes
         ///     a { b:0 <- c { d } }
+        ///
         func spawnChild(from suf: String) {
 
              let newTr3 = Tr3(String(suf))   // make new tr3 from path suffix
