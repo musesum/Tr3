@@ -227,16 +227,26 @@ extension Tr3 {
     /// find duplicates in children and merge their children
     /// a,a in `a.b { c d } a.e { f g }`
     func mergeChildren(_ kids :[Tr3]) {
-        // some children were copied or promoted so fix their parent
-        var nameTr3 = [String:Tr3]()
+
+        func mergeDuplicate(_ child:Tr3, _ prior:Tr3) {
+            // override old value with new value if it exists
+            if let val = child.val { prior.val = val }
+            // add new edge definitions
+            prior.edgeDefs.merge(child.edgeDefs)
+            // append children
+            prior.children.append(contentsOf: child.children)
+            // recursively filter out duplicate child additions
+            mergeChildren(prior.children)
+            prior.children = prior.children.filter {$0.type != .remove }
+            child.type = .remove
+        }
+
+    // some children were copied or promoted so fix their parent
+    var nameTr3 = [String:Tr3]()
         for child in kids {
             child.parent = self
             if let prior = nameTr3[child.name] {
-                prior.val = child.val // override value but keep children order
-                prior.children.append(contentsOf: child.children)
-                mergeChildren(prior.children)
-                prior.children = prior.children.filter {$0.type != .remove }
-                child.type = .remove
+                mergeDuplicate(child, prior)
             }
             else {
                 nameTr3[child.name] = child
@@ -285,10 +295,6 @@ extension Tr3 {
     /// - note: May override public to debug specific paths.
     ///
     public func expandDotPath() {
-
-        if name == "version.value" {
-            print("*** version.value")
-        }
 
         var index = 0
 

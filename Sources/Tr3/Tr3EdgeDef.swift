@@ -35,10 +35,11 @@ public class Tr3EdgeDef {
         default: break
         }
     }
+
     func copy() -> Tr3EdgeDef {
         return Tr3EdgeDef(with: self)
     }
-
+    
     func addPath(_ parAny:ParAny) {
 
         if let path = parAny.next.first?.value {

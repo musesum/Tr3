@@ -11,8 +11,6 @@ public class Tr3EdgeDefs {
 
     var edgeDefs = [Tr3EdgeDef]()
 
-    init () {
-    }
     convenience init(with: Tr3EdgeDefs) {
         self.init()
         for edgeDef in with.edgeDefs {
@@ -22,7 +20,23 @@ public class Tr3EdgeDefs {
     func copy() -> Tr3EdgeDefs {
         return Tr3EdgeDefs(with: self)
     }
-    
+
+    func merge(_ merge:Tr3EdgeDefs) {
+
+        func isUnique(_ mergeDef: Tr3EdgeDef) -> Bool {
+            for edgeDef in edgeDefs {
+                if edgeDef == mergeDef { return false }
+            }
+            return true
+        }
+        // begin ----------------------
+        for mergeDef in merge.edgeDefs {
+            if isUnique(mergeDef) {
+                edgeDefs.append(mergeDef)
+            }
+        }
+    }
+
     public func addEdgeDef(_ edgeOp:String?) {
 
         if let edgeOp = edgeOp {
