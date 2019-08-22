@@ -20,7 +20,7 @@ extension Tr3ValTern {
 
             if let valPath = val as? Tr3ValPath {
                 for pathTr3 in  valPath.pathTr3s  {
-                    for pathEdge in pathTr3.tr3Edges {
+                    for pathEdge in pathTr3.tr3Edges.values {
                         if pathEdge.rightTr3 == tr3 ?? nil {
                             pathEdge.active = active
                         }
@@ -97,7 +97,7 @@ extension Tr3ValTern {
             }
             if let thenPath = thenVal as? Tr3ValPath {
                 for thenTr3 in thenPath.pathTr3s {
-                    for edge in thenTr3.tr3Edges {
+                    for edge in thenTr3.tr3Edges.values {
                         if      edge.leftTr3 == thenTr3, edge.rightTr3 == nextTr3 { edge.active = false }
                         else if edge.leftTr3 == nextTr3, edge.rightTr3 == thenTr3 { edge.active = false }
                     }
@@ -105,7 +105,7 @@ extension Tr3ValTern {
             }
             if let elsePath = elseVal as? Tr3ValPath {
                 for elseTr3 in elsePath.pathTr3s {
-                    for edge in elseTr3.tr3Edges {
+                    for edge in elseTr3.tr3Edges.values {
                         if      edge.leftTr3 == elseTr3, edge.rightTr3 == nextTr3 { edge.active = false }
                         else if edge.leftTr3 == nextTr3, edge.rightTr3 == elseTr3 { edge.active = false }
                     }

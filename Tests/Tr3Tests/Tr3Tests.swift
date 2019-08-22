@@ -620,13 +620,19 @@ final class Tr3Tests: XCTestCase {
             let b = root.findPath("b"),
             let c = root.findPath("c") {
 
-            a.addCallback { tr3,_ in self.addCallResult(a,tr3.val!) }
-            b.addCallback { tr3,_ in self.addCallResult(b,tr3.val!) }
-            c.addCallback { tr3,_ in self.addCallResult(c,tr3.val!) }
+            a.addCallback { tr3,_ in
+                self.addCallResult(a,tr3.val!) }
+            b.addCallback { tr3,_ in
+                self.addCallResult(b,tr3.val!) }
+            c.addCallback { tr3,_ in
+                self.addCallResult(c,tr3.val!) }
 
-            testAct("c:5.0","c:5.0 b:5.0 a:0.5") { c.setVal(5.0, .activate) }
-            testAct("a:0.1","a:0.1 b:0.1 c:1.0") { a.setVal(0.1, .activate) }
-            testAct("b:0.2","b:0.2 a:0.2 c:2.0") { b.setVal(0.2, .activate) }
+            testAct("c:5.0","c:5.0 b:5.0 a:0.5") {
+                c.setVal(5.0, .activate) }
+            testAct("a:0.1","a:0.1 c:1.0 b:1.0 ") {
+                a.setVal(0.1, .activate) }
+            testAct("b:0.2","b:0.2 a:0.020000001 c:0.20000002") {
+                b.setVal(0.2, .activate) }
         }
          XCTAssertEqual(countError,0)
     }

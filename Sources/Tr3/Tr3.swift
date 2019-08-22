@@ -21,10 +21,10 @@ public class Tr3: Hashable {
     var cacheVal: Any? = nil // cached value is drained
 
     var edgeDefs = Tr3EdgeDefs()    // for a<-(b.*++), this saves "++" and "b.*)
-    var tr3Edges = [Tr3Edge]()      // some edges are defined by another Tr3
+    var tr3Edges = [String:Tr3Edge]()      // some edges are defined by another Tr3
 
     var callbacks = [Tr3Visitor]()  // during activate callback and return with Tr3Val ((Tr3Val?)->(Tr3Val?))
-    var type = Tr3Type.unknown
+    public var type = Tr3Type.unknown
 
     public func hash(into hasher: inout Hasher) {  hasher.combine(id)  }
 

@@ -18,30 +18,31 @@ public enum Tr3TernState { case
     If,     // a in a ? b : c
     Then,   // b in a ? b : c
     Else,   // c in a ? b : c
-    Radio,   // ... in (... | ...) exclusive switch, like 'radio' button on a sound mixer
+    Radio,  // ... in (... | ...) exclusive switch, like 'radio' button on a sound mixer
     Neither // deactivated sub-Tern in Radio
 }
 
-/**
- w <- (a == b) // receive bang to w with no value
- w <- (a == b : 1) // recv value 1 to w
- w <- (a == b : 1 1s˺) // recv value 1 to w after 1 second delay
- w <- (a == b ? c : d) // recv c or d to w
- w <- (a ? 1 : b ? 2 : c ? 3) // recv 1 if a, 2 if a&b, 3 if a & b & c
- w <- (a ? a1 : a2 | b ? b1 : b2 | c ? c1 : c2) // if a, recv a1, else recv a2, b block b1,b2,c1,c2
- 
- w -> (a == b) // undefined
- w -> (a == b : 1) // undefined
- w -> (a == b : 1 1s˺) // undefined
- w -> (a == b ? c : d) // if a==b, send w to c, else send w to d
- w -> (a ? 1 : b ? 2 : c ? 3) // recv 1 if a, 2 if a&b, 3 if a & b & c
- w -> (a ? a1 : a2 | b ? b1 : b2 | c ? c1 : c2) // if a, recv a1, else recv a2, b block b1,b2,c1,c2
- 
- w <- (a ? 1 | b ? b1 : b2 | c ? c1 ? c2 | d ? d1 : d2)
- w <- (a ? a1 : a2 ) | (b ? b2 : b2) | (c ? c1 : c2)
- w <- (a ? a1 : a2   |  b ? b1 : b2  |  c ? c1 : c2)
- w <-  a ? a1 : a2   |  b ? b1 : b2  |  c ? c1 : c2
- */
+/// bidirection switched flow ternary with radio-button style extension
+///
+///     w <- (a == b) // receive bang to w with no value
+///     w <- (a == b : 1) // recv value 1 to w
+///     w <- (a == b : 1 1s˺) // recv value 1 to w after 1 second delay
+///     w <- (a == b ? c : d) // recv c or d to w
+///     w <- (a ? 1 : b ? 2 : c ? 3) // recv 1 if a, 2 if a&b, 3 if a & b & c
+///     w <- (a ? a1 : a2 | b ? b1 : b2 | c ? c1 : c2) // if a, recv a1, else recv a2, b block b1,b2,c1,c2
+///
+///     w -> (a == b) // undefined
+///     w -> (a == b : 1) // undefined
+///     w -> (a == b : 1 1s˺) // undefined
+///     w -> (a == b ? c : d) // if a==b, send w to c, else send w to d
+///     w -> (a ? 1 : b ? 2 : c ? 3) // recv 1 if a, 2 if a&b, 3 if a & b & c
+///     w -> (a ? a1 : a2 | b ? b1 : b2 | c ? c1 : c2) // if a, recv a1, else recv a2, b block b1,b2,c1,c2
+///
+///     w <- (a ? 1 | b ? b1 : b2 | c ? c1 ? c2 | d ? d1 : d2)
+///     w <- (a ? a1 : a2 ) | (b ? b2 : b2) | (c ? c1 : c2)
+///     w <- (a ? a1 : a2   |  b ? b1 : b2  |  c ? c1 : c2)
+///     w <-  a ? a1 : a2   |  b ? b1 : b2  |  c ? c1 : c2
+
 public class Tr3ValTern: Tr3ValPath {
     
     static var ternStack = [Tr3ValTern]() // only single threaded parse allowed

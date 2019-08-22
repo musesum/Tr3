@@ -11,8 +11,8 @@ extension Tr3EdgeDef {
 
     func connectNewEdge(_ leftTr3:Tr3,_ rightTr3:Tr3) {
         let edge = Tr3Edge(self, leftTr3, rightTr3)
-        leftTr3.tr3Edges.append(edge)
-        rightTr3.tr3Edges.append(edge)
+        leftTr3.tr3Edges[edge.key] = edge
+        rightTr3.tr3Edges[edge.key] = edge
         //??// edges.append(edge)
     }
 
@@ -24,13 +24,13 @@ extension Tr3EdgeDef {
 
             //print(pathTr3.scriptLineage(2) + " ╌> " + ternPathTr3.scriptLineage(2))
             let edge = Tr3Edge(pathTr3, ternPathTr3, [.output,.ternary])
-            pathTr3.tr3Edges.append(edge)
+            pathTr3.tr3Edges[edge.key] = edge
 
             for edgeDef in ternPathTr3.edgeDefs.edgeDefs {
-                if edgeDef == self { return edgeDef.edges.append(edge) }
+                if edgeDef == self { return edgeDef.edges[edge.key] = edge }
             }
             let edgeDef = Tr3EdgeDef(with:self)
-            edgeDef.edges.append(edge)
+            edgeDef.edges[edge.key] = edge
             ternPathTr3.edgeDefs.edgeDefs.append(edgeDef)
         }
 
@@ -73,9 +73,9 @@ extension Tr3EdgeDef {
         //print(pathTr3.scriptLineage(3) + " ╌> " + pathTr3.scriptLineage(2))
         let flipFlags = Tr3EdgeFlags(flipIO: edgeFlags)
         let edge = Tr3Edge(pathTr3, ternTr3, flipFlags)
-        pathTr3.tr3Edges.append(edge)
+        pathTr3.tr3Edges[edge.key] = edge
         if flipFlags.contains(.input) {
-            ternTr3.tr3Edges.append(edge)
+            ternTr3.tr3Edges[edge.key] = edge
         }
     }
 

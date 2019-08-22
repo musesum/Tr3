@@ -105,13 +105,13 @@ extension Tr3 {
 
             if tr3Edges.count > 0 {
                 var leftEdges = [Tr3Edge]()
-                for edge in tr3Edges {
+                for edge in tr3Edges.values {
                     if edge.leftTr3 == self {
                         leftEdges.append(edge)
                     }
                 }
                 if leftEdges.count > 0 {
-
+                    leftEdges.sort { $0.id < $1.id }
                     var edgeFlags = Tr3EdgeFlags()
                     var leftTypeEdges = [Tr3Edge]()
                     for edge in leftEdges {

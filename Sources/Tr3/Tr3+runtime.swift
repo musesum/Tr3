@@ -61,7 +61,7 @@ extension Tr3 {
             for callback in callbacks {
                 callback(self,visitor)
             }
-            for tr3Edge in tr3Edges {
+            for tr3Edge in tr3Edges.values {
                 if tr3Edge.active {
                     tr3Edge.followEdge(self, visitor)
                 }
@@ -71,7 +71,7 @@ extension Tr3 {
 
     func findEdgeTern(_ edge:Tr3Edge) -> Tr3ValTern? {
         for edgeDef in edgeDefs.edgeDefs {
-            if edgeDef.edges.contains(where: {$0.id == edge.id }) {
+            if edgeDef.edges.values.contains(where: {$0.id == edge.id }) {
                 return edgeDef.defVal as? Tr3ValTern ?? nil
             }
         }
@@ -84,15 +84,21 @@ extension Tr3 {
     ///
     func setEdgeVal(_ fromVal: Tr3Val?,_ visitor: Visitor) {
         
-        // already have visited left tr3
+
         if visitor.visited.contains(id) {
-            return
+            return // already have visited left tr3
         }
         if let fromVal = fromVal {
 
-            if val == nil { passthrough = true } // no defined value so pass though
-            if passthrough { val = fromVal } // hold passthrough value,for successors to rescale
-            else if let val = val {  val.setVal(fromVal) }  // otherwise scale value now
+            if val == nil {
+                passthrough = true  // no defined value so pass though
+            }
+            if passthrough {
+                val = fromVal // hold passthrough value,for successors to rescale
+            }
+            else if let val = val {
+                val.setVal(fromVal)  // otherwise scale value now
+            }
         }
     }
 }

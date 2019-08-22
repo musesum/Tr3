@@ -13,7 +13,7 @@ public class Tr3EdgeDef {
     var edgeFlags = Tr3EdgeFlags()
     var defPaths = [String]() // b in a <- b
     var defVal: Tr3Val? // 9 in a -> (b:9)
-    var edges = [Tr3Edge]() // each edge is also shared by two Tr3s
+    var edges = [String:Tr3Edge]() // each edge is also shared by two Tr3s
 
     // currently ternary in ternary tree to parse
     var parseTern: Tr3ValTern? // * in a -> (a ? * ? * ? * : * : *)

@@ -22,18 +22,20 @@ extension Tr3 {
         return parent?.willMerge(with:tr3) ?? false
     }
 
-    /// previously declared Tr3 has a ":", which indicates that what follows refers to either a:
+    /// previously declared Tr3 has a ":"
+    ///
+    ///  What follows a ":" is either a:
     ///   1) new node to add to tree,
     ///   2) new path synthesized from current location, or
     ///   3) one or more nodes to override
     ///
     /// for example
     ///
-    ///        a { b { c { c1 c2 } d { d1 d2 } } b.c : c3 } ⟹
-    ///    √ { a { b { c { c1 c2 c3 } d { d1 d2 } } } }
+    ///     /**/ a { b { c { c1 c2 } d { d1 d2 } } b.c : c3 } ⟹
+    ///     √  { a { b { c { c1 c2 c3 } d { d1 d2 } } } }
     ///
-    ///        a { b { c { c1 c2 } d { d1 d2 } } b.c : b.d } ⟹
-    ///    √ { a { b { c { c1 c2 d1 d2 } d { d1 d2 } } } }
+    ///     /**/ a { b { c { c1 c2 } d { d1 d2 } } b.c : b.d } ⟹
+    ///     √  { a { b { c { c1 c2 d1 d2 } d { d1 d2 } } } }
     func mergeDuplicate(_ merge:Tr3) {
 
         var foundDuplicate = false
@@ -317,7 +319,7 @@ extension Tr3 {
             edgeDefs = Tr3EdgeDefs()
 
             newTr3.tr3Edges = tr3Edges
-            tr3Edges = [Tr3Edge]()
+            tr3Edges = [String:Tr3Edge]()
 
             children = [newTr3]             // make newTr3 my only child
             newTr3.val = val ; val = nil    // transfer my value to newTr3
@@ -375,7 +377,7 @@ extension Tr3 {
         for edgeDef in edgeDefs.edgeDefs {
             
             if  let ternVal = edgeDef.defVal as? Tr3ValTern,
-                let leftTr3 = edgeDef.edges.first?.leftTr3 {
+                let leftTr3 = edgeDef.edges.values.first?.leftTr3 {
                 
                 ternVal.recalc(leftTr3, self, .sneak , Visitor(0)) 
             }
@@ -429,7 +431,6 @@ extension Tr3 {
         }
     }
 
-    
     /// bind root of tree and its subtree graph
     public func bindRoot() {
 

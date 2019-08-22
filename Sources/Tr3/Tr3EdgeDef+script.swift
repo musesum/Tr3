@@ -50,7 +50,7 @@ extension Tr3EdgeDef {
         }
         else {
             script += edges.count > 1 ? "(" : ""
-            for edge in edges {
+            for edge in edges.values {
                 script += edge.dumpVal(tr3) + " "
             }
             //if script.last == " " { script.removeLast() }

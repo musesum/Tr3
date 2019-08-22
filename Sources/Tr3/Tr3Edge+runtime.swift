@@ -10,11 +10,11 @@ import Par // visitor
 
 extension Tr3Edge {
     
-    func followEdge(_ prevTr3:Tr3,
+    func followEdge(_ fromTr3:Tr3,
                     _ visitor: Visitor) {
 
-        let leftToRight = prevTr3 == leftTr3
-        let nextTr3 = leftToRight ? rightTr3 : leftTr3
+        let leftToRight = fromTr3 == leftTr3
+        let destTr3 = leftToRight ? rightTr3 : leftTr3
 
         if edgeFlags.contains(.ternary) {
 
@@ -23,21 +23,23 @@ extension Tr3Edge {
 
                 ternVal.recalc(leftTr3!, rightTr3!, .activate , visitor)
                 rightTr3?.activate(visitor)
-                //print("\(prevTr3.name)╌>\(nextTr3?.name ?? "")")
+                //print("\(fromTr3.name)╌>\(destTr3?.name ?? "")")
             }
             else if !leftToRight,
                 let ternVal = leftTr3?.findEdgeTern(self) {
 
                 ternVal.recalc(rightTr3!, leftTr3!, .activate, visitor)
                 leftTr3?.activate(visitor)
-                //print("\(prevTr3.name)╌>\(nextTr3?.name ?? "")")
+                //print("\(fromTr3.name)╌>\(destTr3?.name ?? "")")
             }
         }
-        else if let nextTr3 = nextTr3 {
+        else if let destTr3 = destTr3,
+            ((leftToRight && edgeFlags.contains(.output)) ||
+                (!leftToRight && edgeFlags.contains(.input))) {
 
-            nextTr3.setEdgeVal(prevTr3.val, visitor)
-            nextTr3.activate(visitor)
+            destTr3.setEdgeVal(fromTr3.val, visitor)
+            destTr3.activate(visitor)
         }
     }
-
 }
+

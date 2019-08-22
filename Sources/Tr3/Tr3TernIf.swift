@@ -54,7 +54,6 @@ extension Tr3ValTern {
                         default: break
                         }
                     }
-
                         // data and tuples will only test for equivalence
                     else if bothMatchFlags(pathVal, rightVal,[.tuple,.data]) {
 

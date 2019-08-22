@@ -8,9 +8,10 @@
 import Foundation
 import Par
 
-public class Tr3Edge {
+public class Tr3Edge: Hashable {
 
     var id = Visitor.nextId()
+    var key       = "not yet"
 
     var edgeFlags = Tr3EdgeFlags()
     var active    = true
@@ -18,14 +19,12 @@ public class Tr3Edge {
     var rightTr3  : Tr3?
     var defVal    : Tr3Val?
 
-    static func == (lhs:Tr3Edge, rhs:Tr3Edge) -> Bool {
+    public func hash(into hasher: inout Hasher) {
+        hasher.combine(key)
+    }
 
-        if  lhs.leftTr3?.id == rhs.leftTr3?.id,
-            lhs.edgeFlags.rawValue == rhs.edgeFlags.rawValue {
-
-            return true
-        }
-        return false
+    public static func == (lhs:Tr3Edge, rhs:Tr3Edge) -> Bool {
+        return lhs.key == rhs.key
     }
 
     convenience init(with: Tr3Edge) { // was operator = in c++ version
@@ -35,6 +34,7 @@ public class Tr3Edge {
         leftTr3   = with.leftTr3
         rightTr3  = with.rightTr3
         defVal    = with.defVal
+        makeKey()
     }
 
     convenience init (_ leftTr3_: Tr3?,_ rightTr3_:Tr3?,_ edgeflags_:Tr3EdgeFlags) {
@@ -42,6 +42,7 @@ public class Tr3Edge {
         edgeFlags = edgeflags_
         leftTr3   = leftTr3_
         rightTr3  = rightTr3_
+        makeKey()
     }
     convenience init (_ def_: Tr3EdgeDef,_ leftTr3_:Tr3,_ rightTr3_: Tr3) {
         self.init()
@@ -49,6 +50,13 @@ public class Tr3Edge {
         leftTr3   = leftTr3_
         rightTr3  = rightTr3_
         defVal    = def_.defVal
+        makeKey()
+    }
+    func makeKey() {
+        let lhs = "\(leftTr3?.id ?? -1)"
+        let rhs = "\(rightTr3?.id ?? -1)"
+        let arrow = scriptEdgeFlag()
+        key = lhs+arrow+rhs
     }
     func dumpVal(_ tr3:Tr3, session:Bool = false) -> String {
 
