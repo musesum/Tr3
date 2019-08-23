@@ -74,10 +74,8 @@ final class Tr3Tests: XCTestCase {
     }
     func testParseShort() {
           countTotal = 0
-
-        test("a:(x y):(0...1=0.5)","√ { a:(0.5 0.5) }",session: true)
-
-          // error test("a.b { c d } a.e:b { f g } ", "√ { a { b { c d } e { c d f g } } }")
+    
+         test("a b->a:1", "√ { a b->a:1 }")
 
           test("a.b { c d } a.e:a.b { f g } ", "√ { a { b { c d } e { c d f g } } }")
 
@@ -178,6 +176,7 @@ final class Tr3Tests: XCTestCase {
 
             XCTAssertEqual(countError,0)
     }
+
     func testPathProto() {
         countError = 0
         test("a.b.c { b { d } }", "√ { a { b { c { b { d } } } } }")
@@ -195,11 +194,14 @@ final class Tr3Tests: XCTestCase {
         XCTAssertEqual(countError,0)
     }
 
-
     /// compare script with expected output and print an error if they don't match
     ///
     func testParse() {
         countTotal = 0
+
+
+
+
         print("\n━━━━━━━━━━━━━━━━━━━━━━ quote ━━━━━━━━━━━━━━━━━━━━━━\n")
         test("a:\"yo\"", "√ { a:\"yo\" }")
         test("a { b:\"bb\" }", "√ { a { b:\"bb\" } }")
@@ -392,7 +394,8 @@ final class Tr3Tests: XCTestCase {
             "")
         XCTAssertEqual(countError,0)
     }
-    func testAvatar() { print("\n━━━━━━━━━━━━━━━━━━━━━━ avatar ━━━━━━━━━━━━━━━━━━━━━━\n")
+
+    func testAvatarRobot() { print("\n━━━━━━━━━━━━━━ avatar robot ━━━━━━━━━━━━━━━━━\n")
 
         countError = 0
 
@@ -404,11 +407,11 @@ final class Tr3Tests: XCTestCase {
                     shoulder {
                         elbow {
                             wrist {
-                                thumb {  meta { pos:(x y z r s t) } prox { pos:(x y z r s t) } dist { pos:(x y z r s t) } pos:(x y z r s t) }
-                                index { meta { pos:(x y z r s t) } prox { pos:(x y z r s t) } dist { pos:(x y z r s t) } pos:(x y z r s t) }
+                                thumb  { meta { pos:(x y z r s t) } prox { pos:(x y z r s t) } dist { pos:(x y z r s t) } pos:(x y z r s t) }
+                                index  { meta { pos:(x y z r s t) } prox { pos:(x y z r s t) } dist { pos:(x y z r s t) } pos:(x y z r s t) }
                                 middle { meta { pos:(x y z r s t) } prox { pos:(x y z r s t) } dist { pos:(x y z r s t) } pos:(x y z r s t) }
-                                ring { meta { pos:(x y z r s t) } prox { pos:(x y z r s t) } dist { pos:(x y z r s t) } pos:(x y z r s t) }
-                                pinky { meta { pos:(x y z r s t) } prox { pos:(x y z r s t) } dist { pos:(x y z r s t) } pos:(x y z r s t) }
+                                ring   { meta { pos:(x y z r s t) } prox { pos:(x y z r s t) } dist { pos:(x y z r s t) } pos:(x y z r s t) }
+                                pinky  { meta { pos:(x y z r s t) } prox { pos:(x y z r s t) } dist { pos:(x y z r s t) } pos:(x y z r s t) }
                                 pos:(x y z r s t) } pos:(x y z r s t) }
                         pos:(x y z r s t) }
                     hip {
@@ -423,11 +426,11 @@ final class Tr3Tests: XCTestCase {
                     shoulder {
                         elbow {
                             wrist {
-                                thumb { meta { pos:(x y z r s t) } prox { pos:(x y z r s t) } dist { pos:(x y z r s t) } pos:(x y z r s t) }
-                                index { meta { pos:(x y z r s t) } prox { pos:(x y z r s t) } dist { pos:(x y z r s t) } pos:(x y z r s t) }
+                                thumb  { meta { pos:(x y z r s t) } prox { pos:(x y z r s t) } dist { pos:(x y z r s t) } pos:(x y z r s t) }
+                                index  { meta { pos:(x y z r s t) } prox { pos:(x y z r s t) } dist { pos:(x y z r s t) } pos:(x y z r s t) }
                                 middle { meta { pos:(x y z r s t) } prox { pos:(x y z r s t) } dist { pos:(x y z r s t) } pos:(x y z r s t) }
-                                ring { meta { pos:(x y z r s t) } prox { pos:(x y z r s t) } dist { pos:(x y z r s t) } pos:(x y z r s t) }
-                                pinky { meta { pos:(x y z r s t) } prox { pos:(x y z r s t) } dist { pos:(x y z r s t) } pos:(x y z r s t) }
+                                ring   { meta { pos:(x y z r s t) } prox { pos:(x y z r s t) } dist { pos:(x y z r s t) } pos:(x y z r s t) }
+                                pinky  { meta { pos:(x y z r s t) } prox { pos:(x y z r s t) } dist { pos:(x y z r s t) } pos:(x y z r s t) }
                                 pos:(x y z r s t) } pos:(x y z r s t) } pos:(x y z r s t) }
                     hip {
                         knee {
@@ -441,14 +444,14 @@ final class Tr3Tests: XCTestCase {
             """)
 
 
-        test("avatar {left right}:{shoulder.elbow.wrist {thumb index middle ring pinky}:{meta prox dist} hip.knee.ankle.toes} " +
+        test("robot {left right}:{shoulder.elbow.wrist {thumb index middle ring pinky}:{meta prox dist} hip.knee.ankle.toes} " +
             "~~ <-> .. " + // connect every node to its parent
             "~~:{pos:(x y z):(0...1) angle:(roll pitch yaw):(%360) mm:(0...3000)})",
              """
-         √ { avatar<->√ {
-            left<->avatar {
-                shoulder<->avatar.left {
-                    elbow<->avatar.left.shoulder {
+         √ { robot<->√ {
+            left<->robot {
+                shoulder<->robot.left {
+                    elbow<->robot.left.shoulder {
                         wrist<->left.shoulder.elbow {
                             thumb<->shoulder.elbow.wrist {
                                 meta<->elbow.wrist.thumb { pos:(x y z):(0...1) angle:(roll pitch yaw):(%360) mm:(0...3000) }
@@ -478,17 +481,17 @@ final class Tr3Tests: XCTestCase {
                             pos:(x y z):(0...1) angle:(roll pitch yaw):(%360) mm:(0...3000) }
                         pos:(x y z):(0...1) angle:(roll pitch yaw):(%360) mm:(0...3000) }
                     pos:(x y z):(0...1) angle:(roll pitch yaw):(%360) mm:(0...3000) }
-                hip<->avatar.left {
-                    knee<->avatar.left.hip {
+                hip<->robot.left {
+                    knee<->robot.left.hip {
                         ankle<->left.hip.knee {
                             toes<->hip.knee.ankle { pos:(x y z):(0...1) angle:(roll pitch yaw):(%360) mm:(0...3000) }
                             pos:(x y z):(0...1) angle:(roll pitch yaw):(%360) mm:(0...3000) }
                         pos:(x y z):(0...1) angle:(roll pitch yaw):(%360) mm:(0...3000) }
                     pos:(x y z):(0...1) angle:(roll pitch yaw):(%360) mm:(0...3000) }
                 pos:(x y z):(0...1) angle:(roll pitch yaw):(%360) mm:(0...3000) }
-            right<->avatar {
-                shoulder<->avatar.right {
-                    elbow<->avatar.right.shoulder {
+            right<->robot {
+                shoulder<->robot.right {
+                    elbow<->robot.right.shoulder {
                         wrist<->right.shoulder.elbow {
                             thumb<->shoulder.elbow.wrist {
                                 meta<->elbow.wrist.thumb { pos:(x y z):(0...1) angle:(roll pitch yaw):(%360) mm:(0...3000) }
@@ -518,8 +521,8 @@ final class Tr3Tests: XCTestCase {
                             pos:(x y z):(0...1) angle:(roll pitch yaw):(%360) mm:(0...3000) }
                         pos:(x y z):(0...1) angle:(roll pitch yaw):(%360) mm:(0...3000) }
                     pos:(x y z):(0...1) angle:(roll pitch yaw):(%360) mm:(0...3000) }
-                hip<->avatar.right {
-                    knee<->avatar.right.hip {
+                hip<->robot.right {
+                    knee<->robot.right.hip {
                         ankle<->right.hip.knee {
                             toes<->hip.knee.ankle { pos:(x y z):(0...1) angle:(roll pitch yaw):(%360) mm:(0...3000) }
                             pos:(x y z):(0...1) angle:(roll pitch yaw):(%360) mm:(0...3000) }
@@ -556,6 +559,66 @@ final class Tr3Tests: XCTestCase {
             print (result + "✓")
         }
         countTotal += 1
+    }
+    func testEdgeVal() { print("\n━━━━━━━━━━━━━━━━━━━━━━ \(#function) ━━━━━━━━━━━━━━━━━━━━━━\n")
+
+        countError = 0
+        // selectively set tuples by name, ignore the reset
+        let script = "a:1 b->a:2"
+        print("\n" + script)
+
+        let root = Tr3("√")
+
+        if tr3Parse.parseScript(root, script),
+            //let a =  root.findPath("a"),
+            let b =  root.findPath("b") {
+
+            b.activate()
+            let result =  root.dumpScript(session:true)
+            testCompare("√ { a:2 b->a:2 }", result)
+        }
+
+        XCTAssertEqual(countError,0)
+    }
+    func testEdgeVal2() { print("\n━━━━━━━━━━━━━━━━━━━━━━ \(#function) ━━━━━━━━━━━━━━━━━━━━━━\n")
+
+        countError = 0
+        // selectively set tuples by name, ignore the reset
+        let script = "a {a1 a2} b->a.*:2"
+        print("\n" + script)
+
+        let root = Tr3("√")
+
+        if tr3Parse.parseScript(root, script),
+            //let a =  root.findPath("a"),
+            let b =  root.findPath("b") {
+
+            b.activate()
+            let result =  root.dumpScript(session:true)
+            testCompare("√ { a { a1:2 a2:2 } b->(a.a1:2 a.a2:2) }", result)
+        }
+
+        XCTAssertEqual(countError,0)
+    }
+    func testEdgeVal3() { print("\n━━━━━━━━━━━━━━━━━━━━━━ \(#function) ━━━━━━━━━━━━━━━━━━━━━━\n")
+
+        countError = 0
+        // selectively set tuples by name, ignore the reset
+        let script = "a:{b c}:{f g} z->(a~g:2)"
+        print("\n" + script)
+
+        let root = Tr3("√")
+
+        if tr3Parse.parseScript(root, script),
+            //let a =  root.findPath("a"),
+            let z =  root.findPath("z") {
+
+            z.activate()
+            let result =  root.dumpScript(session:true)
+            testCompare("√ { a { b { f g:2 } c { f g:2 } } z->(a.b.g:2 a.c.g:2) }", result)
+        }
+
+        XCTAssertEqual(countError,0)
     }
 
     func testTuple1() { print("\n━━━━━━━━━━━━━━━━━━━━━━ \(#function) ━━━━━━━━━━━━━━━━━━━━━━\n")
@@ -1052,6 +1115,9 @@ final class Tr3Tests: XCTestCase {
         ("testPathProto",testPathProto),
         ("testParse",testParse),
         ("testAvatar",testAvatar),
+        ("testEdgeVal",testEdgeVal),
+        ("testEdgeVal2",testEdgeVal2),
+        ("testEdgeVal3",testEdgeVal3),
         ("testTuple1",testTuple1),
         ("testTuple2",testTuple2),
         ("testPassthrough",testPassthrough),

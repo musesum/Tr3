@@ -36,8 +36,8 @@ extension Tr3Edge {
         else if let destTr3 = destTr3,
             ((leftToRight && edgeFlags.contains(.output)) ||
                 (!leftToRight && edgeFlags.contains(.input))) {
-
-            destTr3.setEdgeVal(fromTr3.val, visitor)
+            let val = defVal ?? fromTr3.val
+            destTr3.setEdgeVal(val, visitor)
             destTr3.activate(visitor)
         }
     }
