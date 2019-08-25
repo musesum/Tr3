@@ -8,34 +8,31 @@
 import Foundation
 import Par // ParAny 
 
-struct PathVal {
-    var path: String!
-    var val: Tr3Val?
-}
+
+/// keeps a dictionary of paths as keys with Tr3Vals,
+/// plus keeps array of paths to preserve sequence,
+/// which is important for preserving order of values
 struct PathVals {
 
-    var pathVals = [PathVal]()
+    var pathDict = [String:Tr3Val?]() // eliminate duplicates
+    var pathList = [String]()         // preserve sequence order
 
-    mutating func add(_ path: String?, _ val: Tr3Val?) {
+    mutating func add(_ path: String?, _ val_: Tr3Val?) {
         if let path = path {
-            let pathVal = PathVal(path:path,val:val)
-            pathVals.append(pathVal)
+            // dont overwrite path val with nl
+            if let _ = pathDict[path] {
+                if val_ == nil {
+                    return
+                }
+            }
+            pathDict[path] = val_
+            pathList.append(path)
         }
     }
     static func == (lhs: PathVals, rhs: PathVals) -> Bool {
-        // this is Ot(n²) for a very small n
-        func findRight(_ lh:PathVal) -> Bool {
-            for rh in rhs.pathVals {
-                if rh.path == lh.path {
-                    // both have values or nil
-                    if lh.val == nil && rh.val == nil { return true }
-                    if lh.val != nil && rh.val != nil { return true }
-                }
-            }
-            return false
-        }
-        for lh in lhs.pathVals {
-            if findRight(lh) { continue }
+
+        for lkey in lhs.pathList {
+            if lhs.pathDict[lkey] == rhs.pathDict[lkey]  { continue }
             return false
         }
         return true
@@ -45,7 +42,7 @@ struct PathVals {
 public class Tr3EdgeDef {
 
     var edgeFlags = Tr3EdgeFlags()
-    var defPathVals = PathVals()
+    var pathVals = PathVals()
     var ternVal: Tr3ValTern?
     //var defPaths = [String]() // b in a <- b
     //var defVals = [Tr3Val?]() // 9 in a -> (b:9)
@@ -61,16 +58,12 @@ public class Tr3EdgeDef {
     init(with: Tr3EdgeDef) {
 
         edgeFlags = with.edgeFlags
-        for pathVal in with.defPathVals.pathVals { // defPathVals = with.defPathVals
-
-            let p = pathVal.path
-            let v = pathVal.val
-
-            switch v {
-            case let v as Tr3ValTern   : defPathVals.add(p,Tr3ValTern  (with: v))
-            case let v as Tr3ValScalar : defPathVals.add(p,Tr3ValScalar(with: v))
-            case let v as Tr3ValTuple  : defPathVals.add(p,Tr3ValTuple (with: v))
-            case let v as Tr3ValQuote  : defPathVals.add(p,Tr3ValQuote (with: v))
+        for path in with.pathVals.pathList { // pathVals = with.pathVal
+            switch with.pathVals.pathDict[path] {
+            case let v as Tr3ValTern   : pathVals.add(path, Tr3ValTern  (with: v))
+            case let v as Tr3ValScalar : pathVals.add(path, Tr3ValScalar(with: v))
+            case let v as Tr3ValTuple  : pathVals.add(path, Tr3ValTuple (with: v))
+            case let v as Tr3ValQuote  : pathVals.add(path, Tr3ValQuote (with: v))
             default: break
             }
         }
@@ -89,7 +82,7 @@ public class Tr3EdgeDef {
                 Tr3ValTern.ternStack.last?.addPath(path)
             }
             else {
-                defPathVals.add(path,nil)
+                pathVals.add(path,nil)
             }
         }
         else {
@@ -98,7 +91,7 @@ public class Tr3EdgeDef {
     }
 
     static func == (lhs: Tr3EdgeDef, rhs: Tr3EdgeDef) -> Bool {
-        return lhs.defPathVals == rhs.defPathVals
+        return lhs.pathVals == rhs.pathVals
     }
 
 }

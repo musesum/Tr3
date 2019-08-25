@@ -33,14 +33,14 @@ extension Tr3EdgeDef {
         }
         else {
 
-            if defPathVals.pathVals.count > 1   { script += "(" }
-            for pathVal in defPathVals.pathVals {
-                script += script.parenSpace() + pathVal.path
-                if let val = pathVal.val {
-                    script += val.scriptVal(prefix:"")
+            if pathVals.pathList.count > 1   { script += "(" }
+            for path in pathVals.pathList {
+                script += script.parenSpace() + path
+                if let val = pathVals.pathDict[path] {
+                    script += val?.scriptVal(prefix:"") ?? ""
                 }
             }
-            if defPathVals.pathVals.count > 1  { script += ")" }
+            if pathVals.pathList.count > 1  { script += ")" }
         }
         return script.with(trailing:" ")
     }

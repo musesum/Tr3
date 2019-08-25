@@ -9,8 +9,8 @@ import Foundation
 
 extension Tr3EdgeDef {
 
-    func connectNewEdge(_ leftTr3:Tr3,_ rightTr3:Tr3,_ pathVal:PathVal) {
-        let edge = Tr3Edge(self, leftTr3, rightTr3, pathVal)
+    func connectNewEdge(_ leftTr3:Tr3,_ rightTr3:Tr3,_ tr3Val:Tr3Val?) {
+        let edge = Tr3Edge(self, leftTr3, rightTr3, tr3Val)
         leftTr3.tr3Edges[edge.key] = edge
         rightTr3.tr3Edges[edge.key] = edge
         //??// edges.append(edge)
@@ -146,21 +146,26 @@ extension Tr3EdgeDef {
     func connectEdges(_ tr3: Tr3)  {
         
         // non ternary edges
-        if defPathVals.pathVals.count > 0 {
-
-            for pathVal in defPathVals.pathVals {
+        if pathVals.pathList.count > 0 {
+            
+            for path in pathVals.pathList {
+                
                 if let pathrefs = tr3.pathrefs {
                     for pathref in pathrefs {
-                        let rightTr3s = pathref.findPathTr3s(pathVal.path,[.parents,.children])
-                        for rightTr3 in rightTr3s {
-                            connectNewEdge(pathref,rightTr3, pathVal)
+                        let rightTr3s = pathref.findPathTr3s(path,[.parents,.children])
+                        if let tr3Val = pathVals.pathDict[path] {
+                            for rightTr3 in rightTr3s {
+                                connectNewEdge(pathref,rightTr3, tr3Val)
+                            }
                         }
                     }
                 }
                 else {
-                    let rightTr3s = tr3.findPathTr3s(pathVal.path,[.parents,.children])
-                    for rightTr3 in rightTr3s {
-                        connectNewEdge(tr3,rightTr3, pathVal)
+                    let rightTr3s = tr3.findPathTr3s(path,[.parents,.children])
+                    if let tr3Val = pathVals.pathDict[path] {
+                        for rightTr3 in rightTr3s {
+                            connectNewEdge(tr3,rightTr3, tr3Val)
+                        }
                     }
                 }
             }

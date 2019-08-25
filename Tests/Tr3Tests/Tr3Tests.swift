@@ -75,6 +75,10 @@ final class Tr3Tests: XCTestCase {
     func testParseShort() {
         countTotal = 0
 
+        test("a b->a:1", "√ { a b->a:1 }")
+
+        test("a <- (b c)", "√ { a <-(b c) }")
+
         test("a b.c <-(a ? 1) d:b ",
                    "√ { a?>(b.c d.c) b { c<-(a ? 1 ) } d { c<-(a ? 1 ) } }")
 
@@ -88,7 +92,6 @@ final class Tr3Tests: XCTestCase {
         test("a b c w <-(a ? 1 : b ? 2 : c ? 3)",
              "√ { a?>w b?>w c?>w w<-(a ? 1 : b ? 2 : c ? 3) }")
 
-        test("a b->a:1", "√ { a b->a:1 }")
 
         test("a.b { c d } a.e:a.b { f g } ", "√ { a { b { c d } e { c d f g } } }")
 

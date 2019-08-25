@@ -172,14 +172,15 @@ public class Tr3Parse {
         // 9 in `a:8 <- (b ? 9)`
         if let edgeDef = tr3.edgeDefs.edgeDefs.last {
 
-            if let lastPathVal = edgeDef.defPathVals.pathVals.last {
+            if let lastPath = edgeDef.pathVals.pathList.last {
 
-                if let lastVal = lastPathVal.val { //Tr3Log.log("parseVal.A.defVal", prior, pattern)
+                if let lastVal = edgeDef.pathVals.pathDict[lastPath], lastVal != nil { //Tr3Log.log("parseVal.A.defVal", prior, pattern)
 
-                    parseDeepVal(lastPathVal.val,parAny)
+                    parseDeepVal(lastVal,parAny)
                 }
-                else if let lastPathPath = lastPathVal.path  { //Tr3Log.log("parseVal.B.defVal", prior, pattern)
-                    func addVal(_ v:Tr3Val) { edgeDef.defPathVals.add(lastPathPath,v) }
+                else  { //Tr3Log.log("parseVal.B.defVal", prior, pattern)
+
+                    func addVal(_ v:Tr3Val) { edgeDef.pathVals.add(lastPath,v) }
 
                     switch pattern {
                     case "embed"  : addVal(Tr3ValEmbed(with:parAny.getFirstValue()))
@@ -190,9 +191,6 @@ public class Tr3Parse {
                     case "ternIf" : addVal(Tr3ValTern(tr3,level))
                     default: break
                     }
-                }
-                else {
-                    print("*** unkown lastPathVal:\(lastPathVal)")
                 }
             }
             else if let ternVal = edgeDef.ternVal {
