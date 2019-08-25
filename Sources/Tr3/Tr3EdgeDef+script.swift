@@ -28,14 +28,19 @@ extension Tr3EdgeDef {
         var script = ""
         script += Tr3EdgeDef.scriptEdgeFlag(edgeFlags)
 
-        if let tern = defVal as? Tr3ValTern {
+        if let tern = ternVal {
             script += tern.scriptVal(prefix:"")
         }
         else {
-            if defPaths.count > 1   { script += "(" }
-            for defPath in defPaths { script += script.parenSpace() + defPath }
-            if defPaths.count > 1   { script += ")" }
-            script += defVal?.scriptVal(prefix:"") ?? ""
+
+            if defPathVals.pathVals.count > 1   { script += "(" }
+            for pathVal in defPathVals.pathVals {
+                script += script.parenSpace() + pathVal.path
+                if let val = pathVal.val {
+                    script += val.scriptVal(prefix:"")
+                }
+            }
+            if defPathVals.pathVals.count > 1  { script += ")" }
         }
         return script.with(trailing:" ")
     }
@@ -45,7 +50,7 @@ extension Tr3EdgeDef {
         var script = ""
         script += Tr3EdgeDef.scriptEdgeFlag(edgeFlags)
 
-        if let tern = defVal as? Tr3ValTern {
+        if let tern = ternVal {
             script += tern.dumpVal(prefix:"")
         }
         else {
@@ -56,6 +61,7 @@ extension Tr3EdgeDef {
             //if script.last == " " { script.removeLast() }
             script += edges.count > 1 ? ")" : ""
         }
+
         return script.with(trailing:" ")
     }
 

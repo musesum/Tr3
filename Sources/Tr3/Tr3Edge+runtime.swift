@@ -18,27 +18,28 @@ extension Tr3Edge {
 
         if edgeFlags.contains(.ternary) {
 
-            if leftToRight,
-                let ternVal = rightTr3?.findEdgeTern(self) {
+            if leftToRight, let ternVal = rightTr3?.findEdgeTern(self) {
 
                 ternVal.recalc(leftTr3!, rightTr3!, .activate , visitor)
                 rightTr3?.activate(visitor)
                 //print("\(fromTr3.name)╌>\(destTr3?.name ?? "")")
             }
-            else if !leftToRight,
-                let ternVal = leftTr3?.findEdgeTern(self) {
+            else if !leftToRight, let ternVal = leftTr3?.findEdgeTern(self) {
 
                 ternVal.recalc(rightTr3!, leftTr3!, .activate, visitor)
                 leftTr3?.activate(visitor)
                 //print("\(fromTr3.name)╌>\(destTr3?.name ?? "")")
             }
         }
-        else if let destTr3 = destTr3,
-            ((leftToRight && edgeFlags.contains(.output)) ||
-                (!leftToRight && edgeFlags.contains(.input))) {
-            let val = defVal ?? fromTr3.val
-            destTr3.setEdgeVal(val, visitor)
-            destTr3.activate(visitor)
+        else if let destTr3 = destTr3 {
+
+            if   leftToRight && edgeFlags.contains(.output) ||
+                !leftToRight && edgeFlags.contains(.input) {
+
+                let val = defVal ?? fromTr3.val
+                destTr3.setEdgeVal(val, visitor)
+                destTr3.activate(visitor)
+            }
         }
     }
 }

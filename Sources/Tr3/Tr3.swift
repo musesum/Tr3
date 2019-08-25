@@ -142,10 +142,10 @@ public class Tr3: Hashable {
     public func overideEdgeTernary(_ tern_:Tr3ValTern) -> Bool {
 
         for edgeDef in edgeDefs.edgeDefs {
-            if let valPath = edgeDef.defVal as? Tr3ValPath,
-                valPath.path == tern_.path {
+            if let ternPath = edgeDef.ternVal?.path,
+                ternPath == tern_.path {
 
-                edgeDef.defVal = tern_.copy()
+                edgeDef.ternVal = tern_.copy()
 
                 return true
             }
@@ -157,11 +157,11 @@ public class Tr3: Hashable {
 
         if let lastEdgeDef = edgeDefs.edgeDefs.last {
             
-            if let lastTern = lastEdgeDef.defVal as? Tr3ValTern {
+            if let lastTern = lastEdgeDef.ternVal {
                 lastTern.deepAddVal(tern_)
             }
             else {
-                lastEdgeDef.defVal = tern_
+                lastEdgeDef.ternVal = tern_
                 Tr3ValTern.ternStack.append(tern_)
             }
         }
@@ -170,7 +170,7 @@ public class Tr3: Hashable {
 
             let newEdgeDef = Tr3EdgeDef(with:copyEdgeDef)
             edgeDefs.edgeDefs.append(newEdgeDef)
-            newEdgeDef.defVal = tern_
+            newEdgeDef.ternVal = tern_
             Tr3ValTern.ternStack.append(tern_)
         }
         else {

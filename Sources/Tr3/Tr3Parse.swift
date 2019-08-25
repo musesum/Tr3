@@ -172,21 +172,31 @@ public class Tr3Parse {
         // 9 in `a:8 <- (b ? 9)`
         if let edgeDef = tr3.edgeDefs.edgeDefs.last {
 
-            if let defVal = edgeDef.defVal { //Tr3Log.log("parseVal.A.defVal", prior, pattern)
+            if let lastPathVal = edgeDef.defPathVals.pathVals.last {
 
-                parseDeepVal(defVal,parAny)
-            }
-            else { //Tr3Log.log("parseVal.B.defVal", prior, pattern)
+                if let lastVal = lastPathVal.val { //Tr3Log.log("parseVal.A.defVal", prior, pattern)
 
-                switch pattern {
-                case "embed"  : edgeDef.defVal = Tr3ValEmbed(with:parAny.getFirstValue())
-                case "quote"  : edgeDef.defVal = Tr3ValQuote(with:parAny.getFirstValue())
-                case "scalar" : edgeDef.defVal = Tr3ValScalar()
-                case "data"   : edgeDef.defVal = Tr3ValData()
-                case "tuple"  : edgeDef.defVal = Tr3ValTuple()
-                case "ternIf" : edgeDef.defVal = Tr3ValTern(tr3,level)
-                default: break
+                    parseDeepVal(lastPathVal.val,parAny)
                 }
+                else if let lastPathPath = lastPathVal.path  { //Tr3Log.log("parseVal.B.defVal", prior, pattern)
+                    func addVal(_ v:Tr3Val) { edgeDef.defPathVals.add(lastPathPath,v) }
+
+                    switch pattern {
+                    case "embed"  : addVal(Tr3ValEmbed(with:parAny.getFirstValue()))
+                    case "quote"  : addVal(Tr3ValQuote(with:parAny.getFirstValue()))
+                    case "scalar" : addVal(Tr3ValScalar())
+                    case "data"   : addVal(Tr3ValData())
+                    case "tuple"  : addVal(Tr3ValTuple())
+                    case "ternIf" : addVal(Tr3ValTern(tr3,level))
+                    default: break
+                    }
+                }
+                else {
+                    print("*** unkown lastPathVal:\(lastPathVal)")
+                }
+            }
+            else if let ternVal = edgeDef.ternVal {
+                 parseDeepVal(ternVal,parAny)
             }
         }
             // nil in `a:_`

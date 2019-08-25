@@ -44,12 +44,12 @@ public class Tr3Edge: Hashable {
         rightTr3  = rightTr3_
         makeKey()
     }
-    convenience init (_ def_: Tr3EdgeDef,_ leftTr3_:Tr3,_ rightTr3_: Tr3) {
+    convenience init (_ def_: Tr3EdgeDef,_ leftTr3_:Tr3,_ rightTr3_: Tr3, _ pathVal: PathVal) {
         self.init()
         edgeFlags = def_.edgeFlags
         leftTr3   = leftTr3_
         rightTr3  = rightTr3_
-        defVal    = def_.defVal
+        defVal    = pathVal.val
         makeKey()
     }
     func makeKey() {

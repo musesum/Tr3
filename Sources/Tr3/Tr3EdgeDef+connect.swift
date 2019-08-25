@@ -9,8 +9,8 @@ import Foundation
 
 extension Tr3EdgeDef {
 
-    func connectNewEdge(_ leftTr3:Tr3,_ rightTr3:Tr3) {
-        let edge = Tr3Edge(self, leftTr3, rightTr3)
+    func connectNewEdge(_ leftTr3:Tr3,_ rightTr3:Tr3,_ pathVal:PathVal) {
+        let edge = Tr3Edge(self, leftTr3, rightTr3, pathVal)
         leftTr3.tr3Edges[edge.key] = edge
         rightTr3.tr3Edges[edge.key] = edge
         //??// edges.append(edge)
@@ -146,29 +146,28 @@ extension Tr3EdgeDef {
     func connectEdges(_ tr3: Tr3)  {
         
         // non ternary edges
-        if defPaths.count > 0 {
-            
-            for defPath in defPaths {
+        if defPathVals.pathVals.count > 0 {
+
+            for pathVal in defPathVals.pathVals {
                 if let pathrefs = tr3.pathrefs {
                     for pathref in pathrefs {
-                        let rightTr3s = pathref.findPathTr3s(defPath,[.parents,.children])
+                        let rightTr3s = pathref.findPathTr3s(pathVal.path,[.parents,.children])
                         for rightTr3 in rightTr3s {
-                            connectNewEdge(pathref,rightTr3)
+                            connectNewEdge(pathref,rightTr3, pathVal)
                         }
                     }
                 }
                 else {
-                    let rightTr3s = tr3.findPathTr3s(defPath,[.parents,.children])
+                    let rightTr3s = tr3.findPathTr3s(pathVal.path,[.parents,.children])
                     for rightTr3 in rightTr3s {
-                        connectNewEdge(tr3,rightTr3)
+                        connectNewEdge(tr3,rightTr3, pathVal)
                     }
                 }
             }
         }
             // ternary
-        else if let tern = defVal as? Tr3ValTern {
-
-             // a~z <- (...)
+        else if let tern = ternVal {
+            // a~z <- (...)
             if tr3.type == .path {
                 let found =  tr3.findAnchor(tr3.name, [.parents,.children])
                 if found.count > 0 {

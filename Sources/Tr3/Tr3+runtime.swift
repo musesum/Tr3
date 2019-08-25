@@ -69,10 +69,11 @@ extension Tr3 {
         }
     }
 
+
     func findEdgeTern(_ edge:Tr3Edge) -> Tr3ValTern? {
         for edgeDef in edgeDefs.edgeDefs {
-            if edgeDef.edges.values.contains(where: {$0.id == edge.id }) {
-                return edgeDef.defVal as? Tr3ValTern ?? nil
+            if edgeDef.edges.contains(where: { $0.key == edge.key }) {
+                return edgeDef.ternVal
             }
         }
         return nil
@@ -80,11 +81,11 @@ extension Tr3 {
 
     /// Some nodes have no value of its own, acting as a switch
     /// to merely point to the the value, as it moves through.
-    /// If the node has a value, then remap between scalar ranges.
+    /// If the node has a value of its own, then remap
+    /// its value and the range of the incoming value.
     ///
     func setEdgeVal(_ fromVal: Tr3Val?,_ visitor: Visitor) {
         
-
         if visitor.visited.contains(id) {
             return // already have visited left tr3
         }

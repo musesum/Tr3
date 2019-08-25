@@ -77,7 +77,7 @@ extension Tr3 {
     }
 
     func LogTr3Merge(_ str:String,_ terminator: String = " ") {
-        //print(str,terminator:terminator)
+        print(str,terminator:terminator)
     }
     func scriptChildren(_ children:[Tr3]) -> String {
         var script = "["
@@ -376,7 +376,7 @@ extension Tr3 {
     func bindTernaries() {
         for edgeDef in edgeDefs.edgeDefs {
             
-            if  let ternVal = edgeDef.defVal as? Tr3ValTern,
+            if  let ternVal = edgeDef.ternVal,
                 let leftTr3 = edgeDef.edges.values.first?.leftTr3 {
                 
                 ternVal.recalc(leftTr3, self, .sneak , Visitor(0)) 

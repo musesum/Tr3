@@ -73,32 +73,67 @@ final class Tr3Tests: XCTestCase {
         countTotal += 1
     }
     func testParseShort() {
-          countTotal = 0
-    
-         test("a b->a:1", "√ { a b->a:1 }")
+        countTotal = 0
 
-          test("a.b { c d } a.e:a.b { f g } ", "√ { a { b { c d } e { c d f g } } }")
+        test("a b.c <-(a ? 1) d:b ",
+                   "√ { a?>(b.c d.c) b { c<-(a ? 1 ) } d { c<-(a ? 1 ) } }")
 
-          test("a { b c } d:a { e f } g:d { h i } j:g { k l }",
-               "√ { a { b c } d { b c e f } g { b c e f h i } j { b c e f h i k l } }")
+        test("a {b <-(a ? 1) c} ",
+                "√ { a?>a.b { b<-(a ? 1 ) c } }")
 
-          test("a { b c }    h:a { i j }","√ { a { b c } h { b c i j } }")
-          test("a { b c } \n h:a { i j }","√ { a { b c } h { b c i j } }")
+        test("a {b c}:{d <-(b ? 1 | c ? 2) e} ",
+         "√ { a { b?>(a.b.d a.c.d) { d<-(b ? 1 | c ? 2) e } " +
+        "         c?>(a.b.d a.c.d) { d<-(b ? 1 | c ? 2) e } } }")
 
-          test("a {b c}:{d <-(b ? 1 | c ? 2) e }",
-               "√ { a { b?>(a.b.d a.c.d) { d<-(b ? 1 | c ? 2) e } " +
-              "         c?>(a.b.d a.c.d) { d<-(b ? 1 | c ? 2) e } } }")
+        test("a b c w <-(a ? 1 : b ? 2 : c ? 3)",
+             "√ { a?>w b?>w c?>w w<-(a ? 1 : b ? 2 : c ? 3) }")
 
-          test("a {b c}:{d <-(b ? 1 | c ? 2) e } z:a z.b.d <- (b ? 5 | c ? 6)",
-               "√ { a { b?>(a.b.d a.c.d) { d<-(b ? 1 | c ? 2) e } " +
-                  "     c?>(a.b.d a.c.d) { d<-(b ? 1 | c ? 2) e } } " +
-                  " z { b?>(z.b.d z.c.d) { d<-(b ? 5 | c ? 6) e } " +
-                  "     c?>(z.b.d z.c.d) { d<-(b ? 1 | c ? 2) e } } }" +
-              "")
-           XCTAssertEqual(countError,0)
-      }
+        test("a b->a:1", "√ { a b->a:1 }")
 
-    func testSkyControl() {
+        test("a.b { c d } a.e:a.b { f g } ", "√ { a { b { c d } e { c d f g } } }")
+
+        test("a { b c } d:a { e f } g:d { h i } j:g { k l }",
+             "√ { a { b c } d { b c e f } g { b c e f h i } j { b c e f h i k l } }")
+
+        test("a { b c }    h:a { i j }","√ { a { b c } h { b c i j } }")
+        test("a { b c } \n h:a { i j }","√ { a { b c } h { b c i j } }")
+
+        test("a {b c}:{d <-(b ? 1 | c ? 2) e } z:a z.b.d <- (b ? 5 | c ? 6)",
+             "√ { a { b?>(a.b.d a.c.d) { d<-(b ? 1 | c ? 2) e } " +
+                "     c?>(a.b.d a.c.d) { d<-(b ? 1 | c ? 2) e } } " +
+                " z { b?>(z.b.d z.c.d) { d<-(b ? 5 | c ? 6) e } " +
+                "     c?>(z.b.d z.c.d) { d<-(b ? 1 | c ? 2) e } } }" +
+            "")
+        XCTAssertEqual(countError,0)
+    }
+    /// compare script with expected output and print an error if they don't match
+    func testParseBasics() {
+        countError = 0
+        print("\n━━━━━━━━━━━━━━━━━━━━━━ quote ━━━━━━━━━━━━━━━━━━━━━━\n")
+        test("a:\"yo\"", "√ { a:\"yo\" }")
+        test("a { b:\"bb\" }", "√ { a { b:\"bb\" } }")
+        test("a { b:\"bb\" c:\"cc\" }", "√ { a { b:\"bb\" c:\"cc\" } }")
+
+        print("\n━━━━━━━━━━━━━━━━━━━━━ comment ━━━━━━━━━━━━━━━━━━━━━\n")
+        test("a // yo","√ { a }")
+        test("a { b } // yo","√ { a { b } }")
+        test("a { b // yo \n } ", "√ { a { b } }")
+        test("a { b { // yo \n c } } ", "√ { a { b { c } } }")
+        test("// yo \na { b { c } }","√ { a { b { c } } }")
+        test("// yo\n// oy\na { b { c } }","√ { a { b { c } } }")
+
+        print("\n━━━━━━━━━━━━━━━━━━━━━━ hierarchy ━━━━━━━━━━━━━━━━━━━━━━\n")
+        test("a { b c }","√ { a { b c } }")
+        test("a { b { c } }","√ { a { b { c } } }")
+        test("a { b { c } d { e } }","√ { a { b { c } d { e } } }")
+        test("a { b { c d } e }","√ { a { b { c d } e } }")
+
+        print("\n━━━━━━━━━━━━━━━━━━━━━━ many ━━━━━━━━━━━━━━━━━━━━━━\n")
+        test("a {b c}:{d e}","√ { a { b { d e } c { d e } } }")
+        test("a {b c}:{d e}:{f g}","√ { a { b { d { f g } e { f g } } c { d { f g } e { f g } } } }")
+        XCTAssertEqual(countError,0)
+    }
+    func testParseSkyControl() {
         countError = 0
         test("""
             _controlBase {
@@ -161,7 +196,7 @@ final class Tr3Tests: XCTestCase {
                 }
             }
             """,
-            """
+             """
              √ { _controlBase { base { type:"unknown" title:"Unknown" frame:(x:0 y:0 w:320 h:176) icon:"control.ring.white.png" }
              elements { ruleOn { type:"switch" title:"Active" frame:(x:266 y:6 w:48 h:32) lag:0 value:(0...1=0) } } }
              _controlRule { base { type:"rule" title:"Rule" frame:(x:0 y:0 w:320 h:168) icon:"control.ring.white.png" }
@@ -174,10 +209,9 @@ final class Tr3Tests: XCTestCase {
 
              """)
 
-            XCTAssertEqual(countError,0)
+        XCTAssertEqual(countError,0)
     }
-
-    func testPathProto() {
+    func testParsePathProto() {
         countError = 0
         test("a.b.c { b { d } }", "√ { a { b { c { b { d } } } } }")
         test("a.b { c d } e:a { b.c:0 }", "√ { a { b { c d } } e { b { c:0 d } } }")
@@ -193,38 +227,8 @@ final class Tr3Tests: XCTestCase {
 
         XCTAssertEqual(countError,0)
     }
-
-    /// compare script with expected output and print an error if they don't match
-    ///
-    func testParse() {
-        countTotal = 0
-
-
-
-
-        print("\n━━━━━━━━━━━━━━━━━━━━━━ quote ━━━━━━━━━━━━━━━━━━━━━━\n")
-        test("a:\"yo\"", "√ { a:\"yo\" }")
-        test("a { b:\"bb\" }", "√ { a { b:\"bb\" } }")
-        test("a { b:\"bb\" c:\"cc\" }", "√ { a { b:\"bb\" c:\"cc\" } }")
-
-        print("\n━━━━━━━━━━━━━━━━━━━━━ comment ━━━━━━━━━━━━━━━━━━━━━\n")
-        test("a // yo","√ { a }")
-        test("a { b } // yo","√ { a { b } }")
-        test("a { b // yo \n } ", "√ { a { b } }")
-        test("a { b { // yo \n c } } ", "√ { a { b { c } } }")
-        test("// yo \na { b { c } }","√ { a { b { c } } }")
-        test("// yo\n// oy\na { b { c } }","√ { a { b { c } } }")
-
-        print("\n━━━━━━━━━━━━━━━━━━━━━━ hierarchy ━━━━━━━━━━━━━━━━━━━━━━\n")
-        test("a { b c }","√ { a { b c } }")
-        test("a { b { c } }","√ { a { b { c } } }")
-        test("a { b { c } d { e } }","√ { a { b { c } d { e } } }")
-        test("a { b { c d } e }","√ { a { b { c d } e } }")
-
-        print("\n━━━━━━━━━━━━━━━━━━━━━━ many ━━━━━━━━━━━━━━━━━━━━━━\n")
-        test("a {b c}:{d e}","√ { a { b { d e } c { d e } } }")
-        test("a {b c}:{d e}:{f g}","√ { a { b { d { f g } e { f g } } c { d { f g } e { f g } } } }")
-
+    func testParseValues() {
+        countError = 0
         print("\n━━━━━━━━━━━━━━━━━━━━━━ tr3 scalars ━━━━━━━━━━━━━━━━━━━━━━\n")
         test("a { b:2 { c } }","√ { a { b:2 { c } } }")
         test("a:1 { b:2 { c:3 } }","√ { a:1 { b:2 { c:3 } } }")
@@ -245,8 +249,11 @@ final class Tr3Tests: XCTestCase {
         test("g:(p q r):(0...1=0):(.5 .5 .5)","√ { g:(p q r):(0.5 0.5 0.5):(0...1=0) }")
         test("h:(p:0.5 q:0.5 r:0.5):(0...1=0)","√ { h:(p:0.5 q:0.5 r:0.5):(0...1=0) }")
         test("i:(0.5 0.5 0.5):(0...1=0)","√ { i:(0.5 0.5 0.5):(0...1=0) }")
+        XCTAssertEqual(countError,0)
+    }
+    func testParsePaths() { print("\n━━━━━━━━━━━━━━━━━━━━━━ paths ━━━━━━━━━━━━━━━━━━━━━━\n")
+        countError = 0
 
-        print("\n━━━━━━━━━━━━━━━━━━━━━━ paths ━━━━━━━━━━━━━━━━━━━━━━\n")
         test("a { b { c {c1 c2} d } } a : e", "√ { a { b { c { c1 c2 } d } e } }")
         test("a { b { c d } } a { e }", "√ { a { b { c d } e } }")
         test("a { b { c {c1 c2} d } b.c : c3 }","√ { a { b { c { c1 c2 c3 } d } } }")
@@ -269,9 +276,10 @@ final class Tr3Tests: XCTestCase {
         test("a.b { _c { c1 c2 } c { d e }:_c }","√ { a { b { _c { c1 c2 } c { d e c1 c2 } } } }")
 
         test("a.b.c.d { e.f }", "√ { a { b { c { d { e { f } } } } } }")
-
-        print("\n━━━━━━━━━━━━━━━━━━━━━━ edges ━━━━━━━━━━━━━━━━━━━━━━\n")
-
+        XCTAssertEqual(countError,0)
+    }
+    func testParseEdges() { print("\n━━━━━━━━━━━━━━━━━━━━━━ edges ━━━━━━━━━━━━━━━━━━━━━━\n")
+        countError = 0
         test("a b c <- b", "√ { a b c<-b }")
         test("a b c -> b", "√ { a b c->b }")
         test("a { a1 a2 } w <- a.* ", "√ { a { a1 a2 } w<-(a.a1 a.a2) }")
@@ -285,9 +293,10 @@ final class Tr3Tests: XCTestCase {
         test("a <- (b c)", "√ { a <-(b c) }")
         test("a <- (b c) { b c }", "√ { a <-(a.b a.c) { b c } }")
         test("a -> (b c) { b c }", "√ { a ->(a.b a.c) { b c } }")
-
-        print("\n━━━━━━━━━━━━━━━━━━━━━━ ternarys ━━━━━━━━━━━━━━━━━━━━━━\n")
-
+        XCTAssertEqual(countError,0)
+    }
+    func testParseTernarys() { print("\n━━━━━━━━━━━━━━ ternarys ━━━━━━━━━━━━━━━━━\n")
+        countError = 0
         test("a x y w <-(a ? x : y)", "√ { a?>w x╌>w y╌>w w<-(a ? x : y) }")
         test("a x y w ->(a ? x : y)", "√ { a?>w x<╌w y<╌w w->(a ? x : y) }")
         test("a:1 x y w <-(a ? x : y)", "√ { a:1?>w x->w y╌>w w<-(a ? x : y) }")
@@ -343,8 +352,11 @@ final class Tr3Tests: XCTestCase {
                 "     c { d { f { i j?>(b.d.f b.e.f) } g { i j?>(b.d.f b.e.f) } } " +
                 "         e { f { i j?>(b.d.f b.e.f) } g { i j?>(b.d.f b.e.f) } } } } a.b~f<-(f.i ? 1 | a~j ? 0 ) }" +
             "")
+        XCTAssertEqual(countError,0)
+    }
+    func testParseRelativePaths() { print("\n━━━━━━━━━━━━━━ relative paths ━━━━━━━━━━━━━━━━━\n")
 
-        print("\n━━━━━━━━━━━━━━━━━━━━━━ relative paths ━━━━━━━━━━━━━━━━━━━━━━\n")
+        countError = 0
 
         test("d {a1 a2}:{b1 b2} e <- d~b1", "√ { d { a1 { b1 b2 } a2 { b1 b2 } } e <- (d.a1.b1 d.a2.b1) }")
         test("d {a1 a2}:{b1 b2} e <- d~~", "√ { d { a1 { b1 b2 } a2 { b1 b2 } } e <- (d d.a1 d.a1.b1 d.a1.b2 d.a2 d.a2.b1 d.a2.b2)  }")
@@ -394,8 +406,7 @@ final class Tr3Tests: XCTestCase {
             "")
         XCTAssertEqual(countError,0)
     }
-
-    func testAvatarRobot() { print("\n━━━━━━━━━━━━━━ avatar robot ━━━━━━━━━━━━━━━━━\n")
+    func testParseAvatarRobot() { print("\n━━━━━━━━━━━━━━ avatar robot ━━━━━━━━━━━━━━━━━\n")
 
         countError = 0
 
@@ -537,14 +548,12 @@ final class Tr3Tests: XCTestCase {
     }
 
     var result = ""
-
     /// add result of callback to result
     func addCallResult(_ tr3:Tr3, _ val:Tr3Val?) {
         var val = val?.printVal() ?? "nil"
         if val.first == " " { val.removeFirst() }
         result += tr3.name + ":" + val + " "
     }
-
     /// setup new result string, call the action, print the appeneded result
     func testAct(_ before:String,_ after:String, callTest: @escaping CallVoid) {
         result = before + " ⟹ "
@@ -620,7 +629,26 @@ final class Tr3Tests: XCTestCase {
 
         XCTAssertEqual(countError,0)
     }
+    func testEdgeVal4() { print("\n━━━━━━━━━━━━━━━━━━━━━━ \(#function) ━━━━━━━━━━━━━━━━━━━━━━\n")
 
+        countError = 0
+        // selectively set tuples by name, ignore the reset
+        let script = "a:{b c}:{f g} z->(a.b.f:1 a~g:2)"
+        print("\n" + script)
+
+        let root = Tr3("√")
+
+        if tr3Parse.parseScript(root, script),
+            //let a =  root.findPath("a"),
+            let z =  root.findPath("z") {
+
+            z.activate()
+            let result =  root.dumpScript(session:false)
+            testCompare("√ { a { b { f:1 g:2 } c { f g:2 } } z->(a.b.f:1 a.b.g:2 a.c.g:2) }", result)
+        }
+
+        XCTAssertEqual(countError,0)
+    }
     func testTuple1() { print("\n━━━━━━━━━━━━━━━━━━━━━━ \(#function) ━━━━━━━━━━━━━━━━━━━━━━\n")
 
         countError = 0
@@ -640,7 +668,6 @@ final class Tr3Tests: XCTestCase {
 
         XCTAssertEqual(countError,0)
     }
-
     func testTuple2() { print("\n━━━━━━━━━━━━━━━━━━━━━━ \(#function) ━━━━━━━━━━━━━━━━━━━━━━\n")
 
         Par.trace = true
@@ -664,14 +691,13 @@ final class Tr3Tests: XCTestCase {
 
             let result0 =  root.dumpScript(session:true)
             testCompare("√ { a:(1 1) }", result0, echo:true)
-             let result1 =  root.dumpScript(session:false)
+            let result1 =  root.dumpScript(session:false)
             testCompare("√ { a:(x y):(0...1=0) }", result1, echo:true)
         }
         XCTAssertEqual(p0,p1)
         Par.trace = false
         Par.trace2 = false
     }
-
     func testPassthrough() { print("\n━━━━━━━━━━━━━━━━━━━━━━ \(#function) ━━━━━━━━━━━━━━━━━━━━━━\n")
         countError = 0
         let script = "a:(0...1=0)<-b b<-c c:(0...10)<-a"
@@ -697,7 +723,7 @@ final class Tr3Tests: XCTestCase {
             testAct("b:0.2","b:0.2 a:0.020000001 c:0.20000002") {
                 b.setVal(0.2, .activate) }
         }
-         XCTAssertEqual(countError,0)
+        XCTAssertEqual(countError,0)
     }
 
     func testTernary1() { print("\n━━━━━━━━━━━━━━━━━━━━━━ \(#function) ━━━━━━━━━━━━━━━━━━━━━━\n")
@@ -723,9 +749,8 @@ final class Tr3Tests: XCTestCase {
 
             testCompare(" √ { a:0?>w b:0?>w c?>w w:3<-(a ? 1 : b ? 2 : c ? 3) }", root.dumpScript(session:true), echo:true)
         }
-         XCTAssertEqual(countError,0)
+        XCTAssertEqual(countError,0)
     }
-
     func testTernary2() { print("\n━━━━━━━━━━━━━━━━━━━━━━ \(#function) ━━━━━━━━━━━━━━━━━━━━━━\n")
         countError = 0
         let script = "a:0 x:10 y:20 w <- (a ? x : y)"
@@ -753,9 +778,8 @@ final class Tr3Tests: XCTestCase {
 
             testCompare("√ { a:0?>w x:12╌>w y:22->w w:y<-(a ? x : y) }", root.dumpScript(session:true), echo:true)
         }
-         XCTAssertEqual(countError,0)
+        XCTAssertEqual(countError,0)
     }
-
     func testTernary3() { print("\n━━━━━━━━━━━━━━━━━━━━━━ \(#function) ━━━━━━━━━━━━━━━━━━━━━━\n")
         countError = 0
         let script = "a x:10 y:20 w <-> (a ? x : y)"
@@ -780,9 +804,8 @@ final class Tr3Tests: XCTestCase {
 
             testCompare("√ { a:1?>w x:4<->w y:3<╌>w w:4<->(a ? x : y) }", root.dumpScript(session:true), echo:true)
         }
-         XCTAssertEqual(countError,0)
+        XCTAssertEqual(countError,0)
     }
-
     func testEdges() { print("\n━━━━━━━━━━━━━━━━━━━━━━ \(#function) ━━━━━━━━━━━━━━━━━━━━━━\n")
         countError = 0
         let root = Tr3("√")
@@ -799,11 +822,10 @@ final class Tr3Tests: XCTestCase {
             let d3Script = root.makeD3Script()
             print(d3Script)
         }
-         XCTAssertEqual(countError,0)
+        XCTAssertEqual(countError,0)
     }
     #if false
     /// currently cannot bundle resource with Swift package
-    
     func testInherit() { print("\n━━━━━━━━━━━━━━━━━━━━━━ \(#function) ━━━━━━━━━━━━━━━━━━━━━━\n")
         countError = 0
         let root = Tr3("√")
@@ -815,7 +837,6 @@ final class Tr3Tests: XCTestCase {
         print(actual)
         XCTAssertEqual(countError,0)
     }
-
     func testSky() { print("\n━━━━━━━━━━━━━━━━━━━━━━ \(#function) ━━━━━━━━━━━━━━━━━━━━━━\n")
         countError = 0
         let root = Tr3("√")
@@ -863,7 +884,7 @@ final class Tr3Tests: XCTestCase {
 
         let actual = root.makeScript(0,pretty:true)
         let planned =
-#"""
+        #"""
 √ {
     sky {
         main {
@@ -1104,20 +1125,28 @@ final class Tr3Tests: XCTestCase {
         //print(actual)
         let d3Script = root.makeD3Script()
         print(d3Script)
-         XCTAssertEqual(countError,0)
+        XCTAssertEqual(countError,0)
     }
     #endif
 
     static var allTests = [
 
         ("testParseShort",testParseShort),
-        ("testSkyControl",testSkyControl),
-        ("testPathProto",testPathProto),
-        ("testParse",testParse),
-        ("testAvatar",testAvatar),
+        ("testParseBasics",testParseBasics),
+        ("testParseSkyControl",testParseSkyControl),
+        ("testParsePathProto",testParsePathProto),
+        ("testParsePaths",testParsePaths),
+        ("testParseValues",testParseValues),
+        ("testParseEdges",testParseEdges),
+        ("testParseTernarys",testParseTernarys),
+        ("testParseRelativePaths",testParseRelativePaths),
+        ("testParseRelativePaths",testParseRelativePaths),
+        ("testParseAvatarRobot",testParseAvatarRobot),
+
         ("testEdgeVal",testEdgeVal),
         ("testEdgeVal2",testEdgeVal2),
         ("testEdgeVal3",testEdgeVal3),
+        ("testEdgeVal4",testEdgeVal3),
         ("testTuple1",testTuple1),
         ("testTuple2",testTuple2),
         ("testPassthrough",testPassthrough),

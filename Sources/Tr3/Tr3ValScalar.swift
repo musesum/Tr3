@@ -172,10 +172,10 @@ public class Tr3ValScalar: Tr3Val {
         }
     }
 
-    func setFloat(_ v:Int)      { num =  Float(v) ; withinRange() }
-    func setFloat(_ v:Double)   { num =  Float(v) ; withinRange() }
-    func setFloat(_ v:CGFloat)  { num =  Float(v) ; withinRange() }
-    func setFloat(_ v:Float)    { num =  v ; withinRange() }
+    func setFloat(_ v:Int)      { num = Float(v) ; withinRange() }
+    func setFloat(_ v:Double)   { num = Float(v) ; withinRange() }
+    func setFloat(_ v:CGFloat)  { num = Float(v) ; withinRange() }
+    func setFloat(_ v:Float)    { num = v        ; withinRange() }
 
     func setFloat01(_ v:Int)    { setRangeFrom01(Float(v)) }
     func setFloat01(_ v:Double) { setRangeFrom01(Float(v)) }
