@@ -75,10 +75,6 @@ extension Tr3 {
         }
         return result
     }
-
-    func LogTr3Merge(_ str:String,_ terminator: String = " ") {
-        print(str,terminator:terminator)
-    }
     func scriptChildren(_ children:[Tr3]) -> String {
         var script = "["
         var delim = ""
@@ -99,7 +95,6 @@ extension Tr3 {
                 self.children.isEmpty {
 
                 type = .name
-                LogTr3Merge("9:" + name)
                 return [self]
             }
             /// :_c in `a.b { _c { c1 c2 } c { d e }:_c }`
@@ -112,12 +107,10 @@ extension Tr3 {
                         newChildren.append(copy)
                     }
                 }
-                LogTr3Merge(scriptChildren(newChildren))
                 return newChildren
             }
         }
         // :e in `a { b { c {c1 c2} d } } a : e`
-        LogTr3Merge("C:" + name)
         return [self]
     }
 
@@ -159,13 +152,11 @@ extension Tr3 {
             if edgeDefs.edgeDefs.isEmpty {
                 // b.c in `a { b { c {c1 c2} d } b.c { c3 } }`
                 let results = mergeOrCopy(found)
-                LogTr3Merge("4:" + (results.first?.name ?? "??"))
                 return results
             }
             else {
                 // a.b in `a { b { c } }  a.b <-> c`
                 pathrefs = found
-                LogTr3Merge("5:" + self.name)
                 return [self]
             }
         }
@@ -180,16 +171,13 @@ extension Tr3 {
         if found.isEmpty {
             if let pathChain = makePath(name,children) {
                 // e.f, a.b.c.d in `a.b.c.d { e.f }` -- in that order
-                LogTr3Merge("6:" + pathChain.name)
                 return [pathChain]
             }
-            LogTr3Merge("7:" + (found.first?.name ?? "??"))
             return found
         }
         else {
             // b.e in `a { b { c d } b.e }`
             // e in `a { b { c {c1 c2} d } } a : e`
-            LogTr3Merge("8:" + self.name)
             return [self]
         }
     }
@@ -211,19 +199,16 @@ extension Tr3 {
             for sibling in parent.children {
                 // sibling is candidate, no need to search anymore
                 if sibling.id == id {
-                    LogTr3Merge("1:" + self.name)
                     return [self]
                 }
                 // found sibling with same name so merge
                 if sibling.name == name {
-                   parent.mergeDuplicate(self) 
-                     LogTr3Merge("2:" + self.name)
+                   parent.mergeDuplicate(self)
                     return []
                 }
             }
         }
         // didn't find matching sibling so is unique
-        LogTr3Merge("3:" + self.name)
         return [self]
     }
     /// find duplicates in children and merge their children
@@ -275,7 +260,6 @@ extension Tr3 {
             default:      kids.append(child)
             }
         }
-        LogTr3Merge("","\n")
         mergeChildren(kids)
         children = kids.filter { $0.type != .remove }
     }
