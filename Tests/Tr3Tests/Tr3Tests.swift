@@ -74,24 +74,39 @@ final class Tr3Tests: XCTestCase {
     }
     func testParseShort() {
         countTotal = 0
+        
+        test("a {b c}:{d e}:{f g}:{i j} a.b~f <- (f.i ? f.j : 0) ",
+         "√ { a { b { d { f<-(f.i ? f.j : 0 ) { i?>b.d.f j->b.d.f } g { i j } }" +
+            "         e { f<-(f.i ? f.j : 0 ) { i?>b.e.f j->b.e.f } g { i j } } }" +
+            "     c { d { f { i j } g { i j } }" +
+            "         e { f { i j } g { i j } } } } a.b~f<-(f.i ? f.j : 0 ) }" +
+        "")
+
+        test("a {b c}:{d <-(b ? 1 | c ? 2) e } z:a z.b.d <- (b ? 5 | c ? 6)",
+             "√ { a { b?>(a.b.d a.c.d) { d<-(b ? 1 | c ? 2) e } " +
+                "     c?>(a.b.d a.c.d) { d<-(b ? 1 | c ? 2) e } } " +
+                " z { b?>(z.b.d z.c.d) { d<-(b ? 5 | c ? 6) e } " +
+                "     c?>(z.b.d z.c.d) { d<-(b ? 1 | c ? 2) e } } }" +
+            "")
+
+        test("a.b._c {d:1} a.b.e:_c","√ { a { b { _c { d:1 } e { d:1 } } } }")
 
         test("a b->a:1", "√ { a b->a:1 }")
 
         test("a <- (b c)", "√ { a <-(b c) }")
 
         test("a b.c <-(a ? 1) d:b ",
-                   "√ { a?>(b.c d.c) b { c<-(a ? 1 ) } d { c<-(a ? 1 ) } }")
+             "√ { a?>(b.c d.c) b { c<-(a ? 1 ) } d { c<-(a ? 1 ) } }")
 
         test("a {b <-(a ? 1) c} ",
-                "√ { a?>a.b { b<-(a ? 1 ) c } }")
+             "√ { a?>a.b { b<-(a ? 1 ) c } }")
 
         test("a {b c}:{d <-(b ? 1 | c ? 2) e} ",
-         "√ { a { b?>(a.b.d a.c.d) { d<-(b ? 1 | c ? 2) e } " +
-        "         c?>(a.b.d a.c.d) { d<-(b ? 1 | c ? 2) e } } }")
+             "√ { a { b?>(a.b.d a.c.d) { d<-(b ? 1 | c ? 2) e } " +
+            "         c?>(a.b.d a.c.d) { d<-(b ? 1 | c ? 2) e } } }")
 
         test("a b c w <-(a ? 1 : b ? 2 : c ? 3)",
              "√ { a?>w b?>w c?>w w<-(a ? 1 : b ? 2 : c ? 3) }")
-
 
         test("a.b { c d } a.e:a.b { f g } ", "√ { a { b { c d } e { c d f g } } }")
 
@@ -101,12 +116,6 @@ final class Tr3Tests: XCTestCase {
         test("a { b c }    h:a { i j }","√ { a { b c } h { b c i j } }")
         test("a { b c } \n h:a { i j }","√ { a { b c } h { b c i j } }")
 
-        test("a {b c}:{d <-(b ? 1 | c ? 2) e } z:a z.b.d <- (b ? 5 | c ? 6)",
-             "√ { a { b?>(a.b.d a.c.d) { d<-(b ? 1 | c ? 2) e } " +
-                "     c?>(a.b.d a.c.d) { d<-(b ? 1 | c ? 2) e } } " +
-                " z { b?>(z.b.d z.c.d) { d<-(b ? 5 | c ? 6) e } " +
-                "     c?>(z.b.d z.c.d) { d<-(b ? 1 | c ? 2) e } } }" +
-            "")
         XCTAssertEqual(countError,0)
     }
     /// compare script with expected output and print an error if they don't match

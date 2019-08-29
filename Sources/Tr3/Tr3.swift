@@ -15,7 +15,7 @@ public class Tr3: Hashable {
     public var children = [Tr3]()   // expanded tr3 from  wheres~tr3
 
     var pathrefs: [Tr3]?            // b in `a.b <-> c` for `a{b{c}} a.b <-> c
-    var passthrough = false         // does not have a Tr3Val yet, so pass through events
+    var passthrough = false         // does not have its own Tr3Val, so pass through events
     
     public var val: Tr3Val? = nil
     var cacheVal: Any? = nil // cached value is drained
@@ -138,46 +138,6 @@ public class Tr3: Hashable {
         return self
     }
 
-    /// override old ternary with new value
-    public func overideEdgeTernary(_ tern_:Tr3ValTern) -> Bool {
-
-        for edgeDef in edgeDefs.edgeDefs {
-            if let ternPath = edgeDef.ternVal?.path,
-                ternPath == tern_.path {
-
-                edgeDef.ternVal = tern_.copy()
-
-                return true
-            }
-        }
-        return false
-    }
-    /// add ternary to array of edgeDefs
-    public func addEdgeTernary(_ tern_:Tr3ValTern, copyFrom: Tr3? = nil) {
-
-        if let lastEdgeDef = edgeDefs.edgeDefs.last {
-            
-            if let lastTern = lastEdgeDef.ternVal {
-                lastTern.deepAddVal(tern_)
-            }
-            else {
-                lastEdgeDef.ternVal = tern_
-                Tr3ValTern.ternStack.append(tern_)
-            }
-        }
-            // copy edgeDef from search z in
-        else if let copyEdgeDef = copyFrom?.edgeDefs.edgeDefs.last {
-
-            let newEdgeDef = Tr3EdgeDef(with:copyEdgeDef)
-            edgeDefs.edgeDefs.append(newEdgeDef)
-            newEdgeDef.ternVal = tern_
-            Tr3ValTern.ternStack.append(tern_)
-        }
-        else {
-
-            print("*** \(#function) no edgeDefs to add edge")
-        }
-    }
-
+ 
 }
 

@@ -77,6 +77,8 @@ extension Tr3 {
     /// - Parameter session: show instance for session instead of full declaration
     public func dumpScript(_ i: Int = 0, session:Bool = false) -> String {
 
+        let prefix = type == .proto ? ":" : ""
+        //var script = prefix + scriptLineage(1) + (val?.dumpVal(session:session) ?? "")
         var script = name + (val?.dumpVal(session:session) ?? "")
 
         func dumpTypeEdges(_ edges:[Tr3Edge]) -> String {

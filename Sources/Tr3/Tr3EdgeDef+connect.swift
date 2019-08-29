@@ -178,8 +178,8 @@ extension Tr3EdgeDef {
                 if found.count > 0 {
                     for foundi in found {
                         let foundTern = Tr3ValTern(with:tern)
-                        if !foundi.overideEdgeTernary(foundTern) {
-                            foundi.addEdgeTernary(foundTern, copyFrom:tr3)
+                        if !foundi.edgeDefs.overideEdgeTernary(foundTern) {
+                            foundi.edgeDefs.addEdgeTernary(foundTern, copyFrom:tr3)
                             connectValTern(foundTern, foundi, [])
                         }
                     }

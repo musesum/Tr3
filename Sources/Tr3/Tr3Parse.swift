@@ -230,7 +230,7 @@ public class Tr3Parse {
             switch pattern {
             case "edgeOp"      : tr3.edgeDefs.addEdgeDef(parAny.getFirstValue())
             case "edges"       : break
-            case "ternIf"      : tr3.addEdgeTernary(Tr3ValTern(tr3,level))
+            case "ternIf"      : tr3.edgeDefs.addEdgeTernary(Tr3ValTern(tr3,level))
             case "ternThen"    : Tr3ValTern.setTernState(.Then,  level)
             case "ternElse"    : Tr3ValTern.setTernState(.Else,  level)
             case "ternRadio"   : Tr3ValTern.setTernState(.Radio, level)

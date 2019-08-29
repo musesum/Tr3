@@ -21,6 +21,20 @@ public class Tr3EdgeDefs {
         return Tr3EdgeDefs(with: self)
     }
 
+    /// override old ternary with new value
+    public func overideEdgeTernary(_ tern_:Tr3ValTern) -> Bool {
+
+        for edgeDef in edgeDefs {
+            if let ternPath = edgeDef.ternVal?.path,
+                ternPath == tern_.path {
+
+                edgeDef.ternVal = tern_.copy()
+
+                return true
+            }
+        }
+        return false
+    }
     func merge(_ merge:Tr3EdgeDefs) {
 
         func isUnique(_ mergeDef: Tr3EdgeDef) -> Bool {
@@ -29,13 +43,45 @@ public class Tr3EdgeDefs {
             }
             return true
         }
+
         // begin ----------------------
         for mergeDef in merge.edgeDefs {
             if isUnique(mergeDef) {
                 edgeDefs.append(mergeDef)
             }
+            if let mergeTernVal = mergeDef.ternVal {
+                if !overideEdgeTernary(mergeTernVal) {
+                    addEdgeTernary(mergeTernVal)
+                }
+            }
         }
     }
+    /// add ternary to array of edgeDefs
+     public func addEdgeTernary(_ tern_:Tr3ValTern, copyFrom: Tr3? = nil) {
+
+         if let lastEdgeDef = edgeDefs.last {
+
+             if let lastTern = lastEdgeDef.ternVal {
+                 lastTern.deepAddVal(tern_)
+             }
+             else {
+                 lastEdgeDef.ternVal = tern_
+                 Tr3ValTern.ternStack.append(tern_)
+             }
+         }
+             // copy edgeDef from search z in
+         else if let copyEdgeDef = copyFrom?.edgeDefs.edgeDefs.last {
+
+             let newEdgeDef = Tr3EdgeDef(with:copyEdgeDef)
+             edgeDefs.append(newEdgeDef)
+             newEdgeDef.ternVal = tern_
+             Tr3ValTern.ternStack.append(tern_)
+         }
+         else {
+
+             print("*** \(#function) no edgeDefs to add edge")
+         }
+     }
 
     public func addEdgeDef(_ edgeOp:String?) {
 
