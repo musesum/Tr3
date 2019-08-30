@@ -19,14 +19,16 @@ struct PathVals {
 
     mutating func add(_ path: String?, _ val_: Tr3Val?) {
         if let path = path {
-            // dont overwrite path val with nl
             if let _ = pathDict[path] {
-                if val_ == nil {
-                    return
+                if val_ == val_ {  // dont overwrite path val with nil
+                     pathDict[path] = val_
                 }
+                return
             }
-            pathDict[path] = val_
-            pathList.append(path)
+            else  {
+                pathDict[path] = val_
+                pathList.append(path)
+            }
         }
     }
     static func == (lhs: PathVals, rhs: PathVals) -> Bool {
