@@ -29,7 +29,6 @@ public class Tr3EdgeDefs {
                 ternPath == tern_.path {
 
                 edgeDef.ternVal = tern_.copy()
-
                 return true
             }
         }
@@ -47,7 +46,8 @@ public class Tr3EdgeDefs {
         // begin ----------------------
         for mergeDef in merge.edgeDefs {
             if isUnique(mergeDef) {
-                edgeDefs.append(mergeDef)
+                edgeDefs = merge.edgeDefs //???? .append(mergeDef)
+                break
             }
             if let mergeTernVal = mergeDef.ternVal {
                 if !overideEdgeTernary(mergeTernVal) {

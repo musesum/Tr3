@@ -9,7 +9,7 @@ import Foundation
 import Par // whitespace
 
 extension Tr3 {
-    
+
     // b.c a { b { c {c1 c2} d {d1 d2} } b.c : c3 }
     func willMerge(with tr3:Tr3) -> Bool {
         if tr3 == self {
