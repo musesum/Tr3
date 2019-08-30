@@ -75,6 +75,10 @@ final class Tr3Tests: XCTestCase {
     func testParseShort() {
         countTotal = 0
 
+
+        test("a._c { d { e { f : \"ff\" } } } a.c.z : _c { d { e.f   : \"ZZ\" } }",
+             "√ { a { _c { d { e { f:\"ff\" } } } c { z { d { e { f:\"ZZ\" } } } } } }")
+
         test("a.b { _c { d e.f:(0...1=0) g} z:_c { g } } ",
              "√ { a { b { _c { d e { f:(0...1=0) } g } z { d e { f:(0...1=0) } g } } } }")
 

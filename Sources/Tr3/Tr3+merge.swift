@@ -9,6 +9,7 @@ import Foundation
 import Par // whitespace
 
 extension Tr3 {
+    
     // b.c a { b { c {c1 c2} d {d1 d2} } b.c : c3 }
     func willMerge(with tr3:Tr3) -> Bool {
         if tr3 == self {
@@ -366,8 +367,6 @@ extension Tr3 {
     /// first pass convert `a.b.c` into `a { b { c } }`
     func bindTopDown() {
 
-        var merged = false
-
         if type != .proto,
             expandDotPath(),
             let parent = parent {
@@ -377,14 +376,11 @@ extension Tr3 {
                     sibling.id != id {
 
                     parent.mergeDuplicate(self)
-                    merged = true
                 }
             }
         }
-        if merged == false {
-            for child in children {
-                child.bindTopDown()
-            }
+        for child in children {
+            child.bindTopDown()
         }
     }
     func bindTopDownOld() {
