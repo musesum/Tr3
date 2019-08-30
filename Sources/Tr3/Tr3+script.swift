@@ -79,7 +79,7 @@ extension Tr3 {
 
         let prefix = type == .proto ? ":" : ""
         //var script = prefix + scriptLineage(1) + (val?.dumpVal(session:session) ?? "")
-        var script = name + (val?.dumpVal(session:session) ?? "")
+        var script =  name + (val?.dumpVal(session:session) ?? "")
 
         func dumpTypeEdges(_ edges:[Tr3Edge]) -> String {
             

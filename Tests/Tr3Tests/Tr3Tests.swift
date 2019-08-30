@@ -74,7 +74,12 @@ final class Tr3Tests: XCTestCase {
     }
     func testParseShort() {
         countTotal = 0
-        
+
+        test("a.b { _c { d e.f:(0...1=0) g} z:_c { g } } ",
+             "√ { a { b { _c { d e { f:(0...1=0) } g } z { d e { f:(0...1=0) } g } } } }")
+
+        test("a.b._c {d:1} a.b.e:_c","√ { a { b { _c { d:1 } e { d:1 } } } }")
+
         test("a {b c}:{d e}:{f g}:{i j} a.b~f <- (f.i ? f.j : 0) ",
          "√ { a { b { d { f<-(f.i ? f.j : 0 ) { i?>b.d.f j->b.d.f } g { i j } }" +
             "         e { f<-(f.i ? f.j : 0 ) { i?>b.e.f j->b.e.f } g { i j } } }" +
@@ -89,7 +94,6 @@ final class Tr3Tests: XCTestCase {
                 "     c?>(z.b.d z.c.d) { d<-(b ? 1 | c ? 2) e } } }" +
             "")
 
-        test("a.b._c {d:1} a.b.e:_c","√ { a { b { _c { d:1 } e { d:1 } } } }")
 
         test("a b->a:1", "√ { a b->a:1 }")
 

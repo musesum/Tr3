@@ -37,7 +37,7 @@ extension Tr3EdgeDef {
             for path in pathVals.pathList {
                 script += script.parenSpace() + path
                 if let val = pathVals.pathDict[path] {
-                    script += val?.scriptVal(prefix:"") ?? ""
+                    script += val?.scriptVal(prefix:":") ?? ""
                 }
             }
             if pathVals.pathList.count > 1  { script += ")" }
