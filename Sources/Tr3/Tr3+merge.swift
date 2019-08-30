@@ -257,6 +257,9 @@ extension Tr3 {
         // add clones to children with
         var kids = [Tr3]()
 
+        if name == Tr3.debugName {
+            print(name)
+        }
         for child in children {
 
             switch child.type {
@@ -451,13 +454,19 @@ extension Tr3 {
     }
 
     /// bind root of tree and its subtree graph
+    
     public func bindRoot() {
 
-        bindTopDown()     //; print(dumpScript() + "// 1")
-        bindBottomUp()    //; print(dumpScript() + "// 2")
-        bindPrototypes()  //; print(dumpScript() + "// 3")
-        bindEdges()       //; print(dumpScript() + "// 4")
-        bindTernaries()   //; print(dumpScript() + "// 5")
+        func log(_ num:Int) {
+            if Tr3.trace {
+                print(dumpScript() + " // \(num)")
+            }
+        }
+        bindTopDown()     ; log(1)
+        bindBottomUp()    ; log(2)
+        bindPrototypes()  ; log(3)
+        bindEdges()       ; log(4)
+        bindTernaries()   ; log(5)
         bindDefaults()
     }
 }

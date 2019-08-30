@@ -8,6 +8,9 @@ import Par
 
 public class Tr3: Hashable {
 
+    public static var trace = false //!!
+    public static var debugName = "" //!!
+
     public var id = Visitor.nextId()
 
     public var name = ""
