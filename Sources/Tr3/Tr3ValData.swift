@@ -24,7 +24,8 @@ public class Tr3ValData: Tr3Val {
         data = with.data //TODO: allocate new memory and copy}
     }
     override func copy() -> Tr3Val {
-        return Tr3ValData(with: self)
+        let newTr3ValData = Tr3ValData(with: self)
+        return newTr3ValData
     }
     public static func == (lhs: Tr3ValData, rhs: Tr3ValData) -> Bool {
 

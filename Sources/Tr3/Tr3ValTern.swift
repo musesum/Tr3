@@ -83,7 +83,10 @@ public class Tr3ValTern: Tr3ValPath {
             super.init()
         }
     }
-    override func copy() -> Tr3ValTern {  return Tr3ValTern(with: self) }
+    override func copy() -> Tr3ValTern {
+        let newTr3ValTern = Tr3ValTern(with: self)
+        return newTr3ValTern
+    }
 
     init(_ tr3_:Tr3, _ parseLevel_:Int) {
         super.init()

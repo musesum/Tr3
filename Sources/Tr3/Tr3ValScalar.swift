@@ -44,7 +44,8 @@ public class Tr3ValScalar: Tr3Val {
         }
     }
     override func copy() -> Tr3Val {
-        return Tr3ValScalar(with: self)
+        let newTr3ValScalar = Tr3ValScalar(with: self)
+        return newTr3ValScalar
     }
 
     func addMin (_ val_:Float) { valFlags.insert(.min );  min  = val_ }

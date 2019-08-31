@@ -27,7 +27,8 @@ public class Tr3ValPath: Tr3Val {
         // pathTr3s  = with.pathTr3s
     }
     override func copy() -> Tr3ValPath {
-        return Tr3ValPath(with:self)
+        let newTr3ValPath = Tr3ValPath(with:self)
+        return newTr3ValPath
     }
     public static func == (lhs: Tr3ValPath, rhs: Tr3ValPath) -> Bool {
         return lhs.path == rhs.path

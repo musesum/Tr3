@@ -21,7 +21,8 @@ public class Tr3ValQuote: Tr3Val {
         quote = val.quote
     }
     override func copy() -> Tr3Val {
-        return Tr3ValQuote(with: self)
+        let newTr3ValQuote = Tr3ValQuote(with: self)
+        return newTr3ValQuote
     }
     public static func == (lhs: Tr3ValQuote, rhs: Tr3ValQuote) -> Bool {
         return lhs.quote == rhs.quote

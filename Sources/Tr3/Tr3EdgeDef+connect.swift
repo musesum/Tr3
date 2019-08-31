@@ -10,6 +10,7 @@ import Foundation
 extension Tr3EdgeDef {
 
     func connectNewEdge(_ leftTr3:Tr3,_ rightTr3:Tr3,_ tr3Val:Tr3Val?) {
+        
         let edge = Tr3Edge(self, leftTr3, rightTr3, tr3Val)
         leftTr3.tr3Edges[edge.key] = edge
         rightTr3.tr3Edges[edge.key] = edge

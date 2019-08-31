@@ -42,7 +42,8 @@ public class Tr3ValTuple: Tr3Val {
         nums = [x,y]
     }
     override func copy() -> Tr3ValTuple {
-        return Tr3ValTuple(with: self)
+        let newTr3ValTuple = Tr3ValTuple(with: self)
+        return newTr3ValTuple
     }
 
     public static func < (lhs: Tr3ValTuple, rhs: Tr3ValTuple) -> Bool {

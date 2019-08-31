@@ -68,7 +68,8 @@ public class Tr3EdgeDef {
     }
 
     func copy() -> Tr3EdgeDef {
-        return Tr3EdgeDef(with: self)
+        let newEdgeDef = Tr3EdgeDef(with: self)
+        return newEdgeDef
     }
     
     func addPath(_ parAny:ParAny) {

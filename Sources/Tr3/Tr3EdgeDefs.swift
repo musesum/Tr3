@@ -18,7 +18,8 @@ public class Tr3EdgeDefs {
         }
     }
     func copy() -> Tr3EdgeDefs {
-        return Tr3EdgeDefs(with: self)
+        let newEdgeDefs = Tr3EdgeDefs(with: self)
+        return newEdgeDefs
     }
 
     /// override old ternary with new value
