@@ -50,7 +50,7 @@ extension Tr3 {
                 merge.type = .remove
 
                 sibling.val = merge.val
-                sibling.edgeDefs = merge.edgeDefs
+                sibling.edgeDefs = merge.edgeDefs.copy()
                 // e in `a { b { c d } } a { e }`
                 for mergeChild in merge.children {
                     sibling.mergeDuplicate(mergeChild)
