@@ -13,7 +13,7 @@ extension Tr3EdgeDef {
         let edge = Tr3Edge(self, leftTr3, rightTr3, tr3Val)
         leftTr3.tr3Edges[edge.key] = edge
         rightTr3.tr3Edges[edge.key] = edge
-        //??// edges.append(edge)
+        edges[edge.key] = edge
     }
 
     /// find d.a1 relative to h

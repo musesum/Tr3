@@ -50,7 +50,7 @@ extension Tr3 {
                 merge.type = .remove
 
                 sibling.val = merge.val
-                sibling.edgeDefs = merge.edgeDefs.copy()
+                sibling.edgeDefs = merge.edgeDefs
                 // e in `a { b { c d } } a { e }`
                 for mergeChild in merge.children {
                     sibling.mergeDuplicate(mergeChild)
@@ -222,13 +222,9 @@ extension Tr3 {
             // add new edge definitions
             prior.edgeDefs.merge(kid.edgeDefs)
             // append children
-             prior.children.append(contentsOf: kid.children)
-
-            // recursively filter out duplicate child additions
-            //prior.mergeChildren(kid.children)
-            //prior.children = prior.children.filter { $0.type != .remove }
-
+            prior.children.append(contentsOf: kid.children)
             prior.bindChildren()
+
             kid.type = .remove
         }
         // some children were copied or promoted so fix their parent
@@ -237,7 +233,7 @@ extension Tr3 {
         var merged = false
         for kid in kids {
 
-            kid.parent = self ///???
+            kid.parent = self
 
             if let prior = nameTr3[kid.name] {
                 mergeDuplicate(prior, kid)
