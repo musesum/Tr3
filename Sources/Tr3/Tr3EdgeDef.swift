@@ -46,12 +46,7 @@ public class Tr3EdgeDef {
     var edgeFlags = Tr3EdgeFlags()
     var pathVals = PathVals()
     var ternVal: Tr3ValTern?
-    //var defPaths = [String]() // b in a <- b
-    //var defVals = [Tr3Val?]() // 9 in a -> (b:9)
     var edges = [String:Tr3Edge]() // each edge is also shared by two Tr3s
-
-    // currently ternary in ternary tree to parse
-    var parseTern: Tr3ValTern? // * in a -> (a ? * ? * ? * : * : *)
     
     init() { }
 
@@ -62,10 +57,10 @@ public class Tr3EdgeDef {
         edgeFlags = with.edgeFlags
         for path in with.pathVals.pathList { // pathVals = with.pathVal
             switch with.pathVals.pathDict[path] {
-            case let v as Tr3ValTern   : pathVals.add(path, Tr3ValTern  (with: v))
-            case let v as Tr3ValScalar : pathVals.add(path, Tr3ValScalar(with: v))
-            case let v as Tr3ValTuple  : pathVals.add(path, Tr3ValTuple (with: v))
-            case let v as Tr3ValQuote  : pathVals.add(path, Tr3ValQuote (with: v))
+            case let v as Tr3ValTern   : pathVals.add(path, v.copy())
+            case let v as Tr3ValScalar : pathVals.add(path, v.copy())
+            case let v as Tr3ValTuple  : pathVals.add(path, v.copy())
+            case let v as Tr3ValQuote  : pathVals.add(path, v.copy())
             default: break
             }
         }

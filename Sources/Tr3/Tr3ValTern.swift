@@ -181,8 +181,8 @@ public class Tr3ValTern: Tr3ValPath {
     }
     func deepAddVal(_ val: Tr3Val) {
 
-        if let parseTern = Tr3ValTern.ternStack.last {
-            parseTern.addVal(val)
+        if let ternVal = Tr3ValTern.ternStack.last {
+            ternVal.addVal(val)
         }
     }
 

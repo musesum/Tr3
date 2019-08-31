@@ -40,18 +40,19 @@ public class Tr3: Hashable {
         type = type_
     }
 
-    public convenience init(deepcopy: Tr3, parent parent_:Tr3) {
+    public convenience init(deepcopy from: Tr3, parent parent_:Tr3) {
 
         self.init()
         parent = parent_
-        name = deepcopy.name
-        type = deepcopy.type
-        for child in deepcopy.children {
-            children.append(Tr3(deepcopy: child, parent: self))
+        name = from.name
+        type = from.type
+        for fromChild in from.children {
+            let newChild = Tr3(deepcopy: fromChild, parent: self)
+            children.append(newChild)
         }
-        passthrough = deepcopy.passthrough
-        val         = deepcopy.val?.copy() ?? nil
-        edgeDefs    = deepcopy.edgeDefs.copy()
+        passthrough = from.passthrough
+        val         = from.val?.copy() ?? nil
+        edgeDefs    = from.edgeDefs.copy()
     }
     public convenience init(with val_: Tr3Val) { self.init() ; val = val_.copy() }
 
