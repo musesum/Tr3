@@ -16,7 +16,7 @@ public class Tr3: Hashable {
 
     public var name = ""
     public var parent: Tr3? = nil   // parent tr3
-    public var children = [Tr3]()   // expanded tr3 from  wheres~tr3
+    public var children = [Tr3]()   // expanded tr3 from  wheres˚tr3
 
     var pathrefs: [Tr3]?            // b in `a.b <-> c` for `a{b{c}} a.b <-> c
     var passthrough = false         // does not have its own Tr3Val, so pass through events

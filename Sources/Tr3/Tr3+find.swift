@@ -10,21 +10,21 @@ import Foundation
 
 extension Tr3 {
 
-    // returns a.b in `a { b { c } } a~b`
-    // returns a.b.c in `a { b { c } } a~c`
-    // returns a.b1.c,a.b2.c in `a { b1 { c } b2 { c } } a~c`
+    // returns a.b in `a { b { c } } a˚b`
+    // returns a.b.c in `a { b { c } } a˚c`
+    // returns a.b1.c,a.b2.c in `a { b1 { c } b2 { c } } a˚c`
 
-    // ? in `~`   // undefined
-    // a in `~a`  // add if matches b and stop, otherwise continue
-    // a in `~~a` // add if matches b, always continue
-    // _ in `~~`  // add in all cases, always continue
-    // a in `~.a` // add if matches b and no children and stop, otherwise continue
-    // _ in `~.`  // add if no children, otherwise continue
+    // ? in `˚`   // undefined
+    // a in `˚a`  // add if matches b and stop, otherwise continue
+    // a in `˚˚a` // add if matches b, always continue
+    // _ in `˚˚`  // add in all cases, always continue
+    // a in `˚.a` // add if matches b and no children and stop, otherwise continue
+    // _ in `˚.`  // add if no children, otherwise continue
 
     func getTildeTr3s(_ wildcard:String, _ suffix:String) -> [Tr3] {
 
-        let greedy = wildcard == "~~"
-        let leafy = wildcard == "~."
+        let greedy = wildcard == "˚˚"
+        let leafy = wildcard == "˚."
         var found = [Tr3]()
 
         func findDeeper() {
@@ -34,34 +34,34 @@ extension Tr3 {
             }
         }
         // ────────────── begin ──────────────
-        // do not incude ~~ in `~~ <-> ..`
+        // do not incude ˚˚ in `˚˚ <-> ..`
         if type == .path {
             return []
         }
         else if suffix.isEmpty {                        // for a { b { c } }
 
-            if greedy {                                 //  a,b,c in ~~~
+            if greedy {                                 //  a,b,c in ˚˚˚
                 found.append(self)
                 findDeeper()
             }
             if leafy  {
-                if children.isEmpty { return [self] }   // c   in ~.
-                else                { findDeeper() }    // a,b in ~.
+                if children.isEmpty { return [self] }   // c   in ˚.
+                else                { findDeeper() }    // a,b in ˚.
             }
         }
         else {
-            let (suffix2,_,_) = suffix.splitWild(".*~")
+            let (suffix2,_,_) = suffix.splitWild(".*˚")
             if name == suffix2 {
                 if leafy {
-                    if children.isEmpty { return [self] }   // c in ~.c
-                    else                { return [] }       // b in ~.b
+                    if children.isEmpty { return [self] }   // c in ˚.c
+                    else                { return [] }       // b in ˚.b
                 }
                 else {
-                    found.append(self)                      // b in ~b,~~b
+                    found.append(self)                      // b in ˚b,˚˚b
                     if greedy { findDeeper() }
                 }
             }
-            else {                                          // !b in ~b,~~b
+            else {                                          // !b in ˚b,˚˚b
                 findDeeper()
             }
         }
@@ -97,7 +97,7 @@ extension Tr3 {
     /// find preexisting item 
     public func findAnchor(_ path:String, _ findFlags:Tr3FindFlags) -> [Tr3] {
 
-        let (prefix,wildcard,suffix) = path.splitWild(".*~")
+        let (prefix,wildcard,suffix) = path.splitWild(".*˚")
 
         let deeperFlags = findFlags.intersection([.children,.makePath])
 
@@ -157,7 +157,7 @@ extension Tr3 {
 
             switch wildcard.first {
             case "." : return tr3.getNearDots(wildcard, suffix, nextFlags)
-            case "~" : return tr3.getTildeTr3s(wildcard, suffix)
+            case "˚" : return tr3.getTildeTr3s(wildcard, suffix)
             default  : return [tr3]
             }
         }
@@ -176,14 +176,14 @@ extension Tr3 {
 
     func findPathTr3s(_ path: String,_ findFlags: Tr3FindFlags) -> [Tr3] {
 
-        let (prefix,wildcard,suffix) = path.splitWild(".*~")
+        let (prefix,wildcard,suffix) = path.splitWild(".*˚")
 
         func isStarMatch() -> Bool {
 
             if wildcard.first == "*",
                 (name.hasPrefix(prefix) || prefix == "") {
                 // get b in `a*b.c`
-                let (suffix2,_,_) = suffix.splitWild(".*~")
+                let (suffix2,_,_) = suffix.splitWild(".*˚")
                 if name.hasSuffix(suffix2) || suffix2 == "" {
                     // a in `a*`        => [self]
                     // abacab in `a*b`  => [self]
@@ -211,8 +211,8 @@ extension Tr3 {
         if findFlags.contains(.makePath) {
 
             if !prefix.isEmpty {
-                // cannot make b in `a~b` or `a.*.b`
-                if path.contains("~") || path.contains("*") {
+                // cannot make b in `a˚b` or `a.*.b`
+                if path.contains("˚") || path.contains("*") {
                     return []
                 }
 

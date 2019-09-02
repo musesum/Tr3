@@ -4,5 +4,5 @@ sky.recorder {
         loop     : (0...1=1)
         
         record pause play rewind toend erase
-        event //<-(draw.note~ pal.ripple~)
+        event //<-(draw.note˚ pal.ripple˚)
 }

@@ -34,7 +34,7 @@ tr3 : left right* {
     }
     edges : edgeOp (edgePar | edgeItem) comment* {
 
-        edgeOp   : '^([<][-?!\╌>]+|[-?!\~]+[>])'
+        edgeOp   : '^([<][-?!\╌>]+|[-?!\˚]+[>])'
         edgePar  : "(" edgeItem+ ")" edges?
         edgeItem : (edgeVal | ternary) comment*
         
@@ -50,7 +50,7 @@ tr3 : left right* {
             ternCompare : compare (path | name | value)
         }
     }
-    path    : '^((([A-Za-z_][A-Za-z0-9_]*)*([.~*])+([A-Za-z_][A-Za-z0-9_.~*]*)*)+)'
+    path    : '^((([A-Za-z_][A-Za-z0-9_]*)*([.˚*])+([A-Za-z_][A-Za-z0-9_.˚*]*)*)+)'
     name    : '^([A-Za-z_][A-Za-z0-9_]*)'
     quote   : '^\"([^\"]*)\"'
     num     : '^([+-]*([0-9]+[.][0-9]+|[.][0-9]+|[0-9]+[.](?![.])|[0-9]+))'

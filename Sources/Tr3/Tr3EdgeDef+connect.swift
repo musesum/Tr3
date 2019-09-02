@@ -42,7 +42,7 @@ extension Tr3EdgeDef {
         let found = tr3.findPathTr3s(tern.path,[.parents,.children])
         if found.isEmpty {
             // find b1 relative to d.a1 and c1 relative to d.a1.b1
-            // paths with a~b may produce duplicates so filter out with foundSet
+            // paths with a˚b may produce duplicates so filter out with foundSet
             var foundSet = Set<Tr3>()
             for ternPathTr3 in ternPathTr3s {
                 let foundThen = ternPathTr3.findPathTr3s(tern.path,[.parents,.children])
@@ -85,9 +85,9 @@ extension Tr3EdgeDef {
     ///
     /// in the following example:
     ///
-    ///         d {a1 a2}:{b1 b2} e <- (d~b1 ? d~b2)
+    ///         d {a1 a2}:{b1 b2} e <- (d˚b1 ? d˚b2)
     ///
-    /// the results of d~b2 for both d.a1.b1 and d.a1.b2, will produce
+    /// the results of d˚b2 for both d.a1.b1 and d.a1.b2, will produce
     ///
     ///         (d.a1.b2 d.a2.b2) and (d.a1.b2 d.a2.b2)
     ///
@@ -173,7 +173,7 @@ extension Tr3EdgeDef {
         }
             // ternary
         else if let tern = ternVal {
-            // a~z <- (...)
+            // a˚z <- (...)
             if tr3.type == .path {
                 let found =  tr3.findAnchor(tr3.name, [.parents,.children])
                 if found.count > 0 {

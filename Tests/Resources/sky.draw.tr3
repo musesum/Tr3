@@ -1,10 +1,10 @@
 sky.draw {
     brush {
         type  : "dot"
-        size  : (1...48=1) <-(input.force input.radius cell~brush.size) //<-(osc.tuio.next~f  osc.manos~z)
+        size  : (1...48=1) <-(input.force input.radius cell˚brush.size) //<-(osc.tuio.next˚f  osc.manos˚z)
         press : (0...1=1)
         tilt  : (0...1=0)
-        index : (1...255=127) //<-(osc.tuio.z osc.manos~z)
+        index : (1...255=127) //<-(osc.tuio.z osc.manos˚z)
         
         color {
             hue : (0...360)

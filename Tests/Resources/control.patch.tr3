@@ -12,7 +12,7 @@ control.patch {
             title : "Active"
             frame : (x:216 y:6 w:48 h:32)
             icon  : "control.patch.png"
-            value : (0...1) <- (elements~value ? 1)
+            value : (0...1) <- (elements˚value ? 1)
         }
         changed {
             type  : "twist"

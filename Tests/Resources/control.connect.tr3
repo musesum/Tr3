@@ -1,4 +1,4 @@
 control {
-    cell.rule~ruleOn.value <- (elements.version~value ? 1 | cell.rule~ruleOn.value ? 0)
+    cell.rule˚ruleOn.value <- (elements.version˚value ? 1 | cell.rule˚ruleOn.value ? 0)
 }
 

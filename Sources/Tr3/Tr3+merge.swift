@@ -340,7 +340,7 @@ extension Tr3 {
         }
     }
     /// Expand pure path `a.b.c` into `a { b { c } }` --
-    /// do no allow search paths `a~b` or prototypes `a:b`
+    /// do no allow search paths `a˚b` or prototypes `a:b`
     ///
     /// - note: May override public to debug specific paths.
     ///
@@ -348,10 +348,10 @@ extension Tr3 {
     public func expandDotPath() -> Bool{
 
         var index = 0
-        if name.contains("~") { return false }
+        if name.contains("˚") { return false }
         for s in name {
             switch s {
-            case "~": return false
+            case "˚": return false
             case ":": return false
             case ".":
 
@@ -382,14 +382,7 @@ extension Tr3 {
             child.bindTopDown()
         }
     }
-    func bindTopDownOld() {
-        if type != .proto {
-            expandDotPath()
-        }
-        for child in children {
-            child.bindTopDown()
-        }
-    }
+
     /// activate or deactivate edges for ternaries 
     func bindTernaries() {
         for edgeDef in edgeDefs.edgeDefs {

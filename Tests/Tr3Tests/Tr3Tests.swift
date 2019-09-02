@@ -90,11 +90,11 @@ final class Tr3Tests: XCTestCase {
 
         test("a.b._c {d:1} a.b.e:_c","√ { a { b { _c { d:1 } e { d:1 } } } }")
 
-        test("a {b c}:{d e}:{f g}:{i j} a.b~f <- (f.i ? f.j : 0) ",
+        test("a {b c}:{d e}:{f g}:{i j} a.b˚f <- (f.i ? f.j : 0) ",
          "√ { a { b { d { f<-(f.i ? f.j : 0 ) { i?>b.d.f j->b.d.f } g { i j } }" +
             "         e { f<-(f.i ? f.j : 0 ) { i?>b.e.f j->b.e.f } g { i j } } }" +
             "     c { d { f { i j } g { i j } }" +
-            "         e { f { i j } g { i j } } } } a.b~f<-(f.i ? f.j : 0 ) }" +
+            "         e { f { i j } g { i j } } } } a.b˚f<-(f.i ? f.j : 0 ) }" +
         "")
 
         test("a {b c}:{d <-(b ? 1 | c ? 2) e } z:a z.b.d <- (b ? 5 | c ? 6)",
@@ -217,7 +217,7 @@ final class Tr3Tests: XCTestCase {
                         title : "Rule Plane"
                         frame : (x:70 y:108 w:192 h:44)
                         icon  : "control.pearl.white.png"
-                        value : (0...1=0) -> control.shader~uniform.shift
+                        value : (0...1=0) -> control.shader˚uniform.shift
                     }
                 }
             }
@@ -231,7 +231,7 @@ final class Tr3Tests: XCTestCase {
                      version { type:"segment" title:"Version" frame:(x:70 y:52 w:192 h:44) value:(1...2=1) }
                      fillZero { type:"trigger" title:"clear 0" frame:(x:10 y:108 w:44 h:44) icon:"control.drop.clear.png" value:(0...1=0) -> sky.cell.rule.zero }
                      fillOne { type:"trigger" title:"clear 0xFFFF" frame:(x:266 y:108 w:44 h:44) icon:"control.drop.gray.png" value:(0...1=0) -> sky.cell.rule.one }
-                     plane { type:"slider" title:"Rule Plane" frame:(x:70 y:108 w:192 h:44) icon:"control.pearl.white.png" value:(0...1=0) -> control.shader~uniform.shift } } } }
+                     plane { type:"slider" title:"Rule Plane" frame:(x:70 y:108 w:192 h:44) icon:"control.pearl.white.png" value:(0...1=0) -> control.shader˚uniform.shift } } } }
 
              """)
 
@@ -244,11 +244,11 @@ final class Tr3Tests: XCTestCase {
         test("a { b { c } } a.b <-> c ", "√ { a { b<->a.b.c { c } } } ")
         test("a { b { c d } } e { b { c d } b:0 }" , "√ { a { b { c d } } e { b:0 { c d } } }")
 
-        test("a {b c}:{d e}:{f g}:{i j} a.b~f <- (f.i ? f.j : 0) ",
+        test("a {b c}:{d e}:{f g}:{i j} a.b˚f <- (f.i ? f.j : 0) ",
              "√ { a { b { d { f<-(f.i ? f.j : 0 ) { i?>b.d.f j->b.d.f } g { i j } }" +
                 "         e { f<-(f.i ? f.j : 0 ) { i?>b.e.f j->b.e.f } g { i j } } }" +
                 "     c { d { f { i j } g { i j } }" +
-                "         e { f { i j } g { i j } } } } a.b~f<-(f.i ? f.j : 0 ) }" +
+                "         e { f { i j } g { i j } } } } a.b˚f<-(f.i ? f.j : 0 ) }" +
             "")
 
         XCTAssertEqual(countError,0)
@@ -295,7 +295,7 @@ final class Tr3Tests: XCTestCase {
 
         test("ab { a:1 b:2 } ab:{ c:4 d:5 }","√ { ab { a:1 b:2 c:4 d:5 } }")
 
-        test("ab { a:1 b:2 } cd { c:4 d:5 } ab~.:cd",
+        test("ab { a:1 b:2 } cd { c:4 d:5 } ab˚.:cd",
              "√ { ab { a:1 { c:4 d:5 } b:2 { c:4 d:5 } } cd { c:4 d:5 } }")
 
         test("a.b { _c { c1 c2 } c:_c { d e } }","√ { a { b { _c { c1 c2 } c { c1 c2 d e } } } }")
@@ -311,8 +311,8 @@ final class Tr3Tests: XCTestCase {
         test("a { a1 a2 } w <- a.* ", "√ { a { a1 a2 } w<-(a.a1 a.a2) }")
         test("a { b { c } } a <-> .* ", "√ { a<->a.b { b { c } } }")
         test("a { b { c } } a.b <-> c ", "√ { a { b<->a.b.c { c } } } ")
-        test("a { b { c } } a~~ <-> .* ", "√ { a<->a.b { b<->a.b.c { c } } a~~ <-> .* }")
-        test("a { b { c } } ~~ <-> .. ", "√ { a<->√ { b<->a { c<->a.b } } ~~ <-> .. }")
+        test("a { b { c } } a˚˚ <-> .* ", "√ { a<->a.b { b<->a.b.c { c } } a˚˚ <-> .* }")
+        test("a { b { c } } ˚˚ <-> .. ", "√ { a<->√ { b<->a { c<->a.b } } ˚˚ <-> .. }")
 
         print("\n━━━━━━━━━━━━━━━━━━━ multi edge ━━━━━━━━━━━━━━━━━━━━\n")
 
@@ -349,21 +349,21 @@ final class Tr3Tests: XCTestCase {
 
         print("\n━━━━━━━━━━━━━━━━━━━━━━ ternary paths ━━━━━━━━━━━━━━━━━━━━━━\n")
 
-        test("a {b c}:{d e}:{f g} a <- a~d.g",
+        test("a {b c}:{d e}:{f g} a <- a˚d.g",
              "√ { a<-(a.b.d a.c.d) { b { d { f g } e { f g } } c { d { f g } e { f g } } } }")
 
-        test("a {b c}:{d e}:{f g}:{i j} a.b~f <- (f.i == f.j ? 1 : 0) ",
+        test("a {b c}:{d e}:{f g}:{i j} a.b˚f <- (f.i == f.j ? 1 : 0) ",
              "√ { a { b { d { f<-(f.i == f.j ? 1 : 0 ) { i?>b.d.f j?>b.d.f } g { i j } }" +
                 "         e { f<-(f.i == f.j ? 1 : 0 ) { i?>b.e.f j?>b.e.f } g { i j } } }" +
                 "     c { d { f { i j } g { i j } }" +
-                "         e { f { i j } g { i j } } } } a.b~f<-(f.i == f.j ? 1 : 0) }" +
+                "         e { f { i j } g { i j } } } } a.b˚f<-(f.i == f.j ? 1 : 0) }" +
             "")
 
-        test("a {b c}:{d e}:{f g}:{i j} a.b~f <- (f.i ? f.j : 0) ",
+        test("a {b c}:{d e}:{f g}:{i j} a.b˚f <- (f.i ? f.j : 0) ",
              "√ { a { b { d { f<-(f.i ? f.j : 0 ) { i?>b.d.f j->b.d.f } g { i j } }" +
                 "         e { f<-(f.i ? f.j : 0 ) { i?>b.e.f j->b.e.f } g { i j } } }" +
                 "     c { d { f { i j } g { i j } }" +
-                "         e { f { i j } g { i j } } } } a.b~f<-(f.i ? f.j : 0 ) }" +
+                "         e { f { i j } g { i j } } } } a.b˚f<-(f.i ? f.j : 0 ) }" +
             "")
 
         print("\n━━━━━━━━━━━━━━━━━━━━━━ ternary radio ━━━━━━━━━━━━━━━━━━━━━━\n")
@@ -372,11 +372,11 @@ final class Tr3Tests: XCTestCase {
         test("a b c x y z w <- (a ? x | b ? y | c ? z)", "√ { a?>w b?>w c?>w x╌>w y╌>w z╌>w w<-(a ? x | b ? y | c ? z) }")
         test("a b c x y z w <-> (a ? x | b ? y | c ? z)", "√ { a?>w b?>w c?>w x<╌>w y<╌>w z<╌>w w<->(a ? x | b ? y | c ? z) }")
 
-        test("a {b c}:{d e}:{f g}:{i j} a.b~f <- (f.i ? 1 | a~j ? 0) ",
-             "√ { a { b { d { f<-(f.i ? 1 | a~j ? 0 ) { i?>b.d.f j?>(b.d.f b.e.f) } g { i j?>(b.d.f b.e.f) } } " +
-                "         e { f<-(f.i ? 1 | a~j ? 0 ) { i?>b.e.f j?>(b.d.f b.e.f) } g { i j?>(b.d.f b.e.f) } } } " +
+        test("a {b c}:{d e}:{f g}:{i j} a.b˚f <- (f.i ? 1 | a˚j ? 0) ",
+             "√ { a { b { d { f<-(f.i ? 1 | a˚j ? 0 ) { i?>b.d.f j?>(b.d.f b.e.f) } g { i j?>(b.d.f b.e.f) } } " +
+                "         e { f<-(f.i ? 1 | a˚j ? 0 ) { i?>b.e.f j?>(b.d.f b.e.f) } g { i j?>(b.d.f b.e.f) } } } " +
                 "     c { d { f { i j?>(b.d.f b.e.f) } g { i j?>(b.d.f b.e.f) } } " +
-                "         e { f { i j?>(b.d.f b.e.f) } g { i j?>(b.d.f b.e.f) } } } } a.b~f<-(f.i ? 1 | a~j ? 0 ) }" +
+                "         e { f { i j?>(b.d.f b.e.f) } g { i j?>(b.d.f b.e.f) } } } } a.b˚f<-(f.i ? 1 | a˚j ? 0 ) }" +
             "")
         XCTAssertEqual(countError,0)
     }
@@ -384,51 +384,51 @@ final class Tr3Tests: XCTestCase {
 
         countError = 0
 
-        test("d {a1 a2}:{b1 b2} e <- d~b1", "√ { d { a1 { b1 b2 } a2 { b1 b2 } } e <- (d.a1.b1 d.a2.b1) }")
-        test("d {a1 a2}:{b1 b2} e <- d~~", "√ { d { a1 { b1 b2 } a2 { b1 b2 } } e <- (d d.a1 d.a1.b1 d.a1.b2 d.a2 d.a2.b1 d.a2.b2)  }")
-        test("d {a1 a2}:{b1 b2} e <- (d~b1 ? d~b2)", "√ { d { a1 { b1?>e b2╌>e } a2 { b1?>e b2╌>e } } e<-(d~b1 ? d~b2) }")
+        test("d {a1 a2}:{b1 b2} e <- d˚b1", "√ { d { a1 { b1 b2 } a2 { b1 b2 } } e <- (d.a1.b1 d.a2.b1) }")
+        test("d {a1 a2}:{b1 b2} e <- d˚˚", "√ { d { a1 { b1 b2 } a2 { b1 b2 } } e <- (d d.a1 d.a1.b1 d.a1.b2 d.a2 d.a2.b1 d.a2.b2)  }")
+        test("d {a1 a2}:{b1 b2} e <- (d˚b1 ? d˚b2)", "√ { d { a1 { b1?>e b2╌>e } a2 { b1?>e b2╌>e } } e<-(d˚b1 ? d˚b2) }")
         test("d {a1 a2}:{b1 b2} e <- (d.a1 ? a1.* : d.a2 ? a2.*)", "√ { d { a1?>e { b1╌>e b2╌>e } a2?>e { b1╌>e b2╌>e } } e<-(d.a1 ? a1.* : d.a2 ? a2.*) }")
         test("d {a1 a2}:{b1 b2} e <- (d.a1 ? .*   : d.a2 ? .*)",   "√ { d { a1?>e { b1╌>e b2╌>e } a2?>e { b1╌>e b2╌>e } } e<-(d.a1 ? .* : d.a2 ? .*) }")
-        test("d {a1 a2}:{b1 b2} e <- (d~a1 ? a1~. : d~a2 ? a2~.)", "√ { d { a1?>e { b1╌>e b2╌>e } a2?>e { b1╌>e b2╌>e } } e<-(d~a1 ? a1~. : d~a2 ? a2~.) }")
+        test("d {a1 a2}:{b1 b2} e <- (d˚a1 ? a1˚. : d˚a2 ? a2˚.)", "√ { d { a1?>e { b1╌>e b2╌>e } a2?>e { b1╌>e b2╌>e } } e<-(d˚a1 ? a1˚. : d˚a2 ? a2˚.) }")
 
-        test("d {a1 a2}:{b1 b2}:{c1 c2} e <- (d~b1 ? b1~. : d~b2 ? b2~.)",
-             "√ { d { a1 { b1?>e { c1╌>e c2╌>e } b2?>e { c1╌>e c2╌>e } } a2 { b1?>e { c1╌>e c2╌>e } b2?>e { c1╌>e c2╌>e } } } e<-(d~b1 ? b1~. : d~b2 ? b2~.) }")
+        test("d {a1 a2}:{b1 b2}:{c1 c2} e <- (d˚b1 ? b1˚. : d˚b2 ? b2˚.)",
+             "√ { d { a1 { b1?>e { c1╌>e c2╌>e } b2?>e { c1╌>e c2╌>e } } a2 { b1?>e { c1╌>e c2╌>e } b2?>e { c1╌>e c2╌>e } } } e<-(d˚b1 ? b1˚. : d˚b2 ? b2˚.) }")
 
-        test("d {a1 a2}:{b1 b2}:{c1 c2} e <- (d~b1 ? b1~. | d~b2 ? b2~.)",
-             "√ { d { a1 { b1?>e { c1╌>e c2╌>e } b2?>e { c1╌>e c2╌>e } } a2 { b1?>e { c1╌>e c2╌>e } b2?>e { c1╌>e c2╌>e } } } e<-(d~b1 ? b1~. | d~b2 ? b2~.) }")
+        test("d {a1 a2}:{b1 b2}:{c1 c2} e <- (d˚b1 ? b1˚. | d˚b2 ? b2˚.)",
+             "√ { d { a1 { b1?>e { c1╌>e c2╌>e } b2?>e { c1╌>e c2╌>e } } a2 { b1?>e { c1╌>e c2╌>e } b2?>e { c1╌>e c2╌>e } } } e<-(d˚b1 ? b1˚. | d˚b2 ? b2˚.) }")
 
         test("d {a1 a2}:{b1 b2}:{c1 c2} h <- (d.a1 ? b1 ? c1 : 1)",
              "√ { d { a1?>h { b1?>h { c1╌>h c2 } b2 { c1 c2 } } a2 { b1 { c1 c2 } b2 { c1 c2 } } } h<-(d.a1 ? b1 ? c1 : 1) }")
 
         test("d {a1 a2}:{b1 b2}:{c1 c2} " +
-            "e <- (d~b1 ? b1~. : d~b2 ? b2~.) " +
-            "f <- (d~b1 ? b1~. : b2~.) " +
-            "g <- (d~b1 ? b1~.) <-(d~b2 ? b2~.) " +
+            "e <- (d˚b1 ? b1˚. : d˚b2 ? b2˚.) " +
+            "f <- (d˚b1 ? b1˚. : b2˚.) " +
+            "g <- (d˚b1 ? b1˚.) <-(d˚b2 ? b2˚.) " +
             "h <- (d.a1 ? b1 ? c1 : 1) " +
-            "i <- (d~b1 ? b1~. | d~b2 ? b2~.)",
+            "i <- (d˚b1 ? b1˚. | d˚b2 ? b2˚.)",
 
              "√ { d { " +
                 "a1?>h { b1?>(e f g h i) { c1╌>(e f g h i) c2╌>(e f g i) } b2?>(e g i) { c1╌>(e f g i) c2╌>(e f g i) } } " +
                 "a2   { b1?>(e f g i)   { c1╌>(e f g i)   c2╌>(e f g i) } b2?>(e g i) { c1╌>(e f g i) c2╌>(e f g i) } } } " +
-                "e<-(d~b1 ? b1~. : d~b2 ? b2~.) " +
-                "f<-(d~b1 ? b1~. : b2~.) " +
-                "g<-(d~b1 ? b1~.) <-(d~b2 ? b2~.) " +
+                "e<-(d˚b1 ? b1˚. : d˚b2 ? b2˚.) " +
+                "f<-(d˚b1 ? b1˚. : b2˚.) " +
+                "g<-(d˚b1 ? b1˚.) <-(d˚b2 ? b2˚.) " +
                 "h<-(d.a1 ? b1 ? c1 : 1) " +
-                "i<-(d~b1 ? b1~. | d~b2 ? b2~.) }" +
+                "i<-(d˚b1 ? b1˚. | d˚b2 ? b2˚.) }" +
             "")
 
-        test("d {a1 a2}:{b1 b2}:{c1 c2} e <- (d~b1 ? b1~. : d~b2 ? b2~.) ",
+        test("d {a1 a2}:{b1 b2}:{c1 c2} e <- (d˚b1 ? b1˚. : d˚b2 ? b2˚.) ",
              "√ { d { " +
                 "a1 { b1?>e { c1╌>e c2╌>e } b2?>e { c1╌>e c2╌>e } } " +
                 "a2 { b1?>e { c1╌>e c2╌>e } b2?>e { c1╌>e c2╌>e } } } " +
-                "e<-(d~b1 ? b1~. : d~b2 ? b2~.) }" +
+                "e<-(d˚b1 ? b1˚. : d˚b2 ? b2˚.) }" +
             "")
 
-        test("w {a b}:{c d}:{e f}:{g h} x <- (w~c ? c~. : w~d ? d~.) ",
+        test("w {a b}:{c d}:{e f}:{g h} x <- (w˚c ? c˚. : w˚d ? d˚.) ",
              "√ { w { " +
                 "a { c?>x { e { g╌>x h╌>x } f { g╌>x h╌>x } } d?>x { e { g╌>x h╌>x } f { g╌>x h╌>x } } } " +
                 "b { c?>x { e { g╌>x h╌>x } f { g╌>x h╌>x } } d?>x { e { g╌>x h╌>x } f { g╌>x h╌>x } } } } " +
-                "x<-(w~c ? c~. : w~d ? d~.) }" +
+                "x<-(w˚c ? c˚. : w˚d ? d˚.) }" +
             "")
         XCTAssertEqual(countError,0)
     }
@@ -437,7 +437,7 @@ final class Tr3Tests: XCTestCase {
         countError = 0
 
         test("avatar {left right}:{shoulder.elbow.wrist {thumb index middle ring pinky}:{meta prox dist} hip.knee.ankle.toes} " +
-            "~~:{ pos:(x y z r s t) }",
+            "˚˚:{ pos:(x y z r s t) }",
              """
             √ { avatar {
                 left {
@@ -482,8 +482,8 @@ final class Tr3Tests: XCTestCase {
 
 
         test("robot {left right}:{shoulder.elbow.wrist {thumb index middle ring pinky}:{meta prox dist} hip.knee.ankle.toes} " +
-            "~~ <-> .. " + // connect every node to its parent
-            "~~:{pos:(x y z):(0...1) angle:(roll pitch yaw):(%360) mm:(0...3000)})",
+            "˚˚ <-> .. " + // connect every node to its parent
+            "˚˚:{pos:(x y z):(0...1) angle:(roll pitch yaw):(%360) mm:(0...3000)})",
              """
          √ { robot<->√ {
             left<->robot {
@@ -567,7 +567,7 @@ final class Tr3Tests: XCTestCase {
                     pos:(x y z):(0...1) angle:(roll pitch yaw):(%360) mm:(0...3000) }
                 pos:(x y z):(0...1) angle:(roll pitch yaw):(%360) mm:(0...3000) }
             pos:(x y z):(0...1) angle:(roll pitch yaw):(%360) mm:(0...3000) }
-            ~~<->.. }
+            ˚˚<->.. }
         """)
         //Tr3Log.dump()
         XCTAssertEqual(countError,0)
@@ -639,7 +639,7 @@ final class Tr3Tests: XCTestCase {
 
         countError = 0
         // selectively set tuples by name, ignore the reset
-        let script = "a:{b c}:{f g} z->(a~g:2)"
+        let script = "a:{b c}:{f g} z->(a˚g:2)"
         print("\n" + script)
 
         let root = Tr3("√")
@@ -659,7 +659,7 @@ final class Tr3Tests: XCTestCase {
 
         countError = 0
         // selectively set tuples by name, ignore the reset
-        let script = "a:{b c}:{f g} z->(a.b.f:1 a~g:2)"
+        let script = "a:{b c}:{f g} z->(a.b.f:1 a˚g:2)"
         print("\n" + script)
 
         let root = Tr3("√")
@@ -836,7 +836,7 @@ final class Tr3Tests: XCTestCase {
         countError = 0
         let root = Tr3("√")
         //let script = "x.xx y.yy a.b c:a { d <- (x ? x.xx | y ? y.yy) } e:c f:e g:f"
-        //let script = "x.xx y.yy a.b c:a e:c f:e g:f ~b <- (x ? x.xx | y ? y.yy) "
+        //let script = "x.xx y.yy a.b c:a e:c f:e g:f ˚b <- (x ? x.xx | y ? y.yy) "
         //let script = "x.xx y.yy a { b <- (x ? x.xx | y ? y.yy) } c:a e:c f:e g:f "
         let script = "a.b.c:1 d { e:2<->a.b.c } f:d"
 
