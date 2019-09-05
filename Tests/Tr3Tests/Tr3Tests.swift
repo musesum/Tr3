@@ -76,15 +76,16 @@ final class Tr3Tests: XCTestCase {
 
         countTotal = 0
         Tr3.dumpScript = true
-        Tr3.debugName = "a"
-        test("a b c a<-b a<+c","√ { a<-b <+c b c }")
-        Tr3.dumpScript = false
-
-        test("a {b c}:{d e f -> b:1} z:a z.b.f -> c:1 ",
+        test("a {b c}:{d e f -> b:1} z:a z.b.f => c:1 ",
              "√ { a { b { d e f->a.b:1 } c { d e f->a.b:1 } }" +
-            "     z { b { d e f->z.c:1 } c { d e f->z.b:1 } } }")
+            "     z { b { d e f=>z.c:1 } c { d e f->z.b:1 } } }")
 
-        test("a._c { d { e { f : \"ff\" } } } a.c.z : _c { d { e.f   : \"ZZ\" } }",
+        Tr3.debugName = "z"
+         Tr3.dumpScript = false
+
+        test("a b c a<-b a<-c","√ { a<-(b c) b c }")
+
+         test("a._c { d { e { f : \"ff\" } } } a.c.z : _c { d { e.f   : \"ZZ\" } }",
         "√ { a { _c { d { e { f:\"ff\" } } } c { z { d { e { f:\"ZZ\" } } } } } }")
 
         test("a.b { _c { d e.f:(0...1=0) g} z:_c { g } } ",

@@ -48,11 +48,14 @@ public class Tr3EdgeDefs {
         
         for mergeDef in merge.edgeDefs {
             if isUnique(mergeDef) {
-                if mergeDef.edgeFlags.contains(.include) {
-                    edgeDefs.append(mergeDef)
+                if mergeDef.edgeFlags.contains(.solo) {
+                    edgeDefs = merge.edgeDefs
+                }
+                else if edgeDefs.first?.edgeFlags.contains(.solo) ?? false {
+                    // keep solo from previous definition
                 }
                 else {
-                    edgeDefs = merge.edgeDefs //???? .append(mergeDef)
+                     edgeDefs.append(mergeDef)
                 }
                 break
             }

@@ -14,7 +14,7 @@ extension Tr3EdgeDef {
 
         var script =  flags.contains(.input) ? "<" : ""
         
-        if      flags.contains(.include) { script += "+" }
+        if      flags.contains(.solo)    { script += "=" }
         else if flags.contains(.exclude) { script += "!" }
         else if flags.contains(.find)    { script += ":" }
         else if flags.contains(.ternary) { script += "?" }
