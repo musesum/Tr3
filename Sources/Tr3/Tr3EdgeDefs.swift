@@ -45,9 +45,15 @@ public class Tr3EdgeDefs {
         }
 
         // begin ----------------------
+        
         for mergeDef in merge.edgeDefs {
             if isUnique(mergeDef) {
-                edgeDefs = merge.edgeDefs //???? .append(mergeDef)
+                if mergeDef.edgeFlags.contains(.include) {
+                    edgeDefs.append(mergeDef)
+                }
+                else {
+                    edgeDefs = merge.edgeDefs //???? .append(mergeDef)
+                }
                 break
             }
             if let mergeTernVal = mergeDef.ternVal {

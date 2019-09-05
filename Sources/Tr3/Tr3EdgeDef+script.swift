@@ -14,7 +14,8 @@ extension Tr3EdgeDef {
 
         var script =  flags.contains(.input) ? "<" : ""
         
-        if      flags.contains(.nada)    { script += "!" }
+        if      flags.contains(.include) { script += "+" }
+        else if flags.contains(.exclude) { script += "!" }
         else if flags.contains(.find)    { script += ":" }
         else if flags.contains(.ternary) { script += "?" }
         else                             { script += active ? "-" : "╌" }
@@ -25,7 +26,7 @@ extension Tr3EdgeDef {
 
     public func scriptVal() -> String {
 
-        var script = ""
+        var script = " "
         script += Tr3EdgeDef.scriptEdgeFlag(edgeFlags)
 
         if let tern = ternVal {

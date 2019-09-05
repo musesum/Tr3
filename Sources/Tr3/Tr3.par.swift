@@ -34,7 +34,7 @@ tr3 : left right* {
     }
     edges : edgeOp (edgePar | edgeItem) comment* {
 
-        edgeOp   : '^([<][-?!\╌>]+|[-?!\˚]+[>])'
+        edgeOp   : '^([<][-+?!\╌>]+|[-+?!\˚]+[>])'
         edgePar  : "(" edgeItem+ ")" edges?
         edgeItem : (edgeVal | ternary) comment*
         

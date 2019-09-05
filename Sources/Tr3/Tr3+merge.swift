@@ -50,11 +50,12 @@ extension Tr3 {
                 merge.type = .remove
 
                 sibling.val = merge.val
-                sibling.edgeDefs = merge.edgeDefs
+                sibling.edgeDefs.merge(merge.edgeDefs)
                 // e in `a { b { c d } } a { e }`
                 for mergeChild in merge.children {
                     sibling.mergeDuplicate(mergeChild)
                 }
+                break
             }
         }
 
@@ -251,27 +252,21 @@ extension Tr3 {
     func bindChildren() {
 
         // add clones to children with
-        var kids = [Tr3]()
+        var newKids = [Tr3]()
 
-        if name == Tr3.debugName {
-            print(name)
-        }
         for child in children {
 
             switch child.type {
-
-            case .path:   kids.append(contentsOf: child.bindPath())
-            case .many:   kids.append(contentsOf: child.bindMany())
-            case .proto:  kids.append(contentsOf: child.bindProto())
-            case .name:   kids.append(contentsOf: child.bindName())
-
+            case .path:   newKids.append(contentsOf: child.bindPath())
+            case .many:   newKids.append(contentsOf: child.bindMany())
+            case .proto:  newKids.append(contentsOf: child.bindProto())
+            case .name:   newKids.append(contentsOf: child.bindName())
             case .remove: break
-
-            default:      kids.append(child)
+            default:      newKids.append(child)
             }
         }
-        mergeChildren(kids)
-        children = kids.filter { $0.type != .remove }
+        mergeChildren(newKids)
+        children = newKids.filter { $0.type != .remove }
     }
 
     func bindBottomUp() {
