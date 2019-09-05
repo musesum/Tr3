@@ -76,14 +76,20 @@ final class Tr3Tests: XCTestCase {
 
         countTotal = 0
         Tr3.dumpScript = true
+
+        test("a {b c}:{d e}:{f g}:{h i} z -> a.b˚g.h",
+             "√ { a { b { d { f { h i } g { h i } } e { f { h i } g { h i } } } " +
+            "         c { d { f { h i } g { h i } } e { f { h i } g { h i } } } } " +
+            " z->(d.g.h e.g.h) }")
+
+        Tr3.debugName = "g.h"
+        Tr3.dumpScript = false
+
+        test("a b c a<-b a<-c","√ { a<-(b c) b c }")
+
         test("a {b c}:{d e f -> b:1} z:a z.b.f => c:1 ",
              "√ { a { b { d e f->a.b:1 } c { d e f->a.b:1 } }" +
             "     z { b { d e f=>z.c:1 } c { d e f->z.b:1 } } }")
-
-        Tr3.debugName = "z"
-         Tr3.dumpScript = false
-
-        test("a b c a<-b a<-c","√ { a<-(b c) b c }")
 
          test("a._c { d { e { f : \"ff\" } } } a.c.z : _c { d { e.f   : \"ZZ\" } }",
         "√ { a { _c { d { e { f:\"ff\" } } } c { z { d { e { f:\"ZZ\" } } } } } }")
@@ -353,7 +359,7 @@ final class Tr3Tests: XCTestCase {
         print("\n━━━━━━━━━━━━━━━━━━━━━━ ternary paths ━━━━━━━━━━━━━━━━━━━━━━\n")
 
         test("a {b c}:{d e}:{f g} a <- a˚d.g",
-             "√ { a<-(a.b.d a.c.d) { b { d { f g } e { f g } } c { d { f g } e { f g } } } }")
+             "√ { a<-(b.d.g c.d.g) { b { d { f g } e { f g } } c { d { f g } e { f g } } } }")
 
         test("a {b c}:{d e}:{f g}:{i j} a.b˚f <- (f.i == f.j ? 1 : 0) ",
              "√ { a { b { d { f<-(f.i == f.j ? 1 : 0 ) { i?>b.d.f j?>b.d.f } g { i j } }" +

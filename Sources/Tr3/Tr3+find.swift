@@ -21,7 +21,7 @@ extension Tr3 {
     // a in `˚.a` // add if matches b and no children and stop, otherwise continue
     // _ in `˚.`  // add if no children, otherwise continue
 
-    func getTildeTr3s(_ wildcard:String, _ suffix:String) -> [Tr3] {
+    func getDegreeTr3s(_ wildcard:String, _ suffix:String) -> [Tr3] {
 
         let greedy = wildcard == "˚˚"
         let leafy = wildcard == "˚."
@@ -29,7 +29,7 @@ extension Tr3 {
 
         func findDeeper() {
             for child in children {
-                let foundChild = child.getTildeTr3s(wildcard,suffix)
+                let foundChild = child.getDegreeTr3s(wildcard,suffix)
                 found.append(contentsOf: foundChild)
             }
         }
@@ -48,24 +48,30 @@ extension Tr3 {
                 if children.isEmpty { return [self] }   // c   in ˚.
                 else                { findDeeper() }    // a,b in ˚.
             }
+            return found
         }
         else {
-            let (suffix2,_,_) = suffix.splitWild(".*˚")
-            if name == suffix2 {
+            var found2 = [Tr3]()
+            let (prefix2,wild2,suffix2) = suffix.splitWild(".*˚")
+            if name == prefix2 {
                 if leafy {
-                    if children.isEmpty { return [self] }   // c in ˚.c
+                    if children.isEmpty { found = [self] }   // c in ˚.c
                     else                { return [] }       // b in ˚.b
                 }
                 else {
-                    found.append(self)                      // b in ˚b,˚˚b
+                    found = [self]                          // b in ˚b,˚˚b
                     if greedy { findDeeper() }
                 }
             }
             else {                                          // !b in ˚b,˚˚b
                 findDeeper()
             }
+            for foundi in found {
+                let foundi2 = foundi.getWildSuffix(wild2, suffix2, .children)
+                found2.append(contentsOf:foundi2)
+            }
+            return found2
         }
-        return found
     }
 
 
@@ -131,13 +137,16 @@ extension Tr3 {
     }
 
     func findPrefixTr3(_ prefix:String, _ findFlags:Tr3FindFlags) -> Tr3? {
-        if prefix == ""   { return self }
-        if name == prefix { return self }
+        if prefix == ""   {
+            return self }
+        if name == prefix {
+            return self }
         if findFlags.contains(.children) {
             for child in children {
                 if child.type == .remove { continue }
                 if child.type == .proto { continue }
-                if child.name == prefix { return child }
+                if child.name == prefix {
+                    return child }
             }
         }
         // still no match, so maybe search parents
@@ -157,7 +166,7 @@ extension Tr3 {
 
             switch wildcard.first {
             case "." : return tr3.getNearDots(wildcard, suffix, nextFlags)
-            case "˚" : return tr3.getTildeTr3s(wildcard, suffix)
+            case "˚" : return tr3.getDegreeTr3s(wildcard, suffix)
             default  : return [tr3]
             }
         }
