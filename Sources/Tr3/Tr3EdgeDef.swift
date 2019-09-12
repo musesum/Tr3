@@ -78,7 +78,7 @@ public class Tr3EdgeDef {
     
     func addPath(_ parAny:ParAny) {
 
-        if let path = parAny.next.first?.value {
+        if let path = parAny.nextPars.first?.value {
 
             if let _ = ternVal {
                 Tr3ValTern.ternStack.last?.addPath(path)

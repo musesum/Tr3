@@ -48,7 +48,7 @@ extension Tr3 {
             default: print("*** unknown val(\(any))")
             }
         }
-        // maybe pass along my Tr3Val to other Tr3Nodes and callbacks
+        // maybe pass along my Tr3Val to other Tr3Nodes and closures
         if options.contains(.activate) {
             activate(visitor)
         }
@@ -58,8 +58,8 @@ extension Tr3 {
     public func activate(_ visitor: Visitor = Visitor(0)) { //func bang() + func allEvents(_ event: Tr3Event) {
 
         if visitor.newVisit(id) {
-            for callback in callbacks {
-                callback(self,visitor)
+            for closure in closures {
+                closure(self,visitor)
             }
             for tr3Edge in tr3Edges.values {
                 if tr3Edge.active {

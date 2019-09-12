@@ -18,8 +18,7 @@ public struct Tr3EdgeFlags: OptionSet {
     public static let exclude = Tr3EdgeFlags(rawValue: 1 << 3) //  8 ! in  a<!b   a!>b   a<!>b
     public static let find    = Tr3EdgeFlags(rawValue: 1 << 4) // 16 ? in  a<:b   a:>b   a<:>b
     public static let ternary = Tr3EdgeFlags(rawValue: 1 << 5) // 32  a?>w, b?>w x<╌>w y<╌>w in  a b x y w<->(a ? x : b ? y)
-    //public static let clone   = Tr3EdgeFlags(rawValue: 1 << 5) // 32  b.d.f, b.e.f in `a {b c}:{d e}:{f g}:{i j} a.b˚f <- (f.i ? 1 | a˚j ? 0)`
-
+ 
     public init(rawValue:Int = 0) { self.rawValue = rawValue }
 
     public init(with:String) {

@@ -27,8 +27,8 @@ final class Tr3Tests: XCTestCase {
 
     var countTotal = 0
     var countError = 0
-    var tr3Parse = Tr3Parse()
 
+    var tr3Parse = Tr3Parse()
 
     /// compare expected with actual result and print error strings
     /// with 🚫 marker at beginning of non-matching section
@@ -143,7 +143,9 @@ final class Tr3Tests: XCTestCase {
     }
     /// compare script with expected output and print an error if they don't match
     func testParseBasics() {
+
         countError = 0
+
         print("\n━━━━━━━━━━━━━━━━━━━━━━ quote ━━━━━━━━━━━━━━━━━━━━━━\n")
         test("a:\"yo\"", "√ { a:\"yo\" }")
         test("a { b:\"bb\" }", "√ { a { b:\"bb\" } }")
@@ -166,6 +168,7 @@ final class Tr3Tests: XCTestCase {
         print("\n━━━━━━━━━━━━━━━━━━━━━━ many ━━━━━━━━━━━━━━━━━━━━━━\n")
         test("a {b c}:{d e}","√ { a { b { d e } c { d e } } }")
         test("a {b c}:{d e}:{f g}","√ { a { b { d { f g } e { f g } } c { d { f g } e { f g } } } }")
+        
         XCTAssertEqual(countError,0)
     }
     func testParseSkyControl() {
@@ -583,6 +586,7 @@ final class Tr3Tests: XCTestCase {
     }
 
     var result = ""
+    
     /// add result of callback to result
     func addCallResult(_ tr3:Tr3, _ val:Tr3Val?) {
         var val = val?.printVal() ?? "nil"
@@ -717,7 +721,7 @@ final class Tr3Tests: XCTestCase {
         if tr3Parse.parseScript(root, script),
             let a = root.findPath("a") {
 
-            a.addCallback { tr3,_ in
+            a.addClosure { tr3,_ in
                 p1 = tr3.CGPointVal() ?? .zero
                 print("p0:\(p0) => p1:\(p1)")
             }
@@ -744,11 +748,11 @@ final class Tr3Tests: XCTestCase {
             let b = root.findPath("b"),
             let c = root.findPath("c") {
 
-            a.addCallback { tr3,_ in
+            a.addClosure { tr3,_ in
                 self.addCallResult(a,tr3.val!) }
-            b.addCallback { tr3,_ in
+            b.addClosure { tr3,_ in
                 self.addCallResult(b,tr3.val!) }
-            c.addCallback { tr3,_ in
+            c.addClosure { tr3,_ in
                 self.addCallResult(c,tr3.val!) }
 
             testAct("c:5.0","c:5.0 b:5.0 a:0.5") {
@@ -775,7 +779,7 @@ final class Tr3Tests: XCTestCase {
 
             testCompare("√ { a?>w b?>w c?>w w:0<-(a ? 1 : b ? 2 : c ? 3) }", root.dumpScript(session:true), echo:true)
 
-            w.addCallback { tr3,_ in self.addCallResult(w,tr3.val!) }
+            w.addClosure { tr3,_ in self.addCallResult(w,tr3.val!) }
             testAct("a!", "w:1.0 ") { a.activate() }
             testAct("a:0","w:1.0")  { a.setVal(0,[.create,.activate]) }
             testAct("b!", "w:2.0 ") { b.activate() }
@@ -800,7 +804,7 @@ final class Tr3Tests: XCTestCase {
 
             testCompare("√ { a:0?>w x:10╌>w y:20╌>w w<-(a ? x : y) }", root.dumpScript(session:true), echo:true)
 
-            w.addCallback { tr3,_ in self.addCallResult(w,tr3.val!) }
+            w.addClosure { tr3,_ in self.addCallResult(w,tr3.val!) }
             testAct("a:0","w:20.0")  { a.setVal(0,.activate) }
             testAct("x:11","")       { x.setVal(11,.activate) }
             testAct("y:21","w:21.0") { y.setVal(21,.activate) }
@@ -829,9 +833,9 @@ final class Tr3Tests: XCTestCase {
 
             testCompare("√ { a?>w x:10<╌>w y:20<╌>w w<->(a ? x : y) }", root.dumpScript(session:true), echo:true)
 
-            w.addCallback { tr3,_ in self.addCallResult(w,tr3.val!) }
-            x.addCallback { tr3,_ in self.addCallResult(x,tr3.val!) }
-            y.addCallback { tr3,_ in self.addCallResult(y,tr3.val!) }
+            w.addClosure { tr3,_ in self.addCallResult(w,tr3.val!) }
+            x.addClosure { tr3,_ in self.addCallResult(x,tr3.val!) }
+            y.addClosure { tr3,_ in self.addCallResult(y,tr3.val!) }
             testAct("a:0","w:20.0 y:20.0") { a.setVal(0,[.create,.activate]) }
             testAct("w:3","w:3.0 y:3.0")   { w.setVal(3,[.create,.activate]) }
             testAct("a:1","w:3.0 x:3.0")   { a.setVal(1,.activate) }
@@ -859,7 +863,6 @@ final class Tr3Tests: XCTestCase {
         }
         XCTAssertEqual(countError,0)
     }
-    #if false
     /// currently cannot bundle resource with Swift package
     func testInherit() { print("\n━━━━━━━━━━━━━━━━━━━━━━ \(#function) ━━━━━━━━━━━━━━━━━━━━━━\n")
         countError = 0
@@ -872,6 +875,8 @@ final class Tr3Tests: XCTestCase {
         print(actual)
         XCTAssertEqual(countError,0)
     }
+    
+    #if false
     func testSky() { print("\n━━━━━━━━━━━━━━━━━━━━━━ \(#function) ━━━━━━━━━━━━━━━━━━━━━━\n")
         countError = 0
         let root = Tr3("√")

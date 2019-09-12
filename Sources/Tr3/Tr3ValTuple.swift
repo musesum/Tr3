@@ -127,7 +127,7 @@ public class Tr3ValTuple: Tr3Val {
 
     func addPath(_ p:ParAny) {
 
-        if let value = p.next.first?.value {
+        if let value = p.nextPars.first?.value {
             names.append(value)
         }
     }

@@ -1,3 +1,7 @@
+// need to copy and paste this into Tr3.par.swift.
+// As of Sept 2019, cannot read a resource from a Swift package,
+// may get resolved by a later version of SPM
+
 tr3 : left right* {
 
     left : comment* (path | name | quote)

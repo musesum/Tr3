@@ -27,7 +27,7 @@ public class Tr3: Hashable {
     var edgeDefs = Tr3EdgeDefs()    // for a<-(b.*++), this saves "++" and "b.*)
     var tr3Edges = [String:Tr3Edge]()      // some edges are defined by another Tr3
 
-    var callbacks = [Tr3Visitor]()  // during activate callback and return with Tr3Val ((Tr3Val?)->(Tr3Val?))
+    var closures = [Tr3Visitor]()  // during activate call a list of closures and return with Tr3Val ((Tr3Val?)->(Tr3Val?))
     public var type = Tr3Type.unknown
 
     public func hash(into hasher: inout Hasher) {  hasher.combine(id)  }
@@ -107,7 +107,7 @@ public class Tr3: Hashable {
 
     public func addChild(_ n:ParAny,_ type_:Tr3Type)  -> Tr3 {
 
-        if let value = n.next.first?.value {
+        if let value = n.nextPars.first?.value {
 
             let child = Tr3(value,type_)
             children.append(child)
@@ -124,8 +124,8 @@ public class Tr3: Hashable {
         return child
     }
 
-    public func addCallback(_ callback:@escaping Tr3Visitor) {
-        callbacks.append(callback)
+    public func addClosure(_ closure:@escaping Tr3Visitor) {
+        closures.append(closure)
     }
     public func parentPath(_ depth:Int = 2, withId:Bool = false) -> String {
         var path = name

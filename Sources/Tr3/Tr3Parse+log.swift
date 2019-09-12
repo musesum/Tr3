@@ -24,12 +24,12 @@ extension Tr3Parse {
         // show array of next items
         var nextArray = " ["
         var arrayOp = ""
-        for nexti in parAny.next {
-            if let pattern = nexti.node?.pattern, pattern != "" {
+        for nextPar in parAny.nextPars {
+            if let pattern = nextPar.node?.pattern, pattern != "" {
                 nextArray += arrayOp + pattern
                 arrayOp = ", "
             }
-            else if let value = nexti.value {
+            else if let value = nextPar.value {
                 nextArray += arrayOp + value
                 arrayOp = ", "
             }

@@ -8,63 +8,17 @@
 import Foundation
 import Par
 
-class Resource {
-    static var resourcePath = "../Resources"
-
-    let name: String
-    let type: String
-
-    init(name: String, type: String) {
-        self.name = name
-        self.type = type
-    }
-
-    var path: String {
-        let bundle = Bundle(for: Swift.type(of: self))
-        guard let path: String = bundle.path(forResource: name, ofType: type) else {
-            let filename: String = type.isEmpty ? name : "\(name).\(type)"
-            return "\(Resource.resourcePath)/\(filename)"
-        }
-        return path
-    }
-}
-
 public class Tr3Parse {
 
     public static let shared = Tr3Parse()
 
     public var rootParNode: ParNode!
-    var tr3Par = [String:Tr3PriorParAny]()
+    var tr3Keywords = [String:Tr3PriorParAny]()
 
     public init() {
         rootParNode = Par.shared.parse(script:Tr3Par)
         rootParNode.reps.repMax = Int.max
         makeParTr3()
-    }
-
-    public func parseFile(_ name:String,_ ext: String) -> ParNode {
-        return ParNode("")
-    }
-
-
-    public func read(_ filename: String, _ ext:String) -> String {
-
-        let resource = Resource(name: filename, type: ext)
-        do {
-            let resourcePath = resource.path
-            return try String(contentsOfFile: resourcePath) }
-        catch {
-            print("*** ParStr::\(#function) error:\(error) loading contents of:\(resource.path)")
-        }
-        return ""
-    }
-
-    public func parseTr3(_ tr3:Tr3, _ filename:String) {
-        let script = read(filename,"tr3")
-        print(filename, terminator:" ")
-        let success = parseScript(tr3, script, whitespace: "\n\t ")
-        if success  { print("✓") }
-        else        { print("🚫 parse failed") }
     }
 
     /// create a dictionary of parsing closures as a global dispatch
@@ -78,7 +32,7 @@ public class Tr3Parse {
     func makeParTr3() {
 
         func dispatchFunc(_ fn: @escaping Tr3PriorParAny, from keywords: [String]) {
-            for keyword in keywords { tr3Par[keyword] = fn }
+            for keyword in keywords { tr3Keywords[keyword] = fn }
         }
         dispatchFunc(parsePath,  from: ["name","path"])
         dispatchFunc(parseChild, from: ["child","many","proto"])
@@ -189,7 +143,7 @@ public class Tr3Parse {
                     case "data"   : addVal(Tr3ValData())
                     case "tuple"  : addVal(Tr3ValTuple())
                     case "ternIf" : addVal(Tr3ValTern(tr3,level))
-                    default: break
+                    default       : break
                     }
                 }
             }
@@ -275,32 +229,32 @@ public class Tr3Parse {
     ///
     func parseChild(_ tr3: Tr3,_ prior: String, parAny: ParAny,_ level: Int) -> Tr3 {
 
-        let pattern = parAny.node?.pattern ?? ""//Tr3Log.log("parseChild", prior, pattern ?? "")
+        let pattern = parAny.node?.pattern ?? ""
 
         switch pattern {
-        case "name": return tr3.addChild(parAny,.name)
-        case "path": return tr3.addChild(parAny,.path)
-        default    : break
+        case "name" : return tr3.addChild(parAny,.name)
+        case "path" : return tr3.addChild(parAny,.path)
+        default     : break
         }
 
         let parentTr3 = pattern == "many" ? tr3.makeMany() : tr3
         var nextTr3 = parentTr3
 
-        for nexti in parAny.next {
+        for nextPar in parAny.nextPars {
 
-            switch  nexti.node?.pattern  {
+            switch  nextPar.node?.pattern  {
 
             case "child","many": // push child of most recent name'd sibling to the next level
 
-                let _ = self.parse(nextTr3, pattern, nexti, level+1)
+                let _ = self.parse(nextTr3, pattern, nextPar, level+1)
 
             case "name","path": // add new named sibling to parent
 
-                nextTr3 = self.parse(parentTr3, pattern, nexti, level+1)
+                nextTr3 = self.parse(parentTr3, pattern, nextPar, level+1)
 
             default: // decorate current sibling with new values
 
-                nextTr3 = self.parse(nextTr3, pattern, nexti, level+1)
+                nextTr3 = self.parse(nextTr3, pattern, nextPar, level+1)
             }
         }
         return nextTr3
@@ -308,8 +262,8 @@ public class Tr3Parse {
     /// decorate current tr3 with additional attributes
     func parseNext(_ tr3: Tr3,_ prior: String,_ parAny: ParAny,_ level: Int) -> Tr3 {
 
-        for nexti in parAny.next {
-            let _ = self.parse(tr3,prior,nexti,level+1)
+        for nextPar in parAny.nextPars {
+            let _ = self.parse(tr3, prior, nextPar, level+1)
         }
         return tr3
     }
@@ -324,7 +278,7 @@ public class Tr3Parse {
         //log(tr3,parAny,level)
 
         if  let pattern = parAny.node?.pattern,
-            let tr3Parse = tr3Par[pattern] {
+            let tr3Parse = tr3Keywords[pattern] {
 
             return tr3Parse(tr3, prior, parAny, level+1)
         }
@@ -343,14 +297,14 @@ public class Tr3Parse {
         let parStr = ParStr(script)
         parStr.whitespace = whitespace
 
-        if let parAny = rootParNode.findMatch(parStr, 0) {
+        if let parAny = rootParNode.findMatch(parStr, 0).parLast {
 
             if printGraph {
                 rootParNode.printGraph(Visitor(0))
             }
 
-            // reduce to keywords in tr3Par and print
-            let reduce1 = parAny.reduce1(keywords:tr3Par)
+            // reduce to keywords in tr3Keywords and print
+            let reduce1 = parAny.reduce1(keywords:tr3Keywords)
             // print(reduce1.anyStr())
             // print(parAny.anyStr())
 
