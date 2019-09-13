@@ -56,9 +56,9 @@ public class Tr3: Hashable {
     }
     public convenience init(with val_: Tr3Val) { self.init() ; val = val_.copy() }
 
-    public func makeTr3From(parAny:ParAny) -> Tr3 {
+    public func makeTr3From(parItem:ParItem) -> Tr3 {
 
-        if let value = parAny.value {
+        if let value = parItem.value {
             return Tr3(value)
         }
         return self
@@ -105,7 +105,7 @@ public class Tr3: Hashable {
         return many
     }
 
-    public func addChild(_ n:ParAny,_ type_:Tr3Type)  -> Tr3 {
+    public func addChild(_ n:ParItem,_ type_:Tr3Type)  -> Tr3 {
 
         if let value = n.nextPars.first?.value {
 

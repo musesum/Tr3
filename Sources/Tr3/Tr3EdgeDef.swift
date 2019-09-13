@@ -6,7 +6,7 @@
 //
 
 import Foundation
-import Par // ParAny 
+import Par // ParItem 
 
 
 /// keeps a dictionary of paths as keys with Tr3Vals,
@@ -76,9 +76,9 @@ public class Tr3EdgeDef {
         return newEdgeDef
     }
     
-    func addPath(_ parAny:ParAny) {
+    func addPath(_ parItem:ParItem) {
 
-        if let path = parAny.nextPars.first?.value {
+        if let path = parItem.nextPars.first?.value {
 
             if let _ = ternVal {
                 Tr3ValTern.ternStack.last?.addPath(path)
@@ -88,7 +88,7 @@ public class Tr3EdgeDef {
             }
         }
         else {
-            print("*** Tr3EdgeDef: \(self) cannot process addPath(\(parAny))")
+            print("*** Tr3EdgeDef: \(self) cannot process addPath(\(parItem))")
         }
     }
 

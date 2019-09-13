@@ -1,6 +1,6 @@
-// need to copy and paste this into Tr3.par.swift.
-// As of Sept 2019, cannot read a resource from a Swift package,
-// may get resolved by a later version of SPM
+// This Tr3.par file renamed to Tr3.par.h in the Swift package to allow xcode to do some syntax highlighting.
+// As of Sept 2019, cannot read a resource from a Swift package, may get resolved by a later version of SPM
+// So, this Tr3.par file declared as a string in Tr3.par.swift
 
 tr3 : left right* {
 

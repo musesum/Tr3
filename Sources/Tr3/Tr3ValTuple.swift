@@ -125,7 +125,7 @@ public class Tr3ValTuple: Tr3Val {
 //        return nums.last ?? nil
 //    }
 
-    func addPath(_ p:ParAny) {
+    func addPath(_ p:ParItem) {
 
         if let value = p.nextPars.first?.value {
             names.append(value)
