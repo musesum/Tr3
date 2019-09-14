@@ -1,7 +1,0 @@
-control.camera {
-    base {
-        type  : "camera"
-        title : "Camera"
-        icon  : "control.sky.camera.png"
-    }
-}

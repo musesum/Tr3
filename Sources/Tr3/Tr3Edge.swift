@@ -19,6 +19,8 @@ public class Tr3Edge: Hashable {
     var rightTr3  : Tr3?
     var defVal    : Tr3Val?
 
+    public static var LineageDepth = 2 // useful for debugging
+
     public func hash(into hasher: inout Hasher) {
         hasher.combine(key)
     }
@@ -63,10 +65,10 @@ public class Tr3Edge: Hashable {
         var script = ""
 
         if leftTr3 == tr3, let rightTr3 = rightTr3 {
-            script += rightTr3.scriptLineage(2)
+            script += rightTr3.scriptLineage(Tr3Edge.LineageDepth)
         }
         else if rightTr3 == tr3, let leftTr3 = leftTr3 {
-            script += leftTr3.scriptLineage(2)
+            script += leftTr3.scriptLineage(Tr3Edge.LineageDepth)
         }
         script += defVal?.dumpVal(session:session).with(trailing: " ") ?? " "
         return script

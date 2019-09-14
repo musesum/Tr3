@@ -1,8 +1,0 @@
-control.pal.rainbow : control.pal.main {
-    base.title  : "Rainbow"
-    base.icon   : "control.pal.rainbow.png"
-}
-pal {
-    pal0 : "= r o y g b i v r"
-    pal1 : "= r o y g b i v r z"
-}

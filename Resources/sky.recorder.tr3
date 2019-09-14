@@ -1,8 +1,0 @@
-sky.recorder {
-        filename : "recorder"
-        useframe : (0...1=0) // timewise or framewise playback?
-        loop     : (0...1=1)
-        
-        record pause play rewind toend erase
-        event //<-(draw.note˚ pal.ripple˚)
-}

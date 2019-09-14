@@ -426,139 +426,143 @@ final class Tr3Tests: XCTestCase {
 
         var err = 0
 
-        err += test("avatar {left right}:{shoulder.elbow.wrist {thumb index middle ring pinky}:{meta prox dist} hip.knee.ankle.toes} " +
-            "˚˚:{ pos:(x y z r s t) }",
-                    """
-            √ { avatar {
-                left {
-                    shoulder {
-                        elbow {
-                            wrist {
-                                thumb  { meta { pos:(x y z r s t) } prox { pos:(x y z r s t) } dist { pos:(x y z r s t) } pos:(x y z r s t) }
-                                index  { meta { pos:(x y z r s t) } prox { pos:(x y z r s t) } dist { pos:(x y z r s t) } pos:(x y z r s t) }
-                                middle { meta { pos:(x y z r s t) } prox { pos:(x y z r s t) } dist { pos:(x y z r s t) } pos:(x y z r s t) }
-                                ring   { meta { pos:(x y z r s t) } prox { pos:(x y z r s t) } dist { pos:(x y z r s t) } pos:(x y z r s t) }
-                                pinky  { meta { pos:(x y z r s t) } prox { pos:(x y z r s t) } dist { pos:(x y z r s t) } pos:(x y z r s t) }
-                                pos:(x y z r s t) } pos:(x y z r s t) }
-                        pos:(x y z r s t) }
-                    hip {
-                        knee {
-                            ankle {
-                                toes { pos:(x y z r s t) }
-                                pos:(x y z r s t) }
-                            pos:(x y z r s t) }
-                        pos:(x y z r s t) }
+        err += test (
+            """
+avatar {left right}:{shoulder.elbow.wrist {thumb index middle ring pinky}:{meta prox dist} hip.knee.ankle.toes}
+˚˚:{ pos:(x y z r s t) }
+""","""
+√ { avatar {
+    left {
+        shoulder {
+            elbow {
+                wrist {
+                    thumb  { meta { pos:(x y z r s t) } prox { pos:(x y z r s t) } dist { pos:(x y z r s t) } pos:(x y z r s t) }
+                    index  { meta { pos:(x y z r s t) } prox { pos:(x y z r s t) } dist { pos:(x y z r s t) } pos:(x y z r s t) }
+                    middle { meta { pos:(x y z r s t) } prox { pos:(x y z r s t) } dist { pos:(x y z r s t) } pos:(x y z r s t) }
+                    ring   { meta { pos:(x y z r s t) } prox { pos:(x y z r s t) } dist { pos:(x y z r s t) } pos:(x y z r s t) }
+                    pinky  { meta { pos:(x y z r s t) } prox { pos:(x y z r s t) } dist { pos:(x y z r s t) } pos:(x y z r s t) }
+                    pos:(x y z r s t) } pos:(x y z r s t) }
+            pos:(x y z r s t) }
+        hip {
+            knee {
+                ankle {
+                    toes { pos:(x y z r s t) }
                     pos:(x y z r s t) }
-                right {
-                    shoulder {
-                        elbow {
-                            wrist {
-                                thumb  { meta { pos:(x y z r s t) } prox { pos:(x y z r s t) } dist { pos:(x y z r s t) } pos:(x y z r s t) }
-                                index  { meta { pos:(x y z r s t) } prox { pos:(x y z r s t) } dist { pos:(x y z r s t) } pos:(x y z r s t) }
-                                middle { meta { pos:(x y z r s t) } prox { pos:(x y z r s t) } dist { pos:(x y z r s t) } pos:(x y z r s t) }
-                                ring   { meta { pos:(x y z r s t) } prox { pos:(x y z r s t) } dist { pos:(x y z r s t) } pos:(x y z r s t) }
-                                pinky  { meta { pos:(x y z r s t) } prox { pos:(x y z r s t) } dist { pos:(x y z r s t) } pos:(x y z r s t) }
-                                pos:(x y z r s t) } pos:(x y z r s t) } pos:(x y z r s t) }
-                    hip {
-                        knee {
-                            ankle {
-                                toes { pos:(x y z r s t) }
-                                pos:(x y z r s t) }
-                            pos:(x y z r s t) }
-                        pos:(x y z r s t) }
+                pos:(x y z r s t) }
+            pos:(x y z r s t) }
+        pos:(x y z r s t) }
+    right {
+        shoulder {
+            elbow {
+                wrist {
+                    thumb  { meta { pos:(x y z r s t) } prox { pos:(x y z r s t) } dist { pos:(x y z r s t) } pos:(x y z r s t) }
+                    index  { meta { pos:(x y z r s t) } prox { pos:(x y z r s t) } dist { pos:(x y z r s t) } pos:(x y z r s t) }
+                    middle { meta { pos:(x y z r s t) } prox { pos:(x y z r s t) } dist { pos:(x y z r s t) } pos:(x y z r s t) }
+                    ring   { meta { pos:(x y z r s t) } prox { pos:(x y z r s t) } dist { pos:(x y z r s t) } pos:(x y z r s t) }
+                    pinky  { meta { pos:(x y z r s t) } prox { pos:(x y z r s t) } dist { pos:(x y z r s t) } pos:(x y z r s t) }
+                    pos:(x y z r s t) } pos:(x y z r s t) } pos:(x y z r s t) }
+        hip {
+            knee {
+                ankle {
+                    toes { pos:(x y z r s t) }
                     pos:(x y z r s t) }
-                pos:(x y z r s t) } }
-            """)
+                pos:(x y z r s t) }
+            pos:(x y z r s t) }
+        pos:(x y z r s t) }
+    pos:(x y z r s t) } }
+""")
 
 
-        err += test("robot {left right}:{shoulder.elbow.wrist {thumb index middle ring pinky}:{meta prox dist} hip.knee.ankle.toes} " +
-            "˚˚ <-> .. " + // connect every node to its parent
-            "˚˚:{pos:(x y z):(0...1) angle:(roll pitch yaw):(%360) mm:(0...3000)})",
-                    """
-         √ { robot<->√ {
-            left<->robot {
-                shoulder<->robot.left {
-                    elbow<->robot.left.shoulder {
-                        wrist<->left.shoulder.elbow {
-                            thumb<->shoulder.elbow.wrist {
-                                meta<->elbow.wrist.thumb { pos:(x y z):(0...1) angle:(roll pitch yaw):(%360) mm:(0...3000) }
-                                prox<->elbow.wrist.thumb { pos:(x y z):(0...1) angle:(roll pitch yaw):(%360) mm:(0...3000) }
-                                dist<->elbow.wrist.thumb { pos:(x y z):(0...1) angle:(roll pitch yaw):(%360) mm:(0...3000) }
-                                pos:(x y z):(0...1) angle:(roll pitch yaw):(%360) mm:(0...3000) }
-                            index<->shoulder.elbow.wrist {
-                                meta<->elbow.wrist.index { pos:(x y z):(0...1) angle:(roll pitch yaw):(%360) mm:(0...3000) }
-                                prox<->elbow.wrist.index { pos:(x y z):(0...1) angle:(roll pitch yaw):(%360) mm:(0...3000) }
-                                dist<->elbow.wrist.index { pos:(x y z):(0...1) angle:(roll pitch yaw):(%360) mm:(0...3000) }
-                                pos:(x y z):(0...1) angle:(roll pitch yaw):(%360) mm:(0...3000) }
-                            middle<->shoulder.elbow.wrist {
-                                meta<->elbow.wrist.middle { pos:(x y z):(0...1) angle:(roll pitch yaw):(%360) mm:(0...3000) }
-                                prox<->elbow.wrist.middle { pos:(x y z):(0...1) angle:(roll pitch yaw):(%360) mm:(0...3000) }
-                                dist<->elbow.wrist.middle { pos:(x y z):(0...1) angle:(roll pitch yaw):(%360) mm:(0...3000) }
-                                pos:(x y z):(0...1) angle:(roll pitch yaw):(%360) mm:(0...3000) }
-                            ring<->shoulder.elbow.wrist {
-                                meta<->elbow.wrist.ring { pos:(x y z):(0...1) angle:(roll pitch yaw):(%360) mm:(0...3000) }
-                                prox<->elbow.wrist.ring { pos:(x y z):(0...1) angle:(roll pitch yaw):(%360) mm:(0...3000) }
-                                dist<->elbow.wrist.ring { pos:(x y z):(0...1) angle:(roll pitch yaw):(%360) mm:(0...3000) }
-                                pos:(x y z):(0...1) angle:(roll pitch yaw):(%360) mm:(0...3000) }
-                            pinky<->shoulder.elbow.wrist {
-                                meta<->elbow.wrist.pinky { pos:(x y z):(0...1) angle:(roll pitch yaw):(%360) mm:(0...3000) }
-                                prox<->elbow.wrist.pinky { pos:(x y z):(0...1) angle:(roll pitch yaw):(%360) mm:(0...3000) }
-                                dist<->elbow.wrist.pinky { pos:(x y z):(0...1) angle:(roll pitch yaw):(%360) mm:(0...3000) }
-                                pos:(x y z):(0...1) angle:(roll pitch yaw):(%360) mm:(0...3000) }
-                            pos:(x y z):(0...1) angle:(roll pitch yaw):(%360) mm:(0...3000) }
-                        pos:(x y z):(0...1) angle:(roll pitch yaw):(%360) mm:(0...3000) }
+        err += test(
+            """
+robot {left right}:{shoulder.elbow.wrist {thumb index middle ring pinky}:{meta prox dist} hip.knee.ankle.toes}
+˚˚ <-> ..
+˚˚:{pos:(x y z):(0...1) angle:(roll pitch yaw):(%360) mm:(0...3000)})
+""","""
+√ { robot<->√ {
+left<->robot {
+    shoulder<->robot.left {
+        elbow<->robot.left.shoulder {
+            wrist<->left.shoulder.elbow {
+                thumb<->shoulder.elbow.wrist {
+                    meta<->elbow.wrist.thumb { pos:(x y z):(0...1) angle:(roll pitch yaw):(%360) mm:(0...3000) }
+                    prox<->elbow.wrist.thumb { pos:(x y z):(0...1) angle:(roll pitch yaw):(%360) mm:(0...3000) }
+                    dist<->elbow.wrist.thumb { pos:(x y z):(0...1) angle:(roll pitch yaw):(%360) mm:(0...3000) }
                     pos:(x y z):(0...1) angle:(roll pitch yaw):(%360) mm:(0...3000) }
-                hip<->robot.left {
-                    knee<->robot.left.hip {
-                        ankle<->left.hip.knee {
-                            toes<->hip.knee.ankle { pos:(x y z):(0...1) angle:(roll pitch yaw):(%360) mm:(0...3000) }
-                            pos:(x y z):(0...1) angle:(roll pitch yaw):(%360) mm:(0...3000) }
-                        pos:(x y z):(0...1) angle:(roll pitch yaw):(%360) mm:(0...3000) }
+                index<->shoulder.elbow.wrist {
+                    meta<->elbow.wrist.index { pos:(x y z):(0...1) angle:(roll pitch yaw):(%360) mm:(0...3000) }
+                    prox<->elbow.wrist.index { pos:(x y z):(0...1) angle:(roll pitch yaw):(%360) mm:(0...3000) }
+                    dist<->elbow.wrist.index { pos:(x y z):(0...1) angle:(roll pitch yaw):(%360) mm:(0...3000) }
                     pos:(x y z):(0...1) angle:(roll pitch yaw):(%360) mm:(0...3000) }
-                pos:(x y z):(0...1) angle:(roll pitch yaw):(%360) mm:(0...3000) }
-            right<->robot {
-                shoulder<->robot.right {
-                    elbow<->robot.right.shoulder {
-                        wrist<->right.shoulder.elbow {
-                            thumb<->shoulder.elbow.wrist {
-                                meta<->elbow.wrist.thumb { pos:(x y z):(0...1) angle:(roll pitch yaw):(%360) mm:(0...3000) }
-                                prox<->elbow.wrist.thumb { pos:(x y z):(0...1) angle:(roll pitch yaw):(%360) mm:(0...3000) }
-                                dist<->elbow.wrist.thumb { pos:(x y z):(0...1) angle:(roll pitch yaw):(%360) mm:(0...3000) }
-                                pos:(x y z):(0...1) angle:(roll pitch yaw):(%360) mm:(0...3000) }
-                            index<->shoulder.elbow.wrist {
-                                meta<->elbow.wrist.index { pos:(x y z):(0...1) angle:(roll pitch yaw):(%360) mm:(0...3000) }
-                                prox<->elbow.wrist.index { pos:(x y z):(0...1) angle:(roll pitch yaw):(%360) mm:(0...3000) }
-                                dist<->elbow.wrist.index { pos:(x y z):(0...1) angle:(roll pitch yaw):(%360) mm:(0...3000) }
-                                pos:(x y z):(0...1) angle:(roll pitch yaw):(%360) mm:(0...3000) }
-                            middle<->shoulder.elbow.wrist {
-                                meta<->elbow.wrist.middle { pos:(x y z):(0...1) angle:(roll pitch yaw):(%360) mm:(0...3000) }
-                                prox<->elbow.wrist.middle { pos:(x y z):(0...1) angle:(roll pitch yaw):(%360) mm:(0...3000) }
-                                dist<->elbow.wrist.middle { pos:(x y z):(0...1) angle:(roll pitch yaw):(%360) mm:(0...3000) }
-                                pos:(x y z):(0...1) angle:(roll pitch yaw):(%360) mm:(0...3000) }
-                            ring<->shoulder.elbow.wrist {
-                                meta<->elbow.wrist.ring { pos:(x y z):(0...1) angle:(roll pitch yaw):(%360) mm:(0...3000) }
-                                prox<->elbow.wrist.ring { pos:(x y z):(0...1) angle:(roll pitch yaw):(%360) mm:(0...3000) }
-                                dist<->elbow.wrist.ring { pos:(x y z):(0...1) angle:(roll pitch yaw):(%360) mm:(0...3000) }
-                                pos:(x y z):(0...1) angle:(roll pitch yaw):(%360) mm:(0...3000) }
-                            pinky<->shoulder.elbow.wrist {
-                                meta<->elbow.wrist.pinky { pos:(x y z):(0...1) angle:(roll pitch yaw):(%360) mm:(0...3000) }
-                                prox<->elbow.wrist.pinky { pos:(x y z):(0...1) angle:(roll pitch yaw):(%360) mm:(0...3000) }
-                                dist<->elbow.wrist.pinky { pos:(x y z):(0...1) angle:(roll pitch yaw):(%360) mm:(0...3000) }
-                                pos:(x y z):(0...1) angle:(roll pitch yaw):(%360) mm:(0...3000) }
-                            pos:(x y z):(0...1) angle:(roll pitch yaw):(%360) mm:(0...3000) }
-                        pos:(x y z):(0...1) angle:(roll pitch yaw):(%360) mm:(0...3000) }
+                middle<->shoulder.elbow.wrist {
+                    meta<->elbow.wrist.middle { pos:(x y z):(0...1) angle:(roll pitch yaw):(%360) mm:(0...3000) }
+                    prox<->elbow.wrist.middle { pos:(x y z):(0...1) angle:(roll pitch yaw):(%360) mm:(0...3000) }
+                    dist<->elbow.wrist.middle { pos:(x y z):(0...1) angle:(roll pitch yaw):(%360) mm:(0...3000) }
                     pos:(x y z):(0...1) angle:(roll pitch yaw):(%360) mm:(0...3000) }
-                hip<->robot.right {
-                    knee<->robot.right.hip {
-                        ankle<->right.hip.knee {
-                            toes<->hip.knee.ankle { pos:(x y z):(0...1) angle:(roll pitch yaw):(%360) mm:(0...3000) }
-                            pos:(x y z):(0...1) angle:(roll pitch yaw):(%360) mm:(0...3000) }
-                        pos:(x y z):(0...1) angle:(roll pitch yaw):(%360) mm:(0...3000) }
+                ring<->shoulder.elbow.wrist {
+                    meta<->elbow.wrist.ring { pos:(x y z):(0...1) angle:(roll pitch yaw):(%360) mm:(0...3000) }
+                    prox<->elbow.wrist.ring { pos:(x y z):(0...1) angle:(roll pitch yaw):(%360) mm:(0...3000) }
+                    dist<->elbow.wrist.ring { pos:(x y z):(0...1) angle:(roll pitch yaw):(%360) mm:(0...3000) }
+                    pos:(x y z):(0...1) angle:(roll pitch yaw):(%360) mm:(0...3000) }
+                pinky<->shoulder.elbow.wrist {
+                    meta<->elbow.wrist.pinky { pos:(x y z):(0...1) angle:(roll pitch yaw):(%360) mm:(0...3000) }
+                    prox<->elbow.wrist.pinky { pos:(x y z):(0...1) angle:(roll pitch yaw):(%360) mm:(0...3000) }
+                    dist<->elbow.wrist.pinky { pos:(x y z):(0...1) angle:(roll pitch yaw):(%360) mm:(0...3000) }
                     pos:(x y z):(0...1) angle:(roll pitch yaw):(%360) mm:(0...3000) }
                 pos:(x y z):(0...1) angle:(roll pitch yaw):(%360) mm:(0...3000) }
             pos:(x y z):(0...1) angle:(roll pitch yaw):(%360) mm:(0...3000) }
-            ˚˚<->.. }
-        """)
+        pos:(x y z):(0...1) angle:(roll pitch yaw):(%360) mm:(0...3000) }
+    hip<->robot.left {
+        knee<->robot.left.hip {
+            ankle<->left.hip.knee {
+                toes<->hip.knee.ankle { pos:(x y z):(0...1) angle:(roll pitch yaw):(%360) mm:(0...3000) }
+                pos:(x y z):(0...1) angle:(roll pitch yaw):(%360) mm:(0...3000) }
+            pos:(x y z):(0...1) angle:(roll pitch yaw):(%360) mm:(0...3000) }
+        pos:(x y z):(0...1) angle:(roll pitch yaw):(%360) mm:(0...3000) }
+    pos:(x y z):(0...1) angle:(roll pitch yaw):(%360) mm:(0...3000) }
+right<->robot {
+    shoulder<->robot.right {
+        elbow<->robot.right.shoulder {
+            wrist<->right.shoulder.elbow {
+                thumb<->shoulder.elbow.wrist {
+                    meta<->elbow.wrist.thumb { pos:(x y z):(0...1) angle:(roll pitch yaw):(%360) mm:(0...3000) }
+                    prox<->elbow.wrist.thumb { pos:(x y z):(0...1) angle:(roll pitch yaw):(%360) mm:(0...3000) }
+                    dist<->elbow.wrist.thumb { pos:(x y z):(0...1) angle:(roll pitch yaw):(%360) mm:(0...3000) }
+                    pos:(x y z):(0...1) angle:(roll pitch yaw):(%360) mm:(0...3000) }
+                index<->shoulder.elbow.wrist {
+                    meta<->elbow.wrist.index { pos:(x y z):(0...1) angle:(roll pitch yaw):(%360) mm:(0...3000) }
+                    prox<->elbow.wrist.index { pos:(x y z):(0...1) angle:(roll pitch yaw):(%360) mm:(0...3000) }
+                    dist<->elbow.wrist.index { pos:(x y z):(0...1) angle:(roll pitch yaw):(%360) mm:(0...3000) }
+                    pos:(x y z):(0...1) angle:(roll pitch yaw):(%360) mm:(0...3000) }
+                middle<->shoulder.elbow.wrist {
+                    meta<->elbow.wrist.middle { pos:(x y z):(0...1) angle:(roll pitch yaw):(%360) mm:(0...3000) }
+                    prox<->elbow.wrist.middle { pos:(x y z):(0...1) angle:(roll pitch yaw):(%360) mm:(0...3000) }
+                    dist<->elbow.wrist.middle { pos:(x y z):(0...1) angle:(roll pitch yaw):(%360) mm:(0...3000) }
+                    pos:(x y z):(0...1) angle:(roll pitch yaw):(%360) mm:(0...3000) }
+                ring<->shoulder.elbow.wrist {
+                    meta<->elbow.wrist.ring { pos:(x y z):(0...1) angle:(roll pitch yaw):(%360) mm:(0...3000) }
+                    prox<->elbow.wrist.ring { pos:(x y z):(0...1) angle:(roll pitch yaw):(%360) mm:(0...3000) }
+                    dist<->elbow.wrist.ring { pos:(x y z):(0...1) angle:(roll pitch yaw):(%360) mm:(0...3000) }
+                    pos:(x y z):(0...1) angle:(roll pitch yaw):(%360) mm:(0...3000) }
+                pinky<->shoulder.elbow.wrist {
+                    meta<->elbow.wrist.pinky { pos:(x y z):(0...1) angle:(roll pitch yaw):(%360) mm:(0...3000) }
+                    prox<->elbow.wrist.pinky { pos:(x y z):(0...1) angle:(roll pitch yaw):(%360) mm:(0...3000) }
+                    dist<->elbow.wrist.pinky { pos:(x y z):(0...1) angle:(roll pitch yaw):(%360) mm:(0...3000) }
+                    pos:(x y z):(0...1) angle:(roll pitch yaw):(%360) mm:(0...3000) }
+                pos:(x y z):(0...1) angle:(roll pitch yaw):(%360) mm:(0...3000) }
+            pos:(x y z):(0...1) angle:(roll pitch yaw):(%360) mm:(0...3000) }
+        pos:(x y z):(0...1) angle:(roll pitch yaw):(%360) mm:(0...3000) }
+    hip<->robot.right {
+        knee<->robot.right.hip {
+            ankle<->right.hip.knee {
+                toes<->hip.knee.ankle { pos:(x y z):(0...1) angle:(roll pitch yaw):(%360) mm:(0...3000) }
+                pos:(x y z):(0...1) angle:(roll pitch yaw):(%360) mm:(0...3000) }
+            pos:(x y z):(0...1) angle:(roll pitch yaw):(%360) mm:(0...3000) }
+        pos:(x y z):(0...1) angle:(roll pitch yaw):(%360) mm:(0...3000) }
+    pos:(x y z):(0...1) angle:(roll pitch yaw):(%360) mm:(0...3000) }
+pos:(x y z):(0...1) angle:(roll pitch yaw):(%360) mm:(0...3000) }
+˚˚<->.. }
+""")
         //Tr3Log.dump()
         XCTAssertEqual(err,0)
     }

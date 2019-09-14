@@ -22,7 +22,7 @@ public class Tr3: Hashable {
     var passthrough = false         // does not have its own Tr3Val, so pass through events
     
     public var val: Tr3Val? = nil
-    var cacheVal: Any? = nil // cached value is drained
+    var cacheVal: Any? = nil        // cached value is drained
 
     var edgeDefs = Tr3EdgeDefs()    // for a<-(b.*++), this saves "++" and "b.*)
     var tr3Edges = [String:Tr3Edge]()      // some edges are defined by another Tr3
