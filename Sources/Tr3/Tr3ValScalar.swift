@@ -14,7 +14,6 @@ public class Tr3ValScalar: Tr3Val {
     var min  = Float(0) // minimum value
     var max  = Float(1) // maximum value, inclusive for thru, _max-1 for upto
     var dflt = Float(0)
-    //var span = Float(1) // increment/decrement value
 
     override init() {
         super.init()
@@ -92,7 +91,6 @@ public class Tr3ValScalar: Tr3Val {
         if rhs.valFlags.contains(.min )  { lhs.min  = rhs.min }
         if rhs.valFlags.contains(.max )  { lhs.max  = rhs.max }
         if rhs.valFlags.contains(.num )  { lhs.num  = rhs.num }
-        //if rhs.valFlags.contains(.span)  { lhs.span = rhs.span }
     }
 
     public static func == (lhs: Tr3ValScalar, rhs:Tr3ValScalar) -> Bool { return lhs.num == rhs.num }
@@ -148,7 +146,6 @@ public class Tr3ValScalar: Tr3Val {
             min = 0
             max = fmaxf(1,max)
             num = fmodf(v.num,max)
-            //span = 1
         }
         else {
             num = v.num

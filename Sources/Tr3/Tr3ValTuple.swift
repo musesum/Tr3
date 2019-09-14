@@ -119,11 +119,6 @@ public class Tr3ValTuple: Tr3Val {
             return scriptVal(prefix: prefix, parens: parens)
         }
     }
-//
-//    func getVal() -> Tr3Val? {
-//        if dflt != nil { return dflt }
-//        return nums.last ?? nil
-//    }
 
     func addPath(_ p:ParItem) {
 

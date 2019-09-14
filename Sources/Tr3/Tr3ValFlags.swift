@@ -24,7 +24,6 @@ public struct Tr3ValFlags: OptionSet {
     public static let max     = Tr3ValFlags(rawValue: 1 <<  7) // 1 in 0...1, max of range
     public static let num     = Tr3ValFlags(rawValue: 1 <<  8) // current value
     public static let dflt    = Tr3ValFlags(rawValue: 1 <<  9) // =n default value
-    public static let span    = Tr3ValFlags(rawValue: 1 << 10) // +- step count
 
     public static let quote   = Tr3ValFlags(rawValue: 1 << 11) // General type Tr3ValQuote
     public static let embed   = Tr3ValFlags(rawValue: 1 << 12) // embed script between double {{ ... }}

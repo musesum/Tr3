@@ -171,7 +171,7 @@ extension Tr3 {
         type = .remove
         // no anchor to start from so make path starting from root
         if found.isEmpty {
-            if let pathChain = makePath(name,children) {
+            if let pathChain = makePath(name,self) {
                 // e.f, a.b.c.d in `a.b.c.d { e.f }` -- in that order
                 return [pathChain]
             }

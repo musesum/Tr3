@@ -103,7 +103,7 @@ public class Tr3Parse {
             case "nums"     : val.addNums(parItem.harvestValues(["num"]))
             case "nameNums" : val.addNameNums(parItem.harvestValues(["name","num"]))
             case "scalar"   : val.dflt = Tr3ValScalar()
-            default: if val.dflt != nil { parseDeepVal(val.dflt, parItem) }// decorate default scalar
+            default         : if val.dflt != nil { parseDeepVal(val.dflt, parItem) }// decorate default scalar
             }
         case let val as Tr3ValTern:
 

@@ -299,7 +299,6 @@ panel.cell.brush {
 }
 """
 
-
 let PanelShaderColorizeTr3 =
 """
 panel.shader.colorize {

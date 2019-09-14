@@ -228,7 +228,7 @@ extension Tr3 {
                 var found = [Tr3]()
                 let anchors = findAnchor(prefix, [.parents,.children])
                 for anchori in anchors {
-                    if let foundi = anchori.makePath(suffix, []) {
+                    if let foundi = anchori.makePath(suffix, nil) {
                         found.append(foundi)
                     }
                 }
@@ -243,17 +243,18 @@ extension Tr3 {
     ///     a.b.c.d { e.f } ⟹
     ///     √ { a { b { c { d { e { f } } } } } }
     ///
-    func makePath(_ path:String,_ tailChildren:[Tr3]) -> Tr3? {
+    func makePath(_ path:String,_ head: Tr3?) -> Tr3? {
 
         let (prefix,_,suffix) = path.splitWild(".")
         if prefix != "" {
             let child = makeChild(prefix)
-            if suffix.isEmpty {
-                child.children = tailChildren
+            if suffix.isEmpty, let head = head {
+                child.children = head.children
+                child.val = head.val
             }
             else {
                 // don't return tail of path chain
-                let _ = child.makePath(suffix, tailChildren)
+                let _ = child.makePath(suffix, head)
             }
             // return nead of path chain
             return child
