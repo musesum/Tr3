@@ -266,16 +266,16 @@ final class Tr3Tests: XCTestCase {
     func testParsePaths() { print("\n━━━━━━━━━━━━━━━━━━━━━━ paths ━━━━━━━━━━━━━━━━━━━━━━\n")
         var err = 0
 
-        //!! err += test("a { b { c {c1 c2} d } } a : e", "√ { a { b { c { c1 c2 } d } e } }")
+        err += test("a { b { c {c1 c2} d } } a : e", "√ { a { b { c { c1 c2 } d } e } }")
         err += test("a { b { c d } } a { e }", "√ { a { b { c d } e } }")
-        //!! err += test("a { b { c {c1 c2} d } b.c : c3 }","√ { a { b { c { c1 c2 c3 } d } } }")
+        err += test("a { b { c {c1 c2} d } b.c : c3 }","√ { a { b { c { c1 c2 c3 } d } } }")
         err += test("a { b { c {c1 c2} d } b.c { c3 } }","√ { a { b { c { c1 c2 c3 } d } } }")
         err += test("a { b { c {c1 c2} d } b.c { c2:2 c3 } }","√ { a { b { c { c1 c2:2 c3 } d } } }")
         err += test("a { b { c d } b.e }","√ { a { b { c d e } } }")
         err += test("a { b { c d } b.e.f }","√ { a { b { c d e { f } } } }")
 
         err += test("a { b { c {c1 c2} d {d1 d2} } b.c : b.d  }", "√ { a { b { c { c1 c2 d1 d2 } d { d1 d2 } } } }")
-        //!! err += test("a { b { c d } } a : e", "√ { a { b { c d } e } }")
+        err += test("a { b { c d } } a : e", "√ { a { b { c d } e } }")
         err += test("ab { a:1 b:2 } cd:ab { a:3 c:4 d:5 } ef:cd { b:6 d:7 e:8 f:9 }",
                     "√ { ab { a:1 b:2 } cd { a:3 b:2 c:4 d:5 } ef { a:3 b:6 c:4 d:7 e:8 f:9 } }")
 

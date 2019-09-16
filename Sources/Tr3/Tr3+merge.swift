@@ -47,14 +47,7 @@ extension Tr3 {
                 sibling.name == merge.name {
 
                 foundDuplicate = true
-                merge.type = .remove
-
-                sibling.val = merge.val
-                sibling.edgeDefs.merge(merge.edgeDefs)
-                // e in `a { b { c d } } a { e }`
-                for mergeChild in merge.children {
-                    sibling.mergeDuplicate(mergeChild)
-                }
+                sibling.mergeSibling(merge)
                 break
             }
         }
@@ -67,6 +60,17 @@ extension Tr3 {
         }
     }
 
+    func mergeSibling(_ merge:Tr3) {
+        merge.type = .remove
+        if let mergeVal = merge.val {
+            val = mergeVal
+        }
+        edgeDefs.merge(merge.edgeDefs)
+        // e in `a { b { c d } } a { e }`
+        for mergeChild in merge.children {
+            mergeDuplicate(mergeChild)
+        }
+    }
     func bindMany() -> [Tr3] {
 
         var result = [Tr3]()
@@ -194,21 +198,20 @@ extension Tr3 {
 
 
     /// found unique name
-    func bindName() -> [Tr3] {
+    func bindName(_ siblings: [Tr3]) -> [Tr3] {
 
-        if let parent = parent {
 
-            for sibling in parent.children {
+            for sibling in siblings {
                 // sibling is candidate, no need to search anymore
                 if sibling.id == id {
                     return [self]
                 }
                 // found sibling with same name so merge
                 if sibling.name == name {
-                    parent.mergeDuplicate(self)
+                    sibling.mergeSibling(self)
                     return []
                 }
-            }
+
         }
         // didn't find matching sibling so is unique
         return [self]
@@ -260,7 +263,7 @@ extension Tr3 {
             case .path:   newKids.append(contentsOf: child.bindPath())
             case .many:   newKids.append(contentsOf: child.bindMany())
             case .proto:  newKids.append(contentsOf: child.bindProto())
-            case .name:   newKids.append(contentsOf: child.bindName())
+            case .name:   newKids.append(contentsOf: child.bindName(newKids))
             case .remove: break
             default:      newKids.append(child)
             }
@@ -413,28 +416,6 @@ extension Tr3 {
     ///
     func bindPrototypes() {
 
-
-        func bindProtoChildren() {
-
-            var metaKids = [[Tr3]]()
-
-            for child in children {
-                if child.type == .proto {
-                    let protoKids = child.bindProto()
-                    metaKids.insert(protoKids, at: 0) // will be overriden with non prototpe tr3s
-                }
-                else {
-                    metaKids.append([child])
-                }
-            }
-            var newKids = [Tr3]()
-            for meta in metaKids {
-                newKids.append(contentsOf: meta)
-            }
-            mergeChildren(newKids)
-            children = newKids.filter { $0.type != .remove }
-        }
-
         var hasProtoChild = false
         // depth first bind from bottom up
         for child in children {
@@ -446,7 +427,7 @@ extension Tr3 {
             }
         }
         if hasProtoChild {
-            bindProtoChildren()
+            bindChildren()
         }
     }
     ///
