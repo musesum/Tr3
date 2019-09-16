@@ -8,8 +8,8 @@ import Par
 
 public class Tr3: Hashable {
 
-    public static var dumpScript = false //!!
-    public static var makeScript = false //!!
+    public static var BindDumpScript = false // debug while binding
+    public static var BindMakeScript = false // debug while binding
 
     public var id = Visitor.nextId()
 

@@ -442,8 +442,8 @@ extension Tr3 {
     public func bindRoot() {
 
         func log(_ num:Int) {
-            if      Tr3.dumpScript { print(dumpScript() + " // \(num)") }
-            else if Tr3.makeScript { print(makeScript() + " // \(num)") }
+            if      Tr3.BindDumpScript { print(dumpScript(0,session: true) + " // \(num)") }
+            else if Tr3.BindMakeScript { print(makeScript() + " // \(num)") }
         }
         bindTopDown()     ; log(1)
         bindBottomUp()    ; log(2)
