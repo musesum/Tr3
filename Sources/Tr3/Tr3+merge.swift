@@ -413,6 +413,28 @@ extension Tr3 {
     ///
     func bindPrototypes() {
 
+
+        func bindProtoChildren() {
+
+            var metaKids = [[Tr3]]()
+
+            for child in children {
+                if child.type == .proto {
+                    let protoKids = child.bindProto()
+                    metaKids.insert(protoKids, at: 0) // will be overriden with non prototpe tr3s
+                }
+                else {
+                    metaKids.append([child])
+                }
+            }
+            var newKids = [Tr3]()
+            for meta in metaKids {
+                newKids.append(contentsOf: meta)
+            }
+            mergeChildren(newKids)
+            children = newKids.filter { $0.type != .remove }
+        }
+
         var hasProtoChild = false
         // depth first bind from bottom up
         for child in children {
@@ -424,7 +446,7 @@ extension Tr3 {
             }
         }
         if hasProtoChild {
-            bindChildren()
+            bindProtoChildren()
         }
     }
     ///
