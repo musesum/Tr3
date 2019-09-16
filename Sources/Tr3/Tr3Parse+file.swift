@@ -32,10 +32,6 @@ class BundleResource {
 
 public extension Tr3Parse {
 
-    func parseFile(_ name:String,_ ext: String) -> ParNode {
-        return ParNode("")
-    }
-
     func read(_ filename: String, _ ext:String) -> String {
 
         let resource = BundleResource(name: filename, type: ext)

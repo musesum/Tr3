@@ -52,15 +52,11 @@ final class Tr3Tests: XCTestCase {
     func testParseShort() {
 
         var err = 0
-        Tr3.dumpScript = true
 
         err += test("a {b c}:{d e}:{f g}:{h i} z -> a.b˚g.h",
                     "√ { a { b { d { f { h i } g { h i } } e { f { h i } g { h i } } } " +
                         "         c { d { f { h i } g { h i } } e { f { h i } g { h i } } } } " +
             " z->(d.g.h e.g.h) }")
-
-        Tr3.debugName = "g.h"
-        Tr3.dumpScript = false
 
         err += test("a b c a<-b a<-c","√ { a<-(b c) b c }")
 

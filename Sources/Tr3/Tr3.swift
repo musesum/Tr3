@@ -10,7 +10,6 @@ public class Tr3: Hashable {
 
     public static var dumpScript = false //!!
     public static var makeScript = false //!!
-    public static var debugName = "" //!!
 
     public var id = Visitor.nextId()
 
