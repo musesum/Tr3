@@ -18,12 +18,12 @@ Nodes
 
     A tree can be decorated with another tree
 
-        a { b c }:{d e} // produces a { b { d e } c { d e } }
+        a {b c}:{d e} // produces a { b { d e } c { d e } }
 
     A tree can subclass another tree
 
-        a { b c }:{d e} 
-        z:a         // produces z { b { d e } c { d e } }
+        a {b c}:{d e} 
+        z:a  // produces z { b { d e } c { d e } }
 
 Edges
 
@@ -52,7 +52,6 @@ Edges
         c -> a -> b
     
     This is a simple way to synchronize a model. Akin to how a co-pilot wheel synchronize in an airplane.
-    
 
 Values
 
@@ -62,7 +61,7 @@ Values
         b: (0…1)            // a ranged value between 0 and 1
         c: (0…127=1)        // a ranged vale between 0 and 127, with initial value of 1
         d: ( 0 0 0)         // three unnamed float values
-        e:  (x y z):(0…1=0) // three named float values with range 0…1=0
+        e: (x y z):(0…1=0)  // three named float values with range 0…1=0
         f: "yo"             // a string value "yo"
 
     Tr3 automatically remaps scalar ranges, given the nodes  b & c
@@ -82,9 +81,9 @@ Values
 
 
     Nodes may pass through values
-        a:(0…1) - > b  // may pass along value to b
-        b -> c         // has no value to fowards to c
-        c:(0…10)    // gets a's value via b
+        a:(0…1) -> b  // may pass along value to b
+        b -> c        // has no value to fowards to c
+        c:(0…10)      // gets a's value via b
 
     Edges may contain values
 
@@ -96,22 +95,22 @@ Overrides, and wildcards
 
     override nodes with values
 
-        a {b c} :{d e}     // produces  a { b { d e } c { d e } 
-        a.b.d:1    // results in  a { b { d:1 e } c { d e } 
+        a {b c}:{d e}   // produces  a { b { d e } c { d e } 
+        a.b.d:1         // results in  a { b { d:1 e } c { d e } 
 
     Wildcard connections, with new ˚ (option-k) wildcard
 
-        p <- a.*.d      // produces p <- (a.b.d a.c.d)
-        q <- a˚d        // produces q <- (a.b.d a.c.d)
-        r <- a˚.        // produces r <- (a.b.d a.b.e a.c.d a.c.e)
-        s<- a˚˚         // produces s <- (a a.b a.b.d a.b.e a.c a.c.d a.c.e)
+        p <- a.*.d  // produces p <- (a.b.d a.c.d)
+        q <- a˚d    // produces q <- (a.b.d a.c.d)
+        r <- a˚.    // produces r <- (a.b.d a.b.e a.c.d a.c.e)
+        s<- a˚˚     // produces s <- (a a.b a.b.d a.b.e a.c a.c.d a.c.e)
 
     In above, the ˚ operators is akin to an xpath's // search node no mater where they are
     Variations include ˚. to find leaf nodes, ˚˚ include all greedy all nodes
     
-        ˚˚<-..        // flow from each node to its parent, bottom up
-        ˚˚->.*        // flow from each node to its children, top down
-        ˚˚<->..       // flow in both directions,  middle out? 
+        ˚˚<-..      // flow from each node to its parent, bottom up
+        ˚˚->.*      // flow from each node to its children, top down
+        ˚˚<->..     // flow in both directions,  middle out? 
         
     Because the visitor pattern breaks loops, the ˚˚<->..  maps well to devices that combine
     sensors and actuators, such as a flying fader on a mix board, a co-pilot's steering wheel,
@@ -136,7 +135,7 @@ Data flow ternaries
 
     when a comparison changes is state, it reevaluates its chain of conditions
         so if q changes it state to 1, it recalcs p > q and n > p
-    
+
 
     ternaries act are like railroad switches, 
         the condition merely switches the gate
@@ -284,13 +283,6 @@ Future
         support new scalars for ML
 
 Research
-
-    Bio Neurons have axons with thousands of connections to nodes
-        Neocortex described has having a hierarchy of neurons
-        conjecture - possibly an n-gram of context
-            can be modeled with McCullough-Pitts [Culbertson Brains of Robots]
-            use neuro-plasticity to reconfigure n-grams
-            maybe a biological Huffman machine
 
     Tr3 Visitor pattern is an artificial n-gram
         set of nodes may be enhanced with ADSR Envelops
