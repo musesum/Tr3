@@ -9,13 +9,14 @@ Tr3 is a data flow graph with the following features
 Nodes
 
     Each node at least one parent node and zero or more child nodes:
-
+```c
         a  { b c }   // a has two children b & c while b & c have one parent a
-
+```
     Declaring a path will auto create a tree of names
 
+```
         a.b.c // produces the structure a { b { c }  }
-
+```
     A tree can be decorated with another tree
 
         a {b c}:{d e} // produces a { b { d e } c { d e } }
@@ -287,9 +288,9 @@ Future
 Research
 
     Creating an artificial Temporal Huffman machine
-        Visitor pattern collect previously visited nodes
-        Apply attack waveforms (ADSR) to attenuate vivacity of visited Node
-        Aggregate visitor set vivacities to active sooner for higher probabilities
+        Given that a Visitor pattern already collects previously visited nodes
+        Apply attack waveforms (ADSR) to attenuate vivacity of each visited Node
+        Aggregate vivacities to active higher probabilities sooner
         Apply refractory periods to block lower probabiliites
         
     Model biolocical Neocortex
