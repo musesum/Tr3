@@ -4,7 +4,7 @@ Tr3 is a data flow graph with the following features
 
     Nodes with: edges, values, and closures
     Edges connecting: namespace, inputs, and outputs
-    Script describing in idiomatic Swift
+    Script describing graph in idiomatic Swift
 
 Nodes
 
@@ -57,37 +57,36 @@ Values
 
     Each node may have scalar, tuple, or string
         
-        a: 1                // an initial value of 1
-        b: (0…1)            // a ranged value between 0 and 1
-        c: (0…127=1)        // a ranged vale between 0 and 127, with initial value of 1
-        d: ( 0 0 0)         // three unnamed float values
-        e: (x y z):(0…1=0)  // three named float values with range 0…1=0
-        f: "yo"             // a string value "yo"
+        a: 1                    // an initial value of 1
+        b: (0...1)              // a ranged value between 0 and 1
+        c: (0...127=1)          // a ranged vale between 0 and 127, with initial value of 1
+        d: ( 0 0 0)             // three unnamed float values
+        e: (x y z):(0...1=0)    // three named float values with range 0...1=0
+        f: "yo"                 // a string value "yo"
 
     Tr3 automatically remaps scalar ranges, given the nodes  b & c
 
-        b: (0…1)        // range 0 to 1
-        c: (0…127=1)    // range 0 to 127, with initial value of 1    
-
+        b: (0...1)      // range 0 to 1
+        c: (0...127=1)  // range 0 to 127, with initial value of 1    
         b <-> c         // connect b and c and auto-remap values
     
     When the value of b is changed to 0.5, it activates C and remaps its value to 63. 
 
     A common case are sensors, which may a fixed range of values. 
-    For example: a 3G (gravity) accelerometer  may have a range been -3.0 … 3.0, 
+    For example: a 3G (gravity) accelerometer  may have a range been -3.0...3.0, 
             
-        accelerometer: (x y z):(-3.0…3.0) <-> model
-        model: (x y z):(-1…1)
+        accelerometer: (x y z):(-3.0...3.0) -> model
+        model: (x y z):(-1...1) // rescale 
 
 
     Nodes may pass through values
-        a:(0…1) -> b  // may pass along value to b
-        b -> c        // has no value to fowards to c
-        c:(0…10)      // gets a's value via b
+        a:(0...1) -> b  // may pass along value to b
+        b -> c          // has no value; fowards a to c
+        c:(0...10)      // gets a's value via b
 
     Edges may contain values
 
-        a -> b:1 // an activated a sends an ranged 1 to b
+        d -> c:(0...1):1 // an activated d sends an ranged 1 to b
         
 
 Overrides, and wildcards
@@ -103,7 +102,7 @@ Overrides, and wildcards
         p <- a.*.d  // produces p <- (a.b.d a.c.d)
         q <- a˚d    // produces q <- (a.b.d a.c.d)
         r <- a˚.    // produces r <- (a.b.d a.b.e a.c.d a.c.e)
-        s<- a˚˚     // produces s <- (a a.b a.b.d a.b.e a.c a.c.d a.c.e)
+        s <- a˚˚    // produces s <- (a a.b a.b.d a.b.e a.c a.c.d a.c.e)
 
     In above, the ˚ operators is akin to an xpath's // search node no mater where they are
     Variations include ˚. to find leaf nodes, ˚˚ include all greedy all nodes
@@ -117,7 +116,7 @@ Overrides, and wildcards
     or the joints on an android robot. 
 
 
-Data flow ternaries
+Ternaries
 
     conditionals may switch the flow of data
 
@@ -143,7 +142,6 @@ Data flow ternaries
             when b acts, ic connects c and disconnects d 
             when n acts, it connects n1 and disconnects p1 and q1
 
-        
 Closures
     
     A .swift source may attach a closure to a Tr3 node 
@@ -157,7 +155,7 @@ Closures
     which then updates its internal value brushRadius. 
     (BTW, the ˚ in brushSize˚ is merely a naming convention; you can call it anything)
 
-Embedded - part of the language definition includes embedding
+Embedded  Script
 
         shader {{
             // Metal or Vulcan code goes here
@@ -202,6 +200,7 @@ Use cases
         Model sensors and traffic signals into a ontology.
         Apply Machine learning to find threats and optimize energy and flow of people
         Contingency planning by apply GANs
+
     
 Companion packages, upcoming
 
@@ -231,14 +230,9 @@ Implications
         While the visitor pattern naturally maps to multithreading on a traditional CPU,
         it also maps to neuropmorpic computing, where each node is its own processor,
         comparing its ID with the visitors ID and refusing to activate if already visited. 
-        The maps to biological models of  neurons [McCoullough-Pitts] which have a refractory period.
-        A future version of Tr3 will extend this potential further with timed refractor perios
+        Somewhat akin to the McCoullough-Pitts neural model, which modelled a refractory period.
+        A future version of Tr3 will refractory periods at the node level.  
         
-    Secure computing 
-
-        There are also secure computing implications, where in addition to breaking loops, the node
-        verifies synchronization of state, where upon a closure is activated only after making a round
-        trip synchronizing its companion nodes.         
     
 Future
 
@@ -278,17 +272,31 @@ Future
         
     compiler
  
-        ostensibly integrate with MLIR
-        add support AutoGraph like tool which converts procedural code to a TF graph
+        ostensibly integrate with TensorFlow/MLIR a
+        support an AutoGraph-like conversion of procedural code to a flow graph
         support new scalars for ML
+        
+    Secure computing with Petri Nets
+
+         The visitor pattern collects previously visisted nodes, 
+            whereby the node to stops if it had already been visited once. 
+        An secure synchronization could extend the visitor set,
+            whereby the node only executes only when a required set matches.
+               
 
 Research
 
-    Tr3 Visitor pattern is an artificial n-gram
-        set of nodes may be enhanced with ADSR Envelops
-        emulating axons with neuroplastic snyaptic thresholds
-        persisting on each node as a set of attack envelopes 
-
+    Creating an artificial Temporal Huffman machine
+        Visitor pattern collect previously visited nodes
+        Apply attack waveforms (ADSR) to attenuate vivacity of visited Node
+        Aggregate visitor set vivacities to active sooner for higher probabilities
+        Apply refractory periods to block lower probabiliites
+        
+    Model biolocical Neocortex
+        Support runtime generation of connections to emulate neuroplasticity
+        Apply MLIR to support upto 30K edges to simulate Axon connections
+        Apply to realtime handwriting recognition
+        
 
 
 
