@@ -1,3 +1,14 @@
+//
+//  Tr3.swift
+//  Par
+//
+//  Created by warren on 11/14/17.
+//  Copyright © 2019 Muse Dot Company
+//  License: Apache 2.0 - see License file
+
+// this it language definition for the Tr3 Script,
+// which is read by the Par package to produce a parse Graph
+// A prettier version of this string is in Tr3.par.h
 public let Tr3Par =
 #"""
 tr3 : left right* {

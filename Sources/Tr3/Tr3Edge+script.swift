@@ -1,9 +1,8 @@
-//
 //  Tr3Edge+script.swift
-//  Par iOS
 //
 //  Created by warren on 5/18/19.
-//
+//  Copyright © 2019 Muse Dot Company
+//  License: Apache 2.0 - see License file
 
 import Foundation
 

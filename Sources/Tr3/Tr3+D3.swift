@@ -3,8 +3,8 @@
 //  Tr3Graph
 //
 //  Created by warren on 6/22/19.
-//  Copyright © 2019 Muse. All rights reserved.
-//
+//  Copyright © 2019 Muse Dot Company
+//  License: Apache 2.0 - see License file
 
 import Foundation
 extension Tr3Edge {

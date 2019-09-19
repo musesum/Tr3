@@ -1,9 +1,8 @@
-//
-//  Tr3+Find.swift
-//  Par
+///  Tr3+Merge.swift
 //
 //  Created by warren on 4/8/19.
-//
+//  Copyright © 2019 Muse Dot Company
+//  License: Apache 2.0 - see License file
 
 import Foundation
 import Par // whitespace

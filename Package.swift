@@ -12,7 +12,6 @@ let package = Package(
     dependencies: [
         .package(url: "https://github.com/musesum/Par.git", from: "0.1.2"),
         //.package(path: "../Par"),
-        //.package(path: "../Resources"),
     ],
     targets: [
         .target(

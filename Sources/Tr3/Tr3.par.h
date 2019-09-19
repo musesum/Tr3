@@ -1,6 +1,5 @@
-// This Tr3.par file renamed to Tr3.par.h in the Swift package to allow xcode to do some syntax highlighting.
-// As of Sept 2019, cannot read a resource from a Swift package, may get resolved by a later version of SPM
-// So, this Tr3.par file declared as a string in Tr3.par.swift
+// This Tr3.par file renamed to Tr3.par.h to allow xcode to do some syntax highlighting.
+// This file is ignored by the parser. The real source is a string Tr3Par, in Tr3.par.swift.
 
 tr3 : left right* {
 
@@ -59,5 +58,5 @@ tr3 : left right* {
     array   : '^\:?\[[ ]*([0-9]+)[ ]*\]'
     comment : '^[/][/][ ]*((.*?)[\r\n]+|^[ \r\n\t]+)'
     compare : '^[<>!=][=]?'
-    embed   : '^[{][{](?s)(.*?)[}][}]'"
+    embed   : '^[{][{](?s)(.*?)[}][}]'
 }

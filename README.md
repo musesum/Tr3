@@ -1,30 +1,29 @@
 # Tr3
 
-Tr3 is a data flow graph with the following features
+Tr3 (pronounced "Tree") is a functional data flow graph with the following features
 
     Nodes with: edges, values, and closures
-    Edges connecting: namespace, inputs, and outputs
+    Edges connecting: namespace hierarchy, inputs, and outputs
     Script describing graph in idiomatic Swift
 
 Nodes
 
     Each node at least one parent node and zero or more child nodes:
-```c
+
         a  { b c }   // a has two children b & c while b & c have one parent a
-```
+        
     Declaring a path will auto create a tree of names
 
-```
-        a.b.c // produces the structure a { b { c }  }
-```
+        a.b.c // produces the structure a { b { c } }
+        
     A tree can be decorated with another tree
 
         a {b c}:{d e} // produces a { b { d e } c { d e } }
 
     A tree can subclass another tree
 
-        a {b c}:{d e} 
-        z:a  // produces z { b { d e } c { d e } }
+        a {b c}:{d e}   // produces a { b { d e } c { d e } }
+        z:a             // produces z { b { d e } c { d e } }
 
 Edges
 
@@ -52,7 +51,7 @@ Edges
         b -> c -> a
         c -> a -> b
     
-    This is a simple way to synchronize a model. Akin to how a co-pilot wheel synchronize in an airplane.
+    This is a simple way to synchronize a model. Akin to how a co-pilot's wheel synchronizes in a cockpit.
 
 Values
 
@@ -65,15 +64,15 @@ Values
         e: (x y z):(0...1=0)    // three named float values with range 0...1=0
         f: "yo"                 // a string value "yo"
 
-    Tr3 automatically remaps scalar ranges, given the nodes  b & c
+    Tr3 automatically remaps scalar ranges, given the nodes b & c
 
         b: (0...1)      // range 0 to 1
         c: (0...127=1)  // range 0 to 127, with initial value of 1    
-        b <-> c         // connect b and c and auto-remap values
+        b <-> c         // synchronize b and c and auto-remap values
     
     When the value of b is changed to 0.5, it activates C and remaps its value to 63. 
 
-    A common case are sensors, which may a fixed range of values. 
+    A common case are sensors, which have a fixed range of values. 
     For example: a 3G (gravity) accelerometer  may have a range been -3.0...3.0, 
             
         accelerometer: (x y z):(-3.0...3.0) -> model
@@ -83,7 +82,7 @@ Values
     Nodes may pass through values
         a:(0...1) -> b  // may pass along value to b
         b -> c          // has no value; fowards a to c
-        c:(0...10)      // gets a's value via b
+        c:(0...10)      // gets a's value via b, remaps ranges
 
     Edges may contain values
 
@@ -134,7 +133,7 @@ Ternaries
         m <-> (n > p ? n1 | p > q ? p1 | q > 0 ? q1) // radio button style
 
     when a comparison changes is state, it reevaluates its chain of conditions
-        so if q changes it state to 1, it recalcs p > q and n > p
+        so if q changes its state to 1, it recalcs p > q and n > p
 
 
     ternaries act are like railroad switches, 
@@ -172,18 +171,27 @@ Use cases
          Toy Visual Synth for iPad and iPhone called "Muse Sky"
              coming soon to Apple App store late 2019/2020
         encourage users to tweak Tr3 scripts without recompiling
-        pass along Tr3 scripts, somewhat akin to Midi files for music synthese
+        pass along Tr3 scripts, somewhat akin to Midi files for music synthesis
         connect musical instruments to visual synth via OSC, Midi, or proprietary
         inspired by
-             analog music synthesizers, like Moog Modular, Arp 260, with patchcords
-            dataflow languages : Max, Plogue, QuartzComposer, VVVV, TensorFlow
+            analog music synthesizers, like Moog Modular, Arp 260, with patchcords
+            dataflow languages : Max, QuartzComposer, TensorFlow
         
     Avatars and Robots
 
-        Check out Robot.h, which shows an android robot skeleton defined in 3 lines of code. 
+        Check out Robot.h, which shows the output of 
+            an android robot skeleton defined in 3 lines of code: 
+        
+            robot {left right}:{shoulder.elbow.wrist {thumb index middle ring pinky}:{meta prox dist} hip.knee.ankle.toes}
+            ˚˚ <-> .. // connect every node to its parent
+            ˚˚:{pos:(x y z):(0...1) angle:(roll pitch yaw):(%360) mm:(0...3000)})
+        
         Apply machine learning to representation of graph
             Record total state of graph <- robot˚˚
             Playback total state of graph -> robot˚˚
+            
+        Inspired by a Kinect/OpenNI experiment shown [here](https://www.youtube.com/watch?v=aFO6j6tvdk8)
+        
 
     SpaceCraft NASA Virtual IronBird
 
@@ -203,11 +211,25 @@ Use cases
         Contingency planning by apply GANs
 
     
-Companion packages, upcoming
+Companion packages
 
-    Par - tree + graph base parser, contains a definition of the Tr3 Syntax
-    Tr3D3 - a simple visualization of the graph (long term goal is to make interactive)
-    Tr3Thumb - Tr3 based UI
+    Par - parser for DSLs and flexible NLP in Swift 
+        tree + graph base parser
+        contains a definition of the Tr3 Syntax
+        vertically integrated with Tr3 
+        Source [here](https://github.com/musesum/Par)
+            
+        
+    Tr3D3 (pending)
+        simple visualization of the Tr3 graph 
+        continuation of prototype of previous version of Tr3 
+        Demo [here]( https://www.youtube.com/watch?v=a703TTbxghc)
+           
+
+    Tr3Dock (pending)
+        Tr3 based UI 
+        Demo [here](https://www.youtube.com/watch?v=peZFo8JnhuU)
+        
 
 Implications
 
@@ -240,8 +262,8 @@ Future
     parsing 
 
         Better error trapping for parsing errors
-        Merge with ParGraph, parse through Tr3, vs Par
-        command line manipulation of graph
+        Merge with Par, where modified BNF becomes a value type
+        command line interpreter to create and manipulate graphs
 
     values
 
@@ -252,7 +274,7 @@ Future
 
         Refractory periods for edges (ADSR style)
         change parent [child] contains to edges
-        support Neuroplasticity 
+        rutime edge creation, akin to neuroplasticity 
     
     compute shaders -> compiler
  
@@ -287,13 +309,13 @@ Future
 
 Research
 
-    Creating an artificial Temporal Huffman machine
+    Create an artificial Temporal Huffman machine
         Given that a Visitor pattern already collects previously visited nodes
         Apply attack waveforms (ADSR) to attenuate vivacity of each visited Node
         Aggregate vivacities to active higher probabilities sooner
         Apply refractory periods to block lower probabiliites
         
-    Model biolocical Neocortex
+    Model biological Neocortex
         Support runtime generation of connections to emulate neuroplasticity
         Apply MLIR to support upto 30K edges to simulate Axon connections
         Apply to realtime handwriting recognition

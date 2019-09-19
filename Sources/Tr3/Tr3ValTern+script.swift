@@ -1,9 +1,8 @@
-//
 //  Tr3ValTern+script.swift
-//  Par
 //
 //  Created by warren on 6/3/19.
-//
+//  Copyright © 2019 Muse Dot Company
+//  License: Apache 2.0 - see License file
 
 import Foundation
 

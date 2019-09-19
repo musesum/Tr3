@@ -1,9 +1,8 @@
-//
-//  Tr3Parse+script.swift
-//  Par iOS
+//  Tr3Parse+log.swift
 //
 //  Created by warren on 4/12/19.
-//
+//  Copyright © 2019 Muse Dot Company
+//  License: Apache 2.0 - see License file
 
 import Foundation
 import Par

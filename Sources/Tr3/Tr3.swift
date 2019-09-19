@@ -3,7 +3,9 @@
 //  Par
 //
 //  Created by warren on 3/7/19.
-//
+//  Copyright © 2019 Muse Dot Company
+//  License: Apache 2.0 - see License file
+
 import Par
 
 public class Tr3: Hashable {

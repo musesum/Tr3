@@ -1,9 +1,8 @@
-//
 //  Tr3EdgeDef+connect.swift
-//  Par
 //
 //  Created by warren on 4/29/19.
-//
+//  Copyright © 2019 Muse Dot Company
+//  License: Apache 2.0 - see License file
 
 import Foundation
 

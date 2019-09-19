@@ -1,9 +1,9 @@
 //
-//  File.swift
+//  Tr3Cache.swift
 //  
-//
 //  Created by warren on 7/17/19.
-//
+//  Copyright © 2019 Muse Dot Company
+//  License: Apache 2.0 - see License file
 
 import Foundation
 import Par

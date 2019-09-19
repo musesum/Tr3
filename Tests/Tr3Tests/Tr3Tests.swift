@@ -473,7 +473,7 @@ avatar {left right}:{shoulder.elbow.wrist {thumb index middle ring pinky}:{meta 
 
 
         err += test(
-            """
+"""
 robot {left right}:{shoulder.elbow.wrist {thumb index middle ring pinky}:{meta prox dist} hip.knee.ankle.toes}
 ˚˚ <-> ..
 ˚˚:{pos:(x y z):(0...1) angle:(roll pitch yaw):(%360) mm:(0...3000)})
