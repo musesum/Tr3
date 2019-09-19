@@ -181,6 +181,9 @@ Use cases
     Platform for visual music synthesis and real-time media performance
         
         Toy Visual Synth for iPad and iPhone called "Muse Sky"
+            See script in Tests/Tr3Tests/testSky()
+                pretty version of output in  Tests/Tr3Tests/SkyOutput.h
+                    code folding and syntax highlighting works in Xcode
              coming soon to Apple App store late 2019/2020
              Demo [here](https://www.youtube.com/watch?v=peZFo8JnhuU)
              
@@ -207,9 +210,9 @@ Use cases
             Record total state of graph <- robot˚˚
             Playback total state of graph -> robot˚˚
             
-        Inspired by a Kinect/OpenNI experiment shown [here](https://www.youtube.com/watch?v=aFO6j6tvdk8)
+        Inspired by a Kinect/OpenNI experiment 
+            shown [here](https://www.youtube.com/watch?v=aFO6j6tvdk8)
         
-
     SpaceCraft NASA Virtual IronBird
 
         NASA conference on representing spacecraft in an functional ontology

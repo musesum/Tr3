@@ -877,6 +877,7 @@ pos:(x y z):(0...1) angle:(roll pitch yaw):(%360) mm:(0...3000) }
         XCTAssertEqual(err,0)
     }
     func testSky() { print("\n━━━━━━━━━━━━━━━━━━━━━━ \(#function) ━━━━━━━━━━━━━━━━━━━━━━\n")
+    
         var err = 0
         let root = Tr3("√")
         let tr3Parse = Tr3Parse()
