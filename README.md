@@ -3,7 +3,7 @@
 Tr3 (pronounced "Tree") is a functional data flow graph with the following features
 
     Nodes with: edges, values, and closures
-    Edges connecting: namespace hierarchy, inputs, and outputs
+    Edges connecting: namespace tree, inputs, and outputs              
     Script describing graph in idiomatic Swift
 
 Nodes
@@ -86,7 +86,7 @@ Values
 
     Edges may contain values
 
-        d -> c:(0...1):1 // an activated d sends an ranged 1 to b
+        d -> e:(0...1):1 // an activated d sends an ranged 1 to e
         
 
 Overrides, and wildcards
@@ -94,7 +94,7 @@ Overrides, and wildcards
 
     override nodes with values
 
-        a {b c}:{d e}   // produces  a { b { d e } c { d e } 
+        a {b c}:{d e}   // produces    a { b { d   e } c { d e } 
         a.b.d:1         // results in  a { b { d:1 e } c { d e } 
 
     Wildcard connections, with new ˚ (option-k) wildcard
@@ -120,27 +120,39 @@ Ternaries
 
     conditionals may switch the flow of data
 
-        a -> (b ? c : d) // a flows to either c or d, when b activates
-        e <- (f ? g : h) // f directs flow from either g or h, when f acts
-        i <-> (j ? k : l) // i synchronizes with either k or l, when j acts
+        a -> (b ? c : d)    // a flows to either c or d, when b activates
+        e <- (f ? g : h)    // f directs flow from either g or h, when f acts
+        i <-> (j ? k : l)   // i synchronizes with either k or l, when j acts
         m <-> (n ? n1 | p ? p1 | q ? q1) //  radio button style
 
     conditionals may also compare its state
     
-        a -> (b > 0 ? c : d) // a flows to either c or d, when b activates
-        e <- (f == 1 ? g : h) // f directs flow from either g or h, when f acts
-        i <-> (j1 < j2 ? k : l) // i synchronizes with either k or l, when j acts
+        a -> (b > 0 ? c : d) // a flows to either c or d, when b acts (default behavior)
+        e <- (f == 1 ? g : h) // g or h flows to e, based on last f activation
+        i <-> (j1 < j2 ? k : l) // i syncs with either k or l, based on last j1 or j2 acts
         m <-> (n > p ? n1 | p > q ? p1 | q > 0 ? q1) // radio button style
 
     when a comparison changes is state, it reevaluates its chain of conditions
-        so if q changes its state to 1, it recalcs p > q and n > p
+    
+        when b activates, it reevaluates b > 0
+        when f activates, it reevaluates f == 1
+        when either j1 or j2 activates, it reevals j1 < j2
+        when n, p, or q acts, it reevals n>p, p>q, and q>0
 
-
-    ternaries act are like railroad switches, 
+    ternaries act like railroad switches 
+    
         the condition merely switches the gate
-        each action within that gate does not need reinvoke the condition
-            when b acts, ic connects c and disconnects d 
-            when n acts, it connects n1 and disconnects p1 and q1
+        
+        each event passing through that gate does not need reinvoke the condition
+            when b acts, it connects c and disconnects d 
+            when n, p, or q acts, it is switching between n1, p1, q1
+    
+    ternaries may aggregate or broadcast
+    
+        a:{b c}:{d e}:{f g} // produces a{ b { d { f g } e { f g } } c { d { f g } e { f g } }
+        p -> (a.b ? b˚. | a.c ? c˚.) // broadcast p to all leaf nodes of either b or c
+        q <- (a.b ? b˚. | a.c ? c˚.) // aggregate to q from all leaves of either b or c
+            
 
 Closures
     
@@ -168,11 +180,16 @@ Use cases
 
     Platform for visual music synthesis and real-time media performance
         
-         Toy Visual Synth for iPad and iPhone called "Muse Sky"
+        Toy Visual Synth for iPad and iPhone called "Muse Sky"
              coming soon to Apple App store late 2019/2020
+             Demo [here](https://www.youtube.com/watch?v=peZFo8JnhuU)
+             
         encourage users to tweak Tr3 scripts without recompiling
+        
         pass along Tr3 scripts, somewhat akin to Midi files for music synthesis
-        connect musical instruments to visual synth via OSC, Midi, or proprietary
+        
+        connect musical instruments to visual synth via OSC, Midi, or proprietary APIs
+        
         inspired by
             analog music synthesizers, like Moog Modular, Arp 260, with patchcords
             dataflow languages : Max, QuartzComposer, TensorFlow
