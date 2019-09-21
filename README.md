@@ -24,7 +24,7 @@ a {b c}:{d e} // produces a { b { d e } c { d e } }
 A tree can subclass another tree
 ```swift
 a {b c}:{d e} // produces a { b { d e } c { d e } }
-z:a // produces z { b { d e } c { d e } }
+z:a           // produces z { b { d e } c { d e } }
 ```
 ### Edges
 
@@ -40,15 +40,15 @@ Nodes can have activation loops:
 ```swift
 a -> b // if a activates, it will active b
 b -> c // which, in turn, actives c
-c -> a // but, c stops here
+c -> a // and finally, c stops here
 ```
-A Tr3 event collects a set of nodes it has visited.
-When it find a node it already has visited, it stops.
-So, in the a,b,c example, the activation could start anywhere:
+A Tr3 event collects a set of nodes it has visited. When it find a node it already has visited, it stops.
+
+So, in the above `a`,`b`,`c` example, the activation could start anywhere:
 ```swift
-a -> b -> c
-b -> c -> a
-c -> a -> b
+a -> b -> c // starts at a, stops at c
+b -> c -> a // starts at b, stops at a
+c -> a -> b // starts at c, stops at b
 ```
 This is a simple way to synchronize a model. Akin to how a co-pilot's wheel synchronizes in a cockpit.
 
@@ -63,15 +63,17 @@ d: (0 0 0)      // three unnamed float values
 e: (x y z):(0...1=0) // three named float values with range 0...1=0
 f: "yo"         // a string value "yo"
 ```
-Tr3 automatically remaps scalar ranges, given the nodes b & c
+Tr3 automatically remaps scalar ranges, given the nodes `b` & `c`
 ```swift 
 b: (0...1)      // range 0 to 1
 c: (0...127=1)  // range 0 to 127, with initial value of 1
 b <-> c         // synchronize b and c and auto-remap values
 ```
-When the value of b is changed to 0.5, it activates C and remaps its value to 63.
-A common case are sensors, which have a fixed range of values.
-For example: a 3G (gravity) accelerometer  may have a range been -3.0...3.0,
+When 
+- the value of `b` is changed to `0.5`, 
+- it activates `C` and remaps its value to `63`
+
+A common case are sensors, which have a fixed range of values. For example: a 3G (gravity) accelerometer  may have a range been `-3.0...3.0`,
 ```swift 
 accelerometer: (x y z):(-3.0...3.0) -> model
 model: (x y z):(-1...1) // rescale
@@ -90,8 +92,8 @@ d -> e:(0...1):1 // an activated d sends an ranged 1 to e
 
 override nodes with values
 ```swift
-a {b c}:{d e} // produces    a { b { d e } c { d e }
-a.b.d:1       // results in  a { b { d:1 e } c { d e }
+a {b c}:{d:1 e} // produces    a { b { d:1 e } c { d:1 e }
+a.b.d:2         // results in  a { b { d:2 e } c { d:1 e }
 ```
 Wildcard connections, with new ˚ (option-k) wildcard
 ```swift
@@ -100,15 +102,18 @@ q <- a˚d    // produces q <- (a.b.d a.c.d)
 r <- a˚.    // produces r <- (a.b.d a.b.e a.c.d a.c.e)
 s <- a˚˚    // produces s <- (a a.b a.b.d a.b.e a.c a.c.d a.c.e)
 ```
-In above, the ˚ operators is akin to an xpath's // search node no mater where they are
+In above, the `˚` operator is akin to an xpath's `//` search node anywhere in subtree
 
-Variations include ˚. to find leaf nodes, ˚˚ include all greedy all nodes
+Variations include `˚.` to find leaf nodes, `˚˚` include all greedy all nodes
 ```swift
 ˚˚<-..  // flow from each node to its parent, bottom up
 ˚˚->.*  // flow from each node to its children, top down
 ˚˚<->.. // flow in both directions,  middle out?
 ```
-Because the visitor pattern breaks loops, the ˚˚<->..  maps well to devices that combine sensors and actuators, such as a flying fader on a mix board, a co-pilot's steering wheel, or the joints on an android robot.
+Because the visitor pattern breaks loops, the `˚˚<->..`  maps well to devices that combine sensors and actuators, such as:
+-  a flying fader on a mix board, 
+- a co-pilot's steering wheel, or 
+- the joints on an android robot.
 
 ### Ternaries
 
@@ -138,7 +143,7 @@ Ternaries act like railroad switches the condition merely switches the gate, whe
 - when `b` acts, it connects `c` and disconnects `d`
 - when `n`, `p`, or `q` acts, it is switching between `n1`, `p1`, `q1`
 
-ternaries may aggregate or broadcast
+Ternaries may aggregate or broadcast
 ```swift
 a:{b c}:{d e}:{f g} // produces a{b {d {f g} e {f g}} c {d {f g} e {f g}}
 p -> (a.b ? b˚. | a.c ? c˚.) // broadcast p to all leaf nodes of either b or c
@@ -165,7 +170,7 @@ shader {{
 ```
 The previous version of Tr3 supported embed OpenGL Shaders. Which could be compiled at runtime.
 
-The new version of Tr3 will support embedded Metal Shaders. Untested with toy app: "Muse Sky.
+The new version of Tr3 will support embedded Metal Shaders. Untested with toy app: "Muse Sky"
 
 ## Use cases
 
@@ -183,7 +188,7 @@ encourage users to tweak Tr3 scripts without recompiling
 - connect musical instruments to visual synth via OSC, Midi, or proprietary APIs
 
 inspired by
-- analog music synthesizers, like Moog Modular, Arp 2600, with patchcords
+- analog music synthesizers, like Moog Modular, Arp 2600, with patchchords
 - dataflow languages : Max, QuartzComposer, TensorFlow
 
 #### Avatars and Robots
@@ -199,9 +204,9 @@ Apply machine learning to representation of graph
 - Playback total state of `graph -> robot˚˚`
 - Inspired by a Kinect/OpenNI experiment, shown [here](https://www.youtube.com/watch?v=aFO6j6tvdk8)
 
-#### SpaceCraft NASA Virtual IronBird
+#### SpaceCraft - NASA's Virtual IronBird
 
-NASA conference on representing spacecraft in an functional ontology
+NASA conference on representing spacecraft in a functional ontology
 - Simulate spacecraft by mapping all architecture, sensor, actuators
 - Contingency planning by apply GANs (Generative Adversarial Networks)
 
@@ -229,13 +234,12 @@ Tr3D3 (pending)
 
 - simple visualization of the Tr3 graph, using D3JS
 - continuation of prototype of previous version of Tr3
-- Proof of concept [here]( https://www.youtube.com/watch?v=a703TTbxghc)
-(from previous version of Tr3, using Prefuse Toolkit)
+- Proof of concept [here]( https://www.youtube.com/watch?v=a703TTbxghc) (from previous version of Tr3)
 
 Tr3Dock (pending)
 
-- Tr3 based UI
-- Demo [here](https://www.youtube.com/watch?v=peZFo8JnhuU)
+- Tr3 based UI with dataflow broadcasting and ternaries 
+- Demo of UI [here](https://www.youtube.com/watch?v=peZFo8JnhuU)
 
 #### Implications
 
@@ -247,22 +251,35 @@ Tr3 runtime was ported from C++ to Swift. There were several incentives:
 - Future support for `TensorFlow/MLIR`
 
 Works well within XCode IDE
-- special attention to syntax highlighting and code folding in XCode
-- Tr3 script follows Swift idiom
+- syntax highlighting similar to Swift 
+- code folding of hierarchy works
 
 Cross between Swift and Json
-- no parsing conveniences like `;` and `,` that obfuscate Human readability
+- Tr3 syntax follows Swift idiom
+- eliminates`;` and `,` which obfuscates readability
 - intermediate step between scripting and compiling 
 
 #### Amorphous computation:
 
-While the visitor pattern naturally maps to multithreading on a traditional CPU, it also maps to neuromorphic computing, where each node is its own processor, comparing its ID with the visitors ID and refusing to activate if already visited. Somewhat akin to the McCoullough-Pitts neural model, which models a refractory period.
+Visitor pattern for multithreading 
+- each Visitor set replaces a stack
+- possible to replace Threadgroup in compute shader? 
 
-A future version of Tr3 will refractory periods at the node level.
+Amorphous threading
+- multiple visitors may converge and emanate from single node
+- convergence may occur in parallel
+
+Competing threads (future version)
+- node may enforce a refractory period 
+- node may choose to aggregate or separate multiple visitors at a time
+- somewhat akin to McCoullough-Pitts model of inhibitory synapses
+- somewhat akin to biological Axons with 5K-30K synapses
+- test conjecture regarding similarities to neocortex.
 
 # Future
 
 #### parsing
+
 - Better error trapping for parsing errors
 - Merge with Par, where modified BNF becomes a value type
 - Command line interpreter to create and manipulate graphs
@@ -275,18 +292,20 @@ A future version of Tr3 will refractory periods at the node level.
 
 #### Edges
 
-runtime model enhancements
+Runtime model enhancements
 - Refractory periods for edges (ADSR style)
 - change parent [child] contains to edges
 - runtime edge creation, akin to neuroplasticity
 
-compute shaders -> compiler
+Compute shaders -> runtime compiler
+
 - embed Metal shaders (for Muse Sky app)
 - integrate TensorFlow via CoreML
 - integrate TensorFlow/MLIR?
 - support AutoGraph?
 
-visual editor - extend Tr3D3 to allow
+Visual editor - extend Tr3D3 to allow
+
 - live editing of scripted nodes, edges, values
 - query subgraphs via search bar or selecting 2 or more nodes
 
@@ -294,16 +313,19 @@ Huffman navigator with hierarchy of inputs and outputs
 - tree of inputs on left side with probability cutoff 
 - tree of outputs on right side with probability cutoff 
 
-compiler
-- ostensibly integrate with TensorFlow/MLIR a
+Compiler
+
+- ostensibly integrate with TensorFlow/MLIR
 - support an AutoGraph-like conversion of procedural code to a flow graph
 - support new scalars for ML
 
 Secure computing with Petri Nets
-- The visitor pattern collects previously visisted nodes,
+
+- The visitor pattern collects previously visited nodes,
 - whereby the node to stops if it had already been visited once.
 
 Secure synchronization by extending the visitor set
+
 - whereby the node only executes only when a required set matches.
 
 #### Education / Tutorials
@@ -314,9 +336,12 @@ Machine Learning Concepts (bottom up)
 - Object recognition with CNNs
 - Language recognition with RNNs
 
+Realtime Ontologies
+- Integrate MIDI music controllers
+-  Integrate OSC devices
+
 Symbolic AI (top down)
 - Parsers and Chat bots
-- Goal finding  
 - Hybrid with GANs
 
 Fine grained computation
@@ -331,6 +356,11 @@ Crystallography
 Waveforms
 - Music and Waves
 - FFTs and Triggers
+
+Flow fields
+- parametric shaders
+- video feedback
+- Julia sets 
 
 #### Research
 
