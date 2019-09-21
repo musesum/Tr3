@@ -24,10 +24,11 @@ extension Tr3 {
         return true
     }
     /// Is this Tr3 elegible to shorten with a dot?
-    /// shorten `a { z }` to `a.z`,
-    /// but not `a:1 { z }` to a:1.z,
-    /// and not `a<-b { z }` to a<-b.z,
-    func isDecorated() -> Bool {
+    ///
+    ///     shorten `a { z }` to `a.z`,
+    ///     but not `a:1 { z }` to a:1.z,
+    ///     and not `a<-b { z }` to a<-b.z,
+    func canShortenWithDot() -> Bool {
         if val != nil,edgeDefs.edgeDefs.count > 0 {
             return true
         }
@@ -58,7 +59,7 @@ extension Tr3 {
         }
 
         else if pretty {
-            if isDecorated() {
+            if canShortenWithDot() {
                 if hasShallowChildren()  { bracketChildren(" { ","} ") }
 
                 else                     { bracketChildren(" {\n","}\n") }
