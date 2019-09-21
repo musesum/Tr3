@@ -1,3 +1,4 @@
+
 # Tr3
 
 Tr3 (pronounced "Tree") is a functional data flow graph with the following features
@@ -55,11 +56,11 @@ This is a simple way to synchronize a model. Akin to how a co-pilot's wheel sync
 
 Each node may have scalar, tuple, or string
 ```swift
-a: 1              // an initial value of 1
+a: 1            // an initial value of 1
 b: (0...1)      // a ranged value between 0 and 1
 c: (0...127=1)  // a ranged vale between 0 and 127, initialized to 1
-d: ( 0 0 0)     // three unnamed float values
-e: (x y z):(0...1=0)  // three named float values with range 0...1=0
+d: (0 0 0)      // three unnamed float values
+e: (x y z):(0...1=0) // three named float values with range 0...1=0
 f: "yo"         // a string value "yo"
 ```
 Tr3 automatically remaps scalar ranges, given the nodes b & c
@@ -89,15 +90,15 @@ d -> e:(0...1):1 // an activated d sends an ranged 1 to e
 
 override nodes with values
 ```swift
-a {b c}:{d e} // produces  a { b { d e } c { d e }
-a.b.d:1 // results in  a { b { d:1 e } c { d e }
+a {b c}:{d e} // produces    a { b { d e } c { d e }
+a.b.d:1       // results in  a { b { d:1 e } c { d e }
 ```
 Wildcard connections, with new ˚ (option-k) wildcard
 ```swift
 p <- a.*.d  // produces p <- (a.b.d a.c.d)
-q <- a˚d      // produces q <- (a.b.d a.c.d)
-r <- a˚.      // produces r <- (a.b.d a.b.e a.c.d a.c.e)
-s <- a˚˚      // produces s <- (a a.b a.b.d a.b.e a.c a.c.d a.c.e)
+q <- a˚d    // produces q <- (a.b.d a.c.d)
+r <- a˚.    // produces r <- (a.b.d a.b.e a.c.d a.c.e)
+s <- a˚˚    // produces s <- (a a.b a.b.d a.b.e a.c a.c.d a.c.e)
 ```
 In above, the ˚ operators is akin to an xpath's // search node no mater where they are
 
@@ -116,7 +117,7 @@ conditionals may switch the flow of data
 a -> (b ? c : d)  // a flows to either c or d, when b activates
 e <- (f ? g : h)  // f directs flow from either g or h, when f acts
 i <-> (j ? k : l) // i synchronizes with either k or l, when j acts
-m <-> (n ? n1 | p ? p1 | q ? q1) //  radio button style
+m <-> (n ? n1 | p ? p1 | q ? q1) // radio button style
 ```
 conditionals may also compare its state
 ```swift
@@ -127,15 +128,15 @@ m <-> (n > p ? n1 | p > q ? p1 | q > 0 ? q1) // radio button style
 ```
 when a comparison changes is state, it reevaluates its chain of conditions
 
-- when b activates, it reevaluates b > 0
-- when f activates, it reevaluates f == 1
-- when either j1 or j2 activates, it reevals j1 < j2
-- when n, p, or q acts, it reevals n>p, p>q, and q>0
+- when `b` activates, it reevaluates `b > 0`
+- when `f` activates, it reevaluates `f == 1`
+- when either `j1` or `j2` activates, it reevals `j1 < j2`
+- when `n`, `p`, or `q` acts, it reevals `n>p`, `p>q`, and `q>0`
 
 Ternaries act like railroad switches the condition merely switches the gate, where each event passing through that gate does not need re-invoke the condition
 
-- when b acts, it connects c and disconnects d
-- when n, p, or q acts, it is switching between n1, p1, q1
+- when `b` acts, it connects `c` and disconnects `d`
+- when `n`, `p`, or `q` acts, it is switching between `n1`, `p1`, `q1`
 
 ternaries may aggregate or broadcast
 ```swift
@@ -154,7 +155,7 @@ self.brushRadius = tr3.CGFloatVal() ?? 1 }
 ```
 In the above example, brushSize˚ attaches a closure to sky.draw.brush.size, which then updates its internal value brushRadius.
 
-(BTW, the ˚ in brushSize˚ is merely a naming convention; you can call it anything)
+(BTW, the `˚` in `brushSize˚` is merely a naming convention; you can call it anything)
 
 ### Embedded  Script
 ```swift
@@ -182,7 +183,7 @@ encourage users to tweak Tr3 scripts without recompiling
 - connect musical instruments to visual synth via OSC, Midi, or proprietary APIs
 
 inspired by
-- analog music synthesizers, like Moog Modular, Arp 260, with patchcords
+- analog music synthesizers, like Moog Modular, Arp 2600, with patchcords
 - dataflow languages : Max, QuartzComposer, TensorFlow
 
 #### Avatars and Robots
@@ -240,7 +241,7 @@ Tr3Dock (pending)
 
 User readable code
 
-Tr3 runtime was ported from C++ to Swift. There are several incentives:
+Tr3 runtime was ported from C++ to Swift. There were several incentives:
 - Attaching Swift closures to C++ was complicated
 - `TensorFlow for Swift` project implies a single code base
 - Future support for `TensorFlow/MLIR`
@@ -250,12 +251,12 @@ Works well within XCode IDE
 - Tr3 script follows Swift idiom
 
 Cross between Swift and Json
-- no parsing conveniences like ; and , that obfuscate Human readability
-- intermediate step
+- no parsing conveniences like `;` and `,` that obfuscate Human readability
+- intermediate step between scripting and compiling 
 
 #### Amorphous computation:
 
-While the visitor pattern naturally maps to multithreading on a traditional CPU, it also maps to neuromorphic computing, where each node is its own processor, comparing its ID with the visitors ID and refusing to activate if already visited. Somewhat akin to the McCoullough-Pitts neural model, which modelled a refractory period.
+While the visitor pattern naturally maps to multithreading on a traditional CPU, it also maps to neuromorphic computing, where each node is its own processor, comparing its ID with the visitors ID and refusing to activate if already visited. Somewhat akin to the McCoullough-Pitts neural model, which models a refractory period.
 
 A future version of Tr3 will refractory periods at the node level.
 
@@ -270,16 +271,16 @@ A future version of Tr3 will refractory periods at the node level.
 
 - Tr3ValBool — add boolean value support
 - Tr3ValRegx — regular expression strings
-- Tr3ValPar — integrate Par  NLP/DSL parser
+- Tr3ValPar — integrate Par NLP/DSL parser
 
 #### Edges
 
+runtime model enhancements
 - Refractory periods for edges (ADSR style)
 - change parent [child] contains to edges
 - runtime edge creation, akin to neuroplasticity
 
 compute shaders -> compiler
-
 - embed Metal shaders (for Muse Sky app)
 - integrate TensorFlow via CoreML
 - integrate TensorFlow/MLIR?
@@ -289,9 +290,9 @@ visual editor - extend Tr3D3 to allow
 - live editing of scripted nodes, edges, values
 - query subgraphs via search bar or selecting 2 or more nodes
 
-IBM HIPO style node inspector showing
-- hierarchy of inputs
-- hierarchy of outputs
+Huffman navigator with hierarchy of inputs and outputs
+- tree of inputs on left side with probability cutoff 
+- tree of outputs on right side with probability cutoff 
 
 compiler
 - ostensibly integrate with TensorFlow/MLIR a
@@ -305,18 +306,43 @@ Secure computing with Petri Nets
 Secure synchronization by extending the visitor set
 - whereby the node only executes only when a required set matches.
 
+#### Education / Tutorials
+
+Machine Learning Concepts (bottom up)
+- Handwriting recognition, starting with NIST 
+- McCullough-Pitts neural model
+- Object recognition with CNNs
+- Language recognition with RNNs
+
+Symbolic AI (top down)
+- Parsers and Chat bots
+- Goal finding  
+- Hybrid with GANs
+
+Fine grained computation
+- Cellular Automata
+- Metal (and TensorFlow?) experiments
+- Synthesizing imaginary objects
+
+Crystallography
+- Tilings and Escher drawings 
+- 5 Platonic solids (animated mirror ball)
+
+Waveforms
+- Music and Waves
+- FFTs and Triggers
+
 #### Research
 
 Create an artificial Temporal Huffman machine
 
-- Given that a Visitor pattern already collects previously visited nodes
-- Apply attack waveforms (ADSR) to attenuate vivacity of each visited Node
+- Extend Visitor pattern's set of visited nodes
+- Apply attack envelops (ADSR) to attenuate vivacity of each visited node
 - Aggregate vivacities to active higher probabilities sooner
 - Apply refractory periods to block lower probabilities
 
 Model biological Neocortex
 
 - Support runtime generation of connections to emulate neuroplasticity
-- Apply MLIR to support upto 30K edges to simulate Axon connections
+- Apply MLIR to support up to 30K edges to simulate Axon connections
 
-Apply to realtime handwriting recognition
