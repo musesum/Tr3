@@ -38,11 +38,11 @@ Nodes activate other nodes when its value changes or when it is activated by oth
 
 Nodes can have activation loops:
 ```swift
-a -> b // if a activates, it will active b
-b -> c // which, in turn, actives c
+a -> b // if a activates, it will activate b
+b -> c // which, in turn, activates c
 c -> a // and finally, c stops here
 ```
-A Tr3 event collects a set of nodes it has visited. When it find a node it already has visited, it stops.
+A Tr3 event collects a set of nodes it has visited. When it finds a node it already has visited, it stops.
 
 So, in the above `a`,`b`,`c` example, the activation could start anywhere:
 ```swift
@@ -69,19 +69,17 @@ b: (0...1)      // range 0 to 1
 c: (0...127=1)  // range 0 to 127, with initial value of 1
 b <-> c         // synchronize b and c and auto-remap values
 ```
-When 
-- the value of `b` is changed to `0.5`, 
-- it activates `C` and remaps its value to `63`
+When the value of `b` is changed to `0.5` it activates `C` and remaps its value to `63`
 
 A common case are sensors, which have a fixed range of values. For example: a 3G (gravity) accelerometer  may have a range been `-3.0...3.0`,
 ```swift 
 accelerometer: (x y z):(-3.0...3.0) -> model
-model: (x y z):(-1...1) // rescale
+model        : (x y z):(-1...1) // rescale
 ```
 Nodes may pass through values
 ```swift
 a:(0...1) -> b  // may pass along value to b
-b -> c          // has no value; forwards a to c
+b -> c          // has no value; will forward a to c
 c:(0...10)      // gets a's value via b, remaps ranges
 ```
 Edges may contain values
