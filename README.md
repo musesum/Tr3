@@ -71,7 +71,8 @@ b <-> c         // synchronize b and c and auto-remap values
 ```
 When the value of `b` is changed to `0.5` it activates `C` and remaps its value to `63`
 
-A common case are sensors, which have a fixed range of values. For example: a 3G (gravity) accelerometer  may have a range been `-3.0...3.0`,
+A common case are sensors, which have a fixed range of values. For example, 
+a 3G (gravity) accelerometer  may have a range between `-3.0...3.0` 
 ```swift 
 accelerometer: (x y z):(-3.0...3.0) -> model
 model        : (x y z):(-1...1) // rescale
