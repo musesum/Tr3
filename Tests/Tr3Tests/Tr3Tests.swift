@@ -53,6 +53,8 @@ final class Tr3Tests: XCTestCase {
 
         var err = 0
 
+        err += test("value:1.67772e+07", "√ { value:1.67772e+07 }")
+
         err += test("a.b.c:(0...1=0) z:a { b.c:(0...1=1) }",
                     "√ { a { b { c:(0...1=0) } } z { b { c:(0...1=1) } } }")
 

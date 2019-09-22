@@ -6,7 +6,7 @@ tr3 : left right* {
     left : comment* (path | name | quote)
 
     right : (tr3Val | child | many | proto | array | edges | embed | comment)+
-    
+
     child  :     "{" tr3+ "}"
     many   : ":" "{" tr3+ "}"
     proto  : ":" (path | name)
@@ -38,8 +38,8 @@ tr3 : left right* {
         edgeOp   : '^([<][-=?!\╌>]+|[-=?!\˚]+[>])'
         edgePar  : "(" edgeItem+ ")" edges?
         edgeItem : (edgeVal | ternary) comment*
-        
-        edgeVal  :  (path | name) (edges+ | "(" value ")" )?
+
+        edgeVal  :  (path | name) (edges+ | ":" value)?
 
         ternary  : ("(" tern ")" | tern) {
 
@@ -47,14 +47,14 @@ tr3 : left right* {
             ternIf      : (path | name) ternCompare?
             ternThen    : "?" (ternary | path | name | value)
             ternElse    : ":" (ternary | path | name | value)
-            ternRadio   : "|" ternary"
+            ternRadio   : "|" ternary
             ternCompare : compare (path | name | value)
         }
     }
     path    : '^((([A-Za-z_][A-Za-z0-9_]*)*([.˚*])+([A-Za-z_][A-Za-z0-9_.˚*]*)*)+)'
     name    : '^([A-Za-z_][A-Za-z0-9_]*)'
     quote   : '^\"([^\"]*)\"'
-    num     : '^([+-]*([0-9]+[.][0-9]+|[.][0-9]+|[0-9]+[.](?![.])|[0-9]+))'
+    num     : '^([+-]*([0-9]+[.][0-9]+|[.][0-9]+|[0-9]+[.](?![.])|[0-9]+)([e][+-][0-9]+)?)'
     array   : '^\:?\[[ ]*([0-9]+)[ ]*\]'
     comment : '^[/][/][ ]*((.*?)[\r\n]+|^[ \r\n\t]+)'
     compare : '^[<>!=][=]?'
