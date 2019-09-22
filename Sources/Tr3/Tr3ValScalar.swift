@@ -12,7 +12,6 @@ public class Tr3ValScalar: Tr3Val {
     var num  = Float(0) // current value
     var min  = Float(0) // minimum value
     var max  = Float(1) // maximum value, inclusive for thru, _max-1 for upto
-    var dflt = Float(0)
 
     override init() {
         super.init()
@@ -36,10 +35,6 @@ public class Tr3ValScalar: Tr3Val {
         num  = tr3Val.num
         min  = tr3Val.min
         max  = tr3Val.max
-        dflt = tr3Val.dflt
-        if valFlags.contains(.dflt) {
-            num = dflt
-        }
     }
     override func copy() -> Tr3Val {
         let newTr3ValScalar = Tr3ValScalar(with: self)
@@ -48,7 +43,7 @@ public class Tr3ValScalar: Tr3Val {
 
     func addMin (_ val_:Float) { valFlags.insert(.min );  min  = val_ }
     func addMax (_ val_:Float) { valFlags.insert(.max );  max  = val_ }
-    func addDflt(_ val_:Float) { valFlags.insert(.dflt);  dflt = val_ ; num = dflt }
+    func addDflt(_ val_:Float) { valFlags.insert(.dflt);  num = val_ }
 
     override func printVal() -> String {
         return String(num)
@@ -68,7 +63,7 @@ public class Tr3ValScalar: Tr3Val {
 
         if valFlags.contains(.dflt) {
             if valFlags.contains([.min,.max]) { script += "=" }
-            script += String(format: "%g",dflt)
+            script += String(format: "%g",num)
         }
         script += useParens ? ") " : " "
         return script
