@@ -103,6 +103,13 @@ extension Tr3 {
         }
         return false
     }
+    public func NamesVal() -> [String]? {
+        if let v = val as? Tr3ValTuple {
+            return v.names
+        }
+        return nil
+    }
+
 
     
 }
