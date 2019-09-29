@@ -423,7 +423,7 @@ final class Tr3Tests: XCTestCase {
             "")
         XCTAssertEqual(err,0)
     }
-    func testParseAvatarRobot() { print("\n━━━━━━━━━━━━━━ avatar robot ━━━━━━━━━━━━━━━━━\n")
+    func testParseAvatarRobot() { print("\n━━━━━━━━━━━━━━ avatar body ━━━━━━━━━━━━━━━━━\n")
 
         var err = 0
 
@@ -476,14 +476,14 @@ avatar {left right}:{shoulder.elbow.wrist {thumb index middle ring pinky}:{meta 
 
         err += test(
 """
-robot {left right}:{shoulder.elbow.wrist {thumb index middle ring pinky}:{meta prox dist} hip.knee.ankle.toes}
+body {left right}:{shoulder.elbow.wrist {thumb index middle ring pinky}:{meta prox dist} hip.knee.ankle.toes}
 ˚˚ <-> ..
 ˚˚:{pos:(x y z):(0...1) angle:(roll pitch yaw):(%360) mm:(0...3000)})
 ""","""
-√ { robot<->√ {
-left<->robot {
-    shoulder<->robot.left {
-        elbow<->robot.left.shoulder {
+√ { body<->√ {
+left<->body {
+    shoulder<->body.left {
+        elbow<->body.left.shoulder {
             wrist<->left.shoulder.elbow {
                 thumb<->shoulder.elbow.wrist {
                     meta<->elbow.wrist.thumb { pos:(x y z):(0...1) angle:(roll pitch yaw):(%360) mm:(0...3000) }
@@ -513,17 +513,17 @@ left<->robot {
                 pos:(x y z):(0...1) angle:(roll pitch yaw):(%360) mm:(0...3000) }
             pos:(x y z):(0...1) angle:(roll pitch yaw):(%360) mm:(0...3000) }
         pos:(x y z):(0...1) angle:(roll pitch yaw):(%360) mm:(0...3000) }
-    hip<->robot.left {
-        knee<->robot.left.hip {
+    hip<->body.left {
+        knee<->body.left.hip {
             ankle<->left.hip.knee {
                 toes<->hip.knee.ankle { pos:(x y z):(0...1) angle:(roll pitch yaw):(%360) mm:(0...3000) }
                 pos:(x y z):(0...1) angle:(roll pitch yaw):(%360) mm:(0...3000) }
             pos:(x y z):(0...1) angle:(roll pitch yaw):(%360) mm:(0...3000) }
         pos:(x y z):(0...1) angle:(roll pitch yaw):(%360) mm:(0...3000) }
     pos:(x y z):(0...1) angle:(roll pitch yaw):(%360) mm:(0...3000) }
-right<->robot {
-    shoulder<->robot.right {
-        elbow<->robot.right.shoulder {
+right<->body {
+    shoulder<->body.right {
+        elbow<->body.right.shoulder {
             wrist<->right.shoulder.elbow {
                 thumb<->shoulder.elbow.wrist {
                     meta<->elbow.wrist.thumb { pos:(x y z):(0...1) angle:(roll pitch yaw):(%360) mm:(0...3000) }
@@ -553,8 +553,8 @@ right<->robot {
                 pos:(x y z):(0...1) angle:(roll pitch yaw):(%360) mm:(0...3000) }
             pos:(x y z):(0...1) angle:(roll pitch yaw):(%360) mm:(0...3000) }
         pos:(x y z):(0...1) angle:(roll pitch yaw):(%360) mm:(0...3000) }
-    hip<->robot.right {
-        knee<->robot.right.hip {
+    hip<->body.right {
+        knee<->body.right.hip {
             ankle<->right.hip.knee {
                 toes<->hip.knee.ankle { pos:(x y z):(0...1) angle:(roll pitch yaw):(%360) mm:(0...3000) }
                 pos:(x y z):(0...1) angle:(roll pitch yaw):(%360) mm:(0...3000) }

@@ -112,7 +112,7 @@ Variations include `˚.` to find leaf nodes, `˚˚` include all greedy all nodes
 Because the visitor pattern breaks loops, the `˚˚<->..`  maps well to devices that combine sensors and actuators, such as:
 -  a flying fader on a mix board, 
 - a co-pilot's steering wheel, or 
-- the joints on an android robot.
+- the joints on an Human body capture skeleton
 
 ### Ternaries
 
@@ -192,15 +192,15 @@ inspired by
 
 #### Avatars and Robots
 
-Check out Robot.h, which shows the output of an android robot skeleton defined in 3 lines of code:
+Check out Robot.h, which shows the output of an Human body skelton defined in 3 lines of code:
 ```swift
-robot {left right}:{shoulder.elbow.wrist {thumb index middle ring pinky}:{meta prox dist} hip.knee.ankle.toes}
+body {left right}:{shoulder.elbow.wrist {thumb index middle ring pinky}:{meta prox dist} hip.knee.ankle.toes}
 ˚˚ <-> .. // connect every node to its parent
 ˚˚:{pos:(x y z):(0...1) angle:(roll pitch yaw):(%360) mm:(0...3000)})
 ```
 Apply machine learning to representation of graph
-- Record total state of `graph <- robot˚˚`
-- Playback total state of `graph -> robot˚˚`
+- Record total state of `graph <- body˚˚`
+- Playback total state of `graph -> body˚˚`
 - Inspired by a Kinect/OpenNI experiment, shown [here](https://www.youtube.com/watch?v=aFO6j6tvdk8)
 
 #### SpaceCraft - NASA's Virtual IronBird
