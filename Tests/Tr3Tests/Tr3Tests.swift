@@ -266,6 +266,7 @@ final class Tr3Tests: XCTestCase {
         XCTAssertEqual(err,0)
     }
     func testParsePaths() { print("\n━━━━━━━━━━━━━━━━━━━━━━ paths ━━━━━━━━━━━━━━━━━━━━━━\n")
+        
         var err = 0
 
         err += test("a { b { c {c1 c2} d } } a : e", "√ { a { b { c { c1 c2 } d } e } }")
@@ -912,7 +913,6 @@ pos:(x y z):(0...1) angle:(roll pitch yaw):(%360) mm:(0...3000) }
 
         XCTAssertEqual(err,0)
     }
-
 
     static var allTests = [
 

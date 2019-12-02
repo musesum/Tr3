@@ -39,7 +39,7 @@ tr3 : left right* {
         edgePar  : "(" edgeItem+ ")" edges?
         edgeItem : (edgeVal | ternary) comment*
 
-        edgeVal  :  (path | name) (edges+ | ":" value)?
+        edgeVal  : (path | name) (edges+ | ":" value)?
 
         ternary  : ("(" tern ")" | tern) {
 

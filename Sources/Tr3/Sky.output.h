@@ -46,8 +46,7 @@ sky {
     cellZhabatinski { type:"compute" file:"cell.zhabatinski.metal" on:(0...1=0) buffer { version:(0...1=0) bits:(2...4=3) } repeat:11 }
     drawScroll { type:"draw" file:"drawScroll.metal" on:(0...1=0) buffer { scroll:(x y):(0...1=0.5) } }
     colorize { type:"colorize" file:"colorize.metal" buffer { bitplane:(0...1=0) } }
-    render { type:"render" file:"render.metal"
-      buffer { repeat:(x y) mirror:(x y) } } } }
+    render { type:"render" file:"render.metal" buffer { repeat:(x y) mirror:(x y) } } } }
 panel {
   _cell {
     base { type:"cell" title:"_cell" frame:(x:0 y:0 w:320 h:152) icon:"icon.ring.white.png" }

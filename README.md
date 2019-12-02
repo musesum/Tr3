@@ -137,7 +137,7 @@ when a comparison changes is state, it reevaluates its chain of conditions
 - when either `j1` or `j2` activates, it reevals `j1 < j2`
 - when `n`, `p`, or `q` acts, it reevals `n>p`, `p>q`, and `q>0`
 
-Ternaries act like railroad switches the condition merely switches the gate, where each event passing through that gate does not need re-invoke the condition
+Ternaries act like railroad switches, where the condition merely switches the gate. So, each event passing through a gate does *not* need re-invoke the condition
 
 - when `b` acts, it connects `c` and disconnects `d`
 - when `n`, `p`, or `q` acts, it is switching between `n1`, `p1`, `q1`
@@ -192,15 +192,15 @@ inspired by
 
 #### Avatars and Robots
 
-Check out Robot.h, which shows the output of an Human body skelton defined in 3 lines of code:
+Check out Body.h, which shows the output of an Human body skelton defined in 3 lines of code:
 ```swift
 body {left right}:{shoulder.elbow.wrist {thumb index middle ring pinky}:{meta prox dist} hip.knee.ankle.toes}
 ˚˚ <-> .. // connect every node to its parent
 ˚˚:{pos:(x y z):(0...1) angle:(roll pitch yaw):(%360) mm:(0...3000)})
 ```
 Apply machine learning to representation of graph
-- Record total state of `graph <- body˚˚`
-- Playback total state of `graph -> body˚˚`
+- Record total state of  `graph <- body˚˚`
+- Playback total state of  `graph -> body˚˚`
 - Inspired by a Kinect/OpenNI experiment, shown [here](https://www.youtube.com/watch?v=aFO6j6tvdk8)
 
 #### SpaceCraft - NASA's Virtual IronBird
@@ -337,7 +337,7 @@ Machine Learning Concepts (bottom up)
 
 Realtime Ontologies
 - Integrate MIDI music controllers
--  Integrate OSC devices
+- Integrate OSC devices
 
 Symbolic AI (top down)
 - Parsers and Chat bots
