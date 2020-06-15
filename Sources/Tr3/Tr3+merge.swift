@@ -9,7 +9,7 @@ import Par // whitespace
 
 extension Tr3 {
 
-    // b.c a { b { c {c1 c2} d {d1 d2} } b.c : c3 }
+    // b.c a { b { c {c1 c2} d {d1 d2} } b.c: c3 }
     func willMerge(with tr3:Tr3) -> Bool {
         if tr3 == self {
             return true
@@ -31,10 +31,10 @@ extension Tr3 {
     ///
     /// for example
     ///
-    ///     /**/ a { b { c { c1 c2 } d { d1 d2 } } b.c : c3 } ⟹
+    ///     /**/ a { b { c { c1 c2 } d { d1 d2 } } b.c: c3 } ⟹
     ///     √  { a { b { c { c1 c2 c3 } d { d1 d2 } } } }
     ///
-    ///     /**/ a { b { c { c1 c2 } d { d1 d2 } } b.c : b.d } ⟹
+    ///     /**/ a { b { c { c1 c2 } d { d1 d2 } } b.c: b.d } ⟹
     ///     √  { a { b { c { c1 c2 d1 d2 } d { d1 d2 } } } }
     func mergeDuplicate(_ merge:Tr3) {
 
@@ -115,7 +115,7 @@ extension Tr3 {
                 return newChildren
             }
         }
-        // :e in `a { b { c {c1 c2} d } } a : e`
+        // :e in `a { b { c {c1 c2} d } } a: e`
         return [self]
     }
 
@@ -128,13 +128,13 @@ extension Tr3 {
             // is adding or appending with a direct ancestor
             if let parent = parent,
                 foundi.willMerge(with:parent) {
-                // b.c in `a { b { c {c1 c2} d } b.c : c3 }`
+                // b.c in `a { b { c {c1 c2} d } b.c: c3 }`
                 for child in children {
                     foundi.mergeDuplicate(child)
                 }
             }
             else {
-                // b.d in `a { b { c {c1 c2} d {d1 d2} } b.c : b.d  }`
+                // b.d in `a { b { c {c1 c2} d {d1 d2} } b.c: b.d  }`
                 let copy = Tr3(deepcopy: foundi, parent: self)
                 results.append(copy)
             }
@@ -182,7 +182,7 @@ extension Tr3 {
         }
         else {
             // b.e in `a { b { c d } b.e }`
-            // e in `a { b { c {c1 c2} d } } a : e`
+            // e in `a { b { c {c1 c2} d } } a: e`
             return [self]
         }
     }

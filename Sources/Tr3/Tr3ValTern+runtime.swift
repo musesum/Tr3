@@ -9,11 +9,11 @@ import Par // visitor
 
 extension Tr3ValTern {
 
-    func changeState(_ state_  : Tr3TernState,
-                     _ prevTr3 : Tr3,
-                     _ nextTr3 : Tr3,
-                     _ act     : Tr3Act,
-                     _ visitor : Visitor) {
+    func changeState(_ state_:  Tr3TernState,
+                     _ prevTr3: Tr3,
+                     _ nextTr3: Tr3,
+                     _ act:     Tr3Act,
+                     _ visitor: Visitor) {
 
         func setTernEdges(_ val:Tr3Val?, active:Bool) {
 
@@ -86,9 +86,9 @@ extension Tr3ValTern {
     }
 
     // follow radio linked list to beginnning and change state along the way
-    func changeRadio(_ prevTr3 : Tr3,
-                     _ nextTr3 : Tr3,
-                     _ visitor : Visitor) {
+    func changeRadio(_ prevTr3: Tr3,
+                     _ nextTr3: Tr3,
+                     _ visitor: Visitor) {
 
         for radioTr3 in pathTr3s {
             if let tern = radioTr3.val as? Tr3ValTern {
@@ -113,27 +113,27 @@ extension Tr3ValTern {
         }
     }
     // follow radio linked list to beginnning and change state along the way
-    func changeRadioPrev(_ prevTr3 : Tr3,
-                         _ nextTr3 : Tr3,
-                         _ visitor : Visitor) {
+    func changeRadioPrev(_ prevTr3: Tr3,
+                         _ nextTr3: Tr3,
+                         _ visitor: Visitor) {
 
         changeRadio(prevTr3, nextTr3, visitor)
         radioPrev?.changeRadioPrev(prevTr3, nextTr3, visitor)
     }
 
     // follow radio linked list to beginnning and change state along the way
-    func changeRadioNext(_ prevTr3 : Tr3,
-                         _ nextTr3 : Tr3,
-                         _ visitor : Visitor) {
+    func changeRadioNext(_ prevTr3: Tr3,
+                         _ nextTr3: Tr3,
+                         _ visitor: Visitor) {
 
         changeRadio(prevTr3,nextTr3,visitor)
         radioNext?.changeRadioNext(prevTr3, nextTr3, visitor)
     }
 
-    func recalc(_ prevTr3 : Tr3,
-                _ nextTr3 : Tr3,
-                _ act     : Tr3Act,
-                _ visitor : Visitor) {
+    func recalc(_ prevTr3: Tr3,
+                _ nextTr3: Tr3,
+                _ act:     Tr3Act,
+                _ visitor: Visitor) {
 
         // a in `w <-(a ? x : y)`
         // a in `w <-(a == b ? x : y)`  when a == b
@@ -157,10 +157,10 @@ extension Tr3ValTern {
     }
 
     /// set destination to source value
-    func setTr3Val(_ left    : Tr3,
-                   _ right   : Tr3,
-                   _ act     : Tr3Act,
-                   _ visitor : Visitor) {
+    func setTr3Val(_ left:    Tr3,
+                   _ right:   Tr3,
+                   _ act:     Tr3Act,
+                   _ visitor: Visitor) {
 
         // preserve event.val for multiple successors
         // as event.val is always a src, it is never changed.

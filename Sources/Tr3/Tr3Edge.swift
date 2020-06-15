@@ -14,10 +14,10 @@ public class Tr3Edge: Hashable {
     var key       = "not yet"
 
     var edgeFlags = Tr3EdgeFlags()
-    var active    = true
-    var leftTr3   : Tr3?
-    var rightTr3  : Tr3?
-    var defVal    : Tr3Val?
+    var active = true
+    var leftTr3: Tr3?
+    var rightTr3: Tr3?
+    var defVal: Tr3Val?
 
     public static var LineageDepth = 2 // useful for debugging
 

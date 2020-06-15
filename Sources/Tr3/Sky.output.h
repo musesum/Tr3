@@ -32,7 +32,8 @@ sky {
     screen { fillZero:0 fillOne:-1 }
     brush { type:"dot" size:(1...64=10) press:(0...1=1) index:(1...255=127) }
     line { prev:(x y):(0...1) next:(x y):(0...1) } }
-  shader {
+a
+    shader {
     _compute { type:"compute" file:"whatever.metal" on:(0...1=0) buffer { version:(0...1=0) } }
     cellMelt { type:"compute" file:"cell.melt.metal" on:(0...1=0) buffer { version:(0...1=0) } }
     cellFredkin { type:"compute" file:"cell.fredkin.metal" on:(0...1=0) buffer { version:(0...1=0) } }

@@ -8,8 +8,8 @@ import Foundation
 
 extension Tr3ValTern {
 
-    func testCondition(_ prevTr3 : Tr3,
-                       _ act     : Tr3Act) -> Bool {
+    func testCondition(_ prevTr3: Tr3,
+                       _ act: Tr3Act) -> Bool {
 
          // check if both match and are scalars or quotes
         func bothMatchFlags(_ left: Tr3Val,_ right: Tr3Val,_ matchFlags:[Tr3ValFlags]) -> Bool {
@@ -24,7 +24,7 @@ extension Tr3ValTern {
         }
         // ────────────── begin ──────────────
 
-        // a in `a b w <- (a ? 1 : b ? 2)`
+        // a in `a b w <- (a ? 1: b ? 2)`
         if compareOp == "" {
             
             if let pathTr3 = pathTr3s.last {
@@ -46,9 +46,9 @@ extension Tr3ValTern {
                         switch compareOp {
                         case "==": return pathVal == rightVal
                         case ">=": return pathVal >= rightVal
-                        case ">" : return pathVal >  rightVal
+                        case ">":  return pathVal >  rightVal
                         case "<=": return pathVal <= rightVal
-                        case "<" : return pathVal <  rightVal
+                        case "<":  return pathVal <  rightVal
                         case "!=": return pathVal != rightVal
                         default: break
                         }

@@ -68,9 +68,9 @@ public class Tr3Parse {
         default:
 
             switch pattern {
-            case "name" : return tr3.addChild(parItem, .name)
-            case "path" : return tr3.addChild(parItem, .path)
-            default     : break
+            case "name": return tr3.addChild(parItem, .name)
+            case "path": return tr3.addChild(parItem, .path)
+            default:     break
             }
         }
         return tr3
@@ -85,32 +85,32 @@ public class Tr3Parse {
         case let val as Tr3ValScalar:
 
             switch pattern {
-            case "thru" : val.addFlag(.thru)
-            case "upto" : val.addFlag(.upto)
-            case "modu" : val.addFlag(.modu)
-            case "incr" : val.addFlag(.incr)
-            case "decr" : val.addFlag(.decr)
-            case "min"  : val.addMin(parItem.getFirstFloat())
-            case "max"  : val.addMax(parItem.getFirstFloat())
-            case "dflt" : val.addDflt(parItem.getFirstFloat())
-            default     : break
+            case "thru": val.addFlag(.thru)
+            case "upto": val.addFlag(.upto)
+            case "modu": val.addFlag(.modu)
+            case "incr": val.addFlag(.incr)
+            case "decr": val.addFlag(.decr)
+            case "min":  val.addMin(parItem.getFirstFloat())
+            case "max":  val.addMax(parItem.getFirstFloat())
+            case "dflt": val.addDflt(parItem.getFirstFloat())
+            default:     break
             }
         case let val as Tr3ValTuple:
 
             switch pattern {
-            case "names"    : val.addNames(parItem.harvestValues(["name"]))
-            case "nums"     : val.addNums(parItem.harvestValues(["num"]))
-            case "nameNums" : val.addNameNums(parItem.harvestValues(["name","num"]))
-            case "scalar"   : val.dflt = Tr3ValScalar()
-            default         : if val.dflt != nil { parseDeepVal(val.dflt, parItem) }// decorate default scalar
+            case "names":    val.addNames(parItem.harvestValues(["name"]))
+            case "nums":     val.addNums(parItem.harvestValues(["num"]))
+            case "nameNums": val.addNameNums(parItem.harvestValues(["name","num"]))
+            case "scalar":   val.dflt = Tr3ValScalar()
+            default:         if val.dflt != nil { parseDeepVal(val.dflt, parItem) }// decorate default scalar
             }
         case let val as Tr3ValTern:
 
             switch pattern {
-            case "scalar" : val.deepAddVal(Tr3ValScalar())
-            case "data"   : val.deepAddVal(Tr3ValData())
-            case "tuple"  : val.deepAddVal(Tr3ValTuple())
-            default       : parseDeepVal(val.getVal(), parItem) // decorate deepest non tern value
+            case "scalar": val.deepAddVal(Tr3ValScalar())
+            case "data":   val.deepAddVal(Tr3ValData())
+            case "tuple":  val.deepAddVal(Tr3ValTuple())
+            default:       parseDeepVal(val.getVal(), parItem) // decorate deepest non tern value
             }
         default: break
         }
@@ -136,13 +136,13 @@ public class Tr3Parse {
                     func addVal(_ v:Tr3Val) { edgeDef.pathVals.add(lastPath,v) }
 
                     switch pattern {
-                    case "embed"  : addVal(Tr3ValEmbed(with:parItem.getFirstValue()))
-                    case "quote"  : addVal(Tr3ValQuote(with:parItem.getFirstValue()))
-                    case "scalar" : addVal(Tr3ValScalar())
-                    case "data"   : addVal(Tr3ValData())
-                    case "tuple"  : addVal(Tr3ValTuple())
-                    case "ternIf" : addVal(Tr3ValTern(tr3,level))
-                    default       : break
+                    case "embed":  addVal(Tr3ValEmbed(with:parItem.getFirstValue()))
+                    case "quote":  addVal(Tr3ValQuote(with:parItem.getFirstValue()))
+                    case "scalar": addVal(Tr3ValScalar())
+                    case "data":   addVal(Tr3ValData())
+                    case "tuple":  addVal(Tr3ValTuple())
+                    case "ternIf": addVal(Tr3ValTern(tr3,level))
+                    default:       break
                     }
                 }
             }
@@ -154,12 +154,12 @@ public class Tr3Parse {
         else if tr3.val == nil { //Tr3Log.log("parseVal.C.defVal", prior, pattern)
 
             switch pattern {
-            case "embed"  : tr3.val = Tr3ValEmbed(with:parItem.getFirstValue())
-            case "quote"  : tr3.val = Tr3ValQuote(with:parItem.getFirstValue())
-            case "scalar" : tr3.val = Tr3ValScalar()
-            case "data"   : tr3.val = Tr3ValData()
-            case "tuple"  : tr3.val = Tr3ValTuple()
-            default       : break
+            case "embed":  tr3.val = Tr3ValEmbed(with:parItem.getFirstValue())
+            case "quote":  tr3.val = Tr3ValQuote(with:parItem.getFirstValue())
+            case "scalar": tr3.val = Tr3ValScalar()
+            case "data":   tr3.val = Tr3ValData()
+            case "tuple":  tr3.val = Tr3ValTuple()
+            default:       break
             }
         }
             // x y in `a:(x y)`
@@ -181,13 +181,13 @@ public class Tr3Parse {
         if let pattern = pattern {
 
             switch pattern {
-            case "edgeOp"      : tr3.edgeDefs.addEdgeDef(parItem.getFirstValue())
-            case "edges"       : break
-            case "ternIf"      : tr3.edgeDefs.addEdgeTernary(Tr3ValTern(tr3,level))
-            case "ternThen"    : Tr3ValTern.setTernState(.Then,  level)
-            case "ternElse"    : Tr3ValTern.setTernState(.Else,  level)
-            case "ternRadio"   : Tr3ValTern.setTernState(.Radio, level)
-            case "ternCompare" : Tr3ValTern.setCompare(parItem.getFirstValue())
+            case "edgeOp":      tr3.edgeDefs.addEdgeDef(parItem.getFirstValue())
+            case "edges":       break
+            case "ternIf":      tr3.edgeDefs.addEdgeTernary(Tr3ValTern(tr3,level))
+            case "ternThen":    Tr3ValTern.setTernState(.Then,  level)
+            case "ternElse":    Tr3ValTern.setTernState(.Else,  level)
+            case "ternRadio":   Tr3ValTern.setTernState(.Radio, level)
+            case "ternCompare": Tr3ValTern.setCompare(parItem.getFirstValue())
             default: break
             }
             return parseNext(tr3, pattern, parItem, level+1)
@@ -231,9 +231,9 @@ public class Tr3Parse {
         let pattern = parItem.node?.pattern ?? ""
 
         switch pattern {
-        case "name" : return tr3.addChild(parItem,.name)
-        case "path" : return tr3.addChild(parItem,.path)
-        default     : break
+        case "name": return tr3.addChild(parItem,.name)
+        case "path": return tr3.addChild(parItem,.path)
+        default:     break
         }
 
         let parentTr3 = pattern == "many" ? tr3.makeMany() : tr3
@@ -288,10 +288,10 @@ public class Tr3Parse {
     /// - parameter root: starting node from which to attach subtree
     /// - parameter script: text of script to convert into subtree
     /// - parameter whitespace: default is single line, may add \n for multiline script
-    public func parseScript(_ root     : Tr3,
-                            _ script   : String,
-                            whitespace : String = "\t ",
-                            printGraph : Bool = false) -> Bool {
+    public func parseScript(_ root:     Tr3,
+                            _ script:   String,
+                            whitespace: String = "\t ",
+                            printGraph: Bool = false) -> Bool {
 
         let parStr = ParStr(script)
         parStr.whitespace = whitespace

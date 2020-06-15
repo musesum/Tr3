@@ -153,59 +153,59 @@ final class Tr3Tests: XCTestCase {
             _controlBase {
 
                 base {
-                    type  : "unknown"
-                    title : "Unknown"
-                    frame : (x:0 y:0 w:320 h:176)
-                    icon  : "control.ring.white.png"
+                    type:  "unknown"
+                    title: "Unknown"
+                    frame: (x:0 y:0 w:320 h:176)
+                    icon:  "control.ring.white.png"
                 }
                 elements {
 
                     ruleOn  {
-                        type  : "switch"
-                        title : "Active"
-                        frame : (x:266 y:6 w:48 h:32)
-                        lag   : 0
-                        value : (0...1=0)
+                        type:  "switch"
+                        title: "Active"
+                        frame: (x:266 y:6 w:48 h:32)
+                        lag:   0
+                        value: (0...1=0)
                     }
                 }
                 //on <-> elements.ruleOn.value
             }
-            _controlRule : _controlBase {
+            _controlRule: _controlBase {
 
                 base {
-                    type  : "rule"
-                    title : "Rule" // name
-                    frame : (x:0 y:0 w:320 h:168)
+                    type:  "rule"
+                    title: "Rule" // name
+                    frame: (x:0 y:0 w:320 h:168)
                 }
 
                 elements {
 
                     version {
-                        type  : "segment"
-                        title : "Version"
-                        frame : (x:70 y:52 w:192 h:44)
-                        value : (1...2=1) //<-> cell.rule.<name>.version
+                        type:  "segment"
+                        title: "Version"
+                        frame: (x:70 y:52 w:192 h:44)
+                        value: (1...2=1) //<-> cell.rule.<name>.version
                     }
                     fillZero {
-                        type  : "trigger"
-                        title : "clear 0"
-                        frame : (x:10 y:108 w:44 h:44)
-                        icon  : "control.drop.clear.png"
-                        value : (0...1=0) -> sky.cell.rule.zero
+                        type:  "trigger"
+                        title: "clear 0"
+                        frame: (x:10 y:108 w:44 h:44)
+                        icon:  "control.drop.clear.png"
+                        value: (0...1=0) -> sky.cell.rule.zero
                     }
                     fillOne {
-                        type  : "trigger"
-                        title : "clear 0xFFFF"
-                        frame : (x:266 y:108 w:44 h:44)
-                        icon  : "control.drop.gray.png"
-                        value : (0...1=0) -> sky.cell.rule.one
+                        type:  "trigger"
+                        title: "clear 0xFFFF"
+                        frame: (x:266 y:108 w:44 h:44)
+                        icon:  "control.drop.gray.png"
+                        value: (0...1=0) -> sky.cell.rule.one
                     }
                     plane  {
-                        type  : "slider"
-                        title : "Rule Plane"
-                        frame : (x:70 y:108 w:192 h:44)
-                        icon  : "control.pearl.white.png"
-                        value : (0...1=0) -> control.shader˚uniform.shift
+                        type:  "slider"
+                        title: "Rule Plane"
+                        frame: (x:70 y:108 w:192 h:44)
+                        icon:  "control.pearl.white.png"
+                        value: (0...1=0) -> control.shader˚uniform.shift
                     }
                 }
             }
@@ -269,16 +269,16 @@ final class Tr3Tests: XCTestCase {
         
         var err = 0
 
-        err += test("a { b { c {c1 c2} d } } a : e", "√ { a { b { c { c1 c2 } d } e } }")
+        err += test("a { b { c {c1 c2} d } } a: e", "√ { a { b { c { c1 c2 } d } e } }")
         err += test("a { b { c d } } a { e }", "√ { a { b { c d } e } }")
-        err += test("a { b { c {c1 c2} d } b.c : c3 }","√ { a { b { c { c1 c2 c3 } d } } }")
+        err += test("a { b { c {c1 c2} d } b.c: c3 }","√ { a { b { c { c1 c2 c3 } d } } }")
         err += test("a { b { c {c1 c2} d } b.c { c3 } }","√ { a { b { c { c1 c2 c3 } d } } }")
         err += test("a { b { c {c1 c2} d } b.c { c2:2 c3 } }","√ { a { b { c { c1 c2:2 c3 } d } } }")
         err += test("a { b { c d } b.e }","√ { a { b { c d e } } }")
         err += test("a { b { c d } b.e.f }","√ { a { b { c d e { f } } } }")
 
-        err += test("a { b { c {c1 c2} d {d1 d2} } b.c : b.d  }", "√ { a { b { c { c1 c2 d1 d2 } d { d1 d2 } } } }")
-        err += test("a { b { c d } } a : e", "√ { a { b { c d } e } }")
+        err += test("a { b { c {c1 c2} d {d1 d2} } b.c: b.d  }", "√ { a { b { c { c1 c2 d1 d2 } d { d1 d2 } } } }")
+        err += test("a { b { c d } } a: e", "√ { a { b { c d } e } }")
         err += test("ab { a:1 b:2 } cd:ab { a:3 c:4 d:5 } ef:cd { b:6 d:7 e:8 f:9 }",
                     "√ { ab { a:1 b:2 } cd { a:3 b:2 c:4 d:5 } ef { a:3 b:6 c:4 d:7 e:8 f:9 } }")
 
@@ -389,14 +389,14 @@ final class Tr3Tests: XCTestCase {
         err += test("d {a1 a2}:{b1 b2}:{c1 c2} e <- (d˚b1 ? b1˚. | d˚b2 ? b2˚.)",
                     "√ { d { a1 { b1?>e { c1╌>e c2╌>e } b2?>e { c1╌>e c2╌>e } } a2 { b1?>e { c1╌>e c2╌>e } b2?>e { c1╌>e c2╌>e } } } e<-(d˚b1 ? b1˚. | d˚b2 ? b2˚.) }")
 
-        err += test("d {a1 a2}:{b1 b2}:{c1 c2} h <- (d.a1 ? b1 ? c1 : 1)",
-                    "√ { d { a1?>h { b1?>h { c1╌>h c2 } b2 { c1 c2 } } a2 { b1 { c1 c2 } b2 { c1 c2 } } } h<-(d.a1 ? b1 ? c1 : 1) }")
+        err += test("d {a1 a2}:{b1 b2}:{c1 c2} h <- (d.a1 ? b1 ? c1: 1)",
+                    "√ { d { a1?>h { b1?>h { c1╌>h c2 } b2 { c1 c2 } } a2 { b1 { c1 c2 } b2 { c1 c2 } } } h<-(d.a1 ? b1 ? c1: 1) }")
 
         err += test("d {a1 a2}:{b1 b2}:{c1 c2} " +
             "e <- (d˚b1 ? b1˚. : d˚b2 ? b2˚.) " +
             "f <- (d˚b1 ? b1˚. : b2˚.) " +
             "g <- (d˚b1 ? b1˚.) <-(d˚b2 ? b2˚.) " +
-            "h <- (d.a1 ? b1 ? c1 : 1) " +
+            "h <- (d.a1 ? b1 ? c1: 1) " +
             "i <- (d˚b1 ? b1˚. | d˚b2 ? b2˚.)",
 
                     "√ { d { " +
@@ -405,7 +405,7 @@ final class Tr3Tests: XCTestCase {
                         "e<-(d˚b1 ? b1˚. : d˚b2 ? b2˚.) " +
                         "f<-(d˚b1 ? b1˚. : b2˚.) " +
                         "g<-(d˚b1 ? b1˚.) <-(d˚b2 ? b2˚.) " +
-                        "h<-(d.a1 ? b1 ? c1 : 1) " +
+                        "h<-(d.a1 ? b1 ? c1: 1) " +
                         "i<-(d˚b1 ? b1˚. | d˚b2 ? b2˚.) }" +
             "")
 

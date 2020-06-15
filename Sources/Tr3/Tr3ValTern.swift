@@ -133,22 +133,22 @@ public class Tr3ValTern: Tr3ValPath {
 
         switch ternState {
             
-        case .If   : if path == "" { path = path_ }
-         /**/        else { compareRight = Tr3ValPath(with: path_) }
+        case .If:   if path == "" { path = path_ }
+         /**/       else { compareRight = Tr3ValPath(with: path_) }
 
-        case .Then : thenVal = Tr3ValPath(with: path_)
-        case .Else : elseVal = Tr3ValPath(with: path_)
-        default    : break
+        case .Then: thenVal = Tr3ValPath(with: path_)
+        case .Else: elseVal = Tr3ValPath(with: path_)
+        default:    break
         }
     }
 
     /// While parsing, get most recently added Tr3Val to decorate with additional attributes.
     func getVal() -> Tr3Val! {
         switch ternState {
-        case .If    : return nil
-        case .Then  : return thenVal
-        case .Else  : return elseVal
-        case .Radio : return radioNext
+        case .If:    return nil
+        case .Then:  return thenVal
+        case .Else:  return elseVal
+        case .Radio: return radioNext
         default: break
         }
         return nil

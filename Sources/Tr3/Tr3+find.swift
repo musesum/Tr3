@@ -164,9 +164,9 @@ extension Tr3 {
         func getWild(tr3:Tr3) -> [Tr3] {
 
             switch wildcard.first {
-            case "." : return tr3.getNearDots(wildcard, suffix, nextFlags)
-            case "˚" : return tr3.getDegreeTr3s(wildcard, suffix)
-            default  : return [tr3]
+            case ".": return tr3.getNearDots(wildcard, suffix, nextFlags)
+            case "˚": return tr3.getDegreeTr3s(wildcard, suffix)
+            default:  return [tr3]
             }
         }
 
