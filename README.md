@@ -75,7 +75,7 @@ A common case are sensors, which have a fixed range of values. For example,
 a 3G (gravity) accelerometer  may have a range between `-3.0...3.0` 
 ```swift 
 accelerometer: (x y z):(-3.0...3.0) -> model
-model        : (x y z):(-1...1) // rescale
+model:        (x y z):(-1...1) // rescale
 ```
 Nodes may pass through values
 ```swift

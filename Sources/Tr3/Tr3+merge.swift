@@ -10,7 +10,7 @@ import Par // whitespace
 extension Tr3 {
 
     // b.c a { b { c {c1 c2} d {d1 d2} } b.c: c3 }
-    func willMerge(with tr3:Tr3) -> Bool {
+    func willMerge(with tr3: Tr3) -> Bool {
         if tr3 == self {
             return true
         }
@@ -19,7 +19,7 @@ extension Tr3 {
                 return true
             }
         }
-        return parent?.willMerge(with:tr3) ?? false
+        return parent?.willMerge(with: tr3) ?? false
     }
 
     /// previously declared Tr3 has a ":"
@@ -36,7 +36,7 @@ extension Tr3 {
     ///
     ///     /**/ a { b { c { c1 c2 } d { d1 d2 } } b.c: b.d } ⟹
     ///     √  { a { b { c { c1 c2 d1 d2 } d { d1 d2 } } } }
-    func mergeDuplicate(_ merge:Tr3) {
+    func mergeDuplicate(_ merge: Tr3) {
 
         var foundDuplicate = false
 
@@ -59,7 +59,7 @@ extension Tr3 {
         }
     }
 
-    func mergeSibling(_ merge:Tr3) {
+    func mergeSibling(_ merge: Tr3) {
         merge.type = .remove
         if let mergeVal = merge.val {
             val = mergeVal
@@ -127,7 +127,7 @@ extension Tr3 {
         for foundi in found {
             // is adding or appending with a direct ancestor
             if let parent = parent,
-                foundi.willMerge(with:parent) {
+                foundi.willMerge(with: parent) {
                 // b.c in `a { b { c {c1 c2} d } b.c: c3 }`
                 for child in children {
                     foundi.mergeDuplicate(child)
@@ -219,7 +219,7 @@ extension Tr3 {
     /// a,a in `a.b { c d } a.e { f g }`
     func mergeChildren(_ kids :[Tr3]) {
 
-        func mergeDuplicate(_ prior:Tr3,_ kid:Tr3) {
+        func mergeDuplicate(_ prior: Tr3,_ kid: Tr3) {
             // override old value with new value if it exists
             if let val = kid.val { prior.val = val }
             // add new edge definitions
@@ -231,7 +231,7 @@ extension Tr3 {
             kid.type = .remove
         }
         // some children were copied or promoted so fix their parent
-        var nameTr3 = [String:Tr3]()
+        var nameTr3 = [String: Tr3]()
        
         var merged = false
         for kid in kids {
@@ -300,7 +300,7 @@ extension Tr3 {
         edgeDefs = Tr3EdgeDefs()
 
         newTr3.tr3Edges = tr3Edges
-        tr3Edges = [String:Tr3Edge]()
+        tr3Edges = [String: Tr3Edge]()
 
         children = [newTr3]             // make newTr3 my only child
         newTr3.val = val ; val = nil    // transfer my value to newTr3
@@ -312,7 +312,7 @@ extension Tr3 {
     ///     a { b.c }     // becomes after 2nd pass:
     ///     a { b { c } } // as final result
     ///
-    func divideAndContinue(_ index:Int) {
+    func divideAndContinue(_ index: Int) {
 
         if index > 0 {
 
@@ -443,7 +443,7 @@ extension Tr3 {
     
     public func bindRoot() {
 
-        func log(_ num:Int) {
+        func log(_ num: Int) {
             if      Tr3.BindDumpScript { print(dumpScript(0,session: true) + " // \(num)") }
             else if Tr3.BindMakeScript { print(makeScript() + " // \(num)") }
         }

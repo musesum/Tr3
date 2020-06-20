@@ -8,7 +8,7 @@ import Foundation
 
 extension Tr3ValTern {
 
-    func dumpRadioPrev(start:Bool = false) -> String {
+    func dumpRadioPrev(start: Bool = false) -> String {
         var script = radioPrev?.dumpRadioPrev() ?? "("
         if start {
             script += "* "
@@ -27,7 +27,7 @@ extension Tr3ValTern {
     }
 
     func dumpRadio() -> String {
-        var script = dumpRadioPrev(start:true)
+        var script = dumpRadioPrev(start: true)
         script += dumpRadioNext()
         return script
     }

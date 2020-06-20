@@ -41,7 +41,7 @@ public struct Tr3ValFlags: OptionSet {
     public static let ternary = Tr3ValFlags(rawValue: 1 << 21) // ternary a ? b : c
     public static let path    = Tr3ValFlags(rawValue: 1 << 22) // path to tr3 in a ? b : c
 
-    public init(rawValue:Int) { self.rawValue = rawValue }
+    public init(rawValue: Int) { self.rawValue = rawValue }
 
     
 

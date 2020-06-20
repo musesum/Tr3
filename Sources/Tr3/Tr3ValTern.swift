@@ -87,13 +87,13 @@ public class Tr3ValTern: Tr3ValPath {
         return newTr3ValTern
     }
 
-    init(_ tr3_:Tr3, _ parseLevel_:Int) {
+    init(_ tr3_: Tr3, _ parseLevel_: Int) {
         super.init()
         tr3 = tr3_
         parseLevel = parseLevel_
     }
 
-    static func getTernLevel(_ level:Int) -> Tr3ValTern?  {
+    static func getTernLevel(_ level: Int) -> Tr3ValTern?  {
         while ternStack.last?.parseLevel ?? 0 > level {
             let _ = ternStack.popLast()
         }
@@ -106,13 +106,13 @@ public class Tr3ValTern: Tr3ValPath {
         return nil
     }
     
-    static func setTernState(_ ternState_: Tr3TernState,_ level:Int) {
+    static func setTernState(_ ternState_: Tr3TernState,_ level: Int) {
         if let tern = getTernLevel(level) {
             tern.ternState = ternState_
         }
     }
 
-    static func setCompare(_ compareOp:String?) {
+    static func setCompare(_ compareOp: String?) {
         if let compareOp = compareOp {
             if let tern = ternStack.last {
                 tern.compareOp = compareOp
@@ -121,15 +121,15 @@ public class Tr3ValTern: Tr3ValPath {
     }
     
 
-    func setState(_ state_:Tr3TernState) { ternState = state_ }
+    func setState(_ state_: Tr3TernState) { ternState = state_ }
     
-    func setCondition(_ compareOp_:String) { compareOp = compareOp_ }
+    func setCondition(_ compareOp_: String) { compareOp = compareOp_ }
     
-    public func setTernState(_ ternState_: Tr3TernState, _ level:Int) {
+    public func setTernState(_ ternState_: Tr3TernState, _ level: Int) {
         ternState = ternState_
     }
     
-    public func addPath(_ path_:String) {
+    public func addPath(_ path_: String) {
 
         switch ternState {
             
@@ -193,7 +193,7 @@ public class Tr3ValTern: Tr3ValPath {
         return "??"
 
     }
-    override func scriptVal(prefix:String = ":", parens:Bool = true) -> String  {
+    override func scriptVal(prefix: String = ":", parens: Bool = true) -> String  {
 
         var script = parens ? "(" : ""
 
@@ -220,7 +220,7 @@ public class Tr3ValTern: Tr3ValPath {
         return script.with(trailing:" ")
 
     }
-    override func dumpVal(prefix:String = ":", parens:Bool = true, session:Bool = false) -> String  {
+    override func dumpVal(prefix: String = ":", parens: Bool = true, session: Bool = false) -> String  {
 
         var script = parens ? "(" : ""
 

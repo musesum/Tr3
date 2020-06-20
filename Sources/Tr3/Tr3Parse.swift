@@ -12,10 +12,10 @@ public class Tr3Parse {
     public static let shared = Tr3Parse()
 
     public var rootParNode: ParNode!
-    var tr3Keywords = [String:Tr3PriorParItem]()
+    var tr3Keywords = [String: Tr3PriorParItem]()
 
     public init() {
-        rootParNode = Par.shared.parse(script:Tr3Par)
+        rootParNode = Par.shared.parse(script: Tr3Par)
         rootParNode.reps.repMax = Int.max
         makeParTr3()
     }
@@ -76,7 +76,7 @@ public class Tr3Parse {
         return tr3
     }
     /// decorate current value with attributes
-    func parseDeepVal(_ val:Tr3Val?,_ parItem: ParItem)  {
+    func parseDeepVal(_ val: Tr3Val?,_ parItem: ParItem)  {
 
         let pattern = parItem.node?.pattern ?? ""
 
@@ -133,11 +133,11 @@ public class Tr3Parse {
                 }
                 else  { //Tr3Log.log("parseVal.B.defVal", prior, pattern)
 
-                    func addVal(_ v:Tr3Val) { edgeDef.pathVals.add(lastPath,v) }
+                    func addVal(_ v: Tr3Val) { edgeDef.pathVals.add(lastPath,v) }
 
                     switch pattern {
-                    case "embed":  addVal(Tr3ValEmbed(with:parItem.getFirstValue()))
-                    case "quote":  addVal(Tr3ValQuote(with:parItem.getFirstValue()))
+                    case "embed":  addVal(Tr3ValEmbed(with: parItem.getFirstValue()))
+                    case "quote":  addVal(Tr3ValQuote(with: parItem.getFirstValue()))
                     case "scalar": addVal(Tr3ValScalar())
                     case "data":   addVal(Tr3ValData())
                     case "tuple":  addVal(Tr3ValTuple())
@@ -154,8 +154,8 @@ public class Tr3Parse {
         else if tr3.val == nil { //Tr3Log.log("parseVal.C.defVal", prior, pattern)
 
             switch pattern {
-            case "embed":  tr3.val = Tr3ValEmbed(with:parItem.getFirstValue())
-            case "quote":  tr3.val = Tr3ValQuote(with:parItem.getFirstValue())
+            case "embed":  tr3.val = Tr3ValEmbed(with: parItem.getFirstValue())
+            case "quote":  tr3.val = Tr3ValQuote(with: parItem.getFirstValue())
             case "scalar": tr3.val = Tr3ValScalar()
             case "data":   tr3.val = Tr3ValData()
             case "tuple":  tr3.val = Tr3ValTuple()
@@ -303,7 +303,7 @@ public class Tr3Parse {
             }
 
             // reduce to keywords in tr3Keywords and print
-            let reduce1 = parItem.reduce1(keywords:tr3Keywords)
+            let reduce1 = parItem.reduce1(keywords: tr3Keywords)
             // print(reduce1.anyStr())
             // print(parItem.anyStr())
 

@@ -18,9 +18,9 @@ public struct Tr3EdgeFlags: OptionSet {
     public static let find    = Tr3EdgeFlags(rawValue: 1 << 4) // 16 ? in  a<:b   a:>b   a<:>b
     public static let ternary = Tr3EdgeFlags(rawValue: 1 << 5) // 32  a?>w, b?>w x<╌>w y<╌>w in  a b x y w<->(a ? x : b ? y)
  
-    public init(rawValue:Int = 0) { self.rawValue = rawValue }
+    public init(rawValue: Int = 0) { self.rawValue = rawValue }
 
-    public init(with:String) {
+    public init(with: String) {
         self.init()
         for char in with {
             switch char {
@@ -34,7 +34,7 @@ public struct Tr3EdgeFlags: OptionSet {
             }
         }
     }
-    public init(flipIO:Tr3EdgeFlags) {
+    public init(flipIO: Tr3EdgeFlags) {
         self.init(rawValue: flipIO.rawValue)
 
         let hasInput  = self.contains(.input)

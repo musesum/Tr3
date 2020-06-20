@@ -20,7 +20,7 @@ extension Tr3 {
     // a in `˚.a` // add if matches b and no children and stop, otherwise continue
     // _ in `˚.`  // add if no children, otherwise continue
 
-    func getDegreeTr3s(_ wildcard:String, _ suffix:String) -> [Tr3] {
+    func getDegreeTr3s(_ wildcard: String, _ suffix: String) -> [Tr3] {
 
         let greedy = wildcard == "˚˚"
         let leafy = wildcard == "˚."
@@ -67,7 +67,7 @@ extension Tr3 {
             }
             for foundi in found {
                 let foundi2 = foundi.getWildSuffix(wild2, suffix2, .children)
-                found2.append(contentsOf:foundi2)
+                found2.append(contentsOf: foundi2)
             }
             return found2
         }
@@ -88,7 +88,7 @@ extension Tr3 {
     }
 
     // `..`, `...`, `..a`
-    func getNearDots(_ wildcard:String,_ suffix: String,_ findFlags:Tr3FindFlags) -> [Tr3] {
+    func getNearDots(_ wildcard: String,_ suffix: String,_ findFlags: Tr3FindFlags) -> [Tr3] {
         if wildcard == ".*" { return children }
         if let parent = getDotParent(wildcard.count-1) {
             let nextFlags = findFlags.intersection([.parents,.children,.makePath])
@@ -100,7 +100,7 @@ extension Tr3 {
     }
 
     /// find preexisting item 
-    public func findAnchor(_ path:String, _ findFlags:Tr3FindFlags) -> [Tr3] {
+    public func findAnchor(_ path: String, _ findFlags: Tr3FindFlags) -> [Tr3] {
 
         let (prefix,wildcard,suffix) = path.splitWild(".*˚")
 
@@ -135,7 +135,7 @@ extension Tr3 {
         return []
     }
 
-    func findPrefixTr3(_ prefix:String, _ findFlags:Tr3FindFlags) -> Tr3? {
+    func findPrefixTr3(_ prefix: String, _ findFlags: Tr3FindFlags) -> Tr3? {
         if prefix == ""   {
             return self }
         if name == prefix {
@@ -156,12 +156,12 @@ extension Tr3 {
         return nil
     }
 
-    func getWildSuffix(_ wildcard:String,_ suffix:String, _ findFlags:Tr3FindFlags) -> [Tr3] {
+    func getWildSuffix(_ wildcard: String,_ suffix: String, _ findFlags: Tr3FindFlags) -> [Tr3] {
         // after finding starting point, only search children
         // and maybe create a tr3s, when specified in some cases.
         let nextFlags = findFlags.intersection([.children,.makePath])
 
-        func getWild(tr3:Tr3) -> [Tr3] {
+        func getWild(tr3: Tr3) -> [Tr3] {
 
             switch wildcard.first {
             case ".": return tr3.getNearDots(wildcard, suffix, nextFlags)
@@ -177,7 +177,7 @@ extension Tr3 {
             }
         }
         else {
-            found.append(contentsOf:  getWild(tr3:self))
+            found.append(contentsOf:  getWild(tr3: self))
         }
         return found
     }
@@ -242,7 +242,7 @@ extension Tr3 {
     ///     a.b.c.d { e.f } ⟹
     ///     √ { a { b { c { d { e { f } } } } } }
     ///
-    func makePath(_ path:String,_ head: Tr3?) -> Tr3? {
+    func makePath(_ path: String,_ head: Tr3?) -> Tr3? {
 
         let (prefix,_,suffix) = path.splitWild(".")
         if prefix != "" {

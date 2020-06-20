@@ -21,7 +21,7 @@ extension Tr3 {
             let y = CGFloat(v.nums[1].num)
             let w = CGFloat(v.nums[2].num)
             let h = CGFloat(v.nums[3].num)
-            let rect = CGRect(x:x, y:y, width:w, height:h)
+            let rect = CGRect(x: x, y: y, width: w, height: h)
             return rect
         }
         return nil
@@ -66,7 +66,7 @@ extension Tr3 {
             let x = CGFloat(v.nums[0].num)
             let y = CGFloat(v.nums[1].num)
 
-            let p = CGPoint(x:x, y:y)
+            let p = CGPoint(x: x, y: y)
             return p
         }
         return nil
@@ -81,7 +81,7 @@ extension Tr3 {
             let x = CGFloat(d.nums[0].num)
             let y = CGFloat(d.nums[1].num)
 
-            let p = CGPoint(x:x, y:y)
+            let p = CGPoint(x: x, y: y)
             return p
         }
         return nil
@@ -92,7 +92,7 @@ extension Tr3 {
             let w = CGFloat(v.nums[0].num)
             let h = CGFloat(v.nums[1].num)
 
-            let s = CGSize(width:w, height:h)
+            let s = CGSize(width: w, height: h)
             return s
         }
         return nil

@@ -8,7 +8,7 @@ import Foundation
 
 extension Tr3EdgeDef {
 
-    func connectNewEdge(_ leftTr3:Tr3,_ rightTr3:Tr3,_ tr3Val:Tr3Val?) {
+    func connectNewEdge(_ leftTr3: Tr3,_ rightTr3: Tr3,_ tr3Val: Tr3Val?) {
         
         let edge = Tr3Edge(self, leftTr3, rightTr3, tr3Val)
         leftTr3.tr3Edges[edge.key] = edge
@@ -17,10 +17,10 @@ extension Tr3EdgeDef {
     }
 
     /// find d.a1 relative to h
-    func connectTernCondition(_ tern:Tr3ValTern, _ tr3:Tr3, _ ternPathTr3s: [Tr3]) {
+    func connectTernCondition(_ tern: Tr3ValTern, _ tr3: Tr3, _ ternPathTr3s: [Tr3]) {
 
         /// input to Ternary is output from pathTr3
-        func connectTernIfEdge(_ ternPathTr3:Tr3,_ pathTr3:Tr3) {
+        func connectTernIfEdge(_ ternPathTr3: Tr3,_ pathTr3: Tr3) {
 
             //print(pathTr3.scriptLineage(2) + " ╌> " + ternPathTr3.scriptLineage(2))
             let edge = Tr3Edge(pathTr3, ternPathTr3, [.output,.ternary])
@@ -29,7 +29,7 @@ extension Tr3EdgeDef {
             for edgeDef in ternPathTr3.edgeDefs.edgeDefs {
                 if edgeDef == self { return edgeDef.edges[edge.key] = edge }
             }
-            let edgeDef = Tr3EdgeDef(with:self)
+            let edgeDef = Tr3EdgeDef(with: self)
             edgeDef.edges[edge.key] = edge
             ternPathTr3.edgeDefs.edgeDefs.append(edgeDef)
         }
@@ -69,7 +69,7 @@ extension Tr3EdgeDef {
     }
 
     /// output from ternary is input to pathTr3
-    func connectTernPathEdge(_ ternTr3:Tr3,_ pathTr3:Tr3) {
+    func connectTernPathEdge(_ ternTr3: Tr3,_ pathTr3: Tr3) {
         //print(pathTr3.scriptLineage(3) + " ╌> " + pathTr3.scriptLineage(2))
         let flipFlags = Tr3EdgeFlags(flipIO: edgeFlags)
         let edge = Tr3Edge(pathTr3, ternTr3, flipFlags)
@@ -93,7 +93,7 @@ extension Tr3EdgeDef {
     /// so use a Set<Tr3> to filter out redundant tr3s
     /// before saving filtered results into valPath.pathTr3s
     ///
-    func connectValPath(_ valPath:Tr3ValPath,_ tr3:Tr3, _ leftTr3s: [Tr3]) {
+    func connectValPath(_ valPath: Tr3ValPath,_ tr3: Tr3, _ leftTr3s: [Tr3]) {
 
         var foundSet = Set<Tr3>()
 
@@ -119,7 +119,7 @@ extension Tr3EdgeDef {
     ///
     /// will find b1 as child of d.a1
     ///
-    func connectValTern(_ tern:Tr3ValTern,_ tr3:Tr3, _ foundTr3s: [Tr3]) {
+    func connectValTern(_ tern: Tr3ValTern,_ tr3: Tr3, _ foundTr3s: [Tr3]) {
          //print("tr3: \(tr3.scriptLineage(3))  found: \(Tr3.dumpTr3s(foundTr3s))  pathTr3s: \(Tr3.dumpTr3s(tern.pathTr3s))" )
         // IF
         connectTernCondition(tern, tr3, foundTr3s) // f.i
@@ -177,9 +177,9 @@ extension Tr3EdgeDef {
                 let found =  tr3.findAnchor(tr3.name, [.parents,.children])
                 if found.count > 0 {
                     for foundi in found {
-                        let foundTern = Tr3ValTern(with:tern)
+                        let foundTern = Tr3ValTern(with: tern)
                         if !foundi.edgeDefs.overideEdgeTernary(foundTern) {
-                            foundi.edgeDefs.addEdgeTernary(foundTern, copyFrom:tr3)
+                            foundi.edgeDefs.addEdgeTernary(foundTern, copyFrom: tr3)
                             connectValTern(foundTern, foundi, [])
                         }
                     }

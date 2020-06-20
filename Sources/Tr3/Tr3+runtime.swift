@@ -9,7 +9,7 @@ import Par // visitor
 
 extension Tr3 {
 
-    public func setVal(_ any: Any,_ options: Tr3SetOptions,_ visitor:Visitor = Visitor(0)) {
+    public func setVal(_ any: Any,_ options: Tr3SetOptions,_ visitor: Visitor = Visitor(0)) {
 
         /// clean up scaffolding from parsing a Ternary,
         /// todo: redo scaffolding instead of overloading val
@@ -39,11 +39,11 @@ extension Tr3 {
             passthrough = false
 
             switch any {
-            case let v as Int:      val = Tr3ValScalar(with:Float(v))
-            case let v as Float:    val = Tr3ValScalar(with:v)
-            case let v as CGFloat:  val = Tr3ValScalar(with:Float(v))
-            case let v as CGPoint:  val = Tr3ValTuple(with:v)
-            case let v as String:   val = Tr3ValQuote(with:v)
+            case let v as Int:      val = Tr3ValScalar(with: Float(v))
+            case let v as Float:    val = Tr3ValScalar(with: v)
+            case let v as CGFloat:  val = Tr3ValScalar(with: Float(v))
+            case let v as CGPoint:  val = Tr3ValTuple(with: v)
+            case let v as String:   val = Tr3ValQuote(with: v)
             default: print("*** unknown val(\(any))")
             }
         }
@@ -69,7 +69,7 @@ extension Tr3 {
     }
 
 
-    func findEdgeTern(_ edge:Tr3Edge) -> Tr3ValTern? {
+    func findEdgeTern(_ edge: Tr3Edge) -> Tr3ValTern? {
         for edgeDef in edgeDefs.edgeDefs {
             if edgeDef.edges.contains(where: { $0.key == edge.key }) {
                 return edgeDef.ternVal

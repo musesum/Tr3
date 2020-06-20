@@ -14,7 +14,7 @@ public struct Tr3FindFlags: OptionSet {
     public static let children = Tr3FindFlags(rawValue: 1 << 1) // 2 eneral type Tr3ValScalar
     public static let makePath = Tr3FindFlags(rawValue: 1 << 2) // 4 eneral type Tr3ValScalar
 
-    public init(rawValue:Int) { self.rawValue = rawValue }
+    public init(rawValue: Int) { self.rawValue = rawValue }
 }
 
 public struct Tr3SetOptions: OptionSet {
@@ -28,5 +28,5 @@ public struct Tr3SetOptions: OptionSet {
     public static let create   = Tr3SetOptions(rawValue: 1 << 4) // :16 create a new value
     public static let zero1    = Tr3SetOptions(rawValue: 1 << 5) // :32 source value normalized 0...1
 
-    public init(rawValue:Int) { self.rawValue = rawValue }
+    public init(rawValue: Int) { self.rawValue = rawValue }
 }

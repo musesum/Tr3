@@ -51,8 +51,8 @@ public class Tr3Cache {
     }
 
     /// add an Tr3CacheItem to cache to be flushed during next frame update
-    public static func add(_ tr3:Tr3,_ any: Any, _ opt:Tr3SetOptions,_ visitor:Visitor) {
-        let cacheItem = Tr3CacheItem(tr3:tr3, any:any, opt:opt, visit:visitor)
+    public static func add(_ tr3: Tr3,_ any: Any, _ opt: Tr3SetOptions,_ visitor: Visitor) {
+        let cacheItem = Tr3CacheItem(tr3: tr3, any: any, opt: opt, visit: visitor)
         cache[input].append(cacheItem)
     }
 }

@@ -15,7 +15,7 @@ public class Tr3ValPath: Tr3Val {
         super.init()
     }
 
-    init(with path_:String) {
+    init(with path_: String) {
         super.init()
         path = path_
     }
@@ -26,7 +26,7 @@ public class Tr3ValPath: Tr3Val {
         // pathTr3s  = with.pathTr3s
     }
     override func copy() -> Tr3ValPath {
-        let newTr3ValPath = Tr3ValPath(with:self)
+        let newTr3ValPath = Tr3ValPath(with: self)
         return newTr3ValPath
     }
     public static func == (lhs: Tr3ValPath, rhs: Tr3ValPath) -> Bool {
@@ -47,15 +47,15 @@ public class Tr3ValPath: Tr3Val {
             else                  { return script.with(trailing:" ") }
         }
     }
-    override func scriptVal(prefix:String = "", parens:Bool = true) -> String  {
+    override func scriptVal(prefix: String = "", parens: Bool = true) -> String  {
         return prefix + path.with(trailing:" ")
     }
-    override func dumpVal(prefix:String = "", parens:Bool = true, session:Bool=false) -> String  {
+    override func dumpVal(prefix: String = "", parens: Bool = true, session: Bool=false) -> String  {
         var script = Tr3.dumpTr3s(pathTr3s)
         if script.first == " " { script.removeFirst() }
        return prefix + script.with(trailing:" ")
     }
-    public override func setVal(_ any: Any?,_ options:Any? = nil) {
+    public override func setVal(_ any: Any?,_ options: Any? = nil) {
          //TODO: is ever used during runtime?
     }
 

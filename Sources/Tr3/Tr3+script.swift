@@ -40,18 +40,18 @@ extension Tr3 {
         script += val?.scriptVal() ?? ""
         script += edgeDefs.makeScript()
 
-        func bracketChildren(_ openBracket:String,_  closeBracket:String) {
+        func bracketChildren(_ openBracket: String,_  closeBracket: String) {
             script += openBracket
             for child in children {
                 if script.last != "\n", !child.hasSoloDescendants() { script += "\n" }
-                script += child.makeScript(i+1, pretty:pretty)
+                script += child.makeScript(i+1, pretty: pretty)
             }
             script += closeBracket
         }
         func soloDotChild() {
             script += "."
             for child in children {
-                script += child.makeScript(i+1, pretty:pretty)
+                script += child.makeScript(i+1, pretty: pretty)
             }
         }
         if children.isEmpty {
@@ -76,11 +76,11 @@ extension Tr3 {
     }
 
     /// - Parameter session: show instance for session instead of full declaration
-    public func dumpScript(_ i: Int = 0, session:Bool = false) -> String {
+    public func dumpScript(_ i: Int = 0, session: Bool = false) -> String {
 
         let prefix = type == .proto ? ":" : ""
-        //var script = prefix + scriptLineage(1) + (val?.dumpVal(session:session) ?? "")
-        var script =  name + (val?.dumpVal(session:session) ?? "")
+        //var script = prefix + scriptLineage(1) + (val?.dumpVal(session: session) ?? "")
+        var script =  name + (val?.dumpVal(session: session) ?? "")
 
         func dumpTypeEdges(_ edges:[Tr3Edge]) -> String {
             
@@ -97,7 +97,7 @@ extension Tr3 {
                     if pathrefs.count > 1 { script+=") " }
                 }
                 else {
-                    script += edge.dumpVal(self, session:session)
+                    script += edge.dumpVal(self, session: session)
                 }
             }
             if edges.count > 1 { script.removeLast() ; script += ") " }
@@ -135,7 +135,7 @@ extension Tr3 {
             if children.count > 0 {
                 script += script.parenSpace() + "{"
                 for child in children {
-                    script += script.parenSpace() + child.dumpScript(i+1,session:session)
+                    script += script.parenSpace() + child.dumpScript(i+1,session: session)
                 }
                 script += script.parenSpace() + "}"
             }
@@ -160,7 +160,7 @@ extension Tr3 {
         return script
     }
     /// create "a.b.c" from c in `a{b{c}}`, but not √.b.c from b
-    public func scriptLineage(_ level:Int) -> String {
+    public func scriptLineage(_ level: Int) -> String {
         if let parent = parent, parent.name != "√",  level > 0 {
              return parent.scriptLineage(level-1) + "." + name
         }

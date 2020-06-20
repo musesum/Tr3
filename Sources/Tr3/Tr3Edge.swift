@@ -25,7 +25,7 @@ public class Tr3Edge: Hashable {
         hasher.combine(key)
     }
 
-    public static func == (lhs:Tr3Edge, rhs:Tr3Edge) -> Bool {
+    public static func == (lhs: Tr3Edge, rhs: Tr3Edge) -> Bool {
         return lhs.key == rhs.key
     }
 
@@ -39,14 +39,14 @@ public class Tr3Edge: Hashable {
         makeKey()
     }
 
-    convenience init (_ leftTr3_: Tr3?,_ rightTr3_:Tr3?,_ edgeflags_:Tr3EdgeFlags) {
+    convenience init (_ leftTr3_: Tr3?,_ rightTr3_: Tr3?,_ edgeflags_: Tr3EdgeFlags) {
         self.init()
         edgeFlags = edgeflags_
         leftTr3   = leftTr3_
         rightTr3  = rightTr3_
         makeKey()
     }
-    convenience init (_ def_: Tr3EdgeDef,_ leftTr3_:Tr3,_ rightTr3_: Tr3, _ tr3Val: Tr3Val?) {
+    convenience init (_ def_: Tr3EdgeDef,_ leftTr3_: Tr3,_ rightTr3_: Tr3, _ tr3Val: Tr3Val?) {
         self.init()
         edgeFlags = def_.edgeFlags
         leftTr3   = leftTr3_
@@ -60,7 +60,7 @@ public class Tr3Edge: Hashable {
         let arrow = scriptEdgeFlag()
         key = lhs+arrow+rhs
     }
-    func dumpVal(_ tr3:Tr3, session:Bool = false) -> String {
+    func dumpVal(_ tr3: Tr3, session: Bool = false) -> String {
 
         var script = ""
 
@@ -70,7 +70,7 @@ public class Tr3Edge: Hashable {
         else if rightTr3 == tr3, let leftTr3 = leftTr3 {
             script += leftTr3.scriptLineage(Tr3Edge.LineageDepth)
         }
-        script += defVal?.dumpVal(session:session).with(trailing: " ") ?? " "
+        script += defVal?.dumpVal(session: session).with(trailing: " ") ?? " "
         return script
     }
 

@@ -26,7 +26,7 @@ public class Tr3: Hashable {
     var cacheVal: Any? = nil        // cached value is drained
 
     var edgeDefs = Tr3EdgeDefs()    // for a<-(b.*++), this saves "++" and "b.*)
-    var tr3Edges = [String:Tr3Edge]()      // some edges are defined by another Tr3
+    var tr3Edges = [String: Tr3Edge]()      // some edges are defined by another Tr3
 
     var closures = [Tr3Visitor]()  // during activate call a list of closures and return with Tr3Val ((Tr3Val?)->(Tr3Val?))
     public var type = Tr3Type.unknown
@@ -35,13 +35,13 @@ public class Tr3: Hashable {
 
     public static func == (lhs: Tr3, rhs: Tr3) -> Bool { return lhs.id == rhs.id  }
 
-    public convenience init(_ name_:String,_ type_:Tr3Type = .name) {
+    public convenience init(_ name_: String,_ type_: Tr3Type = .name) {
         self.init()
         name = name_
         type = type_
     }
 
-    public convenience init(deepcopy from: Tr3, parent parent_:Tr3) {
+    public convenience init(deepcopy from: Tr3, parent parent_: Tr3) {
 
         self.init()
         parent = parent_
@@ -57,7 +57,7 @@ public class Tr3: Hashable {
     }
     public convenience init(with val_: Tr3Val) { self.init() ; val = val_.copy() }
 
-    public func makeTr3From(parItem:ParItem) -> Tr3 {
+    public func makeTr3From(parItem: ParItem) -> Tr3 {
 
         if let value = parItem.value {
             return Tr3(value)
@@ -74,7 +74,7 @@ public class Tr3: Hashable {
     ///
     ///  - parameter visitor: the same "_:_" clone may be attached to multiple parent before consolication.
     ///     So, use visitor pattern to avoid multiple visits
-    func attachDeep(_ tr3:Tr3, _ visitor: Visitor) {
+    func attachDeep(_ tr3: Tr3, _ visitor: Visitor) {
         if visitor.newVisit(id) {
             if children.count == 0 {
                 tr3.parent = self
@@ -106,7 +106,7 @@ public class Tr3: Hashable {
         return many
     }
 
-    public func addChild(_ n:ParItem,_ type_:Tr3Type)  -> Tr3 {
+    public func addChild(_ n: ParItem,_ type_: Tr3Type)  -> Tr3 {
 
         if let value = n.nextPars.first?.value {
 
@@ -118,7 +118,7 @@ public class Tr3: Hashable {
         return self
     }
     
-    public func makeChild(_ name:String = "") -> Tr3 {
+    public func makeChild(_ name: String = "") -> Tr3 {
         let child = Tr3(name)
         child.parent = self
         children.append(child)
@@ -128,7 +128,7 @@ public class Tr3: Hashable {
     public func addClosure(_ closure:@escaping Tr3Visitor) {
         closures.append(closure)
     }
-    public func parentPath(_ depth:Int = 2, withId:Bool = false) -> String {
+    public func parentPath(_ depth: Int = 2, withId: Bool = false) -> String {
         var path = name
         if withId { path += "." + String(id) }
         if depth > 1, let parentPath =  parent?.parentPath(depth-1) {

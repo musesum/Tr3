@@ -31,7 +31,7 @@ class BundleResource {
 
 public extension Tr3Parse {
 
-    func read(_ filename: String, _ ext:String) -> String {
+    func read(_ filename: String, _ ext: String) -> String {
 
         let resource = BundleResource(name: filename, type: ext)
         do {
@@ -44,7 +44,7 @@ public extension Tr3Parse {
     }
 
     @discardableResult
-    func parseTr3(_ tr3:Tr3, _ filename:String) -> Bool {
+    func parseTr3(_ tr3: Tr3, _ filename: String) -> Bool {
         let script = read(filename,"tr3")
         print(filename, terminator:" ")
         let success = parseScript(tr3, script, whitespace: "\n\t ")

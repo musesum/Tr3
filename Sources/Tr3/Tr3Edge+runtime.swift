@@ -10,7 +10,7 @@ import Par // visitor
 
 extension Tr3Edge {
     
-    func followEdge(_ fromTr3:Tr3,
+    func followEdge(_ fromTr3: Tr3,
                     _ visitor: Visitor) {
 
         let leftToRight = fromTr3 == leftTr3

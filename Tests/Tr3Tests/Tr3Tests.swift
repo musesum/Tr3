@@ -31,7 +31,7 @@ final class Tr3Tests: XCTestCase {
     /// - parameter script: test script
     /// - parameter expected: exected output after parse
     ///
-    func test(_ script:String,_ expected:String, session:Bool = false) -> Int {
+    func test(_ script: String,_ expected: String, session: Bool = false) -> Int {
 
         var err = 0
 
@@ -40,7 +40,7 @@ final class Tr3Tests: XCTestCase {
 
         if tr3Parse.parseScript(root,script, whitespace: "\n\t ") {
 
-            let actual = root.dumpScript(session:session)
+            let actual = root.dumpScript(session: session)
             err = ParStr.testCompare(expected,actual)
         }
         else  {
@@ -115,7 +115,7 @@ final class Tr3Tests: XCTestCase {
         err += test("a { b c }    h:a { i j }","√ { a { b c } h { b c i j } }")
         err += test("a { b c } \n h:a { i j }","√ { a { b c } h { b c i j } }")
 
-        XCTAssertEqual(err,0)
+        XCTAssertEqual(err, 0)
     }
     /// compare script with expected output and print an error if they don't match
     func testParseBasics() {
@@ -572,13 +572,13 @@ pos:(x y z):(0...1) angle:(roll pitch yaw):(%360) mm:(0...3000) }
     var result = ""
     
     /// add result of callback to result
-    func addCallResult(_ tr3:Tr3, _ val:Tr3Val?) {
+    func addCallResult(_ tr3:Tr3, _ val: Tr3Val?) {
         var val = val?.printVal() ?? "nil"
         if val.first == " " { val.removeFirst() }
         result += tr3.name + ":" + val + " "
     }
     /// setup new result string, call the action, print the appeneded result
-    func testAct(_ before:String,_ after:String, callTest: @escaping CallVoid) -> Int {
+    func testAct(_ before: String,_ after: String, callTest: @escaping CallVoid) -> Int {
         var err = 0
         result = before + " ⟹ "
         let expected = result + after
@@ -607,7 +607,7 @@ pos:(x y z):(0...1) angle:(roll pitch yaw):(%360) mm:(0...3000) }
             let b =  root.findPath("b") {
 
             b.activate()
-            let result =  root.dumpScript(session:true)
+            let result =  root.dumpScript(session: true)
             err = ParStr.testCompare("√ { a:2 b->a:2 }", result)
         }
         else {
@@ -629,7 +629,7 @@ pos:(x y z):(0...1) angle:(roll pitch yaw):(%360) mm:(0...3000) }
             let b =  root.findPath("b") {
 
             b.activate()
-            let result =  root.dumpScript(session:true)
+            let result =  root.dumpScript(session: true)
             err = ParStr.testCompare("√ { a { a1:2 a2:2 } b->(a.a1:2 a.a2:2) }", result)
         }
         else {
@@ -652,7 +652,7 @@ pos:(x y z):(0...1) angle:(roll pitch yaw):(%360) mm:(0...3000) }
             let z =  root.findPath("z") {
 
             z.activate()
-            let result =  root.dumpScript(session:true)
+            let result =  root.dumpScript(session: true)
             err += ParStr.testCompare("√ { a { b { f g:2 } c { f g:2 } } z->(a.b.g:2 a.c.g:2) }", result)
         }
         else {
@@ -674,7 +674,7 @@ pos:(x y z):(0...1) angle:(roll pitch yaw):(%360) mm:(0...3000) }
             let z =  root.findPath("z") {
 
             z.activate()
-            let result =  root.dumpScript(session:false)
+            let result =  root.dumpScript(session: false)
             err += ParStr.testCompare("√ { a { b { f:1 g:2 } c { f g:2 } } z->(a.b.f:1 a.b.g:2 a.c.g:2) }", result)
         }
         else {
@@ -693,9 +693,9 @@ pos:(x y z):(0...1) angle:(roll pitch yaw):(%360) mm:(0...3000) }
 
         if tr3Parse.parseScript(root, script),
             let c = root.findPath("c") {
-            c.setVal(CGPoint(x:1,y:2), .activate)
-            let result =  root.dumpScript(session:true)
-            err = ParStr.testCompare("√ { a:(1)<-c b:(2)<-c c:(1 2) }", result, echo:true)
+            c.setVal(CGPoint(x: 1, y: 2), .activate)
+            let result =  root.dumpScript(session: true)
+            err = ParStr.testCompare("√ { a:(1)<-c b:(2)<-c c:(1 2) }", result, echo: true)
         }
         else {
             err += 1
@@ -711,7 +711,7 @@ pos:(x y z):(0...1) angle:(roll pitch yaw):(%360) mm:(0...3000) }
         let script = "a:(x y):(0...1=0)"
         print("\n" + script)
 
-        let p0 = CGPoint(x:1, y:1)
+        let p0 = CGPoint(x: 1, y: 1)
         var p1 = CGPoint.zero
 
         let root = Tr3("√")
@@ -725,10 +725,10 @@ pos:(x y z):(0...1) angle:(roll pitch yaw):(%360) mm:(0...3000) }
 
             a.setVal(p0, [.activate])
 
-            let result0 =  root.dumpScript(session:true)
-            err += ParStr.testCompare("√ { a:(1 1) }", result0, echo:true)
-            let result1 =  root.dumpScript(session:false)
-            err += ParStr.testCompare("√ { a:(x y):(0...1=0) }", result1, echo:true)
+            let result0 =  root.dumpScript(session: true)
+            err += ParStr.testCompare("√ { a:(1 1) }", result0, echo: true)
+            let result1 =  root.dumpScript(session: false)
+            err += ParStr.testCompare("√ { a:(x y):(0...1=0) }", result1, echo: true)
         }
         else {
             err += 1
@@ -781,7 +781,7 @@ pos:(x y z):(0...1) angle:(roll pitch yaw):(%360) mm:(0...3000) }
             let c = root.findPath("c"),
             let w = root.findPath("w") {
 
-            err += ParStr.testCompare("√ { a?>w b?>w c?>w w:0<-(a ? 1 : b ? 2 : c ? 3) }", root.dumpScript(session:true), echo:true)
+            err += ParStr.testCompare("√ { a?>w b?>w c?>w w:0<-(a ? 1 : b ? 2 : c ? 3) }", root.dumpScript(session: true), echo: true)
 
             w.addClosure { tr3,_ in self.addCallResult(w,tr3.val!) }
             err += testAct("a!", "w:1.0 ") { a.activate() }
@@ -790,7 +790,7 @@ pos:(x y z):(0...1) angle:(roll pitch yaw):(%360) mm:(0...3000) }
             err += testAct("b:0","w:2.0")  { b.setVal(0,[.create,.activate]) }
             err += testAct("c!", "w:3.0 ") { c.activate() }
 
-            err += ParStr.testCompare(" √ { a:0?>w b:0?>w c?>w w:3<-(a ? 1 : b ? 2 : c ? 3) }", root.dumpScript(session:true), echo:true)
+            err += ParStr.testCompare(" √ { a:0?>w b:0?>w c?>w w:3<-(a ? 1 : b ? 2 : c ? 3) }", root.dumpScript(session: true), echo: true)
         }
         else {
             err += 1
@@ -809,7 +809,7 @@ pos:(x y z):(0...1) angle:(roll pitch yaw):(%360) mm:(0...3000) }
             let y = root.findPath("y"),
             let w = root.findPath("w") {
 
-            err += ParStr.testCompare("√ { a:0?>w x:10╌>w y:20╌>w w<-(a ? x : y) }", root.dumpScript(session:true), echo:true)
+            err += ParStr.testCompare("√ { a:0?>w x:10╌>w y:20╌>w w<-(a ? x : y) }", root.dumpScript(session: true), echo: true)
 
             w.addClosure { tr3,_ in self.addCallResult(w,tr3.val!) }
             err += testAct("a:0","w:20.0")  { a.setVal(0,.activate) }
@@ -822,7 +822,7 @@ pos:(x y z):(0...1) angle:(roll pitch yaw):(%360) mm:(0...3000) }
 
             err += testAct("a:0","w:22.0")  { a.setVal(0,.activate) }
 
-            err += ParStr.testCompare("√ { a:0?>w x:12╌>w y:22->w w:y<-(a ? x : y) }", root.dumpScript(session:true), echo:true)
+            err += ParStr.testCompare("√ { a:0?>w x:12╌>w y:22->w w:y<-(a ? x : y) }", root.dumpScript(session: true), echo: true)
         }
         else {
             err += 1
@@ -841,7 +841,7 @@ pos:(x y z):(0...1) angle:(roll pitch yaw):(%360) mm:(0...3000) }
             let y = root.findPath("y"),
             let w = root.findPath("w") {
 
-            err += ParStr.testCompare("√ { a?>w x:10<╌>w y:20<╌>w w<->(a ? x : y) }", root.dumpScript(session:true), echo:true)
+            err += ParStr.testCompare("√ { a?>w x:10<╌>w y:20<╌>w w<->(a ? x : y) }", root.dumpScript(session: true), echo: true)
 
             w.addClosure { tr3,_ in self.addCallResult(w,tr3.val!) }
             x.addClosure { tr3,_ in self.addCallResult(x,tr3.val!) }
@@ -851,7 +851,7 @@ pos:(x y z):(0...1) angle:(roll pitch yaw):(%360) mm:(0...3000) }
             err += testAct("a:1","w:3.0 x:3.0")   { a.setVal(1,.activate) }
             err += testAct("w:4","w:4.0 x:4.0")   { w.setVal(4,[.activate]) }
 
-            err += ParStr.testCompare("√ { a:1?>w x:4<->w y:3<╌>w w:4<->(a ? x : y) }", root.dumpScript(session:true), echo:true)
+            err += ParStr.testCompare("√ { a:1?>w x:4<->w y:3<╌>w w:4<->(a ? x : y) }", root.dumpScript(session: true), echo: true)
         }
         else {
             err += 1
@@ -866,9 +866,9 @@ pos:(x y z):(0...1) angle:(roll pitch yaw):(%360) mm:(0...3000) }
         //let script = "x.xx y.yy a { b <- (x ? x.xx | y ? y.yy) } c:a e:c f:e g:f "
         let script = "a.b.c:1 d { e:2<->a.b.c } f:d"
 
-        if tr3Parse.parseScript(root,script, whitespace: "\n\t ") {
+        if tr3Parse.parseScript(root, script, whitespace: "\n\t ") {
 
-            let pretty = root.makeScript(0,pretty:true)
+            let pretty = root.makeScript(0,pretty: true)
             print(pretty)
 
             let d3Script = root.makeD3Script()
@@ -885,7 +885,7 @@ pos:(x y z):(0...1) angle:(roll pitch yaw):(%360) mm:(0...3000) }
         let root = Tr3("√")
         let tr3Parse = Tr3Parse()
 
-        func parse(_ name:String, _ script:String) -> Int {
+        func parse(_ name: String, _ script: String) -> Int {
             let success = tr3Parse.parseScript(root, script, whitespace: "\n\t ")
             if success  { print("\(name) ✓") }
             else        { print("\(name) 🚫 parse failed") }
@@ -908,7 +908,7 @@ pos:(x y z):(0...1) angle:(roll pitch yaw):(%360) mm:(0...3000) }
         err += parse("PanelShaderTileTr3",PanelShaderTileTr3)
         err += parse("PanelSpeedTr3",PanelSpeedTr3)
 
-        let actual = root.makeScript(0,pretty:false)
+        let actual = root.makeScript(0,pretty: false)
         err += ParStr.testCompare(SkyOutput,actual)
 
         XCTAssertEqual(err,0)

@@ -15,7 +15,7 @@ extension Tr3ValTern {
                      _ act:     Tr3Act,
                      _ visitor: Visitor) {
 
-        func setTernEdges(_ val:Tr3Val?, active:Bool) {
+        func setTernEdges(_ val: Tr3Val?, active: Bool) {
 
             if let valPath = val as? Tr3ValPath {
                 for pathTr3 in  valPath.pathTr3s  {
@@ -28,7 +28,7 @@ extension Tr3ValTern {
             }
         }
 
-        func forTernPathVal(_ val:Tr3Val?, call: @escaping CallTern) {
+        func forTernPathVal(_ val: Tr3Val?, call: @escaping CallTern) {
 
             if let pathTr3s = (val as? Tr3ValTern)?.pathTr3s {
                 for pathTr3 in pathTr3s {
@@ -38,7 +38,7 @@ extension Tr3ValTern {
                 }
             }
         }
-        func recalcPathVal(_ val:Tr3Val?) {
+        func recalcPathVal(_ val: Tr3Val?) {
 
             if  let tern = val as? Tr3ValTern {
                 tern.recalc(prevTr3, nextTr3, act, visitor)
@@ -47,7 +47,7 @@ extension Tr3ValTern {
                 tr3?.setEdgeVal(val,visitor)
             }
         }
-        func neitherPathVal(_ val:Tr3Val?) {
+        func neitherPathVal(_ val: Tr3Val?) {
             forTernPathVal(val) { tern in
                 tern.changeState(.Neither, prevTr3, nextTr3, act, visitor)
             }

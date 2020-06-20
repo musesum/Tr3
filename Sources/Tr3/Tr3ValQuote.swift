@@ -11,11 +11,11 @@ public class Tr3ValQuote: Tr3Val {
 
     var quote = ""
 
-    init(with str:String?) {
+    init(with str: String?) {
         super.init()
         quote = str ?? "??"
     }
-    init(with val:Tr3ValQuote) {
+    init(with val: Tr3ValQuote) {
         super.init()
         quote = val.quote
     }
@@ -29,13 +29,13 @@ public class Tr3ValQuote: Tr3Val {
     override func printVal() -> String {
         return quote
     }
-    override func scriptVal(prefix:String = ":", parens:Bool = true) -> String  {
+    override func scriptVal(prefix: String = ":", parens: Bool = true) -> String  {
         return prefix +  "\"" + quote +  "\" "
     }
-    override func dumpVal(prefix:String = ":", parens:Bool = true, session:Bool = false) -> String  {
-        return scriptVal(prefix:prefix, parens:parens)
+    override func dumpVal(prefix: String = ":", parens: Bool = true, session: Bool = false) -> String  {
+        return scriptVal(prefix: prefix, parens: parens)
     }
-    public override func setVal(_ any: Any?, _ options:Any? = nil) {
+    public override func setVal(_ any: Any?, _ options: Any? = nil) {
         if let v = any as? String {
             quote = v
         }

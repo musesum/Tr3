@@ -13,7 +13,7 @@ import Par // ParItem
 /// which is important for preserving order of values
 struct PathVals {
 
-    var pathDict = [String:Tr3Val?]() // eliminate duplicates
+    var pathDict = [String: Tr3Val?]() // eliminate duplicates
     var pathList = [String]()         // preserve sequence order
 
     mutating func add(_ path: String?, _ val_: Tr3Val?) {
@@ -45,7 +45,7 @@ public class Tr3EdgeDef {
     var edgeFlags = Tr3EdgeFlags()
     var pathVals = PathVals()
     var ternVal: Tr3ValTern?
-    var edges = [String:Tr3Edge]() // each edge is also shared by two Tr3s
+    var edges = [String: Tr3Edge]() // each edge is also shared by two Tr3s
     
     init() { }
 
@@ -75,7 +75,7 @@ public class Tr3EdgeDef {
         return newEdgeDef
     }
     
-    func addPath(_ parItem:ParItem) {
+    func addPath(_ parItem: ParItem) {
 
         if let path = parItem.nextPars.first?.value {
 

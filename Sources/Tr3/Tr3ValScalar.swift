@@ -16,12 +16,12 @@ public class Tr3ValScalar: Tr3Val {
     override init() {
         super.init()
     }
-    init(with str:String) {
+    init(with str: String) {
         super.init()
         let val = Float(str) ?? Float.nan
         addDflt(val)
     }
-    init(with num_:Float) {
+    init(with num_: Float) {
         super.init()
         min = fmin(num_,0.0)
         max = fmax(num_,1.0)
@@ -41,14 +41,14 @@ public class Tr3ValScalar: Tr3Val {
         return newTr3ValScalar
     }
 
-    func addMin (_ val_:Float) { valFlags.insert(.min );  min  = val_ }
-    func addMax (_ val_:Float) { valFlags.insert(.max );  max  = val_ }
-    func addDflt(_ val_:Float) { valFlags.insert(.dflt);  num = val_ }
+    func addMin (_ val_: Float) { valFlags.insert(.min );  min  = val_ }
+    func addMax (_ val_: Float) { valFlags.insert(.max );  max  = val_ }
+    func addDflt(_ val_: Float) { valFlags.insert(.dflt);  num = val_ }
 
     override func printVal() -> String {
         return String(num)
     }
-    override func scriptVal(prefix:String = ":", parens:Bool) -> String  {
+    override func scriptVal(prefix: String = ":", parens: Bool) -> String  {
 
         var script = prefix
 
@@ -68,17 +68,17 @@ public class Tr3ValScalar: Tr3Val {
         script += useParens ? ") " : " "
         return script
     }
-    override func dumpVal(prefix:String = ":", parens:Bool, session:Bool = false) -> String  {
+    override func dumpVal(prefix: String = ":", parens: Bool, session: Bool = false) -> String  {
         if session {
             let script = prefix + String(format: "%g",num)
             return script.with(trailing: " ")
         }
         else {
-            return scriptVal(prefix:prefix, parens:parens)
+            return scriptVal(prefix: prefix, parens: parens)
         }
     }
     
-    static func |= (lhs:Tr3ValScalar, rhs:Tr3ValScalar) {
+    static func |= (lhs: Tr3ValScalar, rhs: Tr3ValScalar) {
         
         let mergeFlags = lhs.valFlags.rawValue |  rhs.valFlags.rawValue
         lhs.valFlags = Tr3ValFlags(rawValue: mergeFlags)
@@ -87,12 +87,12 @@ public class Tr3ValScalar: Tr3Val {
         if rhs.valFlags.contains(.num )  { lhs.num  = rhs.num }
     }
 
-    public static func == (lhs: Tr3ValScalar, rhs:Tr3ValScalar) -> Bool { return lhs.num == rhs.num }
-    public static func >= (lhs: Tr3ValScalar, rhs:Tr3ValScalar) -> Bool { return lhs.num >= rhs.num }
-    public static func >  (lhs: Tr3ValScalar, rhs:Tr3ValScalar) -> Bool { return lhs.num >  rhs.num }
-    public static func <= (lhs: Tr3ValScalar, rhs:Tr3ValScalar) -> Bool { return lhs.num <= rhs.num }
-    public static func <  (lhs: Tr3ValScalar, rhs:Tr3ValScalar) -> Bool { return lhs.num <  rhs.num }
-    public static func != (lhs: Tr3ValScalar, rhs:Tr3ValScalar) -> Bool { return lhs.num != rhs.num }
+    public static func == (lhs: Tr3ValScalar, rhs: Tr3ValScalar) -> Bool { return lhs.num == rhs.num }
+    public static func >= (lhs: Tr3ValScalar, rhs: Tr3ValScalar) -> Bool { return lhs.num >= rhs.num }
+    public static func >  (lhs: Tr3ValScalar, rhs: Tr3ValScalar) -> Bool { return lhs.num >  rhs.num }
+    public static func <= (lhs: Tr3ValScalar, rhs: Tr3ValScalar) -> Bool { return lhs.num <= rhs.num }
+    public static func <  (lhs: Tr3ValScalar, rhs: Tr3ValScalar) -> Bool { return lhs.num <  rhs.num }
+    public static func != (lhs: Tr3ValScalar, rhs: Tr3ValScalar) -> Bool { return lhs.num != rhs.num }
 
     func withinRange() {
 
@@ -104,7 +104,7 @@ public class Tr3ValScalar: Tr3Val {
         }
     }
 
-    func setRangeFrom01(_ val_:Float) {
+    func setRangeFrom01(_ val_: Float) {
 
         if      valFlags.contains(.modu) { num = fmod(val_,fmax(1,max)) }
         else if valFlags.contains(.upto) { num = val_ * (max - min - 1) + min }
@@ -118,7 +118,7 @@ public class Tr3ValScalar: Tr3Val {
         else                             { return (num - min) / fmaxf(1, max - min - 1) }
     }
 
-    func changeRangeFrom01(_ val_:Float) -> Bool {
+    func changeRangeFrom01(_ val_: Float) -> Bool {
         let oldNum = num
         setRangeFrom01(val_)
         return (num != oldNum)
@@ -147,7 +147,7 @@ public class Tr3ValScalar: Tr3Val {
         }
     }
 
-    public override func setVal(_ from: Any?, _ options:Any? = nil) {
+    public override func setVal(_ from: Any?, _ options: Any? = nil) {
 
         // from contains normalized values 0...1
         let zero1 = (options as? Tr3SetOptions ?? []).contains(.zero1)
@@ -164,15 +164,15 @@ public class Tr3ValScalar: Tr3Val {
         }
     }
 
-    func setFloat(_ v:Int)      { num = Float(v) ; withinRange() }
-    func setFloat(_ v:Double)   { num = Float(v) ; withinRange() }
-    func setFloat(_ v:CGFloat)  { num = Float(v) ; withinRange() }
-    func setFloat(_ v:Float)    { num = v        ; withinRange() }
+    func setFloat(_ v: Int)      { num = Float(v) ; withinRange() }
+    func setFloat(_ v: Double)   { num = Float(v) ; withinRange() }
+    func setFloat(_ v: CGFloat)  { num = Float(v) ; withinRange() }
+    func setFloat(_ v: Float)    { num = v        ; withinRange() }
 
-    func setFloat01(_ v:Int)    { setRangeFrom01(Float(v)) }
-    func setFloat01(_ v:Double) { setRangeFrom01(Float(v)) }
-    func setFloat01(_ v:CGFloat){ setRangeFrom01(Float(v)) }
-    func setFloat01(_ v:Float)  { setRangeFrom01(v) }
+    func setFloat01(_ v: Int)    { setRangeFrom01(Float(v)) }
+    func setFloat01(_ v: Double) { setRangeFrom01(Float(v)) }
+    func setFloat01(_ v: CGFloat){ setRangeFrom01(Float(v)) }
+    func setFloat01(_ v: Float)  { setRangeFrom01(v) }
 
     func increment()            { num += 1 ; withinRange() }
     func decrement()            { num -= 1 ; withinRange() }

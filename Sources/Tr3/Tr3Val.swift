@@ -11,8 +11,8 @@ import Par
 protocol Tr3ValProtocal {
 
     func printVal() -> String
-    func scriptVal(prefix:String, parens:Bool) -> String
-    func dumpVal(prefix:String, parens:Bool, session:Bool) -> String
+    func scriptVal(prefix: String, parens: Bool) -> String
+    func dumpVal(prefix: String, parens: Bool, session: Bool) -> String
     func copy() -> Tr3Val
 }
 
@@ -20,7 +20,7 @@ public class Tr3Val: Comparable, Tr3ValProtocal {
 
     var id = Visitor.nextId()
     var tr3: Tr3?  // tr3 that declared and contains this value
-    var valFlags = Tr3ValFlags(rawValue:0) // which combination of the following?
+    var valFlags = Tr3ValFlags(rawValue: 0) // which combination of the following?
 
     public static func == (lhs: Tr3Val, rhs: Tr3Val) -> Bool {
         return lhs.valFlags == rhs.valFlags
@@ -35,7 +35,7 @@ public class Tr3Val: Comparable, Tr3ValProtocal {
         tr3 = tr3Val.tr3
         valFlags = tr3Val.valFlags
     }
-    func parse(string:String) -> Bool {
+    func parse(string: String) -> Bool {
         print("Tr3Val parsing:" + string)
         return true
     }
@@ -44,20 +44,20 @@ public class Tr3Val: Comparable, Tr3ValProtocal {
         return ""
     }
     // print reproducable script "a:(0..9=2)" in `a:(0..9=2)`
-    func scriptVal(prefix:String = ":", parens:Bool = true) -> String {
+    func scriptVal(prefix: String = ":", parens: Bool = true) -> String {
         return " "
     }
     // print internal connections "a╌>w", "b╌>w", "c╌>w" in  `w<-(a ? 1 : b ? 2 : c ? 3)`
-    func dumpVal(prefix:String = ":", parens:Bool = true, session:Bool = false) -> String {
+    func dumpVal(prefix: String = ":", parens: Bool = true, session: Bool = false) -> String {
         return " "
     }
     func copy() -> Tr3Val {
-        return Tr3Val(with:self)
+        return Tr3Val(with: self)
     }
     func addFlag(_ flag_: Tr3ValFlags) {
         valFlags.insert(flag_)
     }
-    public func setVal(_ from: Any?, _ option:Any? = nil) {
+    public func setVal(_ from: Any?, _ option: Any? = nil) {
         assertionFailure("setVal needs override")
     }
 }

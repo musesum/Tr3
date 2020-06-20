@@ -66,7 +66,7 @@ public class Tr3ValTuple: Tr3Val {
         return script.with(trailing:")") 
     }
 
-    override func scriptVal(prefix:String = ":", parens:Bool) -> String  {
+    override func scriptVal(prefix: String = ":", parens: Bool) -> String  {
 
         var script = prefix
 
@@ -102,7 +102,7 @@ public class Tr3ValTuple: Tr3Val {
         return script
     }
 
-    override func dumpVal(prefix:String = ":", parens:Bool, session:Bool = false) -> String  {
+    override func dumpVal(prefix: String = ":", parens: Bool, session: Bool = false) -> String  {
         if session {
             var script = prefix
             if nums.count > 0 {
@@ -119,7 +119,7 @@ public class Tr3ValTuple: Tr3Val {
         }
     }
 
-    func addPath(_ p:ParItem) {
+    func addPath(_ p: ParItem) {
 
         if let value = p.nextPars.first?.value {
             names.append(value)
@@ -134,7 +134,7 @@ public class Tr3ValTuple: Tr3Val {
     func addNums(_ nums_:[String]) {
         valFlags.insert(.tupNums)
         for num in nums_ {
-            nums.append(Tr3ValScalar(with:num))
+            nums.append(Tr3ValScalar(with: num))
         }
     }
     func addNameNums(_ nameNums_:[String]) {
@@ -142,19 +142,19 @@ public class Tr3ValTuple: Tr3Val {
         var isName = true
         for item in nameNums_ {
             if isName { names.append(item) }
-            else      { nums.append(Tr3ValScalar(with:item)) }
+            else      { nums.append(Tr3ValScalar(with: item)) }
             isName = !isName
         }
     }
     
     /// top off nums with proper number of scalars
-    func insureNums(count insureCount:Int) {
+    func insureNums(count insureCount: Int) {
         if nums.count < insureCount {
             if dflt is Tr3ValScalar {
                 valFlags.insert(.dflt)
             }
             else {
-                dflt = Tr3ValScalar(with:Float(0))
+                dflt = Tr3ValScalar(with: Float(0))
             }
             if let dflt = dflt as? Tr3ValScalar {
                 if names.count > 0 {
@@ -173,22 +173,22 @@ public class Tr3ValTuple: Tr3Val {
         }
     }
 
-    public override func setVal(_ any: Any?,_ options:Any? = nil) {
+    public override func setVal(_ any: Any?,_ options: Any? = nil) {
         
         // from contains normalized values 0...1
         let zero1 = (options as? Tr3SetOptions ?? []).contains(.zero1)
 
-        func setFloat(_ v:Float) {
+        func setFloat(_ v: Float) {
             insureNums(count: 1)
             nums[0].num = v
         }
-        func setPoint(_ v:CGPoint) {
+        func setPoint(_ v: CGPoint) {
 
             insureNums(count: 2)
             nums[0].num = Float(v.x)
             nums[1].num = Float(v.y)
         }
-        func setTuple(_ v:Tr3ValTuple) {
+        func setTuple(_ v: Tr3ValTuple) {
 
             if nums.count == v.nums.count {
                 for i in 0..<v.nums.count {
@@ -208,7 +208,7 @@ public class Tr3ValTuple: Tr3Val {
         ///     a(x:0) <- c(x:0 y:0)
         ///     b(y:0) <- c(x:0 y:0)
         ///
-        func setNamed(_ v:Tr3ValTuple) {
+        func setNamed(_ v: Tr3ValTuple) {
 
             // if no names to map, then make insure that there are enough numbers
             if names.isEmpty || v.names.isEmpty {

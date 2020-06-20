@@ -22,7 +22,7 @@ public class Tr3EdgeDefs {
     }
 
     /// override old ternary with new value
-    public func overideEdgeTernary(_ tern_:Tr3ValTern) -> Bool {
+    public func overideEdgeTernary(_ tern_: Tr3ValTern) -> Bool {
 
         for edgeDef in edgeDefs {
             if let ternPath = edgeDef.ternVal?.path,
@@ -34,7 +34,7 @@ public class Tr3EdgeDefs {
         }
         return false
     }
-    func merge(_ merge:Tr3EdgeDefs) {
+    func merge(_ merge: Tr3EdgeDefs) {
 
         func isUnique(_ mergeDef: Tr3EdgeDef) -> Bool {
             for edgeDef in edgeDefs {
@@ -66,7 +66,7 @@ public class Tr3EdgeDefs {
         }
     }
     /// add ternary to array of edgeDefs
-     public func addEdgeTernary(_ tern_:Tr3ValTern, copyFrom: Tr3? = nil) {
+     public func addEdgeTernary(_ tern_: Tr3ValTern, copyFrom: Tr3? = nil) {
 
          if let lastEdgeDef = edgeDefs.last {
 
@@ -81,7 +81,7 @@ public class Tr3EdgeDefs {
              // copy edgeDef from search z in
          else if let copyEdgeDef = copyFrom?.edgeDefs.edgeDefs.last {
 
-             let newEdgeDef = Tr3EdgeDef(with:copyEdgeDef)
+             let newEdgeDef = Tr3EdgeDef(with: copyEdgeDef)
              edgeDefs.append(newEdgeDef)
              newEdgeDef.ternVal = tern_
              Tr3ValTern.ternStack.append(tern_)
@@ -92,11 +92,11 @@ public class Tr3EdgeDefs {
          }
      }
 
-    public func addEdgeDef(_ edgeOp:String?) {
+    public func addEdgeDef(_ edgeOp: String?) {
 
         if let edgeOp = edgeOp {
 
-            let edgeFlags = Tr3EdgeFlags(with:edgeOp)
+            let edgeFlags = Tr3EdgeFlags(with: edgeOp)
             let edgeDef = Tr3EdgeDef(flags: edgeFlags)
             edgeDefs.append(edgeDef)
         }
@@ -123,7 +123,7 @@ public class Tr3EdgeDefs {
         if script.isEmpty { return "" }
         else { return script.with(trailing:" ") }
     }
-    func dumpScript(_ tr3:Tr3) -> String  {
+    func dumpScript(_ tr3: Tr3) -> String  {
         var script = ""
         for edgeDef in edgeDefs {
             script += edgeDef.scriptVal()
@@ -133,7 +133,7 @@ public class Tr3EdgeDefs {
     }
 
     /// connect direct or ternary edges
-    func bindEdges(_ tr3:Tr3) {
+    func bindEdges(_ tr3: Tr3) {
         for edgeDef in edgeDefs {
             edgeDef.connectEdges(tr3)
         }

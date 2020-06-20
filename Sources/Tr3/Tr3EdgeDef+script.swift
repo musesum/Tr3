@@ -9,7 +9,7 @@ import Foundation
 extension Tr3EdgeDef {
 
     
-    static func scriptEdgeFlag(_ flags:Tr3EdgeFlags, _ active:Bool = true) -> String {
+    static func scriptEdgeFlag(_ flags: Tr3EdgeFlags, _ active: Bool = true) -> String {
 
         var script =  flags.contains(.input) ? "<" : ""
         
@@ -45,7 +45,7 @@ extension Tr3EdgeDef {
         return script.with(trailing:" ")
     }
 
-    public func dumpEdge(_ tr3:Tr3) -> String {
+    public func dumpEdge(_ tr3: Tr3) -> String {
 
         var script = ""
         script += Tr3EdgeDef.scriptEdgeFlag(edgeFlags)
