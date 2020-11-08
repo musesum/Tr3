@@ -176,7 +176,7 @@ public class Tr3ValTuple: Tr3Val {
     public override func setVal(_ any: Any?,_ options: Any? = nil) {
         
         // from contains normalized values 0...1
-        let zero1 = (options as? Tr3SetOptions ?? []).contains(.zero1)
+        // let zero1 = (options as? Tr3SetOptions ?? []).contains(.zero1)
 
         func setFloat(_ v: Float) {
             insureNums(count: 1)
@@ -201,13 +201,13 @@ public class Tr3ValTuple: Tr3Val {
                 setNamed(v)
             }
         }
+        /**
+         this is O(n^2) which can slow for large tuples
 
-        /// this is O(n^2) which can slow for large tuples
-        ///
-        ///     // usually used for
-        ///     a(x:0) <- c(x:0 y:0)
-        ///     b(y:0) <- c(x:0 y:0)
-        ///
+             // usually used for
+             a(x:0) <- c(x:0 y:0)
+             b(y:0) <- c(x:0 y:0)
+        */
         func setNamed(_ v: Tr3ValTuple) {
 
             // if no names to map, then make insure that there are enough numbers

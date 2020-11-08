@@ -125,7 +125,7 @@ public class Tr3: Hashable {
         return child
     }
 
-    public func addClosure(_ closure:@escaping Tr3Visitor) {
+    public func addClosure(_ closure: @escaping Tr3Visitor) {
         closures.append(closure)
     }
     public func parentPath(_ depth: Int = 2, withId: Bool = false) -> String {
