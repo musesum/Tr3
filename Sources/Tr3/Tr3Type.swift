@@ -11,7 +11,7 @@ public enum Tr3Type { case
     name,
     path,
     many,
-    proto,
+    copier,
     remove,
     duplicate
 }

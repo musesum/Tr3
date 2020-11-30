@@ -110,7 +110,7 @@ extension Tr3 {
         if name == prefix, type == .name {
             return findPathTr3s(wildcard + suffix, [.children])
         }
-        else if name == prefix, wildcard == "", type == .proto, let parent = parent {
+        else if name == prefix, wildcard == "", type == .copier, let parent = parent {
             return parent.findPathTr3s(path, findFlags)
         }
         else if prefix == "", let parent = parent {
@@ -143,7 +143,7 @@ extension Tr3 {
         if findFlags.contains(.children) {
             for child in children {
                 if child.type == .remove { continue }
-                if child.type == .proto { continue }
+                if child.type == .copier { continue }
                 if child.name == prefix {
                     return child }
             }

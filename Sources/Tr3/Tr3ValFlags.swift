@@ -12,7 +12,6 @@ public struct Tr3ValFlags: OptionSet {
 
     public static let scalar  = Tr3ValFlags(rawValue: 1 <<  0) // 1 General type Tr3ValScalar
 
-    public static let upto    = Tr3ValFlags(rawValue: 1 <<  1) // 0..<1 in a:(0..<1),range not including 1
     public static let thru    = Tr3ValFlags(rawValue: 1 <<  2) // 0...1 in a:(0...1),range including 1
     public static let modu    = Tr3ValFlags(rawValue: 1 <<  3) // 2 in a:(%2), modulo
     public static let incr    = Tr3ValFlags(rawValue: 1 <<  4) // ++
@@ -33,10 +32,8 @@ public struct Tr3ValFlags: OptionSet {
     public static let script  = Tr3ValFlags(rawValue: 1 << 15) // for embedded script between name(){...} -- for example shaders
 
     public static let tuple      = Tr3ValFlags(rawValue: 1 << 16) // for an array of scalars
-    public static let tupNames    = Tr3ValFlags(rawValue: 1 << 17) // has (a b) in x:(a b):(1 2):(0...3=1)
-    public static let tupNums     = Tr3ValFlags(rawValue: 1 << 18) // has (1 2) in x:(a b):(1 2):(0...3=1)
-    public static let tupNameNums = Tr3ValFlags(rawValue: 1 << 19) // has (1 2) in x:(a b):(1 2):(0...3=1)
-    public static let tupDflt     = Tr3ValFlags(rawValue: 1 << 20) // has (0...3=1) in x:(a b):(1 2):(0...3=1)
+    public static let tupNames   = Tr3ValFlags(rawValue: 1 << 17) // has (a, b)
+    public static let tupScalars = Tr3ValFlags(rawValue: 1 << 18) // has (1, 2)
     
     public static let ternary = Tr3ValFlags(rawValue: 1 << 21) // ternary a ? b : c
     public static let path    = Tr3ValFlags(rawValue: 1 << 22) // path to tr3 in a ? b : c

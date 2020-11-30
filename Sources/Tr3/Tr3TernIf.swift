@@ -19,7 +19,6 @@ extension Tr3ValTern {
                     return true
                 }
             }
-
             return false
         }
         // ────────────── begin ──────────────

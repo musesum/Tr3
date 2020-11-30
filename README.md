@@ -11,105 +11,105 @@ Tr3 (pronounced "Tree") is a functional data flow graph with the following featu
 
 Each node at least one parent node and zero or more child nodes:  
 ```c
-a  { b c } // a has two children b & c while b & c have one parent a
+a { b, c } // a has two children b & c while b & c have one parent a
 ```
 Declaring a path will auto create a tree of names
-```swift
+```c
 a.b.c // produces the structure a { b { c } }
 ```
 A tree can be decorated with another tree
-```swift
-a {b c}:{d e} // produces a { b { d e } c { d e } }
+```c
+a {b,c}.{d,e} // produces a { b { d, e } c { d, e } }
 ```
-A tree can subclass another tree
-```swift
-a {b c}:{d e} // produces a { b { d e } c { d e } }
-z:a           // produces z { b { d e } c { d e } }
+A tree can copy the contents of another tree with a `*name`
+```c
+a {b,c}.{d,e} // produces a { b { d, e } c { d, e } }
+z *a          // produces z { b { d, e } c { d, e } }
 ```
 ### Edges
 
 Nodes connect to each other via edges
-```swift
-b -> c // b flows to c, akin to a function call
-d <- e // d flows from e, akin to a callback
-f <-> g // f & g flow between each other, akin to sync
+```c
+b >> c // b flows to c, akin to a function call
+d << e // d flows from e, akin to a callback
+f <> g // f & g flow between each other, akin to sync
 ```
 Nodes activate other nodes when its value changes or when it is activated by other nodes
 
 Nodes can have activation loops:
-```swift
-a -> b // if a activates, it will activate b
-b -> c // which, in turn, activates c
-c -> a // and finally, c stops here
+```c
+a >> b // if a activates, it will activate b
+b >> c // which, in turn, activates c
+c >> a // and finally, c stops here
 ```
 A Tr3 event collects a set of nodes it has visited. When it finds a node it already has visited, it stops.
 
 So, in the above `a`,`b`,`c` example, the activation could start anywhere:
-```swift
-a -> b -> c // starts at a, stops at c
-b -> c -> a // starts at b, stops at a
-c -> a -> b // starts at c, stops at b
+```c
+a >> b >> c // starts at a, stops at c
+b >> c >> a // starts at b, stops at a
+c >> a >> b // starts at c, stops at b
 ```
 This is a simple way to synchronize a model. Akin to how a co-pilot's wheel synchronizes in a cockpit.
 
 ### Values
 
 Each node may have scalar, tuple, or string
-```swift
-a: 1            // an initial value of 1
-b: (0...1)      // a ranged value between 0 and 1
-c: (0...127=1)  // a ranged vale between 0 and 127, initialized to 1
-d: (0 0 0)      // three unnamed float values
-e: (x y z):(0...1=0) // three named float values with range 0...1=0
-f: "yo"         // a string value "yo"
+```c
+a (1)        // an initial value of 1
+b (0:1)      // a ranged value between 0 and 1
+c (0:127=1)  // a ranged vale between 0 and 127, initialized to 1
+d (0 0 0)    // three unnamed float values
+e (x 0:1, y 0:1, z 0:1) // three named float values with range 0:1 
+f "yo"       // a string value "yo"
 ```
 Tr3 automatically remaps scalar ranges, given the nodes `b` & `c`
-```swift 
-b: (0...1)      // range 0 to 1
-c: (0...127=1)  // range 0 to 127, with initial value of 1
-b <-> c         // synchronize b and c and auto-remap values
+```c 
+b (0:1)      // range 0 to 1
+c (0:127=1)  // range 0 to 127, with initial value of 1
+b <> c       // synchronize b and c and auto-remap values
 ```
 When the value of `b` is changed to `0.5` it activates `C` and remaps its value to `63`
 
 A common case are sensors, which have a fixed range of values. For example, 
-a 3G (gravity) accelerometer  may have a range between `-3.0...3.0` 
-```swift 
-accelerometer: (x y z):(-3.0...3.0) -> model
-model:        (x y z):(-1...1) // rescale
+a 3G (gravity) accelerometer  may have a range from `-3.0` to `3.0` 
+```c 
+accelerometer (x -3.0:3.0, y -3.0:3.0, z -3.0:3.0) >> model
+model (x -1:1, y -1:1, z -1:1) // rescale
 ```
 Nodes may pass through values
-```swift
-a:(0...1) -> b  // may pass along value to b
-b -> c          // has no value; will forward a to c
-c:(0...10)      // gets a's value via b, remaps ranges
+```c
+a (0:1) >> b  // may pass along value to b
+b >> c        // has no value; will forward a to c
+c (0:10)      // gets a's value via b, remaps ranges
 ```
 Edges may contain values
-```swift
-d -> e:(0...1):1 // an activated d sends an ranged 1 to e
+```c
+d >> e (0:1=1) // an activated d sends an ranged 1 to e
 ```
 #### Overrides, and wildcards
 
 override nodes with values
-```swift
-a {b c}:{d:1 e} // produces    a { b { d:1 e } c { d:1 e }
-a.b.d:2         // results in  a { b { d:2 e } c { d:1 e }
+```c
+a {b,c}.{d (1), e} // produces    a { b { d (1), e }, c { d (1), e } }
+a.b.d (2)          // changes to  a { b { d (2), e }, c { d (1), e } }
 ```
 Wildcard connections, with new ˚ (option-k) wildcard
-```swift
-p <- a.*.d  // produces p <- (a.b.d a.c.d)
-q <- a˚d    // produces q <- (a.b.d a.c.d)
-r <- a˚.    // produces r <- (a.b.d a.b.e a.c.d a.c.e)
-s <- a˚˚    // produces s <- (a a.b a.b.d a.b.e a.c a.c.d a.c.e)
+```c
+p << a.*.d  // produces p << a.b.d << a.c.d
+q << a˚d    // produces q << a.b.d << a.c.d
+r << a˚.    // produces r << a.b.d << a.b.e << a.c.d << a.c.e
+s << a˚˚    // produces s << a a.b << a.b.d << a.b.e << a.c << a.c.d << a.c.e
 ```
 In above, the `˚` operator is akin to an xpath's `//` search node anywhere in subtree
 
 Variations include `˚.` to find leaf nodes, `˚˚` include all greedy all nodes
-```swift
+```c
 ˚˚<-..  // flow from each node to its parent, bottom up
-˚˚->.*  // flow from each node to its children, top down
-˚˚<->.. // flow in both directions,  middle out?
+˚˚>>.*  // flow from each node to its children, top down
+˚˚<>.. // flow in both directions,  middle out?
 ```
-Because the visitor pattern breaks loops, the `˚˚<->..`  maps well to devices that combine sensors and actuators, such as:
+Because the visitor pattern breaks loops, the `˚˚<>..`  maps well to devices that combine sensors and actuators, such as:
 -  a flying fader on a mix board, 
 - a co-pilot's steering wheel, or 
 - the joints on an Human body capture skeleton
@@ -117,18 +117,18 @@ Because the visitor pattern breaks loops, the `˚˚<->..`  maps well to devices 
 ### Ternaries
 
 conditionals may switch the flow of data
-```swift
-a -> (b ? c : d)  // a flows to either c or d, when b activates
-e <- (f ? g : h)  // f directs flow from either g or h, when f acts
-i <-> (j ? k : l) // i synchronizes with either k or l, when j acts
-m <-> (n ? n1 | p ? p1 | q ? q1) // radio button style
+```c
+a >> (b ? c : d)  // a flows to either c or d, when b activates
+e << (f ? g : h)  // f directs flow from either g or h, when f acts
+i <> (j ? k : l) // i synchronizes with either k or l, when j acts
+m <> (n ? n1 | p ? p1 | q ? q1) // radio button style
 ```
 conditionals may also compare its state
-```swift
-a -> (b > 0 ? c : d) // a flows to either c or d, when b acts (default behavior)
-e <- (f == 1 ? g : h) // g or h flows to e, based on last f activation
-i <-> (j1 < j2 ? k : l) // i syncs with either k or l, based on last j1 or j2 acts
-m <-> (n > p ? n1 | p > q ? p1 | q > 0 ? q1) // radio button style
+```c
+a >> (b > 0 ? c : d) // a flows to either c or d, when b acts (default behavior)
+e << (f == 1 ? g : h) // g or h flows to e, based on last f activation
+i <> (j1 < j2 ? k : l) // i syncs with either k or l, based on last j1 or j2 acts
+m <> (n > p ? n1 | p > q ? p1 | q > 0 ? q1) // radio button style
 ```
 when a comparison changes is state, it reevaluates its chain of conditions
 
@@ -143,18 +143,18 @@ Ternaries act like railroad switches, where the condition merely switches the ga
 - when `n`, `p`, or `q` acts, it is switching between `n1`, `p1`, `q1`
 
 Ternaries may aggregate or broadcast
-```swift
-a:{b c}:{d e}:{f g} // produces a{b {d {f g} e {f g}} c {d {f g} e {f g}}
-p -> (a.b ? b˚. | a.c ? c˚.) // broadcast p to all leaf nodes of either b or c
-q <- (a.b ? b˚. | a.c ? c˚.) // aggregate to q from all leaves of either b or c
+```c
+a {b,c}.{d,e}.{f,g} // produces a{b {d {f, g}, e {f, g}}, c {d {f, g}, e {f, g}}}
+p >> (a.b ? b˚. | a.c ? c˚.) // broadcast p to all leaf nodes of either b or c
+q << (a.b ? b˚. | a.c ? c˚.) // aggregate to q from all leaves of either b or c
 ```
 
 ### Closures
 
 A .swift source may attach a closure to a Tr3 node
 ```swift
-brushSize˚  = brush.findPath("sky.draw.brush.size");
-brushSize˚?.addClosure  { tr3,_ in
+brushSize˚ = brush.findPath("sky.draw.brush.size");
+brushSize˚?.addClosure  { tr3, _ in
 self.brushRadius = tr3.CGFloatVal() ?? 1 }
 ```
 In the above example, brushSize˚ attaches a closure to sky.draw.brush.size, which then updates its internal value brushRadius.
@@ -162,7 +162,7 @@ In the above example, brushSize˚ attaches a closure to sky.draw.brush.size, whi
 (BTW, the `˚` in `brushSize˚` is merely a naming convention; you can call it anything)
 
 ### Embedded  Script
-```swift
+```c
 shader {{
 // Metal or Vulcan code goes here
 }}
@@ -193,14 +193,14 @@ inspired by
 #### Avatars and Robots
 
 Check out Body.h, which shows the output of an Human body skelton defined in 3 lines of code:
-```swift
-body {left right}:{shoulder.elbow.wrist {thumb index middle ring pinky}:{meta prox dist} hip.knee.ankle.toes}
-˚˚ <-> .. // connect every node to its parent
-˚˚:{pos:(x y z):(0...1) angle:(roll pitch yaw):(%360) mm:(0...3000)})
+```c
+body {left right}.{ shoulder.elbow.wrist.{thumb index middle ring pinky}.{meta prox dist}, hip.knee.ankle.toes }
+˚˚ { pos (x 0:1, y 0:1, z 0:1), angle (roll %360, pitch %360, yaw %360), mm (0:3000) }
+˚˚pos <> ...pos,  ˚˚angle <> ...angle // connect every node to its parent
 ```
 Apply machine learning to representation of graph
-- Record total state of  `graph <- body˚˚`
-- Playback total state of  `graph -> body˚˚`
+- Record total state of  `graph << body˚˚`
+- Playback total state of  `graph >> body˚˚`
 - Inspired by a Kinect/OpenNI experiment, shown [here](https://www.youtube.com/watch?v=aFO6j6tvdk8)
 
 #### SpaceCraft - NASA's Virtual IronBird
@@ -253,9 +253,9 @@ Works well within XCode IDE
 - syntax highlighting similar to Swift 
 - code folding of hierarchy works
 
-Cross between Swift and Json
+Cross between Swift, Json, and Python
 - Tr3 syntax follows Swift idiom
-- eliminates`;` and `,` which obfuscates readability
+- eliminates`;` which obfuscates readability
 - intermediate step between scripting and compiling 
 
 #### Amorphous computation:

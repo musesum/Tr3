@@ -20,9 +20,9 @@ public struct Tr3EdgeFlags: OptionSet {
  
     public init(rawValue: Int = 0) { self.rawValue = rawValue }
 
-    public init(with: String) {
+    public init(with str: String) {
         self.init()
-        for char in with {
+        for char in str {
             switch char {
             case "<": self.insert(.input)   // callback
             case ">": self.insert(.output)  // call out

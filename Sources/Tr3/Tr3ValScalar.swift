@@ -11,7 +11,7 @@ public class Tr3ValScalar: Tr3Val {
     // default scalar value is (0...1=1)
     var num  = Float(0) // current value
     var min  = Float(0) // minimum value
-    var max  = Float(1) // maximum value, inclusive for thru, _max-1 for upto
+    var max  = Float(1) // maximum value, inclusive for thru
 
     override init() {
         super.init()
@@ -23,8 +23,8 @@ public class Tr3ValScalar: Tr3Val {
     }
     init(with num_: Float) {
         super.init()
-        min = fmin(num_,0.0)
-        max = fmax(num_,1.0)
+        min = fmin(num_, 0.0)
+        max = fmax(num_, 1.0)
         num = num_
     }
     init (with tr3Val: Tr3ValScalar) {
@@ -41,40 +41,41 @@ public class Tr3ValScalar: Tr3Val {
         return newTr3ValScalar
     }
 
-    func addMin (_ val_: Float) { valFlags.insert(.min );  min  = val_ }
-    func addMax (_ val_: Float) { valFlags.insert(.max );  max  = val_ }
+    func addMin (_ val_: Float) { valFlags.insert(.min );  min = val_; num = val_}
+    func addMax (_ val_: Float) { valFlags.insert(.max );  max = val_ }
     func addDflt(_ val_: Float) { valFlags.insert(.dflt);  num = val_ }
 
     override func printVal() -> String {
         return String(num)
     }
-    override func scriptVal(prefix: String = ":", parens: Bool) -> String  {
+    override func scriptVal(parens: Bool) -> String  {
 
-        var script = prefix
-
-        if valFlags.rawValue == 0 { return "" }
-        let useParens = valFlags.intersection([.min,.max]).rawValue != 0
-        script += useParens ? "(" : ""
-        if valFlags.contains(.min)  { script += String(format: "%g",min) }
-        if valFlags.contains(.thru) { script += "..." }
-        if valFlags.contains(.upto) { script += "..<" }
+        var script = parens ? "(" : ""
+        if valFlags.rawValue == 0   { return "" }
+        if valFlags.contains(.min)  { script += String(format: "%g", min) }
+        if valFlags.contains(.thru) { script += ".." }
         if valFlags.contains(.modu) { script += "%" }
-        if valFlags.contains(.max)  { script += String(format: "%g",max) }
+        if valFlags.contains(.max)  { script += String(format: "%g", max) }
 
         if valFlags.contains(.dflt) {
-            if valFlags.contains([.min,.max]) { script += "=" }
+            if valFlags.contains([.min,.max]) { script += " = " }
             script += String(format: "%g",num)
+        } else if valFlags.contains(.min), num != min {
+            script += " = " + String(format: "%g",num)
+        } else if num != min {
+            script += " = " + String(format: "%g",num)
         }
-        script += useParens ? ") " : " "
+
+        script += parens ? ")" : ""
         return script
     }
-    override func dumpVal(prefix: String = ":", parens: Bool, session: Bool = false) -> String  {
+    override func dumpVal(parens: Bool, session: Bool = false) -> String  {
         if session {
-            let script = prefix + String(format: "%g",num)
-            return script.with(trailing: " ")
+            let script = "(" + String(format: "%g", num)
+            return script.with(trailing: ")")
         }
         else {
-            return scriptVal(prefix: prefix, parens: parens)
+            return scriptVal(parens: parens)
         }
     }
     
@@ -99,15 +100,13 @@ public class Tr3ValScalar: Tr3Val {
         if valFlags.contains(.modu) { num = fmodf(num, max) }
         if valFlags.contains(.min), num < min { num = min }
         if valFlags.contains(.max) {
-            if      valFlags.contains(.upto), num > max-1 { num = max-1}
-            else if valFlags.contains(.thru), num > max   { num = max }
+            if valFlags.contains(.thru), num > max   { num = max }
         }
     }
 
     func setRangeFrom01(_ val_: Float) {
 
         if      valFlags.contains(.modu) { num = fmod(val_,fmax(1,max)) }
-        else if valFlags.contains(.upto) { num = val_ * (max - min - 1) + min }
         else                             { num = val_ * (max - min)     + min }
     }
 
@@ -126,11 +125,11 @@ public class Tr3ValScalar: Tr3Val {
 
     func setFromScalar(_ v: Tr3ValScalar) {
 
-        if (   valFlags.contains(.thru) ||   valFlags.contains(.upto)) &&
-            (v.valFlags.contains(.thru) || v.valFlags.contains(.upto)) {
+        if valFlags.contains(.thru),
+           v.valFlags.contains(.thru) {
 
-            let toMax   = (  valFlags.contains(.upto) ?   max-1 :   max)
-            let frMax   = (v.valFlags.contains(.upto) ? v.max-1 : v.max)
+            let toMax   = max
+            let frMax   = v.max
             let toRange = toMax -   min
             let frRange = frMax - v.min
             num = (v.num - v.min) * (toRange / frRange) + min

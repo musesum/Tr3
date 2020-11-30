@@ -11,8 +11,8 @@ import Par
 protocol Tr3ValProtocal {
 
     func printVal() -> String
-    func scriptVal(prefix: String, parens: Bool) -> String
-    func dumpVal(prefix: String, parens: Bool, session: Bool) -> String
+    func scriptVal(parens: Bool) -> String
+    func dumpVal(parens: Bool, session: Bool) -> String
     func copy() -> Tr3Val
 }
 
@@ -44,11 +44,11 @@ public class Tr3Val: Comparable, Tr3ValProtocal {
         return ""
     }
     // print reproducable script "a:(0..9=2)" in `a:(0..9=2)`
-    func scriptVal(prefix: String = ":", parens: Bool = true) -> String {
+    func scriptVal(parens: Bool = true) -> String {
         return " "
     }
     // print internal connections "a╌>w", "b╌>w", "c╌>w" in  `w<-(a ? 1 : b ? 2 : c ? 3)`
-    func dumpVal(prefix: String = ":", parens: Bool = true, session: Bool = false) -> String {
+    func dumpVal(parens: Bool = true, session: Bool = false) -> String {
         return " "
     }
     func copy() -> Tr3Val {

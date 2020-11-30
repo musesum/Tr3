@@ -154,7 +154,6 @@ public class Tr3ValTern: Tr3ValPath {
         return nil
     }
 
-
     func addVal(_ val: Tr3Val) {
         
         if let ternVal = val as? Tr3ValTern {
@@ -188,12 +187,11 @@ public class Tr3ValTern: Tr3ValPath {
         }
     }
 
-
     override func printVal() -> String {
         return "??"
-
     }
-    override func scriptVal(prefix: String = ":", parens: Bool = true) -> String  {
+
+    override func scriptVal(parens: Bool = true) -> String  {
 
         var script = parens ? "(" : ""
 
@@ -204,23 +202,23 @@ public class Tr3ValTern: Tr3ValPath {
         if let thenVal = thenVal {
 
             script += script.parenSpace() + "? "
-            script += thenVal.scriptVal(prefix:"", parens: false)
+            script += thenVal.scriptVal(parens: false)
         }
         if let elseVal = elseVal {
 
             script += script.parenSpace() + ": "
-            script += elseVal.scriptVal(prefix:"", parens: false)
+            script += elseVal.scriptVal(parens: false)
         }
         if let radioNext = radioNext {
 
             script += script.parenSpace() + "| "
-            script += radioNext.scriptVal(prefix:"", parens: false)
+            script += radioNext.scriptVal(parens: false)
         }
         script += parens ? ") " : ""
         return script.with(trailing:" ")
 
     }
-    override func dumpVal(prefix: String = ":", parens: Bool = true, session: Bool = false) -> String  {
+    override func dumpVal(parens: Bool = true, session: Bool = false) -> String  {
 
         var script = parens ? "(" : ""
 
@@ -231,18 +229,18 @@ public class Tr3ValTern: Tr3ValPath {
         if let thenVal = thenVal {
 
             script += script.parenSpace() + "?"
-            script += thenVal.dumpVal(prefix:"", parens: false)
+            script += thenVal.dumpVal(parens: false)
         }
 
         if let elseVal = elseVal {
 
             script += script.parenSpace() + ":"
-            script += elseVal.dumpVal(prefix:"", parens: false)
+            script += elseVal.dumpVal(parens: false)
         }
 
         if let radioNext = radioNext {
             script += script.parenSpace() + "|"
-            script += radioNext.dumpVal(prefix:"", parens: false)
+            script += radioNext.dumpVal(parens: false)
         }
         script += parens ? ")" : ""
         return script.with(trailing:" ")

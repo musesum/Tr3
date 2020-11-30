@@ -18,6 +18,7 @@ public class Tr3: Hashable {
     public var name = ""
     public var parent: Tr3? = nil   // parent tr3
     public var children = [Tr3]()   // expanded tr3 from  wheres˚tr3
+    public var comments = Tr3Comments()
 
     var pathrefs: [Tr3]?            // b in `a.b <-> c` for `a{b{c}} a.b <-> c
     var passthrough = false         // does not have its own Tr3Val, so pass through events
@@ -30,6 +31,7 @@ public class Tr3: Hashable {
 
     var closures = [Tr3Visitor]()  // during activate call a list of closures and return with Tr3Val ((Tr3Val?)->(Tr3Val?))
     public var type = Tr3Type.unknown
+    var copied = [Tr3]()
 
     public func hash(into hasher: inout Hasher) {  hasher.combine(id)  }
 
@@ -54,6 +56,7 @@ public class Tr3: Hashable {
         passthrough = from.passthrough
         val         = from.val?.copy() ?? nil
         edgeDefs    = from.edgeDefs.copy()
+        comments    = from.comments //?? 
     }
     public convenience init(with val_: Tr3Val) { self.init() ; val = val_.copy() }
 

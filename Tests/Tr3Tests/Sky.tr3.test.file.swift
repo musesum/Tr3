@@ -36,7 +36,6 @@ func testSky() { print("\n━━━━━━━━━━━━━━━━━━
     let root = Tr3("√")
     func parseFile(_ fileName: String) { tr3Parse.parseTr3(root,fileName) }
 
-
     err += parseFile("sky.main")
     err += parseFile("sky.shader")
     err += parseFile("panel.cell")

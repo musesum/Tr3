@@ -8,16 +8,28 @@ import Foundation
 
 extension Tr3EdgeDef {
 
-    
     static func scriptEdgeFlag(_ flags: Tr3EdgeFlags, _ active: Bool = true) -> String {
 
+        //  most common use cases
+        switch (flags, active) {
+            case (.input, true): return "<<"
+            case (.input, false): return "<╌"
+            case (.output, true): return ">>"
+            case (.output, false): return "╌>"
+            case ([.input,.output], true): return "<>"
+            case ([.input,.output], false): return "<╌>"
+            default: break
+        }
+
+        // more complex uses
         var script =  flags.contains(.input) ? "<" : ""
         
         if      flags.contains(.solo)    { script += "=" }
         else if flags.contains(.exclude) { script += "!" }
         else if flags.contains(.find)    { script += ":" }
-        else if flags.contains(.ternary) { script += "?" }
-        else                             { script += active ? "-" : "╌" }
+        else if flags.contains(.ternary) { script += "⋯" }
+
+        else if active == false          { script += "╌" }
 
         if flags.contains(.output)       { script += ">"} 
         return script
@@ -29,7 +41,7 @@ extension Tr3EdgeDef {
         script += Tr3EdgeDef.scriptEdgeFlag(edgeFlags)
 
         if let tern = ternVal {
-            script += tern.scriptVal(prefix:"")
+            script += tern.scriptVal()
         }
         else {
 
@@ -37,7 +49,7 @@ extension Tr3EdgeDef {
             for path in pathVals.pathList {
                 script += script.parenSpace() + path
                 if let val = pathVals.pathDict[path] {
-                    script += val?.scriptVal(prefix:":") ?? ""
+                    script += val?.scriptVal() ?? ""
                 }
             }
             if pathVals.pathList.count > 1  { script += ")" }
@@ -51,14 +63,13 @@ extension Tr3EdgeDef {
         script += Tr3EdgeDef.scriptEdgeFlag(edgeFlags)
 
         if let tern = ternVal {
-            script += tern.dumpVal(prefix:"")
+            script += tern.dumpVal()
         }
         else {
             script += edges.count > 1 ? "(" : ""
             for edge in edges.values {
                 script += edge.dumpVal(tr3) + " "
             }
-            //if script.last == " " { script.removeLast() }
             script += edges.count > 1 ? ")" : ""
         }
 

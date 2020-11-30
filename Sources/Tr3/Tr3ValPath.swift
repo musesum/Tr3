@@ -47,13 +47,16 @@ public class Tr3ValPath: Tr3Val {
             else                  { return script.with(trailing:" ") }
         }
     }
-    override func scriptVal(prefix: String = "", parens: Bool = true) -> String  {
-        return prefix + path.with(trailing:" ")
+    override func scriptVal(parens: Bool = true) -> String  {
+        return path.with(trailing:" ")
     }
-    override func dumpVal(prefix: String = "", parens: Bool = true, session: Bool=false) -> String  {
+    override func dumpVal(parens: Bool = true, session: Bool = false) -> String  {
         var script = Tr3.dumpTr3s(pathTr3s)
         if script.first == " " { script.removeFirst() }
-       return prefix + script.with(trailing:" ")
+        if script.first != "(" {
+            script = "(\(script))"
+        }
+       return script.with(trailing: " ")
     }
     public override func setVal(_ any: Any?,_ options: Any? = nil) {
          //TODO: is ever used during runtime?

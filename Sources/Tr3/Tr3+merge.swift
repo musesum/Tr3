@@ -24,17 +24,17 @@ extension Tr3 {
 
     /// previously declared Tr3 has a ":"
     ///
-    ///  What follows a ":" is either a:
+    ///  What follows a "©" is either a:
     ///   1) new node to add to tree,
     ///   2) new path synthesized from current location, or
     ///   3) one or more nodes to override
     ///
     /// for example
     ///
-    ///     /**/ a { b { c { c1 c2 } d { d1 d2 } } b.c: c3 } ⟹
+    ///     /**/ a { b { c { c1 c2 } d { d1 d2 } } b.c © c3 } ⟹
     ///     √  { a { b { c { c1 c2 c3 } d { d1 d2 } } } }
     ///
-    ///     /**/ a { b { c { c1 c2 } d { d1 d2 } } b.c: b.d } ⟹
+    ///     /**/ a { b { c { c1 c2 } d { d1 d2 } } b.c © b.d } ⟹
     ///     √  { a { b { c { c1 c2 d1 d2 } d { d1 d2 } } } }
     func mergeDuplicate(_ merge: Tr3) {
 
@@ -64,7 +64,8 @@ extension Tr3 {
         if let mergeVal = merge.val {
             val = mergeVal
         }
-        edgeDefs.merge(merge.edgeDefs)
+        edgeDefs.mergeEdgeDefs(merge.edgeDefs)
+        comments.mergeComments(self, merge)
         // e in `a { b { c d } } a { e }`
         for mergeChild in merge.children {
             mergeDuplicate(mergeChild)
@@ -91,9 +92,11 @@ extension Tr3 {
         return script
     }
 
-    func bindProto() -> [Tr3] {
+    func bindCopier() -> [Tr3] {
 
         if let found = bindFindPath() {
+        
+            parent?.copied.append(self)
 
             if  found.count == 1,
                 found.first?.id == id,
@@ -102,7 +105,7 @@ extension Tr3 {
                 type = .name
                 return [self]
             }
-            /// :_c in `a.b { _c { c1 c2 } c { d e }:_c }`
+            /// ©_c in `a.b { _c { c1 c2 } c { d e } ©_c }`
             if found.count > 0, let parent = parent {
 
                 var newChildren = [Tr3]()
@@ -115,12 +118,12 @@ extension Tr3 {
                 return newChildren
             }
         }
-        // :e in `a { b { c {c1 c2} d } } a: e`
+        // ©e in `a { b { c {c1 c2} d } } a©e`
         return [self]
     }
 
     /// either merge a new Tr3 or deepCopy a reference to existing Tr3
-    func mergeOrCopy(_ found:[Tr3]) -> [Tr3] {
+    func mergeOrCopy(_ found: [Tr3]) -> [Tr3] {
 
         var results = [Tr3]()
 
@@ -128,13 +131,13 @@ extension Tr3 {
             // is adding or appending with a direct ancestor
             if let parent = parent,
                 foundi.willMerge(with: parent) {
-                // b.c in `a { b { c {c1 c2} d } b.c: c3 }`
+                // b.c in `a { b { c {c1 c2} d } b.c©c3 }`
                 for child in children {
                     foundi.mergeDuplicate(child)
                 }
             }
             else {
-                // b.d in `a { b { c {c1 c2} d {d1 d2} } b.c: b.d  }`
+                // b.d in `a { b { c {c1 c2} d {d1 d2} } b.c © b.d  }`
                 let copy = Tr3(deepcopy: foundi, parent: self)
                 results.append(copy)
             }
@@ -182,7 +185,7 @@ extension Tr3 {
         }
         else {
             // b.e in `a { b { c d } b.e }`
-            // e in `a { b { c {c1 c2} d } } a: e`
+            // e in `a { b { c {c1 c2} d } } a © e`
             return [self]
         }
     }
@@ -198,7 +201,6 @@ extension Tr3 {
 
     /// found unique name
     func bindName(_ siblings: [Tr3]) -> [Tr3] {
-
 
             for sibling in siblings {
                 // sibling is candidate, no need to search anymore
@@ -219,14 +221,14 @@ extension Tr3 {
     /// a,a in `a.b { c d } a.e { f g }`
     func mergeChildren(_ kids :[Tr3]) {
 
-        func mergeDuplicate(_ prior: Tr3,_ kid: Tr3) {
+        func mergeDuplicate(_ priorTr3: Tr3,_ kid: Tr3) {
             // override old value with new value if it exists
-            if let val = kid.val { prior.val = val }
+            if let val = kid.val { priorTr3.val = val }
             // add new edge definitions
-            prior.edgeDefs.merge(kid.edgeDefs)
+            priorTr3.edgeDefs.mergeEdgeDefs(kid.edgeDefs)
             // append children
-            prior.children.append(contentsOf: kid.children)
-            prior.bindChildren()
+            priorTr3.children.append(contentsOf: kid.children)
+            priorTr3.bindChildren()
 
             kid.type = .remove
         }
@@ -238,8 +240,8 @@ extension Tr3 {
 
             kid.parent = self
 
-            if let prior = nameTr3[kid.name] {
-                mergeDuplicate(prior, kid)
+            if let priorTr3 = nameTr3[kid.name] {
+                mergeDuplicate(priorTr3, kid)
                 merged = true
             }
             else {
@@ -261,7 +263,7 @@ extension Tr3 {
             switch child.type {
             case .path:   newKids.append(contentsOf: child.bindPath())
             case .many:   newKids.append(contentsOf: child.bindMany())
-            case .proto:  newKids.append(contentsOf: child.bindProto())
+            case .copier: newKids.append(contentsOf: child.bindCopier())
             case .name:   newKids.append(contentsOf: child.bindName(newKids))
             case .remove: break
             default:      newKids.append(child)
@@ -363,7 +365,7 @@ extension Tr3 {
     /// first pass convert `a.b.c` into `a { b { c } }`
     func bindTopDown() {
 
-        if type != .proto,
+        if type != .copier,
             expandDotPath(),
             let parent = parent {
 
@@ -413,15 +415,15 @@ extension Tr3 {
     /// where first a.b has finally expanded and can now bind
     /// its children.
     ///
-    func bindPrototypes() {
+    func bindCopierTypes() {
 
         var hasProtoChild = false
         // depth first bind from bottom up
         for child in children {
             if child.children.count > 0 {
-                child.bindPrototypes()
+                child.bindCopierTypes()
             }
-            if child.type == .proto {
+            if child.type == .copier {
                 hasProtoChild = true
             }
         }
@@ -449,7 +451,7 @@ extension Tr3 {
         }
         bindTopDown()     ; log(1)
         bindBottomUp()    ; log(2)
-        bindPrototypes()  ; log(3)
+        bindCopierTypes() ; log(3)
         bindEdges()       ; log(4)
         bindTernaries()   ; log(5)
         bindDefaults()

@@ -34,127 +34,182 @@ extension Tr3 {
         }
         return false 
     }
-    public func makeScript(_ i: Int = 0, pretty: Bool = false) -> String {
+    public func makeScript(_ indent: Int = 0, pretty: Bool = false) -> String {
 
         var script = name
-        script += val?.scriptVal() ?? ""
-        script += edgeDefs.makeScript()
 
-        func bracketChildren(_ openBracket: String,_  closeBracket: String) {
-            script += openBracket
-            for child in children {
-                if script.last != "\n", !child.hasSoloDescendants() { script += "\n" }
-                script += child.makeScript(i+1, pretty: pretty)
+        func begin() -> String {
+
+            script.plus(val?.scriptVal())
+
+            if children.isEmpty {
+                script.plus(getTr3Comment())
             }
-            script += closeBracket
-        }
-        func soloDotChild() {
-            script += "."
-            for child in children {
-                script += child.makeScript(i+1, pretty: pretty)
-            }
-        }
-        if children.isEmpty {
-            return script + " "
-        }
-
-        else if pretty {
-            if canShortenWithDot() {
-                if hasShallowChildren()  { bracketChildren(" { ","} ") }
-
-                else                     { bracketChildren(" {\n","}\n") }
-            }
-            else if children.count == 1,
-                hasSoloDescendants()     { soloDotChild() }
-
-            else if hasShallowChildren() { bracketChildren(" { ","}\n") }
-
-            else                         { bracketChildren(" {\n","}\n") }
-        }
-        else /* not pretty */            { bracketChildren(" { ","} ") }
-        return script
-    }
-
-    /// - Parameter session: show instance for session instead of full declaration
-    public func dumpScript(_ i: Int = 0, session: Bool = false) -> String {
-
-        // let prefix = type == .proto ? ":" : ""
-        // var script = prefix + scriptLineage(1) + (val?.dumpVal(session: session) ?? "")
-        var script =  name + (val?.dumpVal(session: session) ?? "")
-
-        func dumpTypeEdges(_ edges:[Tr3Edge]) -> String {
-            
-            if edges.isEmpty { return  ""}
-            var script = edges.first?.scriptEdgeFlag() ?? ""
-            if edges.count > 1 { script += "(" }
-            for edge in edges  {
-                if let pathrefs = edge.rightTr3?.pathrefs,
-                    pathrefs.count > 0   {
-                    if pathrefs.count > 1 { script += "(" }
-                    for pathref in pathrefs {
-                        script += script.parenSpace() + pathref.scriptLineage(2)
-                    }
-                    if pathrefs.count > 1 { script+=") " }
+            else if pretty {
+                if canShortenWithDot() {
+                    if hasShallowChildren()  { bracketChildren("{ ","} ") }
+                    else                     { bracketChildren("{\n","}\n") }
                 }
-                else {
-                    script += edge.dumpVal(self, session: session)
-                }
+                else if children.count == 1,
+                        hasSoloDescendants() { soloDotChild() }
+
+                else if hasShallowChildren() { bracketChildren("{ ","}\n") }
+                else                         { bracketChildren("{\n","}\n") }
             }
-            if edges.count > 1 { script.removeLast() ; script += ") " }
+            else /* not pretty */            { bracketChildren("{ ","} ") }
+
+            script.plus(edgeDefs.makeScript())
+            script.plus(comments.getComments(.edges, index: -1))
             return script
         }
 
-        func dumpTr3Edges() -> Bool {
+        func bracketChildren(_ openBracket: String,_  closeBracket: String) {
+            script.plus(openBracket)
+            script.plus(getTr3Comment())
+            var index = 0
+            for child in children {
+                if script.last != "\n", !child.hasSoloDescendants() { script += "\n" }
+                script.plus(child.makeScript(indent + 1, pretty: pretty))
+                index += 1
+                script.plus(comments.getComments(.child, index: index))
+            }
+            script += closeBracket
+        }
 
-            if tr3Edges.count > 0 {
-                var leftEdges = [Tr3Edge]()
-                for edge in tr3Edges.values {
-                    if edge.leftTr3 == self {
-                        leftEdges.append(edge)
-                    }
-                }
-                if leftEdges.count > 0 {
-                    leftEdges.sort { $0.id < $1.id }
-                    var edgeFlags = Tr3EdgeFlags()
-                    var leftTypeEdges = [Tr3Edge]()
-                    for edge in leftEdges {
-                        if edge.edgeFlags != edgeFlags {
-                            edgeFlags = edge.edgeFlags
-                            script += dumpTypeEdges(leftTypeEdges)
-                            leftTypeEdges.removeAll()
-                        }
-                        leftTypeEdges.append(edge)
-                    }
-                    script += dumpTypeEdges(leftTypeEdges)
-                    return true
-                }
-            }
-            return false
-        }
-        func dumpChildren() {
-            if children.count > 0 {
-                script += script.parenSpace() + "{"
-                for child in children {
-                    script += script.parenSpace() + child.dumpScript(i+1,session: session)
-                }
-                script += script.parenSpace() + "}"
+        /// print `a.b.c` instead of `a { b { c } } }`
+        func soloDotChild() {
+            script += "."
+            for child in children {
+                script += child.makeScript(indent + 1, pretty: pretty)
             }
         }
-        
-        // ────────────── begin ──────────────
-        
-        if !dumpTr3Edges(), edgeDefs.edgeDefs.count > 0 {
-            script += edgeDefs.makeScript()
+        return begin() // ────────────────────────────
+    }
+
+    
+    func getTr3Comment() -> String {
+        var result = ""
+        if comments.have(type: .child) {
+            result = comments.getComments(.child, index: 0)
+            // ToDo: Side effect removes preceeding space
+            if result.count > 0, result.first == "," {
+                //!! script = script.without(trailing: " ")
+            }
         }
-        dumpChildren()
+        return result
+    }
+    func getCopiedFrom() -> String {
+        var result = ""
+        for copyTr3 in copied {
+            result += "©" + copyTr3.name + " "
+        }
+        return result
+    }
+
+    func getEdgeDefs(_ session: Bool) -> String {
+        var result = ""
+        if let edges = getTr3Edges(session) {
+            result = edges
+            result += comments.getComments(.edges, index: -1)
+        }
+        else if edgeDefs.edgeDefs.count > 0 {
+            result += edgeDefs.makeScript()
+            result += comments.getComments(.edges, index: -1)
+        }
+        return result
+    }
+
+    func getTypeEdges(_ edges:[Tr3Edge],_ session: Bool) -> String {
+
+        if edges.isEmpty { return  ""}
+        var script = edges.first?.scriptEdgeFlag() ?? ""
+        if edges.count > 1 { script += "(" }
+        for edge in edges  {
+            if let pathrefs = edge.rightTr3?.pathrefs,
+               pathrefs.count > 0   {
+                if pathrefs.count > 1 { script += "(" }
+                for pathref in pathrefs {
+                    script += script.parenSpace() + pathref.scriptLineage(2)
+                }
+                if pathrefs.count > 1 { script+=") " }
+            }
+            else {
+                script += edge.dumpVal(self, session: session)
+            }
+        }
+        if edges.count > 1 { script.removeLast() ; script += ") " }
         return script
     }
+
+    func getTr3Edges(_ session: Bool) -> String? {
+
+        if tr3Edges.count > 0 {
+
+            var leftEdges = [Tr3Edge]()
+            for edge in tr3Edges.values {
+                if edge.leftTr3 == self {
+
+                    leftEdges.append(edge)
+                }
+            }
+            if leftEdges.count > 0 {
+
+                leftEdges.sort { $0.id < $1.id }
+                var result = ""
+                var edgeFlags = Tr3EdgeFlags()
+                var leftTypeEdges = [Tr3Edge]()
+                for edge in leftEdges {
+                    if edge.edgeFlags != edgeFlags {
+
+                        edgeFlags = edge.edgeFlags
+                        result += getTypeEdges(leftTypeEdges, session)
+                        leftTypeEdges.removeAll()
+                    }
+                    leftTypeEdges.append(edge)
+                }
+                result += getTypeEdges(leftTypeEdges, session)
+                return result
+            }
+        }
+        return nil
+    }
+    func getChildren(_ indent: Int,_ session: Bool) -> String {
+        var result = ""
+        if children.count > 0 {
+            result = "{ " + getTr3Comment()
+            var index = 0 // index indicates how many children already added when comment was added
+            for child in children {
+                index += 1
+                result += result.parenSpace() + child.dumpScript(indent+1, session: session)
+            }
+            result += result.parenSpace() + "}"
+        }
+        return result
+    }
+
+    /// - Parameter session: show instance for session instead of full declaration
+    public func dumpScript(_ indent: Int = 0, session: Bool = false) -> String {
+
+        var script = name
+
+        script.plus(getCopiedFrom())
+        script.plus(val?.dumpVal(session: session))
+        script.plus(getEdgeDefs(session))
+        if children.isEmpty {
+            script.plus(getTr3Comment())
+        }
+        else {
+            script.plus(getChildren(indent, session))
+        }
+        return script
+    }
+    
     static func dumpTr3s(_ tr3s:[Tr3]) -> String {
 
         if tr3s.isEmpty { return "" }
         var script = tr3s.count > 1 ? "(" : ""
         for tr3 in tr3s {
-            script += script.parenSpace() + tr3.scriptLineage(2)
+            script.plus(tr3.scriptLineage(2))
         }
         script += tr3s.count > 1 ? ")" : ""
         return script

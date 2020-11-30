@@ -16,11 +16,11 @@ extension Tr3 {
     }
 
     public func CGRectVal() -> CGRect? {
-        if let v = val as? Tr3ValTuple, v.nums.count >= 4 {
-            let x = CGFloat(v.nums[0].num)
-            let y = CGFloat(v.nums[1].num)
-            let w = CGFloat(v.nums[2].num)
-            let h = CGFloat(v.nums[3].num)
+        if let v = val as? Tr3ValTuple, v.scalars.count >= 4 {
+            let x = CGFloat(v.scalars[0].num)
+            let y = CGFloat(v.scalars[1].num)
+            let w = CGFloat(v.scalars[2].num)
+            let h = CGFloat(v.scalars[3].num)
             let rect = CGRect(x: x, y: y, width: w, height: h)
             return rect
         }
@@ -32,8 +32,8 @@ extension Tr3 {
             return v.num
         }
         else if let v = val as? Tr3ValTuple {
-            if v.nums.count >= 1 {
-                return v.nums[0].num
+            if v.scalars.count >= 1 {
+                return v.scalars[0].num
             }
         }
         return nil
@@ -43,8 +43,8 @@ extension Tr3 {
             return Int(v.num)
         }
         else if let v = val as? Tr3ValTuple {
-            if v.nums.count >= 1 {
-                return Int(v.nums[0].num)
+            if v.scalars.count >= 1 {
+                return Int(v.scalars[0].num)
             }
         }
         return nil
@@ -62,9 +62,9 @@ extension Tr3 {
 
     public func CGPointVal() -> CGPoint? {
 
-        if let v = val as? Tr3ValTuple, v.nums.count >= 2 {
-            let x = CGFloat(v.nums[0].num)
-            let y = CGFloat(v.nums[1].num)
+        if let v = val as? Tr3ValTuple, v.scalars.count >= 2 {
+            let x = CGFloat(v.scalars[0].num)
+            let y = CGFloat(v.scalars[1].num)
 
             let p = CGPoint(x: x, y: y)
             return p
@@ -75,11 +75,10 @@ extension Tr3 {
     public func CGPointValDefault() -> CGPoint? {
 
         if let v = val as? Tr3ValTuple,
-            let d = v.dflt as? Tr3ValTuple,
-            d.nums.count >= 2 {
+           v.scalars.count >= 2 {
 
-            let x = CGFloat(d.nums[0].num)
-            let y = CGFloat(d.nums[1].num)
+            let x = CGFloat(v.scalars[0].num)
+            let y = CGFloat(v.scalars[1].num)
 
             let p = CGPoint(x: x, y: y)
             return p
@@ -88,9 +87,9 @@ extension Tr3 {
     }
     
     public func CGSizeVal() -> CGSize? {
-        if let v = val as? Tr3ValTuple, v.nums.count >= 2 {
-            let w = CGFloat(v.nums[0].num)
-            let h = CGFloat(v.nums[1].num)
+        if let v = val as? Tr3ValTuple, v.scalars.count >= 2 {
+            let w = CGFloat(v.scalars[0].num)
+            let h = CGFloat(v.scalars[1].num)
 
             let s = CGSize(width: w, height: h)
             return s

@@ -34,7 +34,7 @@ public class Tr3EdgeDefs {
         }
         return false
     }
-    func merge(_ merge: Tr3EdgeDefs) {
+    func mergeEdgeDefs(_ merge: Tr3EdgeDefs) {
 
         func isUnique(_ mergeDef: Tr3EdgeDef) -> Bool {
             for edgeDef in edgeDefs {
@@ -113,16 +113,15 @@ public class Tr3EdgeDefs {
             return edgeDefs.last!
         }
     }
-
  
-    func makeScript(_ i: Int = 0) -> String  {
+    func makeScript() -> String  {
         var script = ""
         for edgeDef in edgeDefs {
             script += edgeDef.scriptVal()
         }
-        if script.isEmpty { return "" }
-        else { return script.with(trailing:" ") }
+        return script.with(trailing:" ") 
     }
+    
     func dumpScript(_ tr3: Tr3) -> String  {
         var script = ""
         for edgeDef in edgeDefs {

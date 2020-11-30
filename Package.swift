@@ -10,8 +10,8 @@ let package = Package(
             targets: ["Tr3"]),
     ],
     dependencies: [
-        .package(url: "https://github.com/musesum/Par.git", from: "0.1.2"),
-        //.package(path: "../Par"),
+        .package(url: "https://github.com/musesum/Par.git", from: "0.2.0"),
+        //.package(path: "../Par v2"),
     ],
     targets: [
         .target(
