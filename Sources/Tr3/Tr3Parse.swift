@@ -346,7 +346,7 @@ public class Tr3Parse {
     /// - parseEdge
     func parse(_ tr3: Tr3,_ prior: String,_ parItem: ParItem,_ level: Int) -> Tr3 {
 
-        log(tr3,parItem,level)
+        // log(tr3,parItem,level)
 
         if  let pattern = parItem.node?.pattern,
             let tr3Parse = tr3Keywords[pattern] {
@@ -365,9 +365,9 @@ public class Tr3Parse {
                             whitespace: String = "\t ",
                             printGraph: Bool = false) -> Bool {
 
-        ParStr.tracing = true
-        //Tr3.BindDumpScript = true
-        //Tr3.BindMakeScript = true
+        // ParStr.tracing = true
+        // Tr3.BindDumpScript = true
+        // Tr3.BindMakeScript = true
 
         let parStr = ParStr(script)
         parStr.whitespace = whitespace

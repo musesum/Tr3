@@ -80,12 +80,12 @@ model (x -1..1, y -1..1, z -1..1) // auto rescale
 Nodes may pass through values
 ```c
 a (0..1) >> b  // may pass along value to b
-b >> c        // has no value; will forward a to c
+b >> c         // has no value; will forward a to c
 c (0..10)      // gets a's value via b, remaps ranges
 ```
 Edges may contain values
 ```c
-d >> e (0..1=1) // an activated d sends an ranged 1 to e
+d >> e (0..1 = 1) // an activated d sends an ranged 1 to e
 ```
 #### Overrides, and wildcards
 
@@ -107,7 +107,7 @@ Variations include `˚.` to find leaf nodes, `˚˚` include all greedy all nodes
 ```c
 ˚˚<-..  // flow from each node to its parent, bottom up
 ˚˚>>.*  // flow from each node to its children, top down
-˚˚<>.. // flow in both directions,  middle out?
+˚˚<>..  // flow in both directions,  middle out?
 ```
 Because the visitor pattern breaks loops, the `˚˚<>..`  maps well to devices that combine sensors and actuators, such as:
 -  a flying fader on a mix board, 

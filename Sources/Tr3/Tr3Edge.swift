@@ -11,7 +11,7 @@ import Par
 public class Tr3Edge: Hashable {
 
     var id = Visitor.nextId()
-    var key       = "not yet"
+    var key = "not yet"
 
     var edgeFlags = Tr3EdgeFlags()
     var active = true

@@ -20,9 +20,7 @@ public class Tr3Comment {
         self.name  = name
         self.text  = text
         self.index = index
-
     }
-
 }
 
 //?? var testPrior =  Set<String>() //??
