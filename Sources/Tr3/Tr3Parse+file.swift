@@ -47,7 +47,7 @@ public extension Tr3Parse {
     func parseTr3(_ tr3: Tr3, _ filename: String) -> Bool {
         let script = read(filename,"tr3")
         print(filename, terminator:" ")
-        let success = parseScript(tr3, script, whitespace: "\n\t ")
+        let success = parseScript(tr3, script)
         if success  { print("✓") }
         else        { print("🚫 parse failed") }
         return success
