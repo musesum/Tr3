@@ -86,7 +86,6 @@ extension Tr3 {
         return begin() // ────────────────────────────
     }
 
-    
     func getTr3Comment() -> String {
         var result = ""
         if comments.have(type: .child) {
@@ -98,6 +97,7 @@ extension Tr3 {
         }
         return result
     }
+    
     func getCopiedFrom() -> String {
         var result = ""
         for copyTr3 in copied {

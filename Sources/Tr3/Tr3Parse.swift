@@ -362,7 +362,7 @@ public class Tr3Parse {
     /// - parameter whitespace: default is single line, may add \n for multiline script
     public func parseScript(_ root:     Tr3,
                             _ script:   String,
-                            whitespace: String = "\t ",
+                            whitespace: String = "\n\t ",
                             printGraph: Bool = false) -> Bool {
 
         // ParStr.tracing = true

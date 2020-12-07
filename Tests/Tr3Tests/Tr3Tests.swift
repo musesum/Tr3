@@ -54,13 +54,20 @@ final class Tr3Tests: XCTestCase {
 
         var err = 0
 
-        err += test("a, b, c, a << (b c)", "√ { a << (b c), b, c, }")
+        err += test(
+            /**/"abcdefghijklmnopqrstu1 abcdefghijklmnopqrstu2")
 
-        err += test("a, b { // yo \n c } } ", "√ { a, b { // yo \n c } }")
+        err += test("a { b { c(1) } } a.b.c(2)", "√ { a { b { c(2) } } }")
 
-        err += test("a { b { // yo \n c } } ", "√ { a { b { // yo \n c } } }")
+        err += test(
+            /**/"a { b { c(1) } } z©a { b.c(2) }",
+            "√ { a { b { c(1) } } z©a { b { c(2) } } }")
 
-        err += test("a b c => a }","√ { a b c=>a }")
+        err += test("a, b { // yo \n c }")
+
+        err += test("a { b { // yo \n c } } ")
+
+        err += test("a b c => a")
 
         err += test("a b c d a << (b ? c : d)","√ { a <<(b ? c : d ) b⋯>a c>>a d>>a }")
 
