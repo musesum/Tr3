@@ -1,7 +1,7 @@
 //  Tr3Val.swift
 //
 //  Created by warren on 3/8/19.
-//  Copyright © 2019 Muse Dot Company
+//  Copyright © 2019 DeepMuse
 //  License: Apache 2.0 - see License file
 
 import Foundation
@@ -15,7 +15,6 @@ protocol Tr3ValProtocal {
     func dumpVal(parens: Bool, session: Bool) -> String
     func copy() -> Tr3Val
 }
-
 public class Tr3Val: Comparable, Tr3ValProtocal {
 
     var id = Visitor.nextId()
@@ -40,15 +39,15 @@ public class Tr3Val: Comparable, Tr3ValProtocal {
         return true
     }
     // print current state "2" in `a:(0..9=2)`
-    func printVal() -> String {
+    @objc dynamic func printVal() -> String {
         return ""
     }
     // print reproducable script "a:(0..9=2)" in `a:(0..9=2)`
-    func scriptVal(parens: Bool = true) -> String {
+    @objc dynamic func scriptVal(parens: Bool = true) -> String {
         return " "
     }
     // print internal connections "a╌>w", "b╌>w", "c╌>w" in  `w<-(a ? 1 : b ? 2 : c ? 3)`
-    func dumpVal(parens: Bool = true, session: Bool = false) -> String {
+    @objc dynamic func dumpVal(parens: Bool = true, session: Bool = false) -> String {
         return " "
     }
     func copy() -> Tr3Val {
@@ -56,6 +55,9 @@ public class Tr3Val: Comparable, Tr3ValProtocal {
     }
     func addFlag(_ flag_: Tr3ValFlags) {
         valFlags.insert(flag_)
+    }
+    func addComma() {
+        valFlags.insert(.comma)
     }
     public func setVal(_ from: Any?, _ option: Any? = nil) {
         assertionFailure("setVal needs override")

@@ -34,10 +34,6 @@ public class Tr3Comments {
         if parItem.node?.pattern == "comment",
            let value = parItem.nextPars.first?.value {
 
-//            if testPrior.contains(prior) == false {
-//                testPrior.insert(prior)
-//                print( "\n *** prior: \(prior) \n")
-//            }
             func insertComment(_ type: Tr3CommentType,_ index: Int ) {
                 let tr3Comment = Tr3Comment(type, tr3.name, value, index)
                 haveType.insert(type)

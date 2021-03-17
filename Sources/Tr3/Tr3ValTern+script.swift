@@ -1,7 +1,7 @@
 //  Tr3ValTern+script.swift
 //
 //  Created by warren on 6/3/19.
-//  Copyright © 2019 Muse Dot Company
+//  Copyright © 2019 DeepMuse
 //  License: Apache 2.0 - see License file
 
 import Foundation

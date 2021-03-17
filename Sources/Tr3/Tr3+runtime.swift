@@ -1,7 +1,7 @@
 //  Tr3+runtime.swift
 //
 //  Created by warren on 4/4/19.
-//  Copyright © 2019 Muse Dot Company
+//  Copyright © 2019 DeepMuse
 //  License: Apache 2.0 - see License file
 
 import QuartzCore
@@ -39,11 +39,12 @@ extension Tr3 {
             passthrough = false
 
             switch any {
-            case let v as Int:      val = Tr3ValScalar(with: Float(v))
-            case let v as Float:    val = Tr3ValScalar(with: v)
-            case let v as CGFloat:  val = Tr3ValScalar(with: Float(v))
-            case let v as CGPoint:  val = Tr3ValTuple(with: v)
-            case let v as String:   val = Tr3ValQuote(with: v)
+            case let v as Int:              val = Tr3ValScalar(with: Float(v))
+            case let v as Float:            val = Tr3ValScalar(with: v)
+            case let v as CGFloat:          val = Tr3ValScalar(with: Float(v))
+            case let v as CGPoint:          val = Tr3ValTuple(with: v)
+            case let v as [(String,Float)]: val = Tr3ValTuple(pairs: v)
+            case let v as String:           val = Tr3ValQuote(with: v)
             default: print("*** unknown val(\(any))")
             }
         }
@@ -97,7 +98,13 @@ extension Tr3 {
                 val = fromVal // hold passthrough value,for successors to rescale
             }
             else if let val = val {
-                val.setVal(fromVal)  // otherwise scale value now
+                switch val {
+                case let to as Tr3ValTuple:  if let fr = fromVal as? Tr3ValTuple { to.setVal(fr) }
+                case let to as Tr3ValScalar: if let fr = fromVal as? Tr3ValScalar { to.setVal(fr) }
+                case let to as Tr3ValQuote:  if let fr = fromVal as? Tr3ValQuote { to.setVal(fr) }
+                case let to as Tr3ValData:   if let fr = fromVal as? Tr3ValData { to.setVal(fr) }
+                default: break
+                }
             }
         }
     }

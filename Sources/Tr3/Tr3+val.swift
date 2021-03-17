@@ -1,6 +1,6 @@
 // Tr3+val.swift
 //
-//  Copyright © 2019 Muse Dot Company
+//  Copyright © 2019 DeepMuse
 //  License: Apache 2.0 - see License file
 
 import QuartzCore
@@ -88,27 +88,28 @@ extension Tr3 {
     
     public func CGSizeVal() -> CGSize? {
         if let v = val as? Tr3ValTuple, v.scalars.count >= 2 {
+
             let w = CGFloat(v.scalars[0].num)
             let h = CGFloat(v.scalars[1].num)
-
             let s = CGSize(width: w, height: h)
             return s
         }
         return nil
     }
+
     public func BoolVal() -> Bool {
         if let v = val as? Tr3ValScalar {
             return v.num > 0
         }
         return false
     }
+
     public func NamesVal() -> [String]? {
-        if let v = val as? Tr3ValTuple {
-            return v.names
+        if let v = val as? Tr3ValTuple,
+           v.named.count > 0 {
+            return Array<String>(v.named.keys)
         }
         return nil
     }
-
-
     
 }

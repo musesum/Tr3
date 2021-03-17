@@ -2,7 +2,7 @@
 //  Tr3+script.swift
 //
 //  Created by warren on 4/16/19.
-//  Copyright © 2019 Muse Dot Company
+//  Copyright © 2019 DeepMuse
 //  License: Apache 2.0 - see License file
 
 import Foundation
@@ -23,17 +23,20 @@ extension Tr3 {
         }
         return true
     }
-    /// Is this Tr3 elegible to shorten with a dot?
-    ///
-    ///     shorten `a { z }` to `a.z`,
-    ///     but not `a:1 { z }` to a:1.z,
-    ///     and not `a<-b { z }` to a<-b.z,
+
+    /** Is this Tr3 elegible to shorten with a dot?
+
+     shorten `a { z }` to `a.z`,
+     but not `a(1) { z }` to a(1).z,
+     and not `a<<b { z }` to a<<b.z,
+     */
     func canShortenWithDot() -> Bool {
         if val != nil,edgeDefs.edgeDefs.count > 0 {
             return true
         }
         return false 
     }
+    
     public func makeScript(_ indent: Int = 0, pretty: Bool = false) -> String {
 
         var script = name
@@ -101,7 +104,7 @@ extension Tr3 {
     func getCopiedFrom() -> String {
         var result = ""
         for copyTr3 in copied {
-            result += "©" + copyTr3.name + " "
+            result += "@" + copyTr3.name + " "
         }
         return result
     }

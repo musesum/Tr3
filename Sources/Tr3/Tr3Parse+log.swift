@@ -1,7 +1,7 @@
 //  Tr3Parse+log.swift
 //
 //  Created by warren on 4/12/19.
-//  Copyright © 2019 Muse Dot Company
+//  Copyright © 2019 DeepMuse
 //  License: Apache 2.0 - see License file
 
 import Foundation
@@ -15,11 +15,11 @@ extension Tr3Parse {
         let tr3Name = t?.name ?? "nil"
         let pattern = parItem.node?.pattern ?? "nil"
         let nodeId = ""//.\(parItem.node!.id)"
-        let nodeVal = parItem.value != nil ? ":" + parItem.value! : ""
+        let nodeVal = parItem.value?.without(trailing: " ") ?? ""
         let prePad = " ".padding(toLength: i, withPad: " ", startingAt: 0)
         let nodePad = prePad + ("(" + tr3Name + "," + pattern + nodeId + nodeVal + ")" )
         let nodeCall = nodePad.padding(toLength: 24, withPad: " ", startingAt: 0)
-
+        
         // show array of next items
         var nextArray = " ["
         var arrayOp = ""

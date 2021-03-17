@@ -1,7 +1,7 @@
 //  Tr3ValFlags.swift
 //
 //  Created by warren on 3/10/19.
-//  Copyright © 2019 Muse Dot Company
+//  Copyright © 2019 DeepMuse
 //  License: Apache 2.0 - see License file
 
 import Foundation
@@ -11,11 +11,8 @@ public struct Tr3ValFlags: OptionSet {
     public let rawValue: Int
 
     public static let scalar  = Tr3ValFlags(rawValue: 1 <<  0) // 1 General type Tr3ValScalar
-
     public static let thru    = Tr3ValFlags(rawValue: 1 <<  2) // 0...1 in a:(0...1),range including 1
     public static let modu    = Tr3ValFlags(rawValue: 1 <<  3) // 2 in a:(%2), modulo
-    public static let incr    = Tr3ValFlags(rawValue: 1 <<  4) // ++
-    public static let decr    = Tr3ValFlags(rawValue: 1 <<  5) // --
 
     // explicitly declared values
     public static let min     = Tr3ValFlags(rawValue: 1 <<  6) // 0 in 0...1, min of range
@@ -32,14 +29,43 @@ public struct Tr3ValFlags: OptionSet {
     public static let script  = Tr3ValFlags(rawValue: 1 << 15) // for embedded script between name(){...} -- for example shaders
 
     public static let tuple      = Tr3ValFlags(rawValue: 1 << 16) // for an array of scalars
-    public static let tupNames   = Tr3ValFlags(rawValue: 1 << 17) // has (a, b)
-    public static let tupScalars = Tr3ValFlags(rawValue: 1 << 18) // has (1, 2)
-    
-    public static let ternary = Tr3ValFlags(rawValue: 1 << 21) // ternary a ? b : c
-    public static let path    = Tr3ValFlags(rawValue: 1 << 22) // path to tr3 in a ? b : c
-
+    public static let tupNames   = Tr3ValFlags(rawValue: 1 << 17) // 0..n names
+    public static let tupScalars = Tr3ValFlags(rawValue: 1 << 18) // 0..n scalars
+    public static let tupExprs   = Tr3ValFlags(rawValue: 1 << 19) // 0..n expressions
+    public static let ternary    = Tr3ValFlags(rawValue: 1 << 21) // ternary a ? b : c
+    public static let path       = Tr3ValFlags(rawValue: 1 << 22) // path to tr3 in a ? b : c
+    public static let comma      = Tr3ValFlags(rawValue: 1 << 23) // `,` in a,b
     public init(rawValue: Int) { self.rawValue = rawValue }
 
-    
+}
+extension Tr3ValFlags: CustomStringConvertible {
 
+    static public var debugDescriptions: [(Self, String)] = [
+        (.scalar     , "scalar"     ),
+        (.thru       , "thru"       ),
+        (.modu       , "modu"       ),
+        (.min        , "min"        ),
+        (.max        , "max"        ),
+        (.num        , "num"        ),
+        (.dflt       , "dflt"       ),
+        (.quote      , "quote"      ),
+        (.embed      , "embed"      ),
+        (.data       , "data"       ),
+        (.timing     , "timing"     ),
+        (.script     , "script"     ),
+        (.tuple      , "tuple"      ),
+        (.tupNames   , "tupNames"   ),
+        (.tupScalars , "tupScalars" ),
+        (.tupExprs   , "tupExprs"   ),
+        (.ternary    , "ternary"    ),
+        (.comma      , "comma"       ),
+        (.path       , "path"       )
+    ]
+
+    public var description: String {
+        let result: [String] = Self.debugDescriptions.filter { contains($0.0) }.map { $0.1 }
+        let printable = result.joined(separator: ", ")
+
+        return "\(printable)"
+    }
 }

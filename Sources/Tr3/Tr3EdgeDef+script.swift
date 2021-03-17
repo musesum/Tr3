@@ -1,7 +1,7 @@
 //  Tr3EdgeDefs+script.swift
 //
 //  Created by warren on 4/5/19.
-//  Copyright © 2019 Muse Dot Company
+//  Copyright © 2019 DeepMuse
 //  License: Apache 2.0 - see License file
 
 import Foundation
@@ -28,6 +28,8 @@ extension Tr3EdgeDef {
         else if flags.contains(.exclude) { script += "!" }
         else if flags.contains(.find)    { script += ":" }
         else if flags.contains(.ternary) { script += "⋯" }
+        else if flags.contains(.copyat)  { script += "@" }
+        else if flags.contains(.vals)    { script += "&" }
 
         else if active == false          { script += "╌" }
 
@@ -45,14 +47,14 @@ extension Tr3EdgeDef {
         }
         else {
 
-            if pathVals.pathList.count > 1   { script += "(" }
+            if pathVals.pathList.count > 1 { script += "(" }
             for path in pathVals.pathList {
                 script += script.parenSpace() + path
                 if let val = pathVals.pathDict[path] {
                     script += val?.scriptVal() ?? ""
                 }
             }
-            if pathVals.pathList.count > 1  { script += ")" }
+            if pathVals.pathList.count > 1 { script += ")" }
         }
         return script.with(trailing:" ")
     }

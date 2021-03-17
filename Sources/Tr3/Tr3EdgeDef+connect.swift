@@ -1,7 +1,7 @@
 //  Tr3EdgeDef+connect.swift
 //
 //  Created by warren on 4/29/19.
-//  Copyright © 2019 Muse Dot Company
+//  Copyright © 2019 DeepMuse
 //  License: Apache 2.0 - see License file
 
 import Foundation
@@ -14,6 +14,21 @@ extension Tr3EdgeDef {
         leftTr3.tr3Edges[edge.key] = edge
         rightTr3.tr3Edges[edge.key] = edge
         edges[edge.key] = edge
+        if edgeFlags.contains(.copyat) {
+            connectCopyr(leftTr3, rightTr3, tr3Val)
+        }
+    }
+    func connectCopyr(_ leftTr3: Tr3,_ rightTr3: Tr3,_ tr3Val: Tr3Val?)  {
+        var rights = [String: Tr3]()
+        for rightChild in rightTr3.children {
+            rights[rightChild.name] = rightChild
+        }
+        for leftChild in leftTr3.children {
+            if let rightChild = rights[leftChild.name] {
+                Tr3EdgeDef(flags: edgeFlags)
+                .connectNewEdge(leftChild, rightChild, tr3Val)
+            }
+        }
     }
 
     /// find d.a1 relative to h

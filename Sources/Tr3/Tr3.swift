@@ -3,7 +3,7 @@
 //  Par
 //
 //  Created by warren on 3/7/19.
-//  Copyright © 2019 Muse Dot Company
+//  Copyright © 2019 DeepMuse
 //  License: Apache 2.0 - see License file
 
 import Par
@@ -68,15 +68,17 @@ public class Tr3: Hashable {
         return self
     }
 
-    ///  attach to only deepest children
-    ///
-    ///      attach z to a { b c }       ⟹  a { b { z } c { z } }
-    ///      attach z to a { b { c } }   ⟹  a { b { c { z } } }
-    ///
-    ///  - parameter tr3: The parent Tr3, which may be a leaf to attach or has children to scan deeper.
-    ///
-    ///  - parameter visitor: the same "_:_" clone may be attached to multiple parent before consolication.
-    ///     So, use visitor pattern to avoid multiple visits
+    /** attach to only deepest children
+
+        attach z to a { b c }       ⟹  a { b { z } c { z } }
+        attach z to a { b { c } }   ⟹  a { b { c { z } } }
+
+    - Parameters:
+        - tr3: The parent Tr3, which may be a leaf to attach or has children to scan deeper.
+
+        - visitor: the same "_:_" clone may be attached to multiple parent before consolication.
+
+     */
     func attachDeep(_ tr3: Tr3, _ visitor: Visitor) {
         if visitor.newVisit(id) {
             if children.count == 0 {
@@ -91,27 +93,28 @@ public class Tr3: Hashable {
         }
     }
 
-    /// attach future children to parent's children, for a many:many relationship
-    ///
-    ///      a { b c } : { d e }      ⟹  a { b { d e } c { d e } }
-    ///      a { b { c } } : { d e }  ⟹  a { b { c { d e } } }
-    ///
-    /// initial step is to create a placeholder _:_ for { d e }
-    ///
-    ///      a { b c } : _:_        ⟹  a { b { _:_ } c { _:_ } }
-    ///
-    /// after subsequent parsing fills _:_ with { d e }, then bind
-    ///
-    ///      a { b {_:_{d e}} c {_:_{d e}}}  ⟹  a { b { d e } c { d e } }
+    /** attach future children to parent's children, for a many:many relationship
+
+         a { b c } : { d e }      ⟹  a { b { d e } c { d e } }
+         a { b { c } } : { d e }  ⟹  a { b { c { d e } } }
+
+    initial step is to create a placeholder _:_ for { d e }
+
+         a { b c } : _:_        ⟹  a { b { _:_ } c { _:_ } }
+
+    after subsequent parsing fills _:_ with { d e }, then bind
+
+         a { b {_:_{d e}} c {_:_{d e}}}  ⟹  a { b { d e } c { d e } }
+     */
     public func makeMany() -> Tr3 {
         let many = Tr3("_:_",.many)
         attachDeep(many,Visitor(0))
         return many
     }
 
-    public func addChild(_ n: ParItem,_ type_: Tr3Type)  -> Tr3 {
+    public func addChild(_ parItem: ParItem,_ type_: Tr3Type)  -> Tr3 {
 
-        if let value = n.nextPars.first?.value {
+        if let value = parItem.nextPars.first?.value {
 
             let child = Tr3(value,type_)
             children.append(child)

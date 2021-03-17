@@ -1,44 +1,11 @@
 //  Tr3EdgeDef.swift
 //
 //  Created by warren on 3/10/19.
-//  Copyright © 2019 Muse Dot Company
+//  Copyright © 2019 DeepMuse
 //  License: Apache 2.0 - see License file
 
 import Foundation
 import Par // ParItem 
-
-
-/// keeps a dictionary of paths as keys with Tr3Vals,
-/// plus keeps array of paths to preserve sequence,
-/// which is important for preserving order of values
-struct PathVals {
-
-    var pathDict = [String: Tr3Val?]() // eliminate duplicates
-    var pathList = [String]()         // preserve sequence order
-
-    mutating func add(_ path: String?, _ val_: Tr3Val?) {
-        if let path = path {
-            if let _ = pathDict[path] {
-                if val_ == val_ {  // dont overwrite path val with nil
-                     pathDict[path] = val_
-                }
-                return
-            }
-            else  {
-                pathDict[path] = val_
-                pathList.append(path)
-            }
-        }
-    }
-    static func == (lhs: PathVals, rhs: PathVals) -> Bool {
-
-        for lkey in lhs.pathList {
-            if lhs.pathDict[lkey] == rhs.pathDict[lkey]  { continue }
-            return false
-        }
-        return true
-    }
-}
 
 public class Tr3EdgeDef {
 
@@ -59,11 +26,11 @@ public class Tr3EdgeDef {
         for path in with.pathVals.pathList { // pathVals = with.pathVal
             if let val = with.pathVals.pathDict[path] {
                 switch val {
-                case let val as Tr3ValTern:   pathVals.add(path, val.copy())
-                case let val as Tr3ValScalar: pathVals.add(path, val.copy())
-                case let val as Tr3ValTuple:  pathVals.add(path, val.copy())
-                case let val as Tr3ValQuote:  pathVals.add(path, val.copy())
-                default:                      pathVals.add(path, val)
+                case let val as Tr3ValTern:   pathVals.add(path: path, val: val.copy())
+                case let val as Tr3ValScalar: pathVals.add(path: path, val: val.copy())
+                case let val as Tr3ValTuple:  pathVals.add(path: path, val: val.copy())
+                case let val as Tr3ValQuote:  pathVals.add(path: path, val: val.copy())
+                default:                      pathVals.add(path: path, val: val)
                 }
             }
         }
@@ -74,7 +41,9 @@ public class Tr3EdgeDef {
         let newEdgeDef = Tr3EdgeDef(with: self)
         return newEdgeDef
     }
-    
+    func addLastPath(_ lastPath: String, val: Tr3Val) {
+        
+    }
     func addPath(_ parItem: ParItem) {
 
         if let path = parItem.nextPars.first?.value {
@@ -83,7 +52,7 @@ public class Tr3EdgeDef {
                 Tr3ValTern.ternStack.last?.addPath(path)
             }
             else {
-                pathVals.add(path,nil)
+                pathVals.add(path: path, val: nil)
             }
         }
         else {

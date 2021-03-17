@@ -1,7 +1,7 @@
 // Tr3EdgeFlags.swift
 //
 //  Created by warren on 3/10/19.
-//  Copyright © 2019 Muse Dot Company
+//  Copyright © 2019 DeepMuse
 //  License: Apache 2.0 - see License file
 
 import Foundation
@@ -16,8 +16,9 @@ public struct Tr3EdgeFlags: OptionSet {
 
     public static let exclude = Tr3EdgeFlags(rawValue: 1 << 3) //  8 ! in  a<!b   a!>b   a<!>b
     public static let find    = Tr3EdgeFlags(rawValue: 1 << 4) // 16 ? in  a<:b   a:>b   a<:>b
-    public static let ternary = Tr3EdgeFlags(rawValue: 1 << 5) // 32  a?>w, b?>w x<╌>w y<╌>w in  a b x y w<->(a ? x : b ? y)
- 
+    public static let ternary = Tr3EdgeFlags(rawValue: 1 << 5) // 32 a?>w, b?>w x<╌>w y<╌>w in  a b x y w<->(a ? x : b ? y)
+    public static let copyat   = Tr3EdgeFlags(rawValue: 1 << 6) // 64
+    public static let vals    = Tr3EdgeFlags(rawValue: 1 << 7) // 128
     public init(rawValue: Int = 0) { self.rawValue = rawValue }
 
     public init(with str: String) {
@@ -30,6 +31,8 @@ public struct Tr3EdgeFlags: OptionSet {
             case "!": self.insert(.exclude) // remove edge(s)
             case ":": self.insert(.find)    // find edge(s) but dont connect
             case "?": self.insert(.ternary) // edge to ternary condition
+            case "@": self.insert(.copyat) // edge to ternary condition
+            case "&": self.insert(.vals) // edge to ternary condition
             default: continue
             }
         }

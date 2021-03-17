@@ -1,17 +1,18 @@
 //  Tr3ValScalar.swift
 //
 //  Created by warren on 4/4/19.
-//  Copyright © 2019 Muse Dot Company
+//  Copyright © 2019 DeepMuse
 //  License: Apache 2.0 - see License file
 
 import QuartzCore
 
 public class Tr3ValScalar: Tr3Val {
 
-    // default scalar value is (0...1=1)
+    // default scalar value is (0..1 = 1)
     var num  = Float(0) // current value
     var min  = Float(0) // minimum value
     var max  = Float(1) // maximum value, inclusive for thru
+    var dflt = Float(0) // current value
 
     override init() {
         super.init()
@@ -19,7 +20,7 @@ public class Tr3ValScalar: Tr3Val {
     init(with str: String) {
         super.init()
         let val = Float(str) ?? Float.nan
-        addDflt(val)
+        addNum(val)
     }
     init(with num_: Float) {
         super.init()
@@ -27,45 +28,82 @@ public class Tr3ValScalar: Tr3Val {
         max = fmax(num_, 1.0)
         num = num_
     }
-    init (with tr3Val: Tr3ValScalar) {
-
-        super.init(with: tr3Val)
-
-        valFlags = tr3Val.valFlags // use default values
-        num  = tr3Val.num
-        min  = tr3Val.min
-        max  = tr3Val.max
+    init (with scalar: Tr3ValScalar) {
+        super.init()
+        valFlags = scalar.valFlags // use default values
+        num  = scalar.num
+        min  = scalar.min
+        max  = scalar.max
     }
     override func copy() -> Tr3Val {
         let newTr3ValScalar = Tr3ValScalar(with: self)
         return newTr3ValScalar
     }
 
-    func addMin (_ val_: Float) { valFlags.insert(.min );  min = val_; num = val_}
-    func addMax (_ val_: Float) { valFlags.insert(.max );  max = val_ }
-    func addDflt(_ val_: Float) { valFlags.insert(.dflt);  num = val_ }
+    func addNum(_ val_: Float) {
 
+        if valFlags.contains(.thru) {
+            if valFlags.contains(.max) {
+                valFlags.insert(.dflt)
+                dflt = val_
+                num = val_
+            } else if valFlags.contains(.min) {
+                valFlags.insert(.max)
+                max = val_
+            } else {
+                valFlags.insert(.min)
+                min = val_
+            }
+        } else if valFlags.contains(.modu) {
+            if valFlags.contains(.max) {
+                valFlags.insert(.dflt)
+                dflt = val_
+                num = val_
+            } else {
+                valFlags.insert(.max)
+                max = val_
+            }
+        } else {
+            valFlags.insert(.num)
+            num = val_
+        }
+    }
+    func setDefault() {
+        if valFlags.contains(.modu) {
+            num = 0
+        }
+        if valFlags.contains(.dflt) {
+            num = dflt
+        } else if valFlags.contains(.min), num < min {
+            num = min
+        } else if valFlags.contains(.max), num > max {
+           num = max
+        } else if valFlags.intersection([.num,.min,.max,.dflt]) == [] {
+            valFlags.insert([.num, .dflt])
+            dflt = num 
+        }
+    }
+    
     override func printVal() -> String {
         return String(num)
     }
-    override func scriptVal(parens: Bool) -> String  {
 
+    override func scriptVal(parens: Bool) -> String  {
         var script = parens ? "(" : ""
         if valFlags.rawValue == 0   { return "" }
         if valFlags.contains(.min)  { script += String(format: "%g", min) }
         if valFlags.contains(.thru) { script += ".." }
         if valFlags.contains(.modu) { script += "%" }
         if valFlags.contains(.max)  { script += String(format: "%g", max) }
-
         if valFlags.contains(.dflt) {
             if valFlags.contains([.min,.max]) { script += " = " }
             script += String(format: "%g",num)
-        } else if valFlags.contains(.min), num != min {
-            script += " = " + String(format: "%g",num)
-        } else if num != min {
-            script += " = " + String(format: "%g",num)
+        } else if valFlags.contains(.num) {
+            script += String(format: "%g",num)
         }
-
+        if valFlags.contains(.comma) {
+            script += ", "
+        }
         script += parens ? ")" : ""
         return script
     }
@@ -83,9 +121,9 @@ public class Tr3ValScalar: Tr3Val {
         
         let mergeFlags = lhs.valFlags.rawValue |  rhs.valFlags.rawValue
         lhs.valFlags = Tr3ValFlags(rawValue: mergeFlags)
-        if rhs.valFlags.contains(.min )  { lhs.min  = rhs.min }
-        if rhs.valFlags.contains(.max )  { lhs.max  = rhs.max }
-        if rhs.valFlags.contains(.num )  { lhs.num  = rhs.num }
+        if rhs.valFlags.contains(.min) { lhs.min = rhs.min }
+        if rhs.valFlags.contains(.max) { lhs.max = rhs.max }
+        if rhs.valFlags.contains(.num) { lhs.num = rhs.num }
     }
 
     public static func == (lhs: Tr3ValScalar, rhs: Tr3ValScalar) -> Bool { return lhs.num == rhs.num }
@@ -95,29 +133,35 @@ public class Tr3ValScalar: Tr3Val {
     public static func <  (lhs: Tr3ValScalar, rhs: Tr3ValScalar) -> Bool { return lhs.num <  rhs.num }
     public static func != (lhs: Tr3ValScalar, rhs: Tr3ValScalar) -> Bool { return lhs.num != rhs.num }
 
-    func withinRange() {
+    public func inRange(of test: Float) -> Bool {
+
+        if valFlags.contains(.modu),test > max { return false }
+        if valFlags.contains(.min), test < min { return false }
+        if valFlags.contains(.max), test > max { return false }
+        return true
+    }
+
+    func setInRange() {
 
         if valFlags.contains(.modu) { num = fmodf(num, max) }
         if valFlags.contains(.min), num < min { num = min }
-        if valFlags.contains(.max) {
-            if valFlags.contains(.thru), num > max   { num = max }
-        }
+        if valFlags.contains(.max), num > max { num = max }
     }
 
     func setRangeFrom01(_ val_: Float) {
 
-        if      valFlags.contains(.modu) { num = fmod(val_,fmax(1,max)) }
-        else                             { num = val_ * (max - min)     + min }
+        if valFlags.contains(.modu) { num = fmod(val_,fmax(1,max)) }
+        else                        { num = val_ * (max - min) + min }
     }
 
     func rangeTo01() -> Float {
-
-        if      valFlags.contains(.modu) { return fmod(num,max) / fmaxf(1, max-1) }
-        else if valFlags.contains(.thru) { return (num - min) / fmaxf(1, max - min) }
-        else                             { return (num - min) / fmaxf(1, max - min - 1) }
+        return valFlags.contains(.modu)
+            ? fmod(num,max) / fmaxf(1, max-1)
+            : (num - min) / fmaxf(1, max - min)
     }
 
     func changeRangeFrom01(_ val_: Float) -> Bool {
+
         let oldNum = num
         setRangeFrom01(val_)
         return (num != oldNum)
@@ -142,7 +186,7 @@ public class Tr3ValScalar: Tr3Val {
         }
         else {
             num = v.num
-            withinRange()
+            setInRange()
         }
     }
 
@@ -163,16 +207,16 @@ public class Tr3ValScalar: Tr3Val {
         }
     }
 
-    func setFloat(_ v: Int)      { num = Float(v) ; withinRange() }
-    func setFloat(_ v: Double)   { num = Float(v) ; withinRange() }
-    func setFloat(_ v: CGFloat)  { num = Float(v) ; withinRange() }
-    func setFloat(_ v: Float)    { num = v        ; withinRange() }
+    func setFloat(_ v: Int)      { num = Float(v) ; setInRange() }
+    func setFloat(_ v: Double)   { num = Float(v) ; setInRange() }
+    func setFloat(_ v: CGFloat)  { num = Float(v) ; setInRange() }
+    func setFloat(_ v: Float)    { num = v        ; setInRange() }
 
     func setFloat01(_ v: Int)    { setRangeFrom01(Float(v)) }
     func setFloat01(_ v: Double) { setRangeFrom01(Float(v)) }
     func setFloat01(_ v: CGFloat){ setRangeFrom01(Float(v)) }
     func setFloat01(_ v: Float)  { setRangeFrom01(v) }
 
-    func increment()            { num += 1 ; withinRange() }
-    func decrement()            { num -= 1 ; withinRange() }
+    //    func increment()            { num += 1 ; setInRange() }
+    //    func decrement()            { num -= 1 ; setInRange() }
 }

@@ -1,7 +1,7 @@
 ///  Tr3+Merge.swift
 //
 //  Created by warren on 4/8/19.
-//  Copyright © 2019 Muse Dot Company
+//  Copyright © 2019 DeepMuse
 //  License: Apache 2.0 - see License file
 
 import Foundation
@@ -24,7 +24,7 @@ extension Tr3 {
 
     /// previously declared Tr3 has a ":"
     ///
-    ///  What follows a "©" is either a:
+    ///  What follows a "@" is either a:
     ///   1) new node to add to tree,
     ///   2) new path synthesized from current location, or
     ///   3) one or more nodes to override
@@ -92,7 +92,7 @@ extension Tr3 {
         return script
     }
 
-    func bindCopier() -> [Tr3] {
+    func bindCopyr() -> [Tr3] {
 
         if let found = bindFindPath() {
         
@@ -105,7 +105,7 @@ extension Tr3 {
                 type = .name
                 return [self]
             }
-            /// ©_c in `a.b { _c { c1 c2 } c { d e } ©_c }`
+            /// @_c in `a.b { _c { c1 c2 } c { d e } @_c }`
             if found.count > 0, let parent = parent {
 
                 var newChildren = [Tr3]()
@@ -263,7 +263,7 @@ extension Tr3 {
             switch child.type {
             case .path:   newKids.append(contentsOf: child.bindPath())
             case .many:   newKids.append(contentsOf: child.bindMany())
-            case .copier: newKids.append(contentsOf: child.bindCopier())
+            case .copyat: newKids.append(contentsOf: child.bindCopyr())
             case .name:   newKids.append(contentsOf: child.bindName(newKids))
             case .remove: break
             default:      newKids.append(child)
@@ -365,7 +365,7 @@ extension Tr3 {
     /// first pass convert `a.b.c` into `a { b { c } }`
     func bindTopDown() {
 
-        if type != .copier,
+        if type != .copyat,
             expandDotPath(),
             let parent = parent {
 
@@ -402,28 +402,28 @@ extension Tr3 {
             child.bindEdges()
         }
     }
-    /// 2nd a.b in `a.b { c d } a.e:a.b { f g }`
-    ///
-    /// - note: Needs forward pass for prototypes that refer to unexpanded paths.
-    ///
-    /// Because expansion is bottom up, the first a.b in:
-    ///
-    ///     a.b { c d } a.e:a.b { f g }
-    ///
-    /// has not been been expanded, when encountering the second a.b.
-    /// So, deeper a.b was deferred until this forward pass,
-    /// where first a.b has finally expanded and can now bind
-    /// its children.
-    ///
-    func bindCopierTypes() {
+    /** bind 2nd a.b in `a.b { c d } a.e@a.b { f g }`
+
+    - note: Needs forward pass for prototypes that refer to unexpanded paths.
+
+    Because expansion is bottom up, the first a.b in:
+
+        a.b { c d } a.e@a.b { f g }
+
+    has not been been expanded, when encountering the second a.b.
+    So, deeper a.b was deferred until this forward pass,
+    where first a.b has finally expanded and can now bind
+    its children.
+    */
+    func bindCopyatTypes() {
 
         var hasProtoChild = false
         // depth first bind from bottom up
         for child in children {
             if child.children.count > 0 {
-                child.bindCopierTypes()
+                child.bindCopyatTypes()
             }
-            if child.type == .copier {
+            if child.type == .copyat {
                 hasProtoChild = true
             }
         }
@@ -431,10 +431,19 @@ extension Tr3 {
             bindChildren()
         }
     }
-    ///
+
     func bindDefaults() {
-        if let val = val as? Tr3ValTuple {
-            val.setDefaults()
+        func bindVal(_ val: Tr3Val?) {
+            guard let val = val else { return }
+            switch val {
+            case let t as Tr3ValTuple:  t.setDefaults()
+            case let s as Tr3ValScalar: s.setDefault()
+            default: break
+            }
+        }
+        bindVal(val)
+        for edge in tr3Edges {
+            bindVal(edge.value.defVal)
         }
         for child in children {
             child.bindDefaults()
@@ -442,16 +451,15 @@ extension Tr3 {
     }
 
     /// bind root of tree and its subtree graph
-    
     public func bindRoot() {
 
         func log(_ num: Int) {
             if      Tr3.BindDumpScript { print(dumpScript(0,session: true) + " // \(num)") }
-            else if Tr3.BindMakeScript { print(makeScript() + " // \(num)") }
+            else if Tr3.BindMakeScript { print(makeScript(               ) + " // \(num)") }
         }
         bindTopDown()     ; log(1)
         bindBottomUp()    ; log(2)
-        bindCopierTypes() ; log(3)
+        bindCopyatTypes() ; log(3)
         bindEdges()       ; log(4)
         bindTernaries()   ; log(5)
         bindDefaults()

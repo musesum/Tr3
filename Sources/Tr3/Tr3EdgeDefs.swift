@@ -1,7 +1,7 @@
 //  Tr3EdgeDefs.swift
 //
 //  Created by warren on 4/28/19.
-//  Copyright © 2019 Muse Dot Company
+//  Copyright © 2019 DeepMuse
 //  License: Apache 2.0 - see License file
 
 import Foundation
@@ -65,7 +65,8 @@ public class Tr3EdgeDefs {
             }
         }
     }
-    /// add ternary to array of edgeDefs
+    /** add ternary to array of edgeDefs
+     */
      public func addEdgeTernary(_ tern_: Tr3ValTern, copyFrom: Tr3? = nil) {
 
          if let lastEdgeDef = edgeDefs.last {
@@ -87,10 +88,19 @@ public class Tr3EdgeDefs {
              Tr3ValTern.ternStack.append(tern_)
          }
          else {
-
              print("*** \(#function) no edgeDefs to add edge")
          }
      }
+    /** add tupple to array of edgeDefs
+     */
+    public func addEdgeTuple() {
+        if let pathVals = edgeDefs.last?.pathVals {
+            pathVals.add(val: Tr3ValTuple())
+        }
+        else {
+            print("*** \(#function) no edgeDefs to add edge")
+        }
+    }
 
     public func addEdgeDef(_ edgeOp: String?) {
 
