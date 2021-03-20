@@ -39,6 +39,7 @@ public class Tr3ValTuple: Tr3Val {
             named = v.named
             names = v.names
             exprs = v.exprs
+            hasComma = v.hasComma
         }
         else {
             valFlags = .scalar // use default values
@@ -164,9 +165,7 @@ public class Tr3ValTuple: Tr3Val {
                 expr.addNext(scalar)
             }
             // named scalars: `(x 1, y 2, z 3)`
-            else {
-                named[name] = scalar
-            }
+            named[name] = scalar
         }
         // pure scalars `(1 2 3)`
         else {
@@ -183,12 +182,7 @@ public class Tr3ValTuple: Tr3Val {
         }
     }
     override func addComma() {
-        if let name = names.last,
-           let scalar = named[name] {
-            scalar.addComma()
-        } else if let scalar = scalars.last {
-            scalar.addComma()
-        }
+        hasComma = true
     }
     func setDefaults() {
         if named.count > 0 {
@@ -201,7 +195,12 @@ public class Tr3ValTuple: Tr3Val {
             }
         }
     }
-    
+    /** set this Tuple from another tuple.
+     Expressions can act as a filter `x < 1` which may reject the candidate
+
+     or change value `x/2`
+
+     */
     public override func setVal(_ any: Any?,_ options: Any? = nil) {
 
         func setFloat(_ v: Float) {
@@ -226,47 +225,42 @@ public class Tr3ValTuple: Tr3Val {
                 named["y"] = Tr3ValScalar(with: Float(v.y))
             }
         }
-        func copyFrom(_ from: Tr3ValTuple) {
-            valFlags = from.valFlags
-            if from.scalars.count > 0 {
-                valFlags.insert([.tuple, .tupScalars])
-                for scalar in from.scalars {
-                    scalars.append(Tr3ValScalar(with: scalar))
+        func isEligible(_ from: Tr3ValTuple) -> Bool {
+            for (name,expr) in exprs {
+                if let frVal = from.named[name],
+                   let toVal = named[name] {
+
+                    if expr.isEligible(named, toVal, frVal) == false {
+                        return false
+                    }
+                } else {
+                    return false
                 }
             }
-            if from.named.count > 0 {
-                valFlags.insert([.tuple, .tupNames])
-                named = [TupName: Tr3ValScalar]()
-                for (name, scalar) in from.named {
-                    named[name] = scalar
-                }
-            }
-            if from.exprs.count > 0 {
-                valFlags.insert([.tuple, .tupExprs])
-                for (name,expr) in from.exprs {
-                    exprs[name] = Tr3ValTupExpr(with: expr)
-                }
-            }
+            return true
         }
         func setTuple(_ from: Tr3ValTuple) {
-
-            if exprs.count > 0 {
-                for expr in exprs.values {
-                    expr.eval(self, from)
+            if names.isEmpty {
+                if scalars.count >= from.scalars.count {
+                    for i in 0..<scalars.count {
+                        let toScalar = scalars[scalars.startIndex + i]
+                        let frScalar = from.scalars[from.scalars.startIndex + i]
+                        toScalar.setVal(frScalar)
+                    }
                 }
-            }
-            else if scalars.count > 0 {
-                copyFrom(from)
-            }
-            else if names.count > 0 {
-
-                for name in names {
-                    if let frScalar = from.named[name] {
-                        if let toScalar = named[name] {
-                            toScalar.setVal(frScalar)
-                        }
-                        else {
-                            named[name] = frScalar
+            } else if isEligible(from) {
+                for name in from.names {
+                    if let frVal = from.named[name] {
+                        if let toVal = named[name] {
+                            if let expr = exprs[name] {
+                                expr.eval(named, toVal, frVal)
+                            } else {
+                                valFlags.insert([.tupNames, .tupScalars])
+                                toVal.setVal(frVal)
+                            }
+                        } else {
+                            valFlags.insert([.tupNames, .tupScalars])
+                            named[name] = Tr3ValScalar(with: frVal) 
                         }
                     }
                 }

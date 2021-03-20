@@ -43,10 +43,10 @@ public class Tr3: Hashable {
         type = type_
     }
 
-    public convenience init(deepcopy from: Tr3, parent parent_: Tr3) {
+    public convenience init(deepcopy from: Tr3, parent: Tr3) {
 
         self.init()
-        parent = parent_
+        self.parent = parent
         name = from.name
         type = from.type
         for fromChild in from.children {

@@ -21,7 +21,7 @@ tr3 ~ left right* {
         comma ~ '^([,])'
     }
     tuple ~ "(" tupExpr{2,} ")" {
-        tupExpr ~ (tupOper | name | scalar1)
+        tupExpr ~ (tupOper | name | scalar1) comma?
         tupOper ~ tupOp (name | scalar1)
         tupOp ~ '^(<|<=|>|>=|==|\*|\\|\+=|\-=|\%)'
     }

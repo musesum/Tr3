@@ -24,6 +24,7 @@ public class Tr3ValScalar: Tr3Val {
     }
     init(with num_: Float) {
         super.init()
+        valFlags = .num
         min = fmin(num_, 0.0)
         max = fmax(num_, 1.0)
         num = num_

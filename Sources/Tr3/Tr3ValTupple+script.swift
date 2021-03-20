@@ -46,9 +46,7 @@ extension Tr3ValTuple {
         }
         return script
     }
-    func scriptScalars() -> String? {
-        if scalars.isEmpty { return nil }
-
+    func scriptScalars() -> String {
         var script = ""
         var delim = ""
         for scalar in scalars {
@@ -59,10 +57,24 @@ extension Tr3ValTuple {
     }
 
     override func scriptVal(parens: Bool) -> String  {
-        if let val = scriptExprs() ?? scriptNamed() ?? scriptScalars() {
-            return parens ? "(\(val))" : val
+        var val = ""
+        var delim = ""
+        if names.isEmpty {
+            val = scriptScalars()
+        } else {
+            for name in names {
+                val += delim
+                 delim = hasComma ? ", " : " "
+                if let expr = exprs[name] {
+                    val += expr.script()
+                } else if let scalar = named[name] {
+                    val += name + " " + scalar.scriptVal(parens: false)
+                } else {
+                    val += name
+                }
+            }
         }
-        return ""
+        return val.isEmpty ? "" : parens ? "(\(val))" : val
     }
 
     override func dumpVal(parens: Bool, session: Bool = false) -> String  {

@@ -941,18 +941,33 @@ body {left right}.{shoulder.elbow.wrist {thumb index middle ring pinky}.{meta pr
 
         var err = 0
         err += test("a (w x == 1 y)")
-        err += test("a {b c}.{ d(1) e(2) }", "√ { a { b { d(1) e(2) } c { d(1) e(2) } } }")
-        err += test("a {b c}.{ d(x 1) e(y 2) }", "√ { a { b { d(x 1) e(y 2) } c { d(x 1) e(y 2) } } }")
-        err += test("a {b c}.{ d(x 1) e(y 2) } w(x y z)", "√ { a { b { d (x 1) e (y 2) } c { d (x 1) e (y 2) } } w (x y z) }")
-        err += test("a {b c}.{ d(x == 10, y, z) e(x, y == 21, z) }")
-        err += test("a {b c}.{ d(x == 10 y z) e(x y == 21 z) } w(x y z) <> a˚.")
+
+        err += test("a {b c}.{ d(1) e(2) }",
+                    "√ { a { b { d(1) e(2) } c { d(1) e(2) } } }")
+
+        err += test("a {b c}.{ d(x 1) e(y 2) }",
+                    "√ { a { b { d(x 1) e(y 2) } c { d(x 1) e(y 2) } } }")
+
+        err += test("a {b c}.{ d(x 1) e(y 2) } w(x y z)",
+                    "√ { a { b { d (x 1) e (y 2) } " +
+                    "        c { d (x 1) e (y 2) } } " +
+                    "    w (x y z) }")
+
+        err += test("a {b c}.{ d(x == 10, y, z) e(x, y == 21, z) }",
+                    "√ { a { b { d (x == 10, y, z) e (x, y == 21, z) } " +
+                    "        c { d (x == 10, y, z) e (x, y == 21, z) } } }")
+
+        err += test("a {b c}.{ d(x == 10, y, z) e(x, y == 21, z) } w(x y z) <> a˚.",
+                    "√ { a { b { d (x == 10, y, z) e (x, y == 21, z) } " +
+                    "        c { d (x == 10, y, z) e (x, y == 21, z) } } " +
+                    "    w (x y z) <>(a.b.d a.b.e a.c.d a.c.e) }")
 
         // selectively set tuples by name, ignore the reset
         let script = "a {b c}.{ d(x == 10, y, z) e(x, y == 21, z) } w(x, y, z) <> a˚."
         let root = Tr3("√")
 
         if tr3Parse.parseScript(root, script),
-           let w = root.findPath("w") {
+            let w = root.findPath("w") {
 
             // 0 0 0 --------------------------------------------------
             let t0 = Tr3ValTuple(pairs: [("x", 0), ("y", 0), ("z", 0)])

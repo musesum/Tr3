@@ -3,7 +3,6 @@
 //  
 //
 //  Created by warren on 1/1/21.
-//
 
 import Foundation
 
@@ -60,14 +59,11 @@ public class Tr3ValTupExpr {
     func addNext(_ next: Any) {
         self.next = next
     }
-    func eval(_ to: Tr3ValTuple, _ fr: Tr3ValTuple) {
+    func eval(_ named: [String: Tr3ValScalar], _ toVal: Tr3ValScalar, _ frVal: Tr3ValScalar) {
 
         if tupOp == .none {
-            if let toScalar = to.named[name],
-               let frScalar = fr.named[name] {
-                next = toScalar
-                toScalar.setVal(frScalar)
-            }
+
+            toVal.setVal(frVal)
         }
         else if let next = next {
 
@@ -75,27 +71,40 @@ public class Tr3ValTupExpr {
 
             case let frName as String:
 
-                if let toScalar = to.named[name],
-                   let frScalar = fr.named[frName],
-                   let scalar = compare(toScalar,frScalar) {
+                if  let toVal = named[frName],
+                    let scalar = evalScalars(named, toVal, frVal) {
                     
-                    toScalar.setVal(scalar)
+                    toVal.setVal(scalar)
                 }
 
-            case let frScalar as Tr3ValScalar:
+            case let frVal as Tr3ValScalar:
 
-                if let toScalar = to.named[name],
-                   let scalar = compare(toScalar, frScalar) {
+                if let scalar = evalScalars(named, toVal, frVal)  {
 
-                    toScalar.setVal(scalar)
+                    toVal.setVal(scalar)
                 }
 
             default: print("unknown Tr3ValTupExpr next: \(next)")
             }
         }
     }
+    func getLeftRightVals(_ named: [String: Tr3ValScalar], _ toVal: Tr3ValScalar,_ frVal: Tr3ValScalar) -> (Tr3ValScalar,Tr3ValScalar)? {
 
-    func compare(_ lval: Tr3ValScalar,_ rval: Tr3ValScalar) -> Tr3ValScalar? {
+        if let next = next {
+            switch next {
+            case let name as String:
+                guard let namedVal = named[name] else { return nil }
+                return (frVal,namedVal)
+            case let scalar as Tr3ValScalar:
+                return (frVal,scalar)
+            default: return nil
+            }
+        }
+        return nil
+    }
+    func evalScalars(_ named: [String: Tr3ValScalar], _ toVal: Tr3ValScalar,_ frVal: Tr3ValScalar) -> Tr3ValScalar? {
+
+        guard let (lval,rval) = getLeftRightVals(named, toVal, frVal) else { return nil }
 
         var notZeroNum: Float { get { return rval.num != 0 ? rval.num : 1 } }
 
@@ -114,11 +123,25 @@ public class Tr3ValTupExpr {
         default: return rval
         }
     }
+    func isEligible(_ named: [String: Tr3ValScalar], _ toVal: Tr3ValScalar,_ frVal: Tr3ValScalar) -> Bool {
+
+        guard let (lval,rval) = getLeftRightVals(named, toVal, frVal) else {
+            return true
+        }
+        switch tupOp {
+        case .tupEQ: return lval.num == rval.num
+        case .tupLE: return lval.num <= rval.num
+        case .tupGE: return lval.num >= rval.num
+        case .tupLT: return lval.num <  rval.num
+        case .tupGT: return lval.num >  rval.num
+        default: return true
+        }
+    }
 
     func script() -> String {
 
         var script = name
-        if tupOp == .none {
+        if tupOp != .none {
             script += " " + tupOp.rawValue
         }
         if let next = next {

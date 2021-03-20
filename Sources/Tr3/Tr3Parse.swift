@@ -210,9 +210,8 @@ public class Tr3Parse {
     func parseTuple(_ tr3: Tr3, _ prior: String, parItem: ParItem,_ level: Int) -> Tr3 {
 
         switch prior {
-        case "many":
-            tr3.val = Tr3ValTuple()
-        case "child": tr3.val = Tr3ValTuple()
+        case "many",
+             "child": tr3.val = Tr3ValTuple()
         case "edges": tr3.edgeDefs.addEdgeTuple()
         default: print("*** unknown prior: \(prior)")
         }
@@ -227,6 +226,7 @@ public class Tr3Parse {
             switch oper {
             case "<", "<=", ">", ">=", "==", "*", "\\", "+=", "-=", "%":
                 val.addOper(oper)
+            case ",": val.addComma()
             default:
                 print("*** unknown prior: \(prior)")
             }
@@ -306,7 +306,7 @@ public class Tr3Parse {
     func parseEdge(_ tr3: Tr3,_ prior: String, parItem: ParItem,_ level: Int) -> Tr3 {
 
         let pattern = parItem.node?.pattern
-        log(tr3,parItem,level) // bTr3Log.log("parseEdge", prior, pattern ?? "" )
+        //log(tr3,parItem,level) // bTr3Log.log("parseEdge", prior, pattern ?? "" )
 
         if let pattern = pattern {
 
