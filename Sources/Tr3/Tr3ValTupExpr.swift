@@ -19,6 +19,7 @@ enum Tr3ValTupOp: String {
     case tupMuy = "*"
     case tupDiv = "/"
     case tupMod = "%"
+    case tupIn = "in"
 }
 
 public class Tr3ValTupExpr {
@@ -45,7 +46,10 @@ public class Tr3ValTupExpr {
             }
         }
     }
-
+    func copy() -> Tr3ValTupExpr {
+        let result = Tr3ValTupExpr(with: self)
+        return result
+    }
     func addOpStr (_ tupStr: String) {
         if let op  = Tr3ValTupOp(rawValue: tupStr) {
             tupOp = op
@@ -115,11 +119,11 @@ public class Tr3ValTupExpr {
         case .tupLT: return lval.num <  rval.num ? lval : nil
         case .tupGT: return lval.num >  rval.num ? lval : nil
 
-        case .tupAdd: return Tr3ValScalar(with: rval.num + lval.num)
-        case .tupSub: return Tr3ValScalar(with: rval.num - lval.num)
-        case .tupMuy: return Tr3ValScalar(with: rval.num * lval.num)
-        case .tupDiv: return Tr3ValScalar(with: rval.num / notZeroNum)
-        case .tupMod: return Tr3ValScalar(with: fmodf(rval.num, notZeroNum))
+        case .tupAdd: return Tr3ValScalar(num: rval.num + lval.num)
+        case .tupSub: return Tr3ValScalar(num: rval.num - lval.num)
+        case .tupMuy: return Tr3ValScalar(num: rval.num * lval.num)
+        case .tupDiv: return Tr3ValScalar(num: rval.num / notZeroNum)
+        case .tupMod: return Tr3ValScalar(num: fmodf(rval.num, notZeroNum))
         default: return rval
         }
     }

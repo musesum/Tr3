@@ -62,12 +62,18 @@ extension Tr3 {
 
     public func CGPointVal() -> CGPoint? {
 
-        if let v = val as? Tr3ValTuple, v.scalars.count >= 2 {
-            let x = CGFloat(v.scalars[0].num)
-            let y = CGFloat(v.scalars[1].num)
+        if let v = val as? Tr3ValTuple {
+            if let x = v.named["x"]?.num,
+               let y = v.named["y"]?.num {
 
-            let p = CGPoint(x: x, y: y)
-            return p
+                return CGPoint(x: CGFloat(x), y: CGFloat(y))
+            }
+            else if v.scalars.count >= 2 {
+                let x = v.scalars[0].num
+                let y = v.scalars[1].num
+
+                return CGPoint(x: CGFloat(x), y: CGFloat(y))
+            }
         }
         return nil
     }

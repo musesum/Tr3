@@ -41,7 +41,7 @@ extension Tr3ValTuple {
         var script = ""
         var delim = ""
         for expr in exprs.values {
-            script += delim;  delim = ", "
+            script += delim; delim = hasComma ? ", " : " "
             script += expr.script()
         }
         return script
@@ -50,39 +50,49 @@ extension Tr3ValTuple {
         var script = ""
         var delim = ""
         for scalar in scalars {
-            script += delim; delim = " "
+            script += delim; delim = hasComma ? ", " : " "
             script += scalar.dumpVal(parens: false)
         }
         return script
     }
 
     override func scriptVal(parens: Bool) -> String  {
+        var script = ""
+        var delim = ""
+        if names.isEmpty {
+            script = scriptScalars()
+        } else {
+            for name in names {
+                script += delim
+                delim = hasComma ? ", " : " "
+                if let expr = exprs[name] {
+                    script += expr.script()
+                } else if let scalar = named[name] {
+                    script += name + " " + scalar.scriptVal(parens: false)
+                } else {
+                    script += name
+                }
+            }
+        }
+        return script.isEmpty ? "" : parens ? "(\(script))" : script
+    }
+
+    override func dumpVal(parens: Bool, session: Bool = false) -> String  {
+        if session == false {
+            return scriptVal(parens: parens)
+        }
         var val = ""
         var delim = ""
         if names.isEmpty {
             val = scriptScalars()
         } else {
             for name in names {
-                val += delim
-                 delim = hasComma ? ", " : " "
-                if let expr = exprs[name] {
-                    val += expr.script()
-                } else if let scalar = named[name] {
-                    val += name + " " + scalar.scriptVal(parens: false)
-                } else {
-                    val += name
+                if let scalar = named[name] {
+                    val += delim + name + String(format: " %g", scalar.num)
+                    delim = hasComma ? ", " : " "
                 }
             }
         }
         return val.isEmpty ? "" : parens ? "(\(val))" : val
     }
-
-    override func dumpVal(parens: Bool, session: Bool = false) -> String  {
-        if session {
-            return scriptVal(parens: true)
-        } else {
-            return scriptVal(parens: parens)
-        }
-    }
-
 }

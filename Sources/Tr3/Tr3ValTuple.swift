@@ -36,9 +36,15 @@ public class Tr3ValTuple: Tr3Val {
         if let v = tr3Val as? Tr3ValTuple {
             
             valFlags = v.valFlags
-            named = v.named
-            names = v.names
-            exprs = v.exprs
+            for (name,val) in v.named {
+                named[name] = Tr3ValScalar(with: val)
+            }
+            for name in v.names {
+                names.append(name)
+            }
+            for (name,expr) in v.exprs {
+                exprs[name] = expr.copy()
+            }
             hasComma = v.hasComma
         }
         else {
@@ -49,8 +55,8 @@ public class Tr3ValTuple: Tr3Val {
     convenience init(with p: CGPoint) {
         self.init()
         valFlags.insert([.tupNames, .tupScalars])
-        let x = Tr3ValScalar(with: Float(p.x))
-        let y = Tr3ValScalar(with: Float(p.y))
+        let x = Tr3ValScalar(num: Float(p.x))
+        let y = Tr3ValScalar(num: Float(p.y))
         names = ContiguousArray<TupName>(["x","y"])
         named = [TupName: Tr3ValScalar]()
         named["x"] = x
@@ -64,7 +70,7 @@ public class Tr3ValTuple: Tr3Val {
         named = [TupName: Tr3ValScalar]()
         
         for (name,val) in pairs {
-            let scalar = Tr3ValScalar(with: val)
+            let scalar = Tr3ValScalar(num: val)
             names.append(name)
             named[name] = scalar
         }
@@ -83,7 +89,7 @@ public class Tr3ValTuple: Tr3Val {
         valFlags.insert([.tupScalars])
         scalars = ContiguousArray<Tr3ValScalar>()
         for val in values {
-            scalars.append(Tr3ValScalar(with: val))
+            scalars.append(Tr3ValScalar(num: val))
         }
     }
     override func copy() -> Tr3ValTuple {
@@ -155,10 +161,15 @@ public class Tr3ValTuple: Tr3Val {
             names.append(name)
         }
     }
+    /// parse scalar with `0` in `0..1`
     func addScalar(_ num: Float? = nil ) -> Tr3ValScalar {
-        let num = num ?? 0
         valFlags.insert([.tuple, .tupScalars])
-        let scalar = Tr3ValScalar(with: num)
+        var scalar: Tr3ValScalar
+        if let num = num {
+            scalar = Tr3ValScalar(num: num)
+        } else {
+            scalar = Tr3ValScalar()
+        }
         if let name = names.last {
             // expression `(x < 1, y < 2)`
             if let expr = exprs[name] {
@@ -199,30 +210,31 @@ public class Tr3ValTuple: Tr3Val {
      Expressions can act as a filter `x < 1` which may reject the candidate
 
      or change value `x/2`
-
      */
     public override func setVal(_ any: Any?,_ options: Any? = nil) {
 
         func setFloat(_ v: Float) {
             valFlags.insert(.tupScalars)
-            insureScalars(count: 1)
+            insureScalars(count: 1) //??
             scalars[0].num = v
         }
         func setPoint(_ v: CGPoint) {
-
+            valFlags.insert(.tupNames)
             if let x = named["x"] {
                 x.setVal(v.x)
+                x.addFlag(.num)
             }
             else {
                 names.append("x")
-                named["x"] = Tr3ValScalar(with: Float(v.x)) }
-
+                named["x"] = Tr3ValScalar(num: Float(v.x))
+            }
             if let y = named["y"] {
                 y.setVal(v.y)
+                y.addFlag(.num)
             }
             else {
                 names.append("y")
-                named["y"] = Tr3ValScalar(with: Float(v.y))
+                named["y"] = Tr3ValScalar(num: Float(v.y))
             }
         }
         func isEligible(_ from: Tr3ValTuple) -> Bool {

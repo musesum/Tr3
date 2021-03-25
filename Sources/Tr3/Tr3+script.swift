@@ -179,18 +179,23 @@ extension Tr3 {
     func getChildren(_ indent: Int,_ session: Bool) -> String {
         var result = ""
         if children.count > 0 {
-            result = "{ " + getTr3Comment()
+            result = "{ " + getTr3Comment() + "\n"
             var index = 0 // index indicates how many children already added when comment was added
             for child in children {
                 index += 1
                 result += result.parenSpace() + child.dumpScript(indent+1, session: session)
             }
-            result += result.parenSpace() + "}"
+            result += result.parenSpace() + "}\n"
         }
         return result
     }
 
-    /// - Parameter session: show instance for session instead of full declaration
+    /** create a parse ready String
+
+     - Parameters
+        - indent: depth level in tree deterimines indentation
+        - session: show instance for session instead of full declaration
+     */
     public func dumpScript(_ indent: Int = 0, session: Bool = false) -> String {
 
         var script = name

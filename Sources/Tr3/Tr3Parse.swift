@@ -72,10 +72,16 @@ public class Tr3Parse {
 
             let _ = tr3.addChild(parItem, .copyat)
 
-        case "tuple":
-            if let val = tr3.val as? Tr3ValTuple {
-                parseTupItem(val, parItem, prior)
+        case "tupExpr","tuple":
+            if let edgeDef = tr3.edgeDefs.edgeDefs.last,
+               let edgePath = edgeDef.pathVals.pathList.last,
+               let edgeVal = edgeDef.pathVals.pathDict[edgePath] as? Tr3ValTuple {
+                parseTupItem(edgeVal, parItem, prior)
             }
+            if let tr3Val = tr3.val as? Tr3ValTuple {
+                parseTupItem(tr3Val, parItem, prior)
+            }
+
 
         default:
             let pattern = parItem.node?.pattern
@@ -117,8 +123,6 @@ public class Tr3Parse {
             case "thru":  val.addFlag(.thru)
             case "modu":  val.addFlag(.modu)
             case "num":   val.addNum(parItem.getFirstFloat())
-            //!! case "comma": val.addComma()
-
             default:     break
             }
         case let val as Tr3ValTuple:
@@ -158,7 +162,6 @@ public class Tr3Parse {
             case "thru"  : scalar.addFlag(.thru)
             case "modu"  : scalar.addFlag(.modu)
             case "num"   : scalar.addNum(parItem.getFirstFloat())
-            //!! case "comma" : scalar.addComma()
             default      : break
         }
         for nextPar in parItem.nextPars {
@@ -197,8 +200,7 @@ public class Tr3Parse {
             case "name":    val.addName(par.nextPars.first?.value)
             case "tupOper": val.addOper(par.nextPars.first?.value)
             case "num":     val.addNum(parItem.getFirstFloat())
-            //!! case "comma":   val.addComma()
-
+            case "comma":   val.addComma()
             case "thru":    newScalar(.thru)
             case "modu":    newScalar(.modu)
             case "scalar1": newScalar()
@@ -224,7 +226,8 @@ public class Tr3Parse {
         if let val = tr3.val as? Tr3ValTuple,
            let oper = parItem.value {
             switch oper {
-            case "<", "<=", ">", ">=", "==", "*", "\\", "+=", "-=", "%":
+            case "<", "<=", ">", ">=", "==",
+                 "*", "\\", "+=", "-=", "%", "in":
                 val.addOper(oper)
             case ",": val.addComma()
             default:
@@ -257,7 +260,7 @@ public class Tr3Parse {
                 if let lastVal = edgeDef.pathVals.pathDict[lastPath], lastVal != nil {
                     parseDeepVal(lastVal, parItem)
                 }
-                else  { //Tr3Log.log("parseVal.B.defVal", prior, pattern)
+                else  {
 
                     func addVal(_ val: Tr3Val) { edgeDef.pathVals.add(path: lastPath, val: val) }
 
@@ -281,7 +284,7 @@ public class Tr3Parse {
             }
         }
             // nil in `a*_`
-        else if tr3.val == nil { //Tr3Log.log("parseVal.C.defVal", prior, pattern)
+        else if tr3.val == nil {
 
             switch pattern {
             case "embed":   tr3.val = Tr3ValEmbed(with: parItem.getFirstValue())
@@ -293,7 +296,7 @@ public class Tr3Parse {
             }
         }
             // x y in `a(x y)`
-        else { //Tr3Log.log("parseVal.D.defVal", prior, pattern)
+        else {
 
             parseDeepVal(tr3.val, parItem)
             // keep prior while decorating Tr3.val
@@ -306,7 +309,6 @@ public class Tr3Parse {
     func parseEdge(_ tr3: Tr3,_ prior: String, parItem: ParItem,_ level: Int) -> Tr3 {
 
         let pattern = parItem.node?.pattern
-        //log(tr3,parItem,level) // bTr3Log.log("parseEdge", prior, pattern ?? "" )
 
         if let pattern = pattern {
 
@@ -407,6 +409,7 @@ public class Tr3Parse {
      */
     func parse(_ tr3: Tr3,_ prior: String,_ parItem: ParItem,_ level: Int) -> Tr3 {
 
+        // log progress through parse, here !!
         log(tr3, parItem, level)
 
         if  let pattern = parItem.node?.pattern,

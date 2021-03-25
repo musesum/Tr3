@@ -27,10 +27,10 @@ final class Tr3Tests: XCTestCase {
 
     var tr3Parse = Tr3Parse()
 
-    /// Test script produces expected output
-    /// - parameter script: test script
-    /// - parameter expected: exected output after parse
-    ///
+    /** Test script produces expected output
+     - parameter script: test script
+     - parameter expected: exected output after parse
+     */
     func test(_ script: String,_ expected: String? = nil, session: Bool = false) -> Int {
 
         var err = 0
@@ -55,7 +55,7 @@ final class Tr3Tests: XCTestCase {
         print("\n━━━━━━━━━━━━━━━━━━━━━━ \(title) ━━━━━━━━━━━━━━━━━━━━━━")
     }
 
-    func testParseShort() { headline("Parse Short")
+    func testParseShort() { headline(#function)
         var err = 0
 
         err += test(
@@ -148,7 +148,7 @@ final class Tr3Tests: XCTestCase {
     }
 
     /// compare script with expected output and print an error if they don't match
-    func testParseBasics() { headline("Parse Basics")
+    func testParseBasics() { headline(#function)
 
         var err = 0
         err += test("a \"yo\"")
@@ -179,7 +179,7 @@ final class Tr3Tests: XCTestCase {
         XCTAssertEqual(err,0)
     }
 
-    func testParseSkyControl() { headline("Parse Sky Control")
+    func testParseSkyControl() { headline(#function)
         var err = 0
         err += test("""
             _controlBase {
@@ -252,7 +252,7 @@ final class Tr3Tests: XCTestCase {
         XCTAssertEqual(err,0)
     }
 
-    func testParsePathCopy() { headline("Parse Path Copy")
+    func testParsePathCopy() { headline(#function)
         var err = 0
         err += test("a.b.c { b { d } }", "√ { a { b { c { b { d } } } } }")
         err += test("a.b { c d } e@a { b.c(0) }", "√ { a { b { c d } } e@a { b { c(0) d } } }")
@@ -273,13 +273,13 @@ final class Tr3Tests: XCTestCase {
         var err = 0
 
         print("\n━━━━━━━━━━━━━━━━━━━━━━ Parse Values ━━━━━━━━━━━━━━━━━━━━━━\n")
-        //err += te`st("m(1 2 3)", "√ { m(1 2 3) }")
+        err += test("m(1 2 3)", "√ { m(1 2 3) }")
         err += test("m(1 2 3), n >> m(4 5 6)", "√ { m(1 2 3), n >> m(4 5 6) }")
         err += test("i(1..2 = 1.5, 3..4 = 3.5, 5..6 = 5.5)")
         err += test("b(x 1 y 2)", "√ { b(x 1 y 2) }")
         err += test("b(x 1, y 2)", "√ { b(x 1, y 2) }")
         err += test("a(%2)", "√ { a(%2) }")
-        err += test("a(x 1..2, y 1..2)", "√ { a(x 1..2, y 1..2) }")
+        err += test("a(x 1..2, y 1..2)")
         err += test("a(x 0..1 = 0.5, y 0..1 = 0.5)", "√ { a(x 0..1 = 0.5, y 0..1 = 0.5) }")
         err += test("a(0..1 = 0.5) { b(1..2) { c(2..3) } }", "√ { a(0..1 = 0.5) { b(1..2) { c(2..3) } } }")
         err += test("a(x 0..1 = 0.5, y 0..1 = 0.5)", "√ { a(x 0..1 = 0.5, y 0..1 = 0.5) }")
@@ -306,7 +306,7 @@ final class Tr3Tests: XCTestCase {
         XCTAssertEqual(err,0)
     }
 
-    func testParsePaths() { headline("Parse Paths")
+    func testParsePaths() { headline(#function)
         var err = 0
         err += test("a { b { c {c1 c2} d } } a e", "√ { a { b { c { c1 c2 } d } } e }")
         err += test("a { b { c d } } a { e }", "√ { a { b { c d } e } }")
@@ -335,7 +335,7 @@ final class Tr3Tests: XCTestCase {
         XCTAssertEqual(err,0)
     }
 
-    func testParseEdges() { headline("Parse Edges")
+    func testParseEdges() { headline(#function)
         var err = 0
         err += test("a b c << b", "√ { a b c << b }")
         err += test("a, b, c >> b", "√ { a, b, c >> b }")
@@ -366,7 +366,7 @@ final class Tr3Tests: XCTestCase {
         XCTAssertEqual(err,0)
     }
 
-    func testParseTernarys() { headline("Parse Ternarys")
+    func testParseTernarys() { headline(#function)
         var err = 0
         err += test("a b x y w << (a ? 1 : b ? 2)", "√ { a⋯>w b⋯>w x y w << (a ? 1 : b ? 2) }")
         err += test("a, x, y, w << (a ? x : y)", "√ { a⋯>w, x╌>w, y╌>w, w << (a ? x : y) }")
@@ -433,7 +433,7 @@ final class Tr3Tests: XCTestCase {
         XCTAssertEqual(err,0)
     }
 
-    func testParseRelativePaths() { headline("relative paths")
+    func testParseRelativePaths() { headline(#function)
         var err = 0
         err += test("d {a1 a2}.{b1 b2} e << d˚b1", "√ { d { a1 { b1 b2 } a2 { b1 b2 } } e << (d.a1.b1 d.a2.b1) }")
         err += test("d {a1 a2}.{b1 b2} e << d˚˚", "√ { d { a1 { b1 b2 } a2 { b1 b2 } } e << (d d.a1 d.a1.b1 d.a1.b2 d.a2 d.a2.b1 d.a2.b2)  }")
@@ -690,7 +690,7 @@ body {left right}.{shoulder.elbow.wrist {thumb index middle ring pinky}.{meta pr
     }
 
     /// test `b >> a(2)` for `b!`
-    func testEdgeVal() { headline("EdgeVal")
+    func testEdgeVal() { headline(#function)
         var err = 0
         // selectively set tuples by name, ignore the reset
         let script = "a(1) b >> a(2)"
@@ -713,7 +713,7 @@ body {left right}.{shoulder.elbow.wrist {thumb index middle ring pinky}.{meta pr
     }
 
     /// test `b >> a.*(2)` for `b!`
-    func testEdgeVal2() { headline("EdgeVal2")
+    func testEdgeVal2() { headline(#function)
 
         var err = 0
         // selectively set tuples by name, ignore the reset
@@ -737,7 +737,7 @@ body {left right}.{shoulder.elbow.wrist {thumb index middle ring pinky}.{meta pr
     }
 
     /// test `a {b c}.{f g}`
-    func testEdgeVal3a() { headline("EdgeVal3a")
+    func testEdgeVal3a() { headline(#function)
 
         var err = 0
         // selectively set tuples by name, ignore the reset
@@ -756,7 +756,7 @@ body {left right}.{shoulder.elbow.wrist {thumb index middle ring pinky}.{meta pr
         XCTAssertEqual(err,0)
     }
 
-    func testEdgeVal3b() { headline("EdgeVal3b")
+    func testEdgeVal3b() { headline(#function)
 
         var err = 0
         // selectively set tuples by name, ignore the reset
@@ -779,7 +779,7 @@ body {left right}.{shoulder.elbow.wrist {thumb index middle ring pinky}.{meta pr
     }
 
     /// test `z >> a.b.f(1) >> a˚g(2)`
-    func testEdgeVal4() { headline("EdgeVal4")
+    func testEdgeVal4() { headline(#function)
         var err = 0
         // selectively set tuples by name, ignore the reset
         let script = "a {b c}.{f g} z >> a.b.f(1) >> a˚g(2)"
@@ -802,7 +802,7 @@ body {left right}.{shoulder.elbow.wrist {thumb index middle ring pinky}.{meta pr
     }
 
     /// test `z @a <@ a`
-    func testCopyr1() { headline("Copyr2")
+    func testCopyAtR1() { headline(#function)
         var err = 0
         // selectively set tuples by name, ignore the reset
         let script = "a {b(1) c(2)}.{d(3) e(4)} z@a <@ a"
@@ -870,8 +870,7 @@ body {left right}.{shoulder.elbow.wrist {thumb index middle ring pinky}.{meta pr
     }
 
     /// test `z @a <@> a`
-    func testCopyr2() { headline("Copyr2")
-
+    func testCopyAtR2() { headline(#function)
         var err = 0
         // selectively set tuples by name, ignore the reset
         let script = "a {b(1) c(2)}.{d(3) e(4)} z@a <@> a"
@@ -1035,7 +1034,8 @@ body {left right}.{shoulder.elbow.wrist {thumb index middle ring pinky}.{meta pr
 
         if tr3Parse.parseScript(root, script),
             let c = root.findPath("c") {
-            c.setVal(CGPoint(x: 1, y: 2), .activate)
+            let p = CGPoint(x: 1, y: 2)
+            c.setVal(p, .activate)
             let result = root.dumpScript(session: true)
             let expect = "√ { a(x 1) << c, b(y 2) << c, c(x 1 y 2) }"
             err = ParStr.testCompare(expect, result, echo: true)
@@ -1060,16 +1060,14 @@ body {left right}.{shoulder.elbow.wrist {thumb index middle ring pinky}.{meta pr
         let root = Tr3("√")
         if tr3Parse.parseScript(root, script),
             let a = root.findPath("a") {
-
-            a.addClosure { tr3,_ in
+            a.addClosure { tr3, _ in
                 p1 = tr3.CGPointVal() ?? .zero
                 print("p0\(p0) => p1\(p1)")
             }
-
             a.setVal(p0, [.activate])
 
             let result0 = root.dumpScript(session: true)
-            let expect0 = "√ { a(1, 1) }"
+            let expect0 = "√ { a(x 1, y 1) }"
             err += ParStr.testCompare(expect0, result0, echo: true)
 
             let result1 = root.dumpScript(session: false)
@@ -1203,7 +1201,7 @@ body {left right}.{shoulder.elbow.wrist {thumb index middle ring pinky}.{meta pr
         XCTAssertEqual(err,0)
     }
 
-    func testEdges() { headline("Edges")
+    func testEdges() { headline(#function)
         var err = 0
         let root = Tr3("√")
         //let script = "x.xx y.yy a.b c @a { d << (x ? x.xx | y ? y.yy) } e@c f@e g@f"
@@ -1225,7 +1223,7 @@ body {left right}.{shoulder.elbow.wrist {thumb index middle ring pinky}.{meta pr
         XCTAssertEqual(err,0)
     }
 
-    func testSkyMain() { headline("Sky Main")
+    func testSkyMain() { headline(#function)
         var err = 0
         let root = Tr3("√")
         let tr3Parse = Tr3Parse()
@@ -1242,8 +1240,12 @@ body {left right}.{shoulder.elbow.wrist {thumb index middle ring pinky}.{meta pr
 
         XCTAssertEqual(err,0)
     }
+    func testSky0() { headline(#function)
+        let err = test("oy (x 1 y 2) yo >> oy(x 3 y 4)")
+        XCTAssertEqual(err,0)
+    }
 
-    func testSky() { headline("Sky Full")
+    func testSky() { headline(#function)
     
         var err = 0
         let root = Tr3("√")
@@ -1251,7 +1253,7 @@ body {left right}.{shoulder.elbow.wrist {thumb index middle ring pinky}.{meta pr
 
         func parse(_ name: String, _ script: String) -> Int {
             let success = tr3Parse.parseScript(root, script, whitespace: "\n\t ")
-            if success  { print("\(name) ✓") }
+            if success { print("\(name) ✓") }
             else        { print("\(name) 🚫 parse failed") }
             return success ? 0 : 1
         }
@@ -1297,8 +1299,8 @@ body {left right}.{shoulder.elbow.wrist {thumb index middle ring pinky}.{meta pr
         ("testEdgeVal3b",testEdgeVal3b),
         ("testEdgeVal4",testEdgeVal4),
 
-        ("testCopyr1",testCopyr1),
-        ("testCopyr2",testCopyr2),
+        ("testCopyAtR1",testCopyAtR1),
+        ("testCopyAtR2",testCopyAtR2),
         ("testTuple1",testTuple1),
         ("testTuple2",testTuple2),
         ("testPassthrough",testPassthrough),
@@ -1306,6 +1308,7 @@ body {left right}.{shoulder.elbow.wrist {thumb index middle ring pinky}.{meta pr
         ("testTernary2",testTernary2),
         ("testTernary3",testTernary3),
         ("testEdges",testEdges),
+        ("testSky0",testSky),
         ("testSky",testSky),
     ]
 }

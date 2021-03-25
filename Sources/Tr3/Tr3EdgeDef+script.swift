@@ -46,7 +46,6 @@ extension Tr3EdgeDef {
             script += tern.scriptVal()
         }
         else {
-
             if pathVals.pathList.count > 1 { script += "(" }
             for path in pathVals.pathList {
                 script += script.parenSpace() + path
@@ -74,7 +73,6 @@ extension Tr3EdgeDef {
             }
             script += edges.count > 1 ? ")" : ""
         }
-
         return script.with(trailing:" ")
     }
 

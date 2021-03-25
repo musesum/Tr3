@@ -22,19 +22,21 @@ public class Tr3ValScalar: Tr3Val {
         let val = Float(str) ?? Float.nan
         addNum(val)
     }
-    init(with num_: Float) {
+    init(num: Float) {
         super.init()
         valFlags = .num
-        min = fmin(num_, 0.0)
-        max = fmax(num_, 1.0)
-        num = num_
+        self.min = fmin(num, 0.0)
+        self.max = fmax(num, 1.0)
+        self.num = num
     }
+   
     init (with scalar: Tr3ValScalar) {
         super.init()
         valFlags = scalar.valFlags // use default values
         num  = scalar.num
         min  = scalar.min
         max  = scalar.max
+        dflt = scalar.dflt
     }
     override func copy() -> Tr3Val {
         let newTr3ValScalar = Tr3ValScalar(with: self)
@@ -96,10 +98,8 @@ public class Tr3ValScalar: Tr3Val {
         if valFlags.contains(.thru) { script += ".." }
         if valFlags.contains(.modu) { script += "%" }
         if valFlags.contains(.max)  { script += String(format: "%g", max) }
-        if valFlags.contains(.dflt) {
+        if valFlags.intersection([.dflt,.num]) != [] {
             if valFlags.contains([.min,.max]) { script += " = " }
-            script += String(format: "%g",num)
-        } else if valFlags.contains(.num) {
             script += String(format: "%g",num)
         }
         if valFlags.contains(.comma) {

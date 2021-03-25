@@ -23,7 +23,7 @@ tr3 ~ left right* {
     tuple ~ "(" tupExpr{2,} ")" {
         tupExpr ~ (tupOper | name | scalar1) comma?
         tupOper ~ tupOp (name | scalar1)
-        tupOp ~ '^(<|<=|>|>=|==|\*|\\|\+=|\-=|\%)'
+        tupOp ~ '^(<|<=|>|>=|==|\*|\\|\+=|\-=|\%|in)'
     }
     edges ~ edgeOp (edgePar | edgeItem) comment* {
 

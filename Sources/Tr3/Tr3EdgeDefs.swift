@@ -133,12 +133,7 @@ public class Tr3EdgeDefs {
     }
     
     func dumpScript(_ tr3: Tr3) -> String  {
-        var script = ""
-        for edgeDef in edgeDefs {
-            script += edgeDef.scriptVal()
-        }
-        if script.isEmpty { return "" }
-        else { return script.with(trailing:" ") }
+        return makeScript()
     }
 
     /// connect direct or ternary edges

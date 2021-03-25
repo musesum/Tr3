@@ -86,6 +86,11 @@ sky.shader {
     render { type "render" file "render.metal" buffer { repeat (x, y) mirror (x, y) } }
 }
 """
+let SkyEdge0 =
+"""
+oy (x 1 y 2)
+yo >> oy (x 3 y 4)
+"""
 
 let PanelCellTr3 =
 """
@@ -187,7 +192,7 @@ panel.cell.timetunnel @_cell {
     controls {
         ruleOn.icon "icon.cell.timeTunnel.png"
         ruleOn.value >> sky.shader.cellTimetunnel.on
-        version.value >> sky.shader.cellTimetunnel.buffer.version
+        version.value (0..1 = 1) >> sky.shader.cellTimetunnel.buffer.version
     }
 }
 """
@@ -209,7 +214,7 @@ panel.cell.zhabatinski @_cell {
 
 let PanelCellMeltTr3 =
 """
-panel.cell.melt @_cell {
+panel.cell.melt @ _cell {
     base {
         title "Melt"
         icon "icon.cell.melt.png"
@@ -380,7 +385,7 @@ panel.cell.scroll {
             title "Screen Scroll"
             frame (x 8, y 44, w 128, h 128)
             radius (10)
-            tap2 (-1 -1)
+            tap2 (-1, -1)
             lag (0)
 
             value (x 0..1.5, y 0..1.5)
@@ -480,7 +485,7 @@ panel.cell.speed {
             frame (x 154, y 6, w 48, h 32)
             icon "icon.speed.png"
             value (0..1) >> sky.main.run
-            user >> scrollBox.value(x 0.5 y 0.5)
+            user >> scrollBox.value(x 0.5, y 0.5)
             lag (0)
         }
         hide {
@@ -654,15 +659,14 @@ let SkyOutput =
                     bitplane { type "slider" title "Bit Plane" frame (x 10, y 80, w 192, h 32) icon "icon.pearl.white.png" value (0..1) >>colorize.buffer.bitplane }
                     fillOne { type "trigger" title "clear 0xFFFF" frame (x 210, y 80, w 32, h 32) icon "icon.drop.gray.png" value (0..1) >>draw.screen.fillOne } } }
             scroll { base { type "cell" title "Scroll" frame (x 0, y 0, w 192, h 180) icon "icon.scroll.png" }
-                controls { scrollOn { type "panelon" title "Active" frame (x 148, y 6, w 40, h 32) icon "icon.scroll.png" value (0..1) lag (0) user >>(controls.scrollBox.value(x 0.5, y 0.5) controls.brushTilt.value(0)) { x y } }
+                controls { scrollOn { type "panelon" title "Active" frame (x 148, y 6, w 40, h 32) icon "icon.scroll.png" value (0..1) lag (0) user >>(controls.scrollBox.value(x 0.5, y 0.5) controls.brushTilt.value(0)) }
                     hide { type "panelx" title "hide" frame (x 0, y 0, w 40, h 40) icon "icon.thumb.X.png" value (0..1) }
                     scrollBox { type "box" title "Screen Scroll" frame (x 8, y 44, w 128, h 128) radius (10) tap2 (-1, -1) lag (0) value (x 0..1.5, y 0..1.5) <>sky.input.azimuth >>drawScroll.buffer.scroll user >>(controls.brushTilt.value(0) controls.scrollOn.value(1)) }
                     brushTilt { type "switch" title "Brush Tilt" frame (x 144, y 62, w 40, h 32) icon "icon.pen.tilt.png" value (0..1) <>sky.input.tilt }
                     fillZero { type "trigger" title "Fill Zero" frame (x 148, y 116, w 32, h 32) icon "icon.drop.clear.png" value (0..1) >>draw.screen.fillZero } } }
             speed { restart >>controls.speed.value(60) base { type "cell" title "Speed"  // name
                 frame (x 0, y 0, w 212, h 104) icon "icon.speed.png" }
-                controls { speedOn { type "panelon" title "Active" frame (x 154, y 6, w 48, h 32) icon "icon.speed.png" value (0..1) >>sky.main.run user  >> scrollBox.value(x 0.5, y 0.5) { x y }
-                    lag (0) }
+                controls { speedOn { type "panelon" title "Active" frame (x 154, y 6, w 48, h 32) icon "icon.speed.png" value (0..1) >>sky.main.run user  >> scrollBox.value(x 0.5, y 0.5) lag (0) }
                     hide { type "panelx" title "hide" frame (x 0, y 0, w 40, h 40) icon "icon.thumb.X.png" value (0..1) }
                     speed { type "slider" title "Frames per second" frame (x 10, y 50, w 192, h 44) icon "icon.pearl.white.png" value (1..60 = 60) <>sky.main.fps user >>controls.speedOn.value(1) } } } }
         shader { colorize { base { type "colorize" title "Colorize" frame (x 0, y 0, w 250, h 130) icon "icon.pal.main.png" }
@@ -672,7 +676,7 @@ let SkyOutput =
                 fillOne { type "trigger" title "Fill Ones" frame (x 210, y 84, w 32, h 32) icon "icon.drop.gray.png" value (0..1) >>draw.screen.fillOne } } }
             tile { base { type "shader" title "Tile" frame (x 0, y 0, w 230, h 170) icon "icon.shader.tile.png" }
                 controls { hide { type "panelx" title "hide" frame (x 0, y 0, w 40, h 40) icon "icon.thumb.X.png" value (0..1) }
-                    tileOn { type "panelon" title "Active" frame (x 174, y 6, w 40, h 32) icon "icon.shader.tile.png" value (0..1) user >>controls.repeatBox.value(x 0, y 0) { x y }
+                    tileOn { type "panelon" title "Active" frame (x 174, y 6, w 40, h 32) icon "icon.shader.tile.png" value (0..1) user >>controls.repeatBox.value(x 0, y 0)
                         lag (0) }
                     repeatBox { type "box" title "Repeat" frame (x 10, y 40, w 120, h 120) radius (10) tap2 (-1, -1) lag (0) user (0..1 = 1) >>controls.tileOn.value(1) value (0..1, 0..1) >>render.buffer.repeat }
                     mirrorBox { type "box" title "Mirror" frame (x 140, y 60, w 80, h 80) radius (10) tap2 (1, 1) lag (0) user (0..1 = 1) value (0..1, 0..1) >>render.buffer.mirror } } } } } }

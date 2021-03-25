@@ -39,9 +39,9 @@ extension Tr3 {
             passthrough = false
 
             switch any {
-            case let v as Int:              val = Tr3ValScalar(with: Float(v))
-            case let v as Float:            val = Tr3ValScalar(with: v)
-            case let v as CGFloat:          val = Tr3ValScalar(with: Float(v))
+            case let v as Int:              val = Tr3ValScalar(num: Float(v))
+            case let v as Float:            val = Tr3ValScalar(num: v)
+            case let v as CGFloat:          val = Tr3ValScalar(num: Float(v))
             case let v as CGPoint:          val = Tr3ValTuple(with: v)
             case let v as [(String,Float)]: val = Tr3ValTuple(pairs: v)
             case let v as String:           val = Tr3ValQuote(with: v)
