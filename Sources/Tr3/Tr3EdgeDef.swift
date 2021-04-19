@@ -28,7 +28,7 @@ public class Tr3EdgeDef {
                 switch val {
                 case let val as Tr3ValTern:   pathVals.add(path: path, val: val.copy())
                 case let val as Tr3ValScalar: pathVals.add(path: path, val: val.copy())
-                case let val as Tr3ValTuple:  pathVals.add(path: path, val: val.copy())
+                case let val as Tr3Exprs:  pathVals.add(path: path, val: val.copy())
                 case let val as Tr3ValQuote:  pathVals.add(path: path, val: val.copy())
                 default:                      pathVals.add(path: path, val: val)
                 }

@@ -42,8 +42,8 @@ extension Tr3 {
             case let v as Int:              val = Tr3ValScalar(num: Float(v))
             case let v as Float:            val = Tr3ValScalar(num: v)
             case let v as CGFloat:          val = Tr3ValScalar(num: Float(v))
-            case let v as CGPoint:          val = Tr3ValTuple(with: v)
-            case let v as [(String,Float)]: val = Tr3ValTuple(pairs: v)
+            case let v as CGPoint:          val = Tr3Exprs(with: v)
+            case let v as [(String,Float)]: val = Tr3Exprs(pairs: v)
             case let v as String:           val = Tr3ValQuote(with: v)
             default: print("*** unknown val(\(any))")
             }
@@ -59,7 +59,7 @@ extension Tr3 {
 
         if visitor.newVisit(id) {
             for closure in closures {
-                closure(self,visitor)
+                closure(self, visitor)
             }
             for tr3Edge in tr3Edges.values {
                 if tr3Edge.active {
@@ -99,7 +99,7 @@ extension Tr3 {
             }
             else if let val = val {
                 switch val {
-                case let to as Tr3ValTuple:  if let fr = fromVal as? Tr3ValTuple { to.setVal(fr) }
+                case let to as Tr3Exprs:  if let fr = fromVal as? Tr3Exprs { to.setVal(fr) }
                 case let to as Tr3ValScalar: if let fr = fromVal as? Tr3ValScalar { to.setVal(fr) }
                 case let to as Tr3ValQuote:  if let fr = fromVal as? Tr3ValQuote { to.setVal(fr) }
                 case let to as Tr3ValData:   if let fr = fromVal as? Tr3ValData { to.setVal(fr) }

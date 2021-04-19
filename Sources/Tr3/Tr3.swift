@@ -77,7 +77,6 @@ public class Tr3: Hashable {
         - tr3: The parent Tr3, which may be a leaf to attach or has children to scan deeper.
 
         - visitor: the same "_:_" clone may be attached to multiple parent before consolication.
-
      */
     func attachDeep(_ tr3: Tr3, _ visitor: Visitor) {
         if visitor.newVisit(id) {
@@ -149,7 +148,6 @@ public class Tr3: Hashable {
         }
         return self
     }
-
- 
+    
 }
 

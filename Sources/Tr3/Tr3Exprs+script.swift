@@ -7,7 +7,7 @@
 
 import Par
 
-extension Tr3ValTuple {
+extension Tr3Exprs {
 
     override func printVal() -> String {
         var script = "("
@@ -24,13 +24,12 @@ extension Tr3ValTuple {
 
         for name in names {
 
-            script += delim + name
+            script += delim + name; delim = ", "
 
             if let scalar = named[name] {
 
                 script += " " + scalar.dumpVal(parens: false)
             }
-            delim = valFlags.contains(.comma) ? ", " : " "
         }
         return script
     }
@@ -40,8 +39,8 @@ extension Tr3ValTuple {
 
         var script = ""
         var delim = ""
-        for expr in exprs.values {
-            script += delim; delim = hasComma ? ", " : " "
+        for expr in exprs {
+            script += delim; delim = ", "
             script += expr.script()
         }
         return script
@@ -50,7 +49,7 @@ extension Tr3ValTuple {
         var script = ""
         var delim = ""
         for scalar in scalars {
-            script += delim; delim = hasComma ? ", " : " "
+            script += delim; delim = ", "
             script += scalar.dumpVal(parens: false)
         }
         return script
@@ -63,8 +62,7 @@ extension Tr3ValTuple {
             script = scriptScalars()
         } else {
             for name in names {
-                script += delim
-                delim = hasComma ? ", " : " "
+                script += delim; delim = ", "
                 if let expr = exprs[name] {
                     script += expr.script()
                 } else if let scalar = named[name] {
@@ -89,7 +87,7 @@ extension Tr3ValTuple {
             for name in names {
                 if let scalar = named[name] {
                     val += delim + name + String(format: " %g", scalar.num)
-                    delim = hasComma ? ", " : " "
+                    delim = ", "
                 }
             }
         }

@@ -91,33 +91,7 @@ public class Tr3ValScalar: Tr3Val {
         return String(num)
     }
 
-    override func scriptVal(parens: Bool) -> String  {
-        var script = parens ? "(" : ""
-        if valFlags.rawValue == 0   { return "" }
-        if valFlags.contains(.min)  { script += String(format: "%g", min) }
-        if valFlags.contains(.thru) { script += ".." }
-        if valFlags.contains(.modu) { script += "%" }
-        if valFlags.contains(.max)  { script += String(format: "%g", max) }
-        if valFlags.intersection([.dflt,.num]) != [] {
-            if valFlags.contains([.min,.max]) { script += " = " }
-            script += String(format: "%g",num)
-        }
-        if valFlags.contains(.comma) {
-            script += ", "
-        }
-        script += parens ? ")" : ""
-        return script
-    }
-    override func dumpVal(parens: Bool, session: Bool = false) -> String  {
-        if session {
-            let script = "(" + String(format: "%g", num)
-            return script.with(trailing: ")")
-        }
-        else {
-            return scriptVal(parens: parens)
-        }
-    }
-    
+   
     static func |= (lhs: Tr3ValScalar, rhs: Tr3ValScalar) {
         
         let mergeFlags = lhs.valFlags.rawValue |  rhs.valFlags.rawValue
@@ -193,7 +167,7 @@ public class Tr3ValScalar: Tr3Val {
 
     public override func setVal(_ from: Any?, _ options: Any? = nil) {
 
-        // from contains normalized values 0...1
+        // from contains normalized values 0..1
         let zero1 = (options as? Tr3SetOptions ?? []).contains(.zero1)
 
         if let val = from {

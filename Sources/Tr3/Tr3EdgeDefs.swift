@@ -91,11 +91,11 @@ public class Tr3EdgeDefs {
              print("*** \(#function) no edgeDefs to add edge")
          }
      }
-    /** add tupple to array of edgeDefs
+    /** add exprs to array of edgeDefs
      */
-    public func addEdgeTuple() {
+    public func addEdgeExprs() {
         if let pathVals = edgeDefs.last?.pathVals {
-            pathVals.add(val: Tr3ValTuple())
+            pathVals.add(val: Tr3Exprs())
         }
         else {
             print("*** \(#function) no edgeDefs to add edge")

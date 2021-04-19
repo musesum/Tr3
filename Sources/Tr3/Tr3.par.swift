@@ -14,8 +14,7 @@ public let Tr3Par =
 #"""
 tr3 ~ left right* {
 
-    left ~ (path | name | quote)
-
+    left ~ (path | name)
     right ~ (value | child | many | copyat | array | edges | embed | comment)+
 
     child ~ "{" comment* tr3+ "}"
@@ -23,21 +22,19 @@ tr3 ~ left right* {
     array ~ "[" thru "]"
     copyat ~ "@" (path | name)
 
-    value ~ scalar | tuple | quote
-    value1 ~ scalar1 | tuple | quote
+    value ~ scalar | exprs | quote
+    value1 ~ scalar1 | exprs | quote
 
     scalar ~ "(" scalar1 ")"
-    scalar1 ~ (thru | modu | data | num) comma? {
+    scalar1 ~ (thru | modu | data | num) {
         thru ~ num ".." num ("=" num)?
         modu ~ "%" num ("=" num)?
         index ~ "[" (name | num) "]"
         data ~ "*"
-        comma ~ '^([,])'
     }
-    tuple ~ "(" tupExpr{2,} ")" {
-        tupExpr ~ (tupOper | name | scalar1) comma?
-        tupOper ~ tupOp (name | scalar1)
-        tupOp ~ '^(<|<=|>|>=|==|\*|\\|\+=|\-=|\%)'
+    exprs ~ "(" expr+ ("," expr+)* ")" {
+        expr ~ (exprOp | name | scalar1)
+        exprOp ~ '^(<=|>=|==|<|>|\*[ ]|\/[ ]|\+[ ]|\-[ ]|in)'
     }
     edges ~ edgeOp (edgePar | edgeItem) comment* {
 

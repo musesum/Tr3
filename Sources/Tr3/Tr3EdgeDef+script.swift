@@ -29,18 +29,15 @@ extension Tr3EdgeDef {
         else if flags.contains(.find)    { script += ":" }
         else if flags.contains(.ternary) { script += "⋯" }
         else if flags.contains(.copyat)  { script += "@" }
-        else if flags.contains(.vals)    { script += "&" }
-
         else if active == false          { script += "╌" }
 
-        if flags.contains(.output)       { script += ">"} 
+        if flags.contains(.output)       { script += ">" }
         return script
     }
 
     public func scriptVal() -> String {
 
-        var script = " "
-        script += Tr3EdgeDef.scriptEdgeFlag(edgeFlags)
+        var script = (" " + Tr3EdgeDef.scriptEdgeFlag(edgeFlags)).with(trailing: " ")
 
         if let tern = ternVal {
             script += tern.scriptVal()
@@ -61,7 +58,7 @@ extension Tr3EdgeDef {
     public func dumpEdge(_ tr3: Tr3) -> String {
 
         var script = ""
-        script += Tr3EdgeDef.scriptEdgeFlag(edgeFlags)
+        script += Tr3EdgeDef.scriptEdgeFlag(edgeFlags).with(trailing: " ")
 
         if let tern = ternVal {
             script += tern.dumpVal()

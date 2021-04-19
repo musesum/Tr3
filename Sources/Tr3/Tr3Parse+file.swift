@@ -48,8 +48,7 @@ public extension Tr3Parse {
         let script = read(filename,"tr3")
         print(filename, terminator:" ")
         let success = parseScript(tr3, script)
-        if success  { print("✓") }
-        else        { print("🚫 parse failed") }
+        print(success ? "✓" : "🚫 parse failed")
         return success
     }
 

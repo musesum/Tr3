@@ -52,7 +52,12 @@ final class Tr3Tests: XCTestCase {
     }
 
     func headline(_ title: String) {
-        print("\n━━━━━━━━━━━━━━━━━━━━━━ \(title) ━━━━━━━━━━━━━━━━━━━━━━")
+        //let titled = title.titleCase()
+        print("\n━━━━━━━━━━━━━━━━━━━━━━ \(title) ━━━━━━━━━━━━━━━━━━━━━━\n")
+    }
+    func subhead(_ title: String) {
+        //let titled = title.titleCase()
+        print("━━━━━━━━━━━ \(title) ━━━━━━━━━━━")
     }
 
     func testParseShort() { headline(#function)
@@ -155,24 +160,24 @@ final class Tr3Tests: XCTestCase {
         err += test("a { b \"bb\" }")
         err += test("a { b \"bb\" c \"cc\" }")
 
-        headline("comment")
+        subhead("comment")
         err += test("a // yo", "√ { a }")
         err += test("a { b } // yo", "√ { a { b } }") //??
         err += test("a { b // yo \n } ", "√ { a { b // yo \n } }")
         err += test("a { b { // yo \n c } } ", "√ { a { b { // yo \n c } } }")
         // error err += test("a b a // yo \n << b // oy\n", "√ { a // yo \n << b // oy\n b }")
 
-        headline("hierarchy")
+        subhead("hierarchy")
         err += test("a { b c }", "√ { a { b c } }")
         err += test("a { b { c } }", "√ { a { b { c } } }")
         err += test("a { b { c } d { e } }", "√ { a { b { c } d { e } } }")
         err += test("a { b { c d } e }", "√ { a { b { c d } e } }")
 
-        headline("many")
+        subhead("many")
         err += test("a {b c}.{d e}", "√ { a { b { d e } c { d e } } }")
         err += test("a {b c}.{d e}.{f g}", "√ { a { b { d { f g } e { f g } } c { d { f g } e { f g } } } }")
         
-        headline("copyat")
+        subhead("copyat")
         err += test("a {b c} d@a ", "√ { a { b c } d@a { b c } }")
         err += test("_a { b { c \"yo\" } } d @_a { b { c \"oy\" } }")
 
@@ -257,32 +262,35 @@ final class Tr3Tests: XCTestCase {
         err += test("a.b.c { b { d } }", "√ { a { b { c { b { d } } } } }")
         err += test("a.b { c d } e@a { b.c(0) }", "√ { a { b { c d } } e@a { b { c(0) d } } }")
         err += test("a { b { c } } a.b <> c ", "√ { a { b <> a.b.c { c } } } ")
-        err += test("a { b { c d } } e { b { c d } b(0) }" , "√ { a { b { c d } } e { b(0) { c d } } }")
+
+        err += test("a { b { c d } } e { b { c d } b(0) }" ,
+                    "√ { a { b { c d } } e { b(0) { c d } } }")
 
         err += test("a {b c}.{d e}.{f g}.{i j} a.b˚f << (f.i ? f.j : 0) ",
                     "√ { a { b { d { f << (f.i ? f.j : 0 ) { i⋯>b.d.f j >> b.d.f } g { i j } }" +
                         "        e { f << (f.i ? f.j : 0 ) { i⋯>b.e.f j >> b.e.f } g { i j } } }" +
-                        "     c { d { f { i j } g { i j } }" +
-                        "         e { f { i j } g { i j } } } } a.b˚f << (f.i ? f.j : 0 ) }" +
+                        "    c { d { f { i j } g { i j } }" +
+                        "        e { f { i j } g { i j } } } } a.b˚f << (f.i ? f.j : 0 ) }" +
                         "")
 
         XCTAssertEqual(err,0)
     }
 
-    func testParseValues() {
+    func testParseValues() { headline(#function)
         var err = 0
-
-        print("\n━━━━━━━━━━━━━━━━━━━━━━ Parse Values ━━━━━━━━━━━━━━━━━━━━━━\n")
-        err += test("m(1 2 3)", "√ { m(1 2 3) }")
-        err += test("m(1 2 3), n >> m(4 5 6)", "√ { m(1 2 3), n >> m(4 5 6) }")
+        err += test("a(%2)", "√ { a(%2) }")
+        err += test("b(x %2, y %2)", "√ { b(x %2, y %2) }")
+        err += test("b(x 1, y 2)", "√ { b(x 1, y 2) }")
+        err += test("m(1, 2, 3)", "√ { m(1, 2, 3) }")
+        err += test("m(1, 2, 3), n >> m(4, 5, 6)", "√ { m(1, 2, 3), n >> m(4, 5, 6) }")
         err += test("i(1..2 = 1.5, 3..4 = 3.5, 5..6 = 5.5)")
-        err += test("b(x 1 y 2)", "√ { b(x 1 y 2) }")
+        err += test("b(x 1, y 2)", "√ { b(x 1, y 2) }")
         err += test("b(x 1, y 2)", "√ { b(x 1, y 2) }")
         err += test("a(%2)", "√ { a(%2) }")
         err += test("a(x 1..2, y 1..2)")
-        err += test("a(x 0..1 = 0.5, y 0..1 = 0.5)", "√ { a(x 0..1 = 0.5, y 0..1 = 0.5) }")
-        err += test("a(0..1 = 0.5) { b(1..2) { c(2..3) } }", "√ { a(0..1 = 0.5) { b(1..2) { c(2..3) } } }")
-        err += test("a(x 0..1 = 0.5, y 0..1 = 0.5)", "√ { a(x 0..1 = 0.5, y 0..1 = 0.5) }")
+        err += test("a(x 0..1 = 0.5, y 0..1 = 0.5)")
+        err += test("a(0..1 = 0.5) { b(1..2) { c(2..3) } }")
+        err += test("a(x 0..1 = 0.5, y 0..1 = 0.5)")
 
         print("\n━━━━━━━━━━━━━━━━━━━━━━ tr3 scalars ━━━━━━━━━━━━━━━━━━━━━━\n")
         err += test("a { b(2) { c } }", "√ { a { b(2) { c } } }")
@@ -293,11 +301,11 @@ final class Tr3Tests: XCTestCase {
         print("\n━━━━━━━━━━━━━━━━━━━━━━ tr3 tuples ━━━━━━━━━━━━━━━━━━━━━━\n")
         err += test("a(x 0..1 = 0.5, y 0..1 = 0.5)", "√ { a(x 0..1 = 0.5, y 0..1 = 0.5) }")
         err += test("a(x 1..2, y 1..2)", "√ { a(x 1..2, y 1..2) }")
-        err += test("b(x -1. y 2.)", "√ { b(x -1 y 2) }")
-        err += test("c(x 3 y 4)", "√ { c (x 3 y 4) }")
-        err += test("d(x y z)", "√ { d (x y z) }")
-        err += test("m(0 0 0), n >> m(1 1 1)", "√ { m(0 0 0), n >> m(1 1 1) }")
-        err += test("m(0 0 0), n(1 1 1) >> m", "√ { m(0 0 0), n(1 1 1) >> m }")
+        err += test("b(x -1. y 2.)", "√ { b(x -1, y 2) }")
+        err += test("c(x 3, y 4)", "√ { c (x 3, y 4) }")
+        err += test("d(x y z)", "√ { d (x, y, z) }")
+        err += test("m(0, 0, 0), n >> m(1, 1, 1)", "√ { m(0, 0, 0), n >> m(1, 1, 1) }")
+        err += test("m(0, 0, 0), n(1, 1, 1) >> m", "√ { m(0, 0, 0), n(1, 1, 1) >> m }")
         err += test("e(x -16..16, y -16..16)", "√ { e(x -16..16, y -16..16) }")
         err += test("f(p 0..1, q 0..1, r 0..1)", "√ { f(p 0..1, q 0..1, r 0..1) }")
         err += test("g(p 0..1 = 0.5, q 0..1 = 0.5, r 0..1 = 0.5)", "√ { g(p 0..1 = 0.5, q 0..1 = 0.5, r 0..1 = 0.5) }")
@@ -329,7 +337,7 @@ final class Tr3Tests: XCTestCase {
               "√ { a { b { _c { c1 c2 } c@_c { c1 c2 d e } } } }")
 
         err += test("a.b { _c { c1 c2 } c { d e } @_c }",
-              "√ { a { b { _c { c1 c2 } c@_c { d e c1 c2 } } } }")
+              "√ { a { b { _c { c1 c2 } c @_c { d e c1 c2 } } } }")
 
         err += test("a.b.c.d { e.f }", "√ { a { b { c { d { e { f } } } } } }")
         XCTAssertEqual(err,0)
@@ -345,23 +353,21 @@ final class Tr3Tests: XCTestCase {
         err += test("a { b { c } } a˚˚ <> .* ", "√ { a <> a.b { b <> a.b.c { c } } a˚˚ <> .* }")
         err += test("a { b { c } } ˚˚ <> .. ", "√ { a <> √ { b <> a { c <> a.b } } ˚˚ <> .. }")
 
-        headline("multi edge")
+        subhead("multi edge")
         err += test("a << (b c)", "√ { a << (b c) }")
         err += test("a << (b c) { b c }", "√ { a << (a.b a.c) { b c } }")
         err += test("a >> (b c) { b c }", "√ { a >> (a.b a.c) { b c } }")
 
-        headline("copyat edge")
-        err += test("a {b c} z @a <@a ", "√ { a { b c } z @a <@a { b<@a.b c<@a.c } }")
+        subhead("copyat edge")
+        err += test("a {b c} z @a <@a ",
+                    "√ { a { b c } z @a <@a { b <@ a.b c <@ a.c } }")
+
         err += test("a {b c}.{d e} z @a <@ a",
         """
         √ { a { b { d e } c { d e } }
-          z@a <@a { b <@ a.b { d<@a.b.d e<@a.b.e }
-                    c <@ a.c { d<@a.c.d e<@a.c.e } } }
+          z@a <@a { b <@ a.b { d <@ a.b.d e <@ a.b.e }
+                    c <@ a.c { d <@ a.c.d e <@ a.c.e } } }
         """)
-        
-        headline("vals edge")
-        err += test("a(0..1) z <& a { z0(0) z1(1) }",
-        "√ { a(0..1) z <& a { z0(0) z1(1) } }")
 
         XCTAssertEqual(err,0)
     }
@@ -388,7 +394,7 @@ final class Tr3Tests: XCTestCase {
         err += test("a, b, w << (a ? 1 : b ? 2 : 3)", "√ { a⋯>w, b⋯>w, w << (a ? 1 : b ? 2 : 3) }"  )
         err += test("a, b, w <> (a ? 1 : b ? 2 : 3)", "√ { a⋯>w, b⋯>w, w <> (a ? 1 : b ? 2 : 3) }"  )
 
-        headline("ternary conditionals")
+        subhead("ternary conditionals")
 
         err += test("a1, b1, a2, b2, w << (a1 == a2 ? 1 : b1 == b2 ? 2 : 3)",
                     "√{ a1⋯>w, b1⋯>w, a2⋯>w, b2⋯>w, w << (a1 == a2 ? 1 : b1 == b2 ? 2 : 3 ) }")
@@ -396,7 +402,7 @@ final class Tr3Tests: XCTestCase {
         err += test("d {a1 a2}.{b1 b2}.{c1 c2} h << (d.a1 ? b1 ? c1 : 1)",
                     "√ { d { a1⋯>h { b1⋯>h { c1╌>h c2 } b2 { c1 c2 } } a2 { b1 { c1 c2 } b2 { c1 c2 } } } h << (d.a1 ? b1 ? c1 : 1) }")
 
-        headline("ternary paths")
+        subhead("ternary paths")
 
         err += test("a {b c}.{d e}.{f g} a << a˚d.g",
                     "√ { a << (b.d.g c.d.g) { b { d { f g } e { f g } } c { d { f g } e { f g } } } }")
@@ -415,7 +421,7 @@ final class Tr3Tests: XCTestCase {
                         "        e { f { i j } g { i j } } } } a.b˚f << (f.i ? f.j : 0 ) }" +
             "")
 
-        headline("ternary radio")
+        subhead("ternary radio")
 
         err += test("a, b, c, x, y, z, w << (a ? 1 | b ? 2 | c ? 3)",
                     "√ { a⋯>w, b⋯>w, c⋯>w, x, y, z, w << (a ? 1 | b ? 2 | c ? 3 ) } ")
@@ -484,17 +490,16 @@ final class Tr3Tests: XCTestCase {
         XCTAssertEqual(err,0)
     }
 
-    /// test anthropomorphic definitions
-    func testParseAvatarRobot() {
+    /// test Avatar definitions
+    func testParseAvatar() { headline(#function)
         var err = 0
-
-        headline("avatar")
         err += test (
-            """
+"""
 avatar {left right}.{shoulder.elbow.wrist {thumb index middle ring pinky}.{meta prox dist} hip.knee.ankle.toes}
 ˚˚ { pos(x, y, z, r, s, t) }
-""", """
-√ { avatar {
+""",
+"""
+    √ { avatar {
     left {
         shoulder {
             elbow {
@@ -533,9 +538,15 @@ avatar {left right}.{shoulder.elbow.wrist {thumb index middle ring pinky}.{meta 
             pos(x, y, z, r, s, t) }
         pos(x, y, z, r, s, t) }
     pos(x, y, z, r, s, t) } }
-""")
-        headline("body")
-        err += test(
+    """)
+        //Tr3Log.dump()
+        XCTAssertEqual(err,0)
+    }
+
+    /// test anthropomorphic definitions
+    func testParseRobot() { headline(#function)
+        var err = 0
+        err += test (
 """
 body {left right}.{shoulder.elbow.wrist {thumb index middle ring pinky}.{meta prox dist} hip.knee.ankle.toes}
 ˚˚ <> ..
@@ -935,11 +946,14 @@ body {left right}.{shoulder.elbow.wrist {thumb index middle ring pinky}.{meta pr
         XCTAssertEqual(err,0)
     }
 
-       /// test `z @a <& a`
-    func testFilter() { headline("Filter And")
-
+    /// test `z @a <@ a`
+    func testFilter() { headline(#function)
+        Par.trace = true
         var err = 0
-        err += test("a (w x == 1 y)")
+
+        err += test("a (w, x 1, y)")
+
+        err += test("a (w, x == 1, y)")
 
         err += test("a {b c}.{ d(1) e(2) }",
                     "√ { a { b { d(1) e(2) } c { d(1) e(2) } } }")
@@ -947,10 +961,10 @@ body {left right}.{shoulder.elbow.wrist {thumb index middle ring pinky}.{meta pr
         err += test("a {b c}.{ d(x 1) e(y 2) }",
                     "√ { a { b { d(x 1) e(y 2) } c { d(x 1) e(y 2) } } }")
 
-        err += test("a {b c}.{ d(x 1) e(y 2) } w(x y z)",
+        err += test("a {b c}.{ d(x 1) e(y 2) } w(x, y, z)",
                     "√ { a { b { d (x 1) e (y 2) } " +
                     "        c { d (x 1) e (y 2) } } " +
-                    "    w (x y z) }")
+                    "    w (x, y, z) }")
 
         err += test("a {b c}.{ d(x == 10, y, z) e(x, y == 21, z) }",
                     "√ { a { b { d (x == 10, y, z) e (x, y == 21, z) } " +
@@ -959,7 +973,7 @@ body {left right}.{shoulder.elbow.wrist {thumb index middle ring pinky}.{meta pr
         err += test("a {b c}.{ d(x == 10, y, z) e(x, y == 21, z) } w(x y z) <> a˚.",
                     "√ { a { b { d (x == 10, y, z) e (x, y == 21, z) } " +
                     "        c { d (x == 10, y, z) e (x, y == 21, z) } } " +
-                    "    w (x y z) <>(a.b.d a.b.e a.c.d a.c.e) }")
+                    "    w (x, y, z) <>(a.b.d a.b.e a.c.d a.c.e) }")
 
         // selectively set tuples by name, ignore the reset
         let script = "a {b c}.{ d(x == 10, y, z) e(x, y == 21, z) } w(x, y, z) <> a˚."
@@ -968,8 +982,8 @@ body {left right}.{shoulder.elbow.wrist {thumb index middle ring pinky}.{meta pr
         if tr3Parse.parseScript(root, script),
             let w = root.findPath("w") {
 
-            // 0 0 0 --------------------------------------------------
-            let t0 = Tr3ValTuple(pairs: [("x", 0), ("y", 0), ("z", 0)])
+            // 0, 0, 0 --------------------------------------------------
+            let t0 = Tr3Exprs(pairs: [("x", 0), ("y", 0), ("z", 0)])
             w.setVal(t0, .activate)
             let result0 = root.dumpScript(session: false)
             let expect0 = """
@@ -979,8 +993,8 @@ body {left right}.{shoulder.elbow.wrist {thumb index middle ring pinky}.{meta pr
             """
             err += ParStr.testCompare(expect0, result0)
 
-            // 10 11 12 --------------------------------------------------
-            let t1 = Tr3ValTuple(pairs: [("x", 10), ("y", 11), ("z", 12)])
+            // 10, 11, 12 --------------------------------------------------
+            let t1 = Tr3Exprs(pairs: [("x", 10), ("y", 11), ("z", 12)])
             w.setVal(t1, .activate)
             let result1 = root.dumpScript(session: false)
             let expect1 = """
@@ -991,8 +1005,8 @@ body {left right}.{shoulder.elbow.wrist {thumb index middle ring pinky}.{meta pr
             """
             err += ParStr.testCompare(expect1, result1)
 
-            // 20 21 22 --------------------------------------------------
-            let t2 = Tr3ValTuple(pairs: [("x", 20), ("y", 21), ("z", 22)])
+            // 20, 21, 22 --------------------------------------------------
+            let t2 = Tr3Exprs(pairs: [("x", 20), ("y", 21), ("z", 22)])
             w.setVal(t2, .activate)
             let result2 = root.dumpScript(session: false)
             let expect2 = """
@@ -1003,8 +1017,8 @@ body {left right}.{shoulder.elbow.wrist {thumb index middle ring pinky}.{meta pr
             """
             err += ParStr.testCompare(expect2, result2)
 
-            // 10 21 33 --------------------------------------------------
-            let t3 = Tr3ValTuple(pairs: [("x", 10), ("y", 21), ("z", 33)])
+            // 10, 21, 33 --------------------------------------------------
+            let t3 = Tr3Exprs(pairs: [("x", 10), ("y", 21), ("z", 33)])
             w.setVal(t3, .activate)
             let result3 = root.dumpScript(session: false)
             let expect3 = """
@@ -1021,13 +1035,12 @@ body {left right}.{shoulder.elbow.wrist {thumb index middle ring pinky}.{meta pr
         XCTAssertEqual(err,0)
     }
 
-
-    /// test `a(x 0) << c, b(y 0) << c, c(x 0 y 0)`
-    func testTuple1() { headline("tupple 1")
+    /// test `a(x 0) << c, b(y 0) << c, c(x 0, y 0)`
+    func testExpr1() { headline(#function)
 
         var err = 0
         // selectively set tuples by name, ignore the reset
-        let script = "a(x 0) << c, b(y 0) << c, c(x 0 y 0)"
+        let script = "a(x 0) << c, b(y 0) << c, c(x 0, y 0)"
         print("\n" + script)
 
         let root = Tr3("√")
@@ -1037,7 +1050,7 @@ body {left right}.{shoulder.elbow.wrist {thumb index middle ring pinky}.{meta pr
             let p = CGPoint(x: 1, y: 2)
             c.setVal(p, .activate)
             let result = root.dumpScript(session: true)
-            let expect = "√ { a(x 1) << c, b(y 2) << c, c(x 1 y 2) }"
+            let expect = "√ { a(x 1) << c, b(y 2) << c, c(x 1, y 2) }"
             err = ParStr.testCompare(expect, result, echo: true)
         }
         else {
@@ -1046,7 +1059,7 @@ body {left right}.{shoulder.elbow.wrist {thumb index middle ring pinky}.{meta pr
         XCTAssertEqual(err,0)
     }
 
-    func testTuple2() { headline("tupple 2")
+    func testExpr2() { headline(#function)
         Par.trace = true
         Par.trace2 = false
         var err = 0
@@ -1083,7 +1096,34 @@ body {left right}.{shoulder.elbow.wrist {thumb index middle ring pinky}.{meta pr
         Par.trace2 = false
     }
 
-    func testPassthrough() { headline("passthrough")
+    func testExpr3() { headline(#function)
+        Par.trace = true
+        Par.trace2 = false
+        var err = 0
+
+        let script = "a(x in 2..4, x 1..2, y in 3..5, y 2..3)"
+        print("\n" + script)
+
+        let root = Tr3("√")
+        if tr3Parse.parseScript(root, script),
+           let a = root.findPath("a") {
+
+            let p0 = CGPoint(x: 3, y: 4)
+            a.setVal(p0, [.activate])
+
+            let result0 = root.dumpScript(session: false)
+            let expect0 = "√ { a(x 1.5, y 2.5) }"
+            err += ParStr.testCompare(expect0, result0, echo: true)
+
+        } else {
+            err += 1
+        }
+        XCTAssertEqual(err, 0)
+        Par.trace = false
+        Par.trace2 = false
+    }
+
+    func testPassthrough() { headline(#function)
         var err = 0
         let script = "a(0..1)<<b, b<<c, c(0..10)<<a"
         print("\n" + script)
@@ -1111,7 +1151,7 @@ body {left right}.{shoulder.elbow.wrist {thumb index middle ring pinky}.{meta pr
         XCTAssertEqual(err,0)
     }
 
-    func testTernary1() { headline("Ternary 1")
+    func testTernary1() { headline(#function)
         var err  = 0
         let script = "a b c w(0) << (a ? 1 : b ? 2 : c ? 3)"
         print("\n" + script)
@@ -1140,7 +1180,7 @@ body {left right}.{shoulder.elbow.wrist {thumb index middle ring pinky}.{meta pr
         XCTAssertEqual(err,0)
     }
 
-    func testTernary2() { headline("Ternary 2")
+    func testTernary2() { headline(#function)
         var err = 0
         let script = "a(0) x(10) y(20) w<<(a ? x : y)"
         print("\n" + script)
@@ -1171,7 +1211,7 @@ body {left right}.{shoulder.elbow.wrist {thumb index middle ring pinky}.{meta pr
         XCTAssertEqual(err,0)
     }
 
-    func testTernary3() { headline("Ternary 3")
+    func testTernary3() { headline(#function)
         var err = 0
         let script = "a x(10) y(20) w<>(a ? x : y)"
         print("\n" + script)
@@ -1230,8 +1270,7 @@ body {left right}.{shoulder.elbow.wrist {thumb index middle ring pinky}.{meta pr
 
         func parse(_ name: String, _ script: String) -> Int {
             let success = tr3Parse.parseScript(root, script, whitespace: "\n\t ")
-            if success  { print("\(name) ✓") }
-            else        { print("\(name) 🚫 parse failed") }
+            print("\(name) " + (success ? "✓" : "🚫 parse failed") )
             return success ? 0 : 1
         }
         err += parse("SkyMainTr3",SkyMainTr3)
@@ -1240,14 +1279,10 @@ body {left right}.{shoulder.elbow.wrist {thumb index middle ring pinky}.{meta pr
 
         XCTAssertEqual(err,0)
     }
-    func testSky0() { headline(#function)
-        let err = test("oy (x 1 y 2) yo >> oy(x 3 y 4)")
-        XCTAssertEqual(err,0)
-    }
 
     func testSky() { headline(#function)
     
-        var err = 0
+        var err = test("oy (x 1, y 2) yo >> oy(x 3, y 4)")
         let root = Tr3("√")
         let tr3Parse = Tr3Parse()
 
@@ -1291,7 +1326,8 @@ body {left right}.{shoulder.elbow.wrist {thumb index middle ring pinky}.{meta pr
         ("testParseTernarys",testParseTernarys),
         ("testParseRelativePaths",testParseRelativePaths),
         ("testParseRelativePaths",testParseRelativePaths),
-        ("testParseAvatarRobot",testParseAvatarRobot),
+        ("testParseAvatar",testParseAvatar),
+        ("testParseRobot",testParseRobot),
 
         ("testEdgeVal",testEdgeVal),
         ("testEdgeVal2",testEdgeVal2),
@@ -1301,14 +1337,14 @@ body {left right}.{shoulder.elbow.wrist {thumb index middle ring pinky}.{meta pr
 
         ("testCopyAtR1",testCopyAtR1),
         ("testCopyAtR2",testCopyAtR2),
-        ("testTuple1",testTuple1),
-        ("testTuple2",testTuple2),
+        ("testExpr1",testExpr1),
+        ("testExpr2",testExpr2),
+        ("testExpr3",testExpr3),
         ("testPassthrough",testPassthrough),
         ("testTernary1",testTernary1),
         ("testTernary2",testTernary2),
         ("testTernary3",testTernary3),
         ("testEdges",testEdges),
-        ("testSky0",testSky),
         ("testSky",testSky),
     ]
 }

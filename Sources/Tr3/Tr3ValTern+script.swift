@@ -19,6 +19,7 @@ extension Tr3ValTern {
         }
         return script
     }
+    
     func dumpRadioNext() -> String {
         let lineage = pathTr3s.first?.scriptLineage(1) ?? " ??"
         var script = "\(lineage):\(id) "

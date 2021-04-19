@@ -1,7 +1,6 @@
 tr3 ~ left right* {
 
     left ~ (path | name | quote)
-
     right ~ (value | child | many | copyat | array | edges | embed | comment)+
 
     child ~ "{" comment* tr3+ "}"
@@ -9,21 +8,19 @@ tr3 ~ left right* {
     array ~ "[" thru "]"
     copyat ~ "@" (path | name)
 
-    value ~ scalar | tuple | quote
-    value1 ~ scalar1 | tuple | quote
+    value ~ scalar | exprs | quote
+    value1 ~ scalar1 | exprs | quote
 
     scalar ~ "(" scalar1 ")"
-    scalar1 ~ (thru | modu | data | num) comma? {
+    scalar1 ~ (thru | modu | data | num) {
         thru ~ num ".." num ("=" num)?
         modu ~ "%" num ("=" num)?
         index ~ "[" (name | num) "]"
         data ~ "*"
-        comma ~ '^([,])'
     }
-    tuple ~ "(" tupExpr{2,} ")" {
-        tupExpr ~ (tupOper | name | scalar1) comma?
-        tupOper ~ tupOp (name | scalar1)
-        tupOp ~ '^(<|<=|>|>=|==|\*|\\|\+=|\-=|\%|in)'
+    exprs ~ "(" expr+ ("," expr+)* ")" {
+        expr ~ (exprOp | name | scalar1)
+        exprOp ~ '^(<=|>=|==|<|>|\*[ ]|\/[ ]|\+[ ]|\-[ ]|in)'
     }
     edges ~ edgeOp (edgePar | edgeItem) comment* {
 
@@ -44,7 +41,8 @@ tr3 ~ left right* {
     path ~ '^(([A-Za-z_][A-Za-z0-9_]*)?[.º˚*]+[A-Za-z0-9_.º˚*]*)'
     name ~ '^([A-Za-z_][A-Za-z0-9_]*)'
     quote ~ '^\"([^\"]*)\"'
-    num ~ '^([+-]*([0-9]+[.][0-9]+|[.][0-9]+|[0-9]+[.](?![.])|[0-9]+)([e][+-][0-9]+)?)'
+    num ~ '^
+    ([+-]*([0-9]+[.][0-9]+|[.][0-9]+|[0-9]+[.](?![.])|[0-9]+)([e][+-][0-9]+)?)'
     comment ~ '^([,]+|^[/]{2,}[ ]*(.*?)[\n\r\t]+|\/[*]+.*?\*\/)'
     compare ~ '^[<>!=][=]?'
     embed ~ '^[{][{](?s)(.*?)[}][}]'

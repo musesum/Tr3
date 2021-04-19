@@ -56,9 +56,6 @@ public class Tr3Val: Comparable, Tr3ValProtocal {
     func addFlag(_ flag_: Tr3ValFlags) {
         valFlags.insert(flag_)
     }
-    func addComma() {
-        valFlags.insert(.comma)
-    }
     public func setVal(_ from: Any?, _ option: Any? = nil) {
         assertionFailure("setVal needs override")
     }
