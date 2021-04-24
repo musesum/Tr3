@@ -63,8 +63,8 @@ extension Tr3 {
     public func CGPointVal() -> CGPoint? {
 
         if let v = val as? Tr3Exprs {
-            if let x = v.named["x"]?.num,
-               let y = v.named["y"]?.num {
+            if let x = v.nameScalar["x"]?.num,
+               let y = v.nameScalar["y"]?.num {
 
                 return CGPoint(x: CGFloat(x), y: CGFloat(y))
             }
@@ -112,8 +112,8 @@ extension Tr3 {
 
     public func NamesVal() -> [String]? {
         if let v = val as? Tr3Exprs,
-           v.named.count > 0 {
-            return Array<String>(v.named.keys)
+           v.nameScalar.count > 0 {
+            return Array<String>(v.nameScalar.keys)
         }
         return nil
     }

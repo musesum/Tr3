@@ -1,13 +1,13 @@
-tr3 ~ name (_edges | _values | _branches | comment)* {
+tr3 ~ name (edges | values | branches | comment)* {
 
-    _edges ~ edgeOp (_edgePar | edge) comment* {
+    edges ~ edgeOp (edgePar | edge) comment* {
         edgeOp ~ '^([<][<⋯!@&\=\╌>]+|[⋯!@&\=\╌>]+[>])'
-        _edgePar ~ "(" edge+ ")"
+        edgePar ~ "(" edge+ ")"
         edge ~ (path | name)? (exprs | quote | ternary) comment*
     }
-    _values ~ _exprs | quote | ternary | embed {
+    values ~ exprs | quote | ternary | embed {
 
-        _exprs ~ "(" expr+ ")"
+        exprs ~ "(" expr+ ")"
         expr ~ exprOp? (names | scalar | ternary) comma? {
             exprOp ~ '^(<=|>=|==|<|>|\*[ ]|\/[ ]|\+[ ]|\-[ ]|in)'
         }
@@ -27,7 +27,7 @@ tr3 ~ name (_edges | _values | _branches | comment)* {
         embed ~ '^[{][{](?s)(.*?)[}][}]'
         comma ~ '^([,])'
     }
-    _branches ~ child | many | array | copyat {
+    branches ~ child | many | array | copyat {
         child ~ "{" comment* tr3+ "}"
         many ~ "." "{" tr3+ "}"
         array ~ "[" thru "]"

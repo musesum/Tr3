@@ -67,32 +67,31 @@ public class Tr3Expr {
     func addNext(_ next: Any) {
         self.next = next
     }
-    func eval(from: Tr3ValScalar, expr: Tr3ValScalar) -> Tr3ValScalar? {
+    
+    func eval(from: Tr3ValScalar, expr: Tr3ValScalar) {
 
         if exprOp == .none {
 
             expr.setVal(from)
-            return expr
 
         } else if let result = evalScalars(from, expr)  {
 
             expr.setVal(result)
-            return expr
             
         } else {
 
             print("unknown Tr3Expr next: \(next ?? "nil")")
-            return nil
         }
     }
-    func getLeftRightVals(_ named: [String: Tr3ValScalar],
+
+    func getLeftRightVals(_ nameScalar: [String: Tr3ValScalar],
                           _ frScalar: Tr3ValScalar) -> (Tr3ValScalar,Tr3ValScalar)? {
 
         if let next = next {
             switch next {
             case let name as String:
-                guard let namedVal = named[name] else { return nil }
-                return (frScalar, namedVal)
+                guard let nameScalarVal = nameScalar[name] else { return nil }
+                return (frScalar, nameScalarVal)
             case let scalar as Tr3ValScalar:
                 return (frScalar, scalar)
             default: return nil

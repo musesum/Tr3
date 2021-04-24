@@ -167,13 +167,13 @@ public class Tr3Parse {
                 exprOp ~ '^(<=|>=|==|<|>|\*|\/|\+|\-|\%|in)'
             }
      */
-    public func parseExpression(_ val: Tr3Exprs?,_ parItem: ParItem,_ prior: String) {
-        guard let val = val else { return }
+    public func parseExpression(_ exprs: Tr3Exprs?,_ parItem: ParItem,_ prior: String) {
+        guard let exprs = exprs else { return }
 
         for nextPar in parItem.nextPars {
 
             func addDeepScalar() {
-                let scalar = val.addScalar()
+                let scalar = exprs.addScalar()
                 for deepPar in nextPar.nextPars {
                     parseDeepScalar(scalar, deepPar)
                 }
@@ -181,9 +181,9 @@ public class Tr3Parse {
 
             let pattern = nextPar.node?.pattern
             switch pattern {
-                case "":        val.addOper(nextPar.value)
-                case "name":    val.addName(nextPar.nextPars.first?.value)
-                case "exprOp":  val.addOper(nextPar.nextPars.first?.value)
+                case "":        exprs.addOper(nextPar.value)
+                case "name":    exprs.addName(nextPar.nextPars.first?.value)
+                case "exprOp":  exprs.addOper(nextPar.nextPars.first?.value)
                 case "scalar1": addDeepScalar()
                 default: break
             }

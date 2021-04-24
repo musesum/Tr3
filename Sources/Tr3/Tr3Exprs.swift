@@ -12,17 +12,17 @@ typealias ExprName = String
 
 public class Tr3Exprs: Tr3Val {
 
-    /// `["x": 1, "y": 2]` in `t(x 1, y 2)`
-    var named = [ExprName: Tr3ValScalar]()
+    /// `t(x 1, y 2)` ⟹ `["x": 1, "y": 2]`
+    var nameScalar = [ExprName: Tr3ValScalar]()
 
-    /// `x,y` in `t(x 1, y 2)`
+    /// `t(x, y)` ⟹ `["x", "y"]`
     var names = ContiguousArray<ExprName>()
 
-    /// `1,2` in `t(x 1, y 2)`
+    /// `t(1, 2)` ⟹ `[1, 2]`
     var scalars = ContiguousArray<Tr3ValScalar>()
 
-    /// `u(x/2, y/2) << t(x 1, y 2)` => `u(x 0.5, y 1.0)` // after t fires
-    var exprs = ContiguousArray<Tr3Expr>() /// expressions only evaluated on lvalue
+    /// `t(x/2, y/2) << u(x 1, y 2)` ⟹ `u(x 0.5, y 1.0)` // after t fires
+    var exprs = ContiguousArray<Tr3Expr>()
     
     override init () {
         super.init()
@@ -34,8 +34,8 @@ public class Tr3Exprs: Tr3Val {
         if let v = tr3Val as? Tr3Exprs {
             
             valFlags = v.valFlags
-            for (name,val) in v.named {
-                named[name] = Tr3ValScalar(with: val)
+            for (name,val) in v.nameScalar {
+                nameScalar[name] = Tr3ValScalar(with: val)
             }
             for name in v.names {
                 names.append(name)
@@ -56,19 +56,19 @@ public class Tr3Exprs: Tr3Val {
         let y = Tr3ValScalar(num: Float(p.y))
         names = ContiguousArray<ExprName>(["x","y"])
         scalars = ContiguousArray<Tr3ValScalar>([x,y])
-        named = ["x": x, "y": y]
+        nameScalar = ["x": x, "y": y]
     }
     
     convenience init(pairs: [(ExprName,Float)]) {
         self.init()
         valFlags.insert([.exprNames, .exprScalars])
         names = ContiguousArray<ExprName>()
-        named = [ExprName: Tr3ValScalar]()
+        nameScalar = [ExprName: Tr3ValScalar]()
         
         for (name,val) in pairs {
             let scalar = Tr3ValScalar(num: val)
             names.append(name)
-            named[name] = scalar
+            nameScalar[name] = scalar
             scalars.append(scalar)
         }
     }
@@ -170,15 +170,15 @@ public class Tr3Exprs: Tr3Val {
     }
     func addNum(_ num: Float) {
         if let name = names.last,
-           let scalar = named[name] {
+           let scalar = nameScalar[name] {
             scalar.addNum(num)
         } else {
             _ = addScalar(num)
         }
     }
     func setDefaults() {
-        if named.count > 0 {
-            for scalar in named.values {
+        if nameScalar.count > 0 {
+            for scalar in nameScalar.values {
                 scalar.setDefault()
             }
         } else {
@@ -202,21 +202,21 @@ public class Tr3Exprs: Tr3Val {
 
             func addPoint() {
                 valFlags.insert(.exprNames)
-                if let x = named["x"] {
+                if let x = nameScalar["x"] {
                     x.setVal(p.x)
                     x.addFlag(.num)
                 }
                 else {
                     names.append("x")
-                    named["x"] = Tr3ValScalar(num: Float(p.x))
+                    nameScalar["x"] = Tr3ValScalar(num: Float(p.x))
                 }
-                if let y = named["y"] {
+                if let y = nameScalar["y"] {
                     y.setVal(p.y)
                     y.addFlag(.num)
                 }
                 else {
                     names.append("y")
-                    named["y"] = Tr3ValScalar(num: Float(p.y))
+                    nameScalar["y"] = Tr3ValScalar(num: Float(p.y))
                 }
             }
             // begin -------------------------------
@@ -229,8 +229,8 @@ public class Tr3Exprs: Tr3Val {
                 return true
             }
             for expr in exprs {
-                if let frScalar = from.named[expr.name],
-                   let toScalar = named[expr.name] {
+                if let frScalar = from.nameScalar[expr.name],
+                   let toScalar = nameScalar[expr.name] {
 
                     if expr.isEligible(frScalar.num, toScalar) == false {
                         return false 
@@ -243,53 +243,79 @@ public class Tr3Exprs: Tr3Val {
         }
 
         // a(x 2, y 3, z 4) >> f
-        // f1(x<y) => (x 2, y 3, z 4)
-        // f2(x>y) => ()
-        // f3(x+y) => (x 5)
-        // f4(+)   => (_ 9)
-        // f5(*)   => (_ 24)
-        // f6(x*10, x/10) => (x 20, x 0.5)
-        // f7(x in 2..4, x 1..2, y in 3..5, y 2..3) => (x 1, y 2) // no z
-        // f8(x in 2..4, x 1..2, y in 3..5, y 2..3, x + y) => (x 1, y 2, _ 3)
-        // f9(_ , _ , _ ) =>
+        // f1(x<y) ⟹ (x 2, y 3, z 4)
+        // f2(x>y) ⟹ ()
+        // f3(x+y) ⟹ (x 5)
+        // f4(+)   ⟹ (_ 9)
+        // f5(*)   ⟹ (_ 24)
+        // f6(x*10, x/10) ⟹ (x 20, x 0.5)
+        // f7(x in 2..4, x 1..2, y in 3..5, y 2..3) ⟹ (x 1, y 2) // no z
+        // f8(x in 2..4, x 1..2, y in 3..5, y 2..3, x + y) ⟹ (x 1, y 2, _ 3)
+        // f9(_ , _ , _ ) ⟹
 
         //   0 1  2 3  4 5
         // a(x 2, y 3, z 4) >> f
         //   0 1  3  4  5 6  7  8 9 10 11 12 13 14
-        // f(x in 2..4, x 1..2, y in 3..5, y 2..3) => (x 1, y 2) // no z
-        // f(x in 2..4, y in 3..5, x 1..2, y 2..3) => (x 1, y 2) // no z
+        // f(x in 2..4, x 1..2, y in 3..5, y 2..3) ⟹ (x 1, y 2) // no z
+        // f(x in 2..4, y in 3..5, x 1..2, y 2..3) ⟹ (x 1, y 2) // no z
 
         //a.0 :: f.0 f.5
         //	a.1 in f.3..f.4 ?  a.1 .. f.5..f.6
 
         func setExprs(_ from: Tr3Exprs) {
-            guard isEligible(from) else {
-                return
-            }
             if names.isEmpty {
-                if scalars.count >= from.scalars.count {
+                if exprs.isEmpty {
+                    // a(1..2, 3..4) << b(5..6 = 5, 7..8 = 8) ⟹ a(1, 4)
+                    let count = min(scalars.count, from.scalars.count)
+                    if count < 1 { return }
                     for i in 0..<scalars.count {
                         let toScalar = scalars[scalars.startIndex + i]
                         let frScalar = from.scalars[from.scalars.startIndex + i]
                         toScalar.setVal(frScalar)
                     }
+                } else if isEligible(from) {
+                    // a(+) << b(1, 2, 3) ⟹ a(+ = 6)
+                } else {
+                    // a(> 2) << b(1) fails
+                    return
                 }
-            } else {
-                for name in from.names {
-                    if let fromScalar = from.named[name] {
-                        for expr in exprs {
-                       let exprScalar = named[name] {
-                        if let expr = exprs[name],
-                           let result = expr.eval(from: fromScalar, expr:  exprScalar) {
 
+            } else if exprs.isEmpty {
+                // a(x _, y _) _
+                for name in names {
+                    if let toScalar = nameScalar[name] {
+                        // a(x 1, y 2) ...
+                        if let frScalar = from.nameScalar[name] {
+                            // a(x 1, y 2) << b(x 1, y 2) ⟹ a(x 1, y 2)
+                            toScalar.setVal(frScalar)
                         } else {
-                            valFlags.insert([.exprNames, .exprScalars])
-                            exprScalar.setVal(fromScalar)
+                            // a(x 1, y 2) << b(1, 2) ⟹ a(x 1, y 2)
                         }
                     } else {
-                        valFlags.insert([.exprNames, .exprScalars])
-                        named[name] = Tr3ValScalar(with: fromScalar)
+                        // a(x, y) << b(x 1, y 2) ⟹ a(x 1, y 2)
                     }
+                }
+            } else {
+                // a(x + _, y + _) _
+                if from.names.isEmpty {
+                    // a(x + _, y + _ ) << b(3, 4)
+                    return // from must have a name
+                } else if isEligible(from) {
+                    // a(x + _, y + _) << b(x 3, y 4)
+                    for expr in exprs {
+                        if let exprScalar = nameScalar[expr.name] {
+                            if let fromScalar = from.nameScalar[expr.name] {
+                                // a(x + 1, y + 2) << b(x 3, y 4) ⟹ a(x 4 , y 6)
+                                expr.eval(from: fromScalar, expr: exprScalar)
+                            } else {
+                                // a(x + 1, y + 2) << b(x, y) ⟹ a(4 , y 6)
+                            }
+                        } else {
+                            // a(x, y) << b(x 1, y 2) ⟹ a(x 1, y 2)
+                        }
+                    }
+                } else {
+                    return
                 }
             }
         }

@@ -16,27 +16,19 @@ extension Tr3Exprs {
         }
         return script.with(trailing: ")")
     }
-    func scriptNamed() -> String? {
-        if names.isEmpty { return nil }
-        
+    func scriptNames() -> String {
         var script = ""
         var delim = ""
-
         for name in names {
-
             script += delim + name; delim = ", "
-
-            if let scalar = named[name] {
-
+            if let scalar = nameScalar[name] {
                 script += " " + scalar.dumpVal(parens: false)
             }
         }
         return script
     }
 
-    func scriptExprs() -> String? {
-        if exprs.isEmpty { return nil }
-
+    func scriptExprs() -> String {
         var script = ""
         var delim = ""
         for expr in exprs {
@@ -57,40 +49,18 @@ extension Tr3Exprs {
 
     override func scriptVal(parens: Bool) -> String  {
         var script = ""
-        var delim = ""
-        if names.isEmpty {
-            script = scriptScalars()
-        } else {
-            for name in names {
-                script += delim; delim = ", "
-                if let expr = exprs[name] {
-                    script += expr.script()
-                } else if let scalar = named[name] {
-                    script += name + " " + scalar.scriptVal(parens: false)
-                } else {
-                    script += name
-                }
-            }
-        }
+        if      names.isEmpty { script = scriptScalars() }
+        else if exprs.isEmpty { script = scriptNames() }
+        else                  { script = scriptExprs() }
+
         return script.isEmpty ? "" : parens ? "(\(script))" : script
     }
 
     override func dumpVal(parens: Bool, session: Bool = false) -> String  {
-        if session == false {
-            return scriptVal(parens: parens)
-        }
-        var val = ""
-        var delim = ""
-        if names.isEmpty {
-            val = scriptScalars()
-        } else {
-            for name in names {
-                if let scalar = named[name] {
-                    val += delim + name + String(format: " %g", scalar.num)
-                    delim = ", "
-                }
-            }
-        }
-        return val.isEmpty ? "" : parens ? "(\(val))" : val
+        var script = ""
+        if session == false { return scriptVal(parens: parens) }
+        if names.isEmpty    { script = scriptScalars() }
+        else                { script = scriptNames() }
+        return script.isEmpty ? "" : parens ? "(\(script))" : script
     }
 }

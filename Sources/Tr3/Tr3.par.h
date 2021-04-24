@@ -25,7 +25,7 @@ tr3 ~ left right* {
     edges ~ edgeOp (edgePar | edgeItem) comment* {
 
         edgeOp ~ '^([<][<⋯!@&\=\╌>]+|[⋯!@&\=\╌>]+[>])'
-        edgePar ~ "(" edgeItem + ")" edges?
+        edgePar ~ "(" edgeItem ("," edgeItem)* ")" edges?
         edgeItem ~ (edgeVal | ternary) comment* {
             edgeVal ~ (path | name) (edges+ | value)?
         }
