@@ -43,32 +43,32 @@ public class Tr3ValScalar: Tr3Val {
         return newTr3ValScalar
     }
 
-    func addNum(_ val_: Float) {
+    func addNum(_ n: Float) {
 
         if valFlags.contains(.thru) {
             if valFlags.contains(.max) {
                 valFlags.insert(.dflt)
-                dflt = val_
-                num = val_
+                dflt = n
+                num = n
             } else if valFlags.contains(.min) {
                 valFlags.insert(.max)
-                max = val_
+                max = n
             } else {
                 valFlags.insert(.min)
-                min = val_
+                min = n
             }
         } else if valFlags.contains(.modu) {
             if valFlags.contains(.max) {
                 valFlags.insert(.dflt)
-                dflt = val_
-                num = val_
+                dflt = n
+                num = n
             } else {
                 valFlags.insert(.max)
-                max = val_
+                max = n
             }
         } else {
             valFlags.insert(.num)
-            num = val_
+            num = n
         }
     }
     func setDefault() {

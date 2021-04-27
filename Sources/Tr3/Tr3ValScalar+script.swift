@@ -25,8 +25,8 @@ extension Tr3ValScalar {
     }
     override func dumpVal(parens: Bool, session: Bool = false) -> String  {
         if session {
-            let script = "(" + String(format: "%g", num)
-            return script.with(trailing: ")")
+            let numStr = String(format: "%g", num)
+            return parens ? "(\(numStr))" : numStr
         }
         else {
             return scriptVal(parens: parens)

@@ -24,7 +24,7 @@ extension Tr3 {
 
     /// previously declared Tr3 has a ":"
     ///
-    ///  What follows a "@" is either a:
+    ///  What follows a ":" is either a:
     ///   1) new node to add to tree,
     ///   2) new path synthesized from current location, or
     ///   3) one or more nodes to override
@@ -105,7 +105,7 @@ extension Tr3 {
                 type = .name
                 return [self]
             }
-            /// @_c in `a.b { _c { c1 c2 } c { d e } @_c }`
+            /// : _c in `a.b { _c { c1 c2 } c { d e } : _c }`
             if found.count > 0, let parent = parent {
 
                 var newChildren = [Tr3]()
@@ -402,13 +402,13 @@ extension Tr3 {
             child.bindEdges()
         }
     }
-    /** bind 2nd a.b in `a.b { c d } a.e@a.b { f g }`
+    /** bind 2nd a.b in `a.b { c d } a.e: a.b { f g }`
 
     - note: Needs forward pass for prototypes that refer to unexpanded paths.
 
     Because expansion is bottom up, the first a.b in:
 
-        a.b { c d } a.e@a.b { f g }
+        a.b { c d } a.e: a.b { f g }
 
     has not been been expanded, when encountering the second a.b.
     So, deeper a.b was deferred until this forward pass,

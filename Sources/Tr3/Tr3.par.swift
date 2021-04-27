@@ -3,7 +3,7 @@
 //  Par
 //
 //  Created by warren on 11/14/17.
-//  Copyright @ 2019 DeepMuse
+//  Copyright © 2019 DeepMuse
 //  License: Apache 2.0 - see License file
 
 // this it language definition for the Tr3 Script,
@@ -20,7 +20,7 @@ tr3 ~ left right* {
     child ~ "{" comment* tr3+ "}"
     many ~ "." "{" tr3+ "}"
     array ~ "[" thru "]"
-    copyat ~ "@" (path | name)
+    copyat ~ ":" (path | name)
 
     value ~ scalar | exprs | quote
     value1 ~ scalar1 | exprs | quote
@@ -38,7 +38,7 @@ tr3 ~ left right* {
     }
     edges ~ edgeOp (edgePar | edgeItem) comment* {
 
-        edgeOp ~ '^([<][<⋯!@&\=\╌>]+|[⋯!@&\=\╌>]+[>])'
+        edgeOp ~ '^([<][<⋯!\:&\=\╌>]+|[⋯!\:&\=\╌>]+[>])'
         edgePar ~ "(" edgeItem+ ")" edges?
         edgeItem ~ (edgeVal | ternary) comment*
 

@@ -1,7 +1,7 @@
 tr3 ~ name (edges | values | branches | comment)* {
 
     edges ~ edgeOp (edgePar | edge) comment* {
-        edgeOp ~ '^([<][<⋯!@&\=\╌>]+|[⋯!@&\=\╌>]+[>])'
+        edgeOp ~ '^([<][<⋯!\:&\=\╌>]+|[⋯!\:&\=\╌>]+[>])'
         edgePar ~ "(" edge+ ")"
         edge ~ (path | name)? (exprs | quote | ternary) comment*
     }
@@ -31,7 +31,7 @@ tr3 ~ name (edges | values | branches | comment)* {
         child ~ "{" comment* tr3+ "}"
         many ~ "." "{" tr3+ "}"
         array ~ "[" thru "]"
-        copyat ~ "@" (path | name)
+        copyat ~ ":" (path | name)
     }
     path ~ '^(([A-Za-z_][A-Za-z0-9_]*)?[.º˚*]+[A-Za-z0-9_.º˚*]*)'
     name ~ '^([A-Za-z_][A-Za-z0-9_]*)'

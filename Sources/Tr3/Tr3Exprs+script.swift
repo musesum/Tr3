@@ -16,51 +16,74 @@ extension Tr3Exprs {
         }
         return script.with(trailing: ")")
     }
-    func scriptNames() -> String {
+    func scriptNames(session: Bool) -> String {
         var script = ""
         var delim = ""
         for name in names {
             script += delim + name; delim = ", "
             if let scalar = nameScalar[name] {
-                script += " " + scalar.dumpVal(parens: false)
+                script += " " + scalar.dumpVal(parens: false, session: session)
             }
         }
         return script
     }
 
-    func scriptExprs() -> String {
+    func scriptExprs(session: Bool) -> String {
         var script = ""
         var delim = ""
-        for expr in exprs {
-            script += delim; delim = ", "
-            script += expr.script()
+        if session {
+            for expr in exprs {
+                if expr.exprOp != .none { continue }
+                script += delim; delim = ", "
+                script += expr.script(session: session)
+            }
+        } else {
+            for expr in exprs {
+                script += delim; delim = ", "
+                script += expr.script(session: session)
+            }
         }
         return script
     }
-    func scriptScalars() -> String {
+
+    func scriptScalars(session: Bool) -> String {
         var script = ""
         var delim = ""
         for scalar in scalars {
             script += delim; delim = ", "
-            script += scalar.dumpVal(parens: false)
+            script += scalar.dumpVal(parens: false, session: session)
         }
         return script
     }
 
     override func scriptVal(parens: Bool) -> String  {
         var script = ""
-        if      names.isEmpty { script = scriptScalars() }
-        else if exprs.isEmpty { script = scriptNames() }
-        else                  { script = scriptExprs() }
+        switch lastParse {
+            case .expr:         script = scriptExprs(session: false)
 
+            case .nameScalar,
+                 .names:        script = scriptNames(session: false)
+
+            case .scalars:      script = scriptScalars(session: false)
+
+            default: break
+        }
         return script.isEmpty ? "" : parens ? "(\(script))" : script
     }
 
     override func dumpVal(parens: Bool, session: Bool = false) -> String  {
         var script = ""
-        if session == false { return scriptVal(parens: parens) }
-        if names.isEmpty    { script = scriptScalars() }
-        else                { script = scriptNames() }
+
+        switch lastParse {
+            case .expr:         script = scriptExprs(session: session)
+
+            case .nameScalar,
+                 .names:        script = scriptNames(session: session)
+
+            case .scalars:      script = scriptScalars(session: session)
+
+            default: break
+        }
         return script.isEmpty ? "" : parens ? "(\(script))" : script
     }
 }

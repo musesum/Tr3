@@ -67,43 +67,43 @@ b(x 1, y 2)
                 type "compute" file "whatever.metal" on (0..1) buffer {
                     version (0..1) }
             }
-            cellMelt @_compute {
+            cellMelt: _compute {
                 type "compute" file "cell.melt.metal" on (0..1) buffer {
                     version (0..1) }
             }
-            cellFredkin @_compute {
+            cellFredkin: _compute {
                 type "compute" file "cell.fredkin.metal" on (0..1) buffer {
                     version (0..1) }
             }
-            cellGas @_compute {
+            cellGas: _compute {
                 type "compute" file "cell.gas.metal" on (0..1) buffer {
                     version (0..1) }
             }
-            cellAverage @_compute {
+            cellAverage: _compute {
                 type "compute" file "cell.average.metal" on (0..1) buffer {
                     version (0..1) }
             }
-            cellModulo @_compute {
+            cellModulo: _compute {
                 type "compute" file "cell.modulo.metal" on (0..1) buffer {
                     version (0..1) }
             }
-            cellFader @_compute {
+            cellFader: _compute {
                 type "compute" file "cell.fader.metal" on (0..1) buffer {
                     version (0..1) }
             }
-            cellSlide @_compute {
+            cellSlide: _compute {
                 type "compute" file "cell.slide.metal" on (0..1) buffer {
                     version (0..1) }
             }
-            cellDrift @_compute {
+            cellDrift: _compute {
                 type "compute" file "cell.drift.metal" on (0..1) buffer {
                     version (0..1) }
             }
-            cellTimetunnel @_compute {
+            cellTimetunnel: _compute {
                 type "compute" file "cell.timetunnel.metal" on (0..1) buffer {
                     version (0..1) }
             }
-            cellZhabatinski @_compute {
+            cellZhabatinski: _compute {
                 type "compute" file "cell.zhabatinski.metal" on (0..1) buffer {
                     version (0..1) bits (2..0.4 = 3) }
                 repeat (11) }
@@ -157,7 +157,7 @@ b(x 1, y 2)
             }
         }
         cell {
-            fader @_cell {
+            fader: _cell {
                 base {
                     type "cell" title "Fader"  // name
                     frame (x 0, y 0, w 250, h 130) icon "icon.cell.fader.png" }
@@ -179,7 +179,7 @@ b(x 1, y 2)
                         type "trigger" title "Fill Ones" frame (x 210, y 84, w 32, h 32) icon "icon.drop.gray.png" value (0..1) >>draw.screen.fillOne }
                 }
             }
-            fredkin @_cell {
+            fredkin: _cell {
                 base {
                     type "cell" title "Fredkin"  // name
                     frame (x 0, y 0, w 250, h 130) icon "icon.cell.fredkin.png" }
@@ -201,7 +201,7 @@ b(x 1, y 2)
                         type "trigger" title "Fill Ones" frame (x 210, y 84, w 32, h 32) icon "icon.drop.gray.png" value (0..1) >>draw.screen.fillOne }
                 }
             }
-            timetunnel @_cell {
+            timetunnel: _cell {
                 base {
                     type "cell" title "Time Tunnel"  // name
                     frame (x 0, y 0, w 250, h 130) icon "icon.cell.timeTunnel.png" }
@@ -223,7 +223,7 @@ b(x 1, y 2)
                         type "trigger" title "Fill Ones" frame (x 210, y 84, w 32, h 32) icon "icon.drop.gray.png" value (0..1) >>draw.screen.fillOne }
                 }
             }
-            zhabatinski @_cell {
+            zhabatinski: _cell {
                 base {
                     type "cell" title "Zhabatinski"  // name
                     frame (x 0, y 0, w 250, h 130) icon "icon.cell.zhabatinski.png" }
@@ -246,7 +246,7 @@ b(x 1, y 2)
                         type "trigger" title "Fill Ones" frame (x 210, y 84, w 32, h 32) icon "icon.drop.gray.png" value (0..1) >>draw.screen.fillOne }
                 }
             }
-            melt @_cell {
+            melt: _cell {
                 base {
                     type "cell" title "Melt"  // name
                     frame (x 0, y 0, w 250, h 130) icon "icon.cell.melt.png" }
@@ -269,7 +269,7 @@ b(x 1, y 2)
                         value (1.67772e+07) }
                 }
             }
-            average @_cell {
+            average: _cell {
                 base {
                     type "cell" title "Average"  // name
                     frame (x 0, y 0, w 250, h 130) icon "icon.cell.average.png" }
@@ -291,7 +291,7 @@ b(x 1, y 2)
                         type "trigger" title "Fill Ones" frame (x 210, y 84, w 32, h 32) icon "icon.drop.gray.png" value (0..1) >>draw.screen.fillOne }
                 }
             }
-            slide @_cell {
+            slide: _cell {
                 base {
                     type "cell" title "Slide Bit Planes"  // name
                     frame (x 0, y 0, w 250, h 130) icon "icon.cell.slide.png" }

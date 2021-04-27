@@ -21,10 +21,10 @@ A tree can be decorated with another tree
 ```c
 a {b c}.{d e} // produces a { b { d e } c { d e } }
 ```
-A tree can copy the contents of another tree with a `@name`
+A tree can copy the contents of another tree with a `:name`
 ```c
 a {b c}.{d e} // produces a { b { d e } c { d e } }
-z@a           // produces z { b { d e } c { d e } }
+z:a           // produces z { b { d e } c { d e } }
 ```
 ### Edges
 

@@ -29,10 +29,11 @@ public struct Tr3ValFlags: OptionSet {
     public static let script  = Tr3ValFlags(rawValue: 1 << 15) // for embedded script between name(){...} -- for example shaders
 
     public static let exprs      = Tr3ValFlags(rawValue: 1 << 16) // for an array of scalars
-    public static let exprNames   = Tr3ValFlags(rawValue: 1 << 17) // 0..n names
-    public static let exprScalars = Tr3ValFlags(rawValue: 1 << 18) // 0..n scalars
-    public static let ternary    = Tr3ValFlags(rawValue: 1 << 21) // ternary a ? b : c
-    public static let path       = Tr3ValFlags(rawValue: 1 << 22) // path to tr3 in a ? b : c
+    public static let names       = Tr3ValFlags(rawValue: 1 << 17) // (x, y)
+    public static let nameScalars = Tr3ValFlags(rawValue: 1 << 18) // (x 1, y 2)
+    public static let scalars     = Tr3ValFlags(rawValue: 1 << 19) // (1, 2)
+    public static let ternary     = Tr3ValFlags(rawValue: 1 << 21) // a ? b : c
+    public static let path        = Tr3ValFlags(rawValue: 1 << 22) // path to tr3 in a ? b : c
     public init(rawValue: Int) { self.rawValue = rawValue }
 
 }
@@ -52,8 +53,9 @@ extension Tr3ValFlags: CustomStringConvertible {
         (.timing     , "timing"     ),
         (.script     , "script"     ),
         (.exprs      , "exprs"      ),
-        (.exprNames  , "exprNames"  ),
-        (.exprScalars, "exprScalars"),
+        (.names      , "names"      ),
+        (.nameScalars, "nameScalars"),
+        (.scalars    , "scalars"    ),
         (.ternary    , "ternary"    ),
         (.path       , "path"       )
     ]

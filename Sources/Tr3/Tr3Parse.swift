@@ -170,6 +170,8 @@ public class Tr3Parse {
     public func parseExpression(_ exprs: Tr3Exprs?,_ parItem: ParItem,_ prior: String) {
         guard let exprs = exprs else { return }
 
+        exprs.addExpr()
+
         for nextPar in parItem.nextPars {
 
             func addDeepScalar() {
@@ -215,7 +217,7 @@ public class Tr3Parse {
            let oper = parItem.value {
             switch oper {
             case "<", "<=", ">", ">=", "==",
-                 "*", "/", "+=", "-=", "%", "in":
+                 "*", "/", "+", "-", "%", "in":
                 val.addOper(oper)
             default:
                 print("*** unknown prior: \(prior)")

@@ -104,7 +104,7 @@ extension Tr3 {
     func getCopiedFrom() -> String {
         var result = ""
         for copyTr3 in copied {
-            result += "@" + copyTr3.name + " "
+            result += ": " + copyTr3.name + " "
         }
         return result
     }

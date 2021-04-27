@@ -27,9 +27,8 @@ public struct Tr3EdgeFlags: OptionSet {
             case ">": self.insert(.output)  // call out
             case "=": self.insert(.solo)    // overwrite
             case "!": self.insert(.exclude) // remove edge(s)
-            case ":": self.insert(.find)    // find edge(s) but dont connect
             case "?": self.insert(.ternary) // edge to ternary condition
-            case "@": self.insert(.copyat)  // edge to ternary condition
+            case ":": self.insert(.copyat)  // edge to ternary condition
             default: continue
             }
         }
