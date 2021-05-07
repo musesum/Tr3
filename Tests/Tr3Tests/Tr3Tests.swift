@@ -1297,8 +1297,7 @@ body {left right}.{shoulder.elbow.wrist {thumb index middle ring pinky}.{meta pr
 
         func parse(_ name: String, _ script: String) -> Int {
             let success = tr3Parse.parseScript(root, script, whitespace: "\n\t ")
-            if success { print("\(name) ✓") }
-            else       { print("\(name) 🚫 parse failed") }
+            print(name + (success ? " ✓" : " 🚫 parse failed"))
             return success ? 0 : 1
         }
         err += parse("SkyMainTr3",SkyMainTr3)

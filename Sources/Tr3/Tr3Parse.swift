@@ -122,10 +122,8 @@ public class Tr3Parse {
                 parseDeepScalar(val, parItem)
 
             case let val as Tr3Exprs:
-                // TODO: problem with deep parsing of scalar not advancing parItem
-                if pattern != "num" {
-                    parseExpression(val, parItem, pattern)
-                }
+
+                 parseExpression(val, parItem, pattern)
 
             case let val as Tr3ValTern:
                 // ternary ~ "(" tern ")" | tern {
