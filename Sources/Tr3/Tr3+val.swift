@@ -15,22 +15,11 @@ extension Tr3 {
         return nil
     }
 
-    public func CGRectVal() -> CGRect? {
-        if let v = val as? Tr3Exprs {
-            let ns = v.nameScalar
-            if ns.count >= 4,
-               let x = ns["x"]?.num,
-               let y = ns["y"]?.num,
-               let w = ns["w"]?.num,
-               let h = ns["h"]?.num {
-                    let rect = CGRect(x: CGFloat(x),
-                                      y: CGFloat(y),
-                                      width: CGFloat(w),
-                                      height: CGFloat(h))
-                    return rect
-               }
+    public func BoolVal() -> Bool {
+        if let v = val as? Tr3ValScalar {
+            return v.num > 0
         }
-        return nil
+        return false
     }
 
     public func FloatVal() -> Float? {
@@ -38,21 +27,19 @@ extension Tr3 {
             return v.num
         }
         else if let v = val as? Tr3Exprs {
-            if v.scalars.count >= 1 {
-                return v.scalars[0].num
+            if let name = v.names.last,
+               let scalar = v.nameScalar[name] {
+                return scalar.num
+            } else if v.scalars.count >= 1 {
+                let scalar = v.scalars[0]
+                return scalar.num
             }
         }
         return nil
     }
+
     public func IntVal() -> Int? {
-        if let v = val as? Tr3ValScalar {
-            return Int(v.num)
-        }
-        else if let v = val as? Tr3Exprs {
-            if v.scalars.count >= 1 {
-                return Int(v.scalars[0].num)
-            }
-        }
+        if let num = FloatVal() { return Int(num) }
         return nil
     }
 
@@ -84,36 +71,39 @@ extension Tr3 {
         return nil
     }
     
-    public func CGPointValDefault() -> CGPoint? {
-
-        if let v = val as? Tr3Exprs,
-           v.scalars.count >= 2 {
-
-            let x = CGFloat(v.scalars[0].num)
-            let y = CGFloat(v.scalars[1].num)
-
-            let p = CGPoint(x: x, y: y)
-            return p
-        }
-        return nil
-    }
-    
     public func CGSizeVal() -> CGSize? {
-        if let v = val as? Tr3Exprs, v.scalars.count >= 2 {
+        if let v = val as? Tr3Exprs {
+            if let w = v.nameScalar["w"]?.num,
+               let h = v.nameScalar["h"]?.num {
 
-            let w = CGFloat(v.scalars[0].num)
-            let h = CGFloat(v.scalars[1].num)
-            let s = CGSize(width: w, height: h)
-            return s
+                return CGSize(width: CGFloat(w), height: CGFloat(h))
+            }
+            else if v.scalars.count >= 2 {
+                let w = v.scalars[0].num
+                let h = v.scalars[1].num
+
+                return CGSize(width: CGFloat(w), height: CGFloat(h))
+            }
         }
         return nil
     }
 
-    public func BoolVal() -> Bool {
-        if let v = val as? Tr3ValScalar {
-            return v.num > 0
+    public func CGRectVal() -> CGRect? {
+        if let v = val as? Tr3Exprs {
+            let ns = v.nameScalar
+            if ns.count >= 4,
+               let x = ns["x"]?.num,
+               let y = ns["y"]?.num,
+               let w = ns["w"]?.num,
+               let h = ns["h"]?.num {
+                let rect = CGRect(x: CGFloat(x),
+                                  y: CGFloat(y),
+                                  width: CGFloat(w),
+                                  height: CGFloat(h))
+                return rect
+            }
         }
-        return false
+        return nil
     }
 
     public func NamesVal() -> [String]? {

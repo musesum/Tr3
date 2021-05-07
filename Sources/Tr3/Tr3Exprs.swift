@@ -60,7 +60,7 @@ public class Tr3Exprs: Tr3Val {
         names = ContiguousArray<ExprName>(["x","y"])
         scalars = ContiguousArray<Tr3ValScalar>([x,y])
         nameScalar = ["x": x, "y": y]
-        options.insert([.name,.scalar])
+        options.insert([.name, .scalar])
     }
     convenience init(pairs: [(ExprName,Float)]) {
         self.init()

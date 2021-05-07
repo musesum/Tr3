@@ -385,7 +385,7 @@ panel.cell.scroll {
             title "Screen Scroll"
             frame (x 8, y 44, w 128, h 128)
             radius (10)
-            tap2 (-1, -1)
+            tap2 (x -1, y -1)
             lag (0)
 
             value (x 0..1.5, y 0..1.5)
@@ -449,7 +449,7 @@ panel.shader.tile {
             title "Repeat"
             frame (x 10, y 40, w 120, h 120)
             radius (10)
-            tap2 (-1, -1)
+            tap2 (x -1, y -1)
             lag (0)
             user (0..1 = 1) >> tileOn.value (1)
             value (0..1, 0..1) >> sky.shader.render.buffer.repeat
@@ -459,10 +459,10 @@ panel.shader.tile {
             title "Mirror"
             frame (x 140, y 60, w 80, h 80)
             radius (10)
-            tap2 (1, 1)
+            tap2 (x 1, y 1)
             lag (0)
             user (0..1 = 1)
-            value (0..1, 0..1) >> sky.shader.render.buffer.mirror
+            value (x 0..1, y 0..1) >> sky.shader.render.buffer.mirror
         }
     }
 }
@@ -661,7 +661,7 @@ let SkyOutput =
             scroll { base { type "cell" title "Scroll" frame (x 0, y 0, w 192, h 180) icon "icon.scroll.png" }
                 controls { scrollOn { type "panelon" title "Active" frame (x 148, y 6, w 40, h 32) icon "icon.scroll.png" value (0..1) lag (0) user >>(controls.scrollBox.value(x 0.5, y 0.5) controls.brushTilt.value(0)) }
                     hide { type "panelx" title "hide" frame (x 0, y 0, w 40, h 40) icon "icon.thumb.X.png" value (0..1) }
-                    scrollBox { type "box" title "Screen Scroll" frame (x 8, y 44, w 128, h 128) radius (10) tap2 (-1, -1) lag (0) value (x 0..1.5, y 0..1.5) <>sky.input.azimuth >>drawScroll.buffer.scroll user >>(controls.brushTilt.value(0) controls.scrollOn.value(1)) }
+                    scrollBox { type "box" title "Screen Scroll" frame (x 8, y 44, w 128, h 128) radius (10) tap2 (x -1, y -1) lag (0) value (x 0..1.5, y 0..1.5) <>sky.input.azimuth >>drawScroll.buffer.scroll user >>(controls.brushTilt.value(0) controls.scrollOn.value(1)) }
                     brushTilt { type "switch" title "Brush Tilt" frame (x 144, y 62, w 40, h 32) icon "icon.pen.tilt.png" value (0..1) <>sky.input.tilt }
                     fillZero { type "trigger" title "Fill Zero" frame (x 148, y 116, w 32, h 32) icon "icon.drop.clear.png" value (0..1) >>draw.screen.fillZero } } }
             speed { restart >>controls.speed.value(60) base { type "cell" title "Speed"  // name
@@ -678,7 +678,7 @@ let SkyOutput =
                 controls { hide { type "panelx" title "hide" frame (x 0, y 0, w 40, h 40) icon "icon.thumb.X.png" value (0..1) }
                     tileOn { type "panelon" title "Active" frame (x 174, y 6, w 40, h 32) icon "icon.shader.tile.png" value (0..1) user >>controls.repeatBox.value(x 0, y 0)
                         lag (0) }
-                    repeatBox { type "box" title "Repeat" frame (x 10, y 40, w 120, h 120) radius (10) tap2 (-1, -1) lag (0) user (0..1 = 1) >>controls.tileOn.value(1) value (0..1, 0..1) >>render.buffer.repeat }
-                    mirrorBox { type "box" title "Mirror" frame (x 140, y 60, w 80, h 80) radius (10) tap2 (1, 1) lag (0) user (0..1 = 1) value (0..1, 0..1) >>render.buffer.mirror } } } } } }
+                    repeatBox { type "box" title "Repeat" frame (x 10, y 40, w 120, h 120) radius (10) tap2 (x -1, y -1) lag (0) user (0..1 = 1) >>controls.tileOn.value(1) value (x 0..1, y 0..1) >>render.buffer.repeat }
+                    mirrorBox { type "box" title "Mirror" frame (x 140, y 60, w 80, h 80) radius (10) tap2 (x 1, y 1) lag (0) user (0..1 = 1) value (x 0..1, y 0..1) >>render.buffer.mirror } } } } } }
 
 """

@@ -115,7 +115,7 @@
                     scrollOn { type "panelon", title "Active", frame (x 168, y 6, w 48, h 32), icon "icon.scroll.png", value (0..1)
                         user >> scrollBox.value (x 0.5, y 0.5), lag (0) }
                     hide { type "panelx", title "hide", frame (x 0, y 0, w 40, h 40), icon "icon.thumb.X.png", value (0..1) }
-                    scrollBox { type "box", title "Screen Scroll", frame (x 86, y 48, w 128, h 128), radius 10, tap2 (-1 -1), lag (0), value (x 0..1.5, y 0..1.5) <> sky.input.azimuth >> sky.shader.drawScroll.buffer.scroll,  user >> brushTilt.value (0) >> accelTilt.value (0) >> scrollOn.value (1) }
+                    scrollBox { type "box", title "Screen Scroll", frame (x 86, y 48, w 128, h 128), radius 10, tap2 (x -1, y -1), lag (0), value (x 0..1.5, y 0..1.5) <> sky.input.azimuth >> sky.shader.drawScroll.buffer.scroll,  user >> brushTilt.value (0) >> accelTilt.value (0) >> scrollOn.value (1) }
                     brushTilt { type "switch", title "Brush Tilt", frame (x 10, y 52, w 66, h 44), icon "icon.pen.tilt.png", value (0..1)  <> sky.input.tilt >> accelTilt.value (0) }
                     fillZero { type "trigger", title "Fill Zero", frame (x 10, y 126, w 44, h 44), icon "icon.drop.clear.png", value (0..1) >> sky.draw.screen.fillZero } } }
             speed { restart >> speedOn 1 >> controls.speed.value 60
@@ -139,6 +139,6 @@
                 controls {
                     hide { type "panelx", title "hide", frame (x 0, y 0, w 40, h 40), icon "icon.thumb.X.png", value (0..1) }
                     tileOn { type "panelon", title "Active", frame (x 174, y 6, w 48, h 32), icon "icon.shader.tile.png", value (0..1), user >> repeatBox.value (x 0, y 0), lag (0) }
-                    mirrorBox { type "box", title "Mirror", frame (x 10, y 80, w 80, h 80), radius 10, tap2 (1, 1), lag (0), user (0..1=1), value (0..1, 0..1) >> sky.shader.render.buffer.mirror }
-                    repeatBox { type "box", title "Repeat", frame (x 100, y 40, w 120, h 120), radius 10, tap2 (-1, -1), lag (0),
-                        user (0..1=1) >> tileOn.value (1) >> value (0..1, 0..1) >> sky.shader.render.buffer.repeat } } } } }
+                    mirrorBox { type "box", title "Mirror", frame (x 10, y 80, w 80, h 80), radius 10, tap2 (x 1, y 1), lag (0), user (0..1=1), value (0..1, 0..1) >> sky.shader.render.buffer.mirror }
+                    repeatBox { type "box", title "Repeat", frame (x 100, y 40, w 120, h 120), radius 10, tap2 (x -1, y -1), lag (0),
+                        user (0..1=1) >> tileOn.value (1) >> value (x 0..1, y 0..1) >> sky.shader.render.buffer.repeat } } } } }
