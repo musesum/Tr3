@@ -162,7 +162,7 @@ final class Tr3Tests: XCTestCase {
 
         subhead("comment")
         err += test("a // yo", "√ { a }")
-        err += test("a { b } // yo", "√ { a { b } }") //??
+        err += test("a { b } // yo", "√ { a { b } }")
         err += test("a { b // yo \n } ", "√ { a { b // yo \n } }")
         err += test("a { b { // yo \n c } } ", "√ { a { b { // yo \n c } } }")
         // error err += test("a b a // yo \n << b // oy\n", "√ { a // yo \n << b // oy\n b }")
@@ -278,8 +278,6 @@ final class Tr3Tests: XCTestCase {
 
     func testParseValues() { headline(#function)
         var err = 0
-        err += test("a(x 1, y 2)")
-
         err += test("a(1)")
         err += test("a(1..2)")
         err += test("a(1, 2)")
@@ -306,10 +304,10 @@ final class Tr3Tests: XCTestCase {
 
         print("\n━━━━━━━━━━━━━━━━━━━━━━ tr3 tuples ━━━━━━━━━━━━━━━━━━━━━━\n")
         err += test("a(x 0..1 = 0.5, y 0..1 = 0.5)", "√ { a(x 0..1 = 0.5, y 0..1 = 0.5) }")
-        err += test("a(x 1..2, y 1..2)", "√ { a(x 1..2, y 1..2) }")
-        err += test("b(x -1. y 2.)", "√ { b(x -1, y 2) }")
-        err += test("c(x 3, y 4)", "√ { c (x 3, y 4) }")
-        err += test("d(x y z)", "√ { d (x, y, z) }")
+        err += test("a(x 1..2, y 1..2)")
+        err += test("b(x -1, y 2)")
+        err += test("c(x 3, y 4)")
+        err += test("d(x, y, z)")
         err += test("m(0, 0, 0), n >> m(1, 1, 1)", "√ { m(0, 0, 0), n >> m(1, 1, 1) }")
         err += test("m(0, 0, 0), n(1, 1, 1) >> m", "√ { m(0, 0, 0), n(1, 1, 1) >> m }")
         err += test("e(x -16..16, y -16..16)", "√ { e(x -16..16, y -16..16) }")
@@ -360,7 +358,7 @@ final class Tr3Tests: XCTestCase {
         err += test("a { b { c } } ˚˚ <> .. ", "√ { a <> √ { b <> a { c <> a.b } } ˚˚ <> .. }")
 
         subhead("multi edge")
-        err += test("a << (b c)", "√ { a << (b c) }")
+        err += test("a << (b c)")
         err += test("a << (b c) { b c }", "√ { a << (a.b a.c) { b c } }")
         err += test("a >> (b c) { b c }", "√ { a >> (a.b a.c) { b c } }")
 
@@ -956,10 +954,10 @@ body {left right}.{shoulder.elbow.wrist {thumb index middle ring pinky}.{meta pr
     func testFilter() { headline(#function)
         Par.trace = true
         var err = 0
+        
+        err += test("a (w == 0, x 1, y 0)")
 
-        err += test("a (w, x 1, y)")
-
-        err += test("a (w, x == 1, y)")
+        err += test("a (w 0, x 1, y 0)")
 
         err += test("a {b c}.{ d(1) e(2) }",
                     "√ { a { b { d(1) e(2) } c { d(1) e(2) } } }")
@@ -967,22 +965,22 @@ body {left right}.{shoulder.elbow.wrist {thumb index middle ring pinky}.{meta pr
         err += test("a {b c}.{ d(x 1) e(y 2) }",
                     "√ { a { b { d(x 1) e(y 2) } c { d(x 1) e(y 2) } } }")
 
-        err += test("a {b c}.{ d(x 1) e(y 2) } w(x, y, z)",
+        err += test("a {b c}.{ d(x 1) e(y 2) } w(x 0, y 0, z 0)",
                     "√ { a { b { d (x 1) e (y 2) } " +
                     "        c { d (x 1) e (y 2) } } " +
-                    "    w (x, y, z) }")
+                    "    w (x 0, y 0, z 0) }")
 
-        err += test("a {b c}.{ d(x == 10, y, z) e(x, y == 21, z) }",
-                    "√ { a { b { d (x == 10, y, z) e (x, y == 21, z) } " +
-                    "        c { d (x == 10, y, z) e (x, y == 21, z) } } }")
+        err += test("a {b c}.{ d(x == 10, y 0, z 0) e(x 0, y == 21, z 0) }",
+                    "√ { a { b { d (x == 10, y 0, z 0) e (x 0, y == 21, z 0) } " +
+                    "        c { d (x == 10, y 0, z 0) e (x 0, y == 21, z 0) } } }")
 
-        err += test("a {b c}.{ d(x == 10, y, z) e(x, y == 21, z) } w(x y z) <> a˚.",
-                    "√ { a { b { d (x == 10, y, z) e (x, y == 21, z) } " +
-                    "        c { d (x == 10, y, z) e (x, y == 21, z) } } " +
-                    "    w (x, y, z) <>(a.b.d a.b.e a.c.d a.c.e) }")
+        err += test("a {b c}.{ d(x == 10, y 0, z 0) e(x 0, y == 21, z  0) } w(x 0, y 0, z 0) <> a˚.",
+                    "√ { a { b { d (x == 10, y 0, z 0) e (x 0, y == 21, z 0) } " +
+                    "        c { d (x == 10, y 0, z 0) e (x 0, y == 21, z 0) } } " +
+                    "    w (x 0, y 0, z 0) <>(a.b.d a.b.e a.c.d a.c.e) }")
 
         // selectively set tuples by name, ignore the reset
-        let script = "a {b c}.{ d(x == 10, y, z) e(x, y == 21, z) } w(x, y, z) <> a˚."
+        let script = "a {b c}.{ d(x == 10, y 0, z 0) e(x 0, y == 21, z 0) } w(x 0, y 0, z 0) <> a˚."
         let root = Tr3("√")
 
         if tr3Parse.parseScript(root, script),
@@ -991,10 +989,11 @@ body {left right}.{shoulder.elbow.wrist {thumb index middle ring pinky}.{meta pr
             // 0, 0, 0 --------------------------------------------------
             let t0 = Tr3Exprs(pairs: [("x", 0), ("y", 0), ("z", 0)])
             w.setVal(t0, .activate)
-            let result0 = root.dumpScript(session: false)
+            let result0 = root.dumpScript(session: true)
             let expect0 = """
-            √ { a { b { d (x == 10, y, z) e (x, y == 21, z) }
-                    c { d (x == 10, y, z) e (x, y == 21, z) } }
+
+            √ { a { b { d (x 0, y 0, z 0) e (x 0, y 0, z 0) }
+                    c { d (x 0, y 0, z 0) e (x 0, y 0, z 0) } }
                         w (x 0, y 0, z 0) <> (a.b.d a.b.e a.c.d a.c.e) }
             """
             err += ParStr.testCompare(expect0, result0)
@@ -1002,36 +1001,36 @@ body {left right}.{shoulder.elbow.wrist {thumb index middle ring pinky}.{meta pr
             // 10, 11, 12 --------------------------------------------------
             let t1 = Tr3Exprs(pairs: [("x", 10), ("y", 11), ("z", 12)])
             w.setVal(t1, .activate)
-            let result1 = root.dumpScript(session: false)
+            let result1 = root.dumpScript(session: true)
             let expect1 = """
 
-            √ { a { b { d (x == 10, y 11, z 12) e (x, y == 21, z) }
-                    c { d (x == 10, y 11, z 12) e (x, y == 21, z) } }
-                        w (x    10, y 11, z 12) <> (a.b.d a.b.e a.c.d a.c.e) }
+            √ { a { b { d (x 10, y 11, z 12) e (x 0, y 0, z 0) }
+                    c { d (x 10, y 11, z 12) e (x 0, y 0, z 0) } }
+                        w (x 10, y 11, z 12) <> (a.b.d a.b.e a.c.d a.c.e) }
             """
             err += ParStr.testCompare(expect1, result1)
 
             // 20, 21, 22 --------------------------------------------------
             let t2 = Tr3Exprs(pairs: [("x", 20), ("y", 21), ("z", 22)])
             w.setVal(t2, .activate)
-            let result2 = root.dumpScript(session: false)
+            let result2 = root.dumpScript(session: true)
             let expect2 = """
 
-            √ { a { b { d (x == 10, y 11, z 12) e (x 20, y == 21, z 22) }
-                    c { d (x == 10, y 11, z 12) e (x 20, y == 21, z 22) } }
-                        w (x    20, y 21, z 22) <> (a.b.d a.b.e a.c.d a.c.e) }
+            √ { a { b { d (x 10, y 11, z 12) e (x 20, y 21, z 22) }
+                    c { d (x 10, y 11, z 12) e (x 20, y 21, z 22) } }
+                        w (x 20, y 21, z 22) <> (a.b.d a.b.e a.c.d a.c.e) }
             """
             err += ParStr.testCompare(expect2, result2)
 
             // 10, 21, 33 --------------------------------------------------
             let t3 = Tr3Exprs(pairs: [("x", 10), ("y", 21), ("z", 33)])
             w.setVal(t3, .activate)
-            let result3 = root.dumpScript(session: false)
+            let result3 = root.dumpScript(session: true)
             let expect3 = """
 
-            √ { a { b { d (x == 10, y 21, z 33) e (x 10, y == 21, z 33) }
-                    c { d (x == 10, y 21, z 33) e (x 10, y == 21, z 33) } }
-                        w (x 10,    y 21, z 33) <> (a.b.d a.b.e a.c.d a.c.e) }
+            √ { a { b { d (x 10, y 21, z 33) e (x 10, y 21, z 33) }
+                    c { d (x 10, y 21, z 33) e (x 10, y 21, z 33) } }
+                        w (x 10, y 21, z 33) <> (a.b.d a.b.e a.c.d a.c.e) }
             """
             err += ParStr.testCompare(expect3, result3)
 
@@ -1090,7 +1089,7 @@ body {left right}.{shoulder.elbow.wrist {thumb index middle ring pinky}.{meta pr
             err += ParStr.testCompare(expect0, result0, echo: true)
 
             let result1 = root.dumpScript(session: false)
-            let expect1 = "√ { a(x 0..2 = 1, y 0..2 = 1) }"
+            let expect1 = "√ { a(x 0..2, y 0..2) }"
             err += ParStr.testCompare(expect1, result1, echo: true)
         }
         else {
@@ -1107,7 +1106,7 @@ body {left right}.{shoulder.elbow.wrist {thumb index middle ring pinky}.{meta pr
         Par.trace2 = false
         var err = 0
 
-        let script = "a(x in 2..4, x 1..2, y in 3..5, y 2..3)"
+        let script = "a(x in 2..4, y in 3..5) >> b b(x 1..2, y 2..3)"
         print("\n" + script)
 
         let root = Tr3("√")
@@ -1115,14 +1114,14 @@ body {left right}.{shoulder.elbow.wrist {thumb index middle ring pinky}.{meta pr
            let a = root.findPath("a") {
 
             let result0 = root.dumpScript(session: false)
-            let expect0 = "√ { a(x in 2..4, x 1..2, y in 3..5, y 2..3) }"
+            let expect0 = "√ { a (x in 2..4, y in 3..5) >>b b (x 1..2, y 2..3) }"
             err += ParStr.testCompare(expect0, result0, echo: true)
 
             let p1 = CGPoint(x: 3, y: 4)
             a.setVal(p1, [.activate])
 
             let result1 = root.dumpScript(session: true)
-            let expect1 = "√ { a(x 1.5, y 2.5) }"
+            let expect1 = "√ { a(x 3, y 4) >>b b (x 1.5, y 2.5) }"
             err += ParStr.testCompare(expect1, result1, echo: true)
 
         } else {
@@ -1299,7 +1298,7 @@ body {left right}.{shoulder.elbow.wrist {thumb index middle ring pinky}.{meta pr
         func parse(_ name: String, _ script: String) -> Int {
             let success = tr3Parse.parseScript(root, script, whitespace: "\n\t ")
             if success { print("\(name) ✓") }
-            else        { print("\(name) 🚫 parse failed") }
+            else       { print("\(name) 🚫 parse failed") }
             return success ? 0 : 1
         }
         err += parse("SkyMainTr3",SkyMainTr3)

@@ -56,7 +56,7 @@ public class Tr3: Hashable {
         passthrough = from.passthrough
         val         = from.val?.copy() ?? nil
         edgeDefs    = from.edgeDefs.copy()
-        comments    = from.comments //?? 
+        comments    = from.comments
     }
     public convenience init(with val_: Tr3Val) { self.init() ; val = val_.copy() }
 

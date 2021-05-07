@@ -122,8 +122,10 @@ public class Tr3Parse {
                 parseDeepScalar(val, parItem)
 
             case let val as Tr3Exprs:
-
-                 parseExpression(val, parItem, pattern)
+                // TODO: problem with deep parsing of scalar not advancing parItem
+                if pattern != "num" {
+                    parseExpression(val, parItem, pattern)
+                }
 
             case let val as Tr3ValTern:
                 // ternary ~ "(" tern ")" | tern {
@@ -170,7 +172,9 @@ public class Tr3Parse {
     public func parseExpression(_ exprs: Tr3Exprs?,_ parItem: ParItem,_ prior: String) {
         guard let exprs = exprs else { return }
 
-        exprs.addExpr()
+        if prior == "expr" {
+            exprs.addExpr()
+        }
 
         for nextPar in parItem.nextPars {
 
@@ -180,12 +184,33 @@ public class Tr3Parse {
                     parseDeepScalar(scalar, deepPar)
                 }
             }
+            func addEmptyPattern() {
+                if prior != "num" {
+                    exprs.addOper(nextPar.value)
+                } else {
+                    print("*** unexpected \(#function)")
+                }
+            }
+            func addName() {
+                if let name = nextPar.nextPars.first?.value {
+                    exprs.addName(name)
+                } else {
+                    print("*** unexpected \(#function)")
+                }
+            }
+            func addOper() {
+                if let oper = nextPar.nextPars.first?.value {
+                    exprs.addOper(oper)
+                } else {
+                    print("*** unexpected \(#function)")
+                }
+            }
 
             let pattern = nextPar.node?.pattern
             switch pattern {
-                case "":        exprs.addOper(nextPar.value)
-                case "name":    exprs.addName(nextPar.nextPars.first?.value)
-                case "exprOp":  exprs.addOper(nextPar.nextPars.first?.value)
+                case "":        addEmptyPattern()
+                case "name":    addName()
+                case "exprOp":  addOper()
                 case "scalar1": addDeepScalar()
                 default: break
             }
@@ -247,6 +272,7 @@ public class Tr3Parse {
 
                 if let lastVal = edgeDef.pathVals.pathDict[lastPath], lastVal != nil {
                     parseDeepVal(lastVal, parItem)
+                    return tr3
                 }
                 else  {
 
@@ -287,7 +313,7 @@ public class Tr3Parse {
         else {
             parseDeepVal(tr3.val, parItem)
             // keep prior while decorating Tr3.val
-            return tr3 //??? parseNext(tr3, prior, parItem, level+1) //??? tr3
+            return tr3
         }
         return parseNext(tr3, pattern, parItem, level+1)
     }

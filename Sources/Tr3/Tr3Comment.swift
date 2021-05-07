@@ -23,8 +23,6 @@ public class Tr3Comment {
     }
 }
 
-//?? var testPrior =  Set<String>() //??
-
 public class Tr3Comments {
 
     var comments = [Tr3Comment]()

@@ -6,6 +6,32 @@
 
 import Foundation
 
+public struct Tr3ExprOptions: OptionSet {
+    public let rawValue: Int
+    public static let expr    = Tr3ExprOptions(rawValue: 1 << 0)
+    public static let op      = Tr3ExprOptions(rawValue: 1 << 1)
+    public static let name    = Tr3ExprOptions(rawValue: 1 << 2)
+    public static let scalar  = Tr3ExprOptions(rawValue: 1 << 3)
+    public static let rvalue  = Tr3ExprOptions(rawValue: 1 << 4)
+
+    public init(rawValue: Int = 0) { self.rawValue = rawValue }
+
+    static public var debugDescriptions: [(Self, String)] = [
+        (.expr   , "expr"    ),
+        (.op     , "op"      ),
+        (.name   , "name"    ),
+        (.scalar , "scalar"  ),
+        (.rvalue , "rvalue"  ),
+    ]
+
+    public var description: String {
+        let result: [String] = Self.debugDescriptions.filter { contains($0.0) }.map { $0.1 }
+        let printable = result.joined(separator: ", ")
+
+        return "\(printable)"
+    }
+}
+
 enum Tr3ExprOp: String {
 
     case none = ""
@@ -26,39 +52,31 @@ public class Tr3Expr {
 
     var name: ExprName = ""
     var exprOp = Tr3ExprOp.none
-    var operand: Any? // name | scalar
-
-    enum LastParse { case none, name, exprOp, operand }
-    var lastParse = LastParse.none
+    var rvalue: Any? // name | scalar
+    var options = Tr3ExprOptions(rawValue: 0)
 
     init() {
     }
 
     init(_ name: String) {
-        switch lastParse {
-            case .none:
-                self.name = name
-                lastParse = .name
-            default:
-                operand = name
-                lastParse = .operand
-        }
+        self.name = name
+        options.insert(.name)
     }
     init(name: String, exprOp: Tr3ExprOp) {
         self.name = name
         self.exprOp = exprOp
-        lastParse = .operand
+        options.insert(.rvalue)
     }
 
     init (with from: Tr3Expr) {
         name = from.name
         exprOp = from.exprOp
-        lastParse = from.lastParse
-        if let frOperand = from.operand {
-            switch frOperand {
-            case let n as ExprName: operand = n
-            case let s as Tr3ValScalar: operand = Tr3ValScalar(with: s)
-            default: print("*** unknown Tr3Expr from next: \(frOperand)")
+        options = from.options
+        if let frRvalue = from.rvalue {
+            switch frRvalue {
+            case let n as ExprName: rvalue = n
+            case let s as Tr3ValScalar: rvalue = Tr3ValScalar(with: s)
+            default: print("*** unknown Tr3Expr from next: \(frRvalue)")
             }
         }
     }
@@ -69,108 +87,128 @@ public class Tr3Expr {
     }
 
     func addOpStr (_ opStr: String) {
-        if let op  = Tr3ExprOp(rawValue: opStr) {
+        if let op = Tr3ExprOp(rawValue: opStr) {
             exprOp = op
-            lastParse = .exprOp
+            options.insert(.op)
         } else {
             print("*** unknown exprOp: \(opStr)")
         }
     }
     func addExprName(_ name: String) {
-        switch lastParse {
-            case .none:
-                self.name = name
-                lastParse = .name
-            default:
-                self.operand = name
-                lastParse = .operand
+        if options.rawValue == 0 {
+            self.name = name
+            options.insert(.name)
+        } else {
+            self.rvalue = name
+            options.insert(.rvalue)
         }
     }
     func addExprOp (_ exprOp: Tr3ExprOp) {
         self.exprOp = exprOp
-        lastParse = .exprOp
+        options.insert(.op)
     }
-    func addExprOperand(_ operand: Any) {
-        self.operand = operand
-        lastParse = .operand
+    func addExprScalar(_ scalar: Any) {
+        self.rvalue = scalar
+        options.insert(.rvalue)
     }
     
-    func eval(from: Tr3ValScalar, expr: Tr3ValScalar) {
+    func eval(frScalar: Tr3ValScalar) -> Tr3ValScalar? {
+        if rvalue is Tr3ValScalar {
+            if exprOp == .none {
+                
+                return frScalar
+                
+            } else if let result = evalScalars(from: frScalar)  {
 
-        if exprOp == .none {
+                return result
 
-            expr.setVal(from)
-
-        } else if let result = evalScalars(from, expr)  {
-
-            expr.setVal(result)
-            
+            } else {
+                
+                print("unknown Tr3Expr rvalue: \(rvalue ?? "nil")")
+                return nil
+            }
         } else {
-
-            print("unknown Tr3Expr operand: \(operand ?? "nil")")
+            addExprScalar(frScalar)
+            return frScalar
         }
     }
 
-    func getLeftRightVals(_ nameScalar: [String: Tr3ValScalar],
-                          _ frScalar: Tr3ValScalar) -> (Tr3ValScalar,Tr3ValScalar)? {
+    func evalIsIn(from: Tr3ValScalar) -> Tr3ValScalar? {
+        guard let rvalue = rvalue as? Tr3ValScalar else { return nil }
+        var notZeroNum: Float { get { return rvalue.num != 0 ? rvalue.num : 1 } }
 
-        if let operand = operand {
-            switch operand {
-            case let name as String:
-                guard let nameScalarVal = nameScalar[name] else { return nil }
-                return (frScalar, nameScalarVal)
-            case let scalar as Tr3ValScalar:
-                return (frScalar, scalar)
-            default: return nil
-            }
+        switch exprOp {
+            case .expIn:
+
+                if from.inRange(of: rvalue.num) {
+                    rvalue.num = from.num
+                    return rvalue
+                }
+            default: break
         }
         return nil
     }
-    func evalScalars(_ from: Tr3ValScalar, // frScalar
-                     _ expr: Tr3ValScalar) -> Tr3ValScalar? {
-
-        var notZeroNum: Float { get { return expr.num != 0 ? expr.num : 1 } }
+    func evalScalars(from: Tr3ValScalar) -> Tr3ValScalar? {
+        guard let rvalue = rvalue as? Tr3ValScalar else { return nil }
+        var notZeroNum: Float { get { return rvalue.num != 0 ? rvalue.num : 1 } }
 
         switch exprOp {
-            case .expIn: return from.inRange(of: expr.num) ? from : nil
-            case .expEQ: return from.num == expr.num ? from : nil
-            case .expLE: return from.num <= expr.num ? from : nil
-            case .expGE: return from.num >= expr.num ? from : nil
-            case .expLT: return from.num <  expr.num ? from : nil
-            case .expGT: return from.num >  expr.num ? from : nil
-            case .expAdd: return Tr3ValScalar(num: expr.num + from.num)
-            case .expSub: return Tr3ValScalar(num: expr.num - from.num)
-            case .expMuy: return Tr3ValScalar(num: expr.num * from.num)
-            case .expDiv: return Tr3ValScalar(num: expr.num / notZeroNum)
-            case .expMod: return Tr3ValScalar(num: fmodf(expr.num, notZeroNum))
-            default: return expr
+            case .expIn: return evalIsIn(from: from)
+            case .expEQ: return from.num == rvalue.num ? from : nil
+            case .expLE: return from.num <= rvalue.num ? from : nil
+            case .expGE: return from.num >= rvalue.num ? from : nil
+            case .expLT: return from.num <  rvalue.num ? from : nil
+            case .expGT: return from.num >  rvalue.num ? from : nil
+            case .expAdd: return Tr3ValScalar(num: from.num + rvalue.num)
+            case .expSub: return Tr3ValScalar(num: from.num - rvalue.num)
+            case .expMuy: return Tr3ValScalar(num: from.num * rvalue.num)
+            case .expDiv: return Tr3ValScalar(num: from.num / notZeroNum)
+            case .expMod: return Tr3ValScalar(num: fmodf(from.num, notZeroNum))
+            default: return from
         }
     }
 
-    func isEligible(_ num: Float,_ to: Tr3ValScalar) -> Bool {
+    func isEligible(num: Float) -> Bool {
+        guard let rvalue = rvalue as? Tr3ValScalar  else { return true }
         switch exprOp {
-            case .expEQ: return num == to.num
-            case .expLE: return num <= to.num
-            case .expGE: return num >= to.num
-            case .expLT: return num <  to.num
-            case .expGT: return num >  to.num
-            case .expIn: return num >= to.min && num <= to.max
+            case .expEQ: return num == rvalue.num
+            case .expLE: return num <= rvalue.num
+            case .expGE: return num >= rvalue.num
+            case .expLT: return num <  rvalue.num
+            case .expGT: return num >  rvalue.num
+            case .expIn: return num >= rvalue.min && num <= rvalue.max
             default: return true
         }
     }
     
     func script(session: Bool) -> String {
-
+        
         var script = name
         if exprOp != .none {
-            script += " " + exprOp.rawValue
+            if script.isEmpty {
+                script = exprOp.rawValue
+            } else {
+                script += " " + exprOp.rawValue
+            }
         }
-        if let operand = operand {
+        let delim = name.isEmpty ? "" : " "
+        
+        if let rvalue = rvalue {
 
-            switch operand {
-            case let n as ExprName:     script += " " + n
-                case let s as Tr3ValScalar: script += " " + s.dumpVal(parens: false, session: session)
-            default: print("*** unknown script operand: \(operand)")
+            switch rvalue {
+
+                case let n as ExprName:
+
+                    script += delim + n
+
+                case let s as Tr3ValScalar:
+
+                    let scalar = s.dumpVal(parens: false, session: session)
+                    script += delim + scalar
+
+                default:
+
+                    print("*** unknown script rvalue: \(rvalue)")
             }
         }
         return script

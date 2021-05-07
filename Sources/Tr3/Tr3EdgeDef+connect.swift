@@ -51,7 +51,7 @@ extension Tr3EdgeDef {
 
         // ────────────── begin ──────────────
 
-        tern.pathTr3s.removeAll() //??//
+        tern.pathTr3s.removeAll()
 
         let found = tr3.findPathTr3s(tern.path,[.parents,.children])
         if found.isEmpty {
@@ -64,7 +64,7 @@ extension Tr3EdgeDef {
                     foundSet.insert(tr3)
                 }
             }
-            tern.pathTr3s.removeAll() //??//
+            tern.pathTr3s.removeAll()
             tern.pathTr3s.append(contentsOf: foundSet)
             // sorting by triplet (a.b.c) is unnecessary for runtime, but nice for debugging
             tern.pathTr3s.sort(by:{ $0.scriptLineage(2) < $1.scriptLineage(2) })
@@ -118,7 +118,7 @@ extension Tr3EdgeDef {
                 foundSet.insert(tr3)
             }
         }
-        valPath.pathTr3s.removeAll() //??//
+        valPath.pathTr3s.removeAll()
         valPath.pathTr3s.append(contentsOf: foundSet)
         valPath.pathTr3s.sort(by:{ $0.scriptLineage(2) < $1.scriptLineage(2) })
         for pathTr3 in valPath.pathTr3s {

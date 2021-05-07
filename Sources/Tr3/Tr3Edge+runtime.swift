@@ -20,13 +20,13 @@ extension Tr3Edge {
 
             if leftToRight, let ternVal = rightTr3?.findEdgeTern(self) {
 
-                ternVal.recalc(leftTr3!, rightTr3!, .activate , visitor)
+                ternVal.recalc(leftTr3, rightTr3, .activate , visitor)
                 rightTr3?.activate(visitor)
                 //print("\(fromTr3.name)╌>\(destTr3?.name ?? "")")
             }
             else if !leftToRight, let ternVal = leftTr3?.findEdgeTern(self) {
 
-                ternVal.recalc(rightTr3!, leftTr3!, .activate, visitor)
+                ternVal.recalc(rightTr3, leftTr3, .activate, visitor)
                 leftTr3?.activate(visitor)
                 //print("\(fromTr3.name)╌>\(destTr3?.name ?? "")")
             }

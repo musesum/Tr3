@@ -130,11 +130,13 @@ extension Tr3ValTern {
         radioNext?.changeRadioNext(prevTr3, nextTr3, visitor)
     }
 
-    func recalc(_ prevTr3: Tr3,
-                _ nextTr3: Tr3,
+    func recalc(_ prevTr3: Tr3?,
+                _ nextTr3: Tr3?,
                 _ act:     Tr3Act,
                 _ visitor: Visitor) {
 
+        guard let prevTr3 = prevTr3 else { print("*** prevTr3 = nil"); return }
+        guard let nextTr3 = nextTr3 else { print("*** nextTr3 = nil"); return }
         // a in `w <-(a ? x : y)`
         // a in `w <-(a == b ? x : y)`  when a == b
         if testCondition(prevTr3,act) {

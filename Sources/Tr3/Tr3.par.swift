@@ -41,7 +41,6 @@ tr3 ~ left right* {
         edgeOp ~ '^([<][<⋯!\:&\=\╌>]+|[⋯!\:&\=\╌>]+[>])'
         edgePar ~ "(" edgeItem+ ")" edges?
         edgeItem ~ (edgeVal | ternary) comment*
-
         edgeVal ~ (path | name) (edges+ | value)?
 
         ternary ~ "(" tern ")" | tern {
