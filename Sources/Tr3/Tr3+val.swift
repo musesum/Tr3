@@ -16,13 +16,19 @@ extension Tr3 {
     }
 
     public func CGRectVal() -> CGRect? {
-        if let v = val as? Tr3Exprs, v.scalars.count >= 4 {
-            let x = CGFloat(v.scalars[0].num)
-            let y = CGFloat(v.scalars[1].num)
-            let w = CGFloat(v.scalars[2].num)
-            let h = CGFloat(v.scalars[3].num)
-            let rect = CGRect(x: x, y: y, width: w, height: h)
-            return rect
+        if let v = val as? Tr3Exprs {
+            let ns = v.nameScalar
+            if ns.count >= 4,
+               let x = ns["x"]?.num,
+               let y = ns["y"]?.num,
+               let w = ns["w"]?.num,
+               let h = ns["h"]?.num {
+                    let rect = CGRect(x: CGFloat(x),
+                                      y: CGFloat(y),
+                                      width: CGFloat(w),
+                                      height: CGFloat(h))
+                    return rect
+               }
         }
         return nil
     }

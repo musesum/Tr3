@@ -422,7 +422,7 @@ public class Tr3Parse {
     func parse(_ tr3: Tr3,_ prior: String,_ parItem: ParItem,_ level: Int) -> Tr3 {
 
         // log progress through parse, here !!
-        log(tr3, parItem, level)
+        // log(tr3, parItem, level)
 
         if  let pattern = parItem.node?.pattern,
             let tr3Parse = tr3Keywords[pattern] {
