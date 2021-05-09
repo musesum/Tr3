@@ -9,7 +9,7 @@ import Par // visitor
 
 extension Tr3ValTern {
 
-    func changeState(_ state_:  Tr3TernState,
+    func changeState(_ state:   Tr3TernState,
                      _ prevTr3: Tr3,
                      _ nextTr3: Tr3,
                      _ act:     Tr3Act,
@@ -44,7 +44,7 @@ extension Tr3ValTern {
                 tern.recalc(prevTr3, nextTr3, act, visitor)
             }
             else if act != .sneak {
-                tr3?.setEdgeVal(val,visitor)
+                tr3?.setEdgeVal(val, visitor)
             }
         }
         func neitherPathVal(_ val: Tr3Val?) {
@@ -55,18 +55,18 @@ extension Tr3ValTern {
 
         // ────────────── begin ──────────────
 
-        ternState = state_
+        ternState = state
         switch ternState {
 
         case .Then:
-            // b1,b2,b3 in `x <- (a ? (b1?b2:b3) : c)`
+            // b1, b2, b3 in `x <- (a ? (b1 ? b2 : b3) : c)`
             setTernEdges(thenVal, active: true)
             setTernEdges(elseVal, active: false)
             recalcPathVal(thenVal)
             neitherPathVal(elseVal)
 
         case .Else:
-            // c1,c2,c3 in `x <- (a ? b : (c1?c2:c3))`
+            // c1, c2, c3 in `x <- (a ? b : (c1 ? c2 : c3))`
             setTernEdges(thenVal, active: false)
             setTernEdges(elseVal, active: true)
             neitherPathVal(thenVal)
@@ -126,7 +126,7 @@ extension Tr3ValTern {
                          _ nextTr3: Tr3,
                          _ visitor: Visitor) {
 
-        changeRadio(prevTr3,nextTr3,visitor)
+        changeRadio(prevTr3, nextTr3, visitor)
         radioNext?.changeRadioNext(prevTr3, nextTr3, visitor)
     }
 
@@ -139,7 +139,7 @@ extension Tr3ValTern {
         guard let nextTr3 = nextTr3 else { print("*** nextTr3 = nil"); return }
         // a in `w <-(a ? x : y)`
         // a in `w <-(a == b ? x : y)`  when a == b
-        if testCondition(prevTr3,act) {
+        if testCondition(prevTr3, act) {
 
             radioPrev?.changeRadioPrev(prevTr3, nextTr3, visitor)
             radioNext?.changeRadioNext(prevTr3, nextTr3, visitor)
@@ -147,7 +147,7 @@ extension Tr3ValTern {
         }
             // during bindTerns, deactivate edges when there is no value or comparison
         else if act == .sneak {
-            // deactive both Then,Else edges
+            // deactive both Then, Else edges
             radioPrev?.changeRadioPrev(prevTr3, nextTr3, visitor)
             radioNext?.changeRadioNext(prevTr3, nextTr3, visitor)
             changeState(.Neither, prevTr3, nextTr3, act, visitor) // a ?? b fails comparison
@@ -166,7 +166,7 @@ extension Tr3ValTern {
 
         // preserve event.val for multiple successors
         // as event.val is always a src, it is never changed.
-        // DebugPrint("dst:%s src:%s \n&src.val:%p \n&event.val:%p\n\n", dst.name.c_str(),src.name.c_str(),src.val,event.val)
+        // DebugPrint("dst:%s src:%s \n&src.val:%p \n&event.val:%p\n\n", dst.name.c_str(), src.name.c_str(), src.val, event.val)
 
         if left.passthrough { left.val = right.val }
         else                { left.val?.setVal(right.val!) }

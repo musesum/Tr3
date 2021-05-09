@@ -11,7 +11,7 @@ public struct Tr3ValFlags: OptionSet {
     public let rawValue: Int
 
     public static let scalar  = Tr3ValFlags(rawValue: 1 <<  0) // 1 General type Tr3ValScalar
-    public static let thru    = Tr3ValFlags(rawValue: 1 <<  2) // 0...1 in a:(0...1),range including 1
+    public static let thru    = Tr3ValFlags(rawValue: 1 <<  2) // 0...1 in a:(0...1), range including 1
     public static let modu    = Tr3ValFlags(rawValue: 1 <<  3) // 2 in a:(%2), modulo
 
     // explicitly declared values

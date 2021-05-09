@@ -35,7 +35,7 @@ public class Tr3Exprs: Tr3Val {
         if let v = tr3Val as? Tr3Exprs {
             
             valFlags = v.valFlags
-            for (name,val) in v.nameScalar {
+            for (name, val) in v.nameScalar {
                 nameScalar[name] = Tr3ValScalar(with: val)
                 options.insert([.name, .scalar])
             }
@@ -58,17 +58,17 @@ public class Tr3Exprs: Tr3Val {
         let x = Tr3ValScalar(num: Float(p.x))
         let y = Tr3ValScalar(num: Float(p.y))
         names = ContiguousArray<ExprName>(["x","y"])
-        scalars = ContiguousArray<Tr3ValScalar>([x,y])
+        scalars = ContiguousArray<Tr3ValScalar>([x, y])
         nameScalar = ["x": x, "y": y]
         options.insert([.name, .scalar])
     }
-    convenience init(pairs: [(ExprName,Float)]) {
+    convenience init(pairs: [(ExprName, Float)]) {
         self.init()
         valFlags.insert([.names, .nameScalars])
         names = ContiguousArray<ExprName>()
         nameScalar = [ExprName: Tr3ValScalar]()
         
-        for (name,val) in pairs {
+        for (name, val) in pairs {
             let scalar = Tr3ValScalar(num: val)
             names.append(name)
             nameScalar[name] = scalar
@@ -200,7 +200,7 @@ public class Tr3Exprs: Tr3Val {
 
      or change value `x/2`
      */
-    public override func setVal(_ any: Any?,_ opts: Any? = nil) {
+    public override func setVal(_ any: Any?, _ opts: Any? = nil) {
 
         func setFloat(_ v: Float) {
             valFlags.insert(.nameScalars)

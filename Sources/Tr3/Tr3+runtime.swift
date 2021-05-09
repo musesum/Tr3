@@ -9,15 +9,15 @@ import Par // visitor
 
 extension Tr3 {
 
-    public func setVal(_ any: Any,_ options: Tr3SetOptions,_ visitor: Visitor = Visitor(0)) {
+    public func setVal(_ any: Any, _ options: Tr3SetOptions, _ visitor: Visitor = Visitor(0)) {
 
         /// clean up scaffolding from parsing a Ternary,
-        /// todo: redo scaffolding instead of overloading val
+        /// todo: scaffolding instead of overloading val
         if let _ = val as? Tr3ValPath {
             val = nil
         }
         if options.contains(.cache) {
-            Tr3Cache.add(self,any,options,visitor)
+            Tr3Cache.add(self, any, options, visitor)
         }
         // any is a Tr3Val
         else if let fromVal = any as? Tr3Val {
@@ -39,12 +39,12 @@ extension Tr3 {
             passthrough = false
 
             switch any {
-            case let v as Int:              val = Tr3ValScalar(num: Float(v))
-            case let v as Float:            val = Tr3ValScalar(num: v)
-            case let v as CGFloat:          val = Tr3ValScalar(num: Float(v))
-            case let v as CGPoint:          val = Tr3Exprs(with: v)
-            case let v as [(String,Float)]: val = Tr3Exprs(pairs: v)
-            case let v as String:           val = Tr3ValQuote(with: v)
+            case let v as Int:               val = Tr3ValScalar(num: Float(v))
+            case let v as Float:             val = Tr3ValScalar(num: v)
+            case let v as CGFloat:           val = Tr3ValScalar(num: Float(v))
+            case let v as CGPoint:           val = Tr3Exprs(with: v)
+            case let v as [(String, Float)]: val = Tr3Exprs(pairs: v)
+            case let v as String:            val = Tr3ValQuote(with: v)
             default: print("*** unknown val(\(any))")
             }
         }
@@ -84,7 +84,7 @@ extension Tr3 {
     /// If the node has a value of its own, then remap
     /// its value and the range of the incoming value.
     ///
-    func setEdgeVal(_ fromVal: Tr3Val?,_ visitor: Visitor) {
+    func setEdgeVal(_ fromVal: Tr3Val?, _ visitor: Visitor) {
         
         if visitor.visited.contains(id) {
             return // already have visited left tr3
@@ -95,7 +95,7 @@ extension Tr3 {
                 passthrough = true  // no defined value so pass though
             }
             if passthrough {
-                val = fromVal // hold passthrough value,for successors to rescale
+                val = fromVal // hold passthrough value, for successors to rescale
             }
             else if let val = val {
                 switch val {

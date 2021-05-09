@@ -9,7 +9,7 @@ import Par
 
 extension Tr3Parse {
 
-    func log(_ t: Tr3?, _ parItem: ParItem,_ i: Int) {
+    func log(_ t: Tr3?, _ parItem: ParItem, _ i: Int) {
 
         let tr3Name = t?.name ?? "nil"
         let pattern = parItem.node?.pattern ?? "nil"

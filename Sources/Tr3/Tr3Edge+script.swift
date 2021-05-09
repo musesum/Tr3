@@ -9,7 +9,7 @@ import Foundation
 extension Tr3Edge {
     
     public func scriptEdgeFlag() -> String {
-        let script = Tr3EdgeDef.scriptEdgeFlag(edgeFlags,active)
+        let script = Tr3EdgeDef.scriptEdgeFlag(edgeFlags, active)
         return script
     }
 }

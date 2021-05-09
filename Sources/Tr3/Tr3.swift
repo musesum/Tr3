@@ -37,7 +37,7 @@ public class Tr3: Hashable {
 
     public static func == (lhs: Tr3, rhs: Tr3) -> Bool { return lhs.id == rhs.id  }
 
-    public convenience init(_ name_: String,_ type_: Tr3Type = .name) {
+    public convenience init(_ name_: String, _ type_: Tr3Type = .name) {
         self.init()
         name = name_
         type = type_
@@ -86,7 +86,7 @@ public class Tr3: Hashable {
             }
             else {
                 for child in children {
-                    child.attachDeep(tr3,visitor)
+                    child.attachDeep(tr3, visitor)
                 }
             }
         }
@@ -106,16 +106,16 @@ public class Tr3: Hashable {
          a { b {_:_{d e}} c {_:_{d e}}}  ⟹  a { b { d e } c { d e } }
      */
     public func makeMany() -> Tr3 {
-        let many = Tr3("_:_",.many)
-        attachDeep(many,Visitor(0))
+        let many = Tr3("_:_", .many)
+        attachDeep(many, Visitor(0))
         return many
     }
 
-    public func addChild(_ parItem: ParItem,_ type_: Tr3Type)  -> Tr3 {
+    public func addChild(_ parItem: ParItem, _ type_: Tr3Type)  -> Tr3 {
 
         if let value = parItem.nextPars.first?.value {
 
-            let child = Tr3(value,type_)
+            let child = Tr3(value, type_)
             children.append(child)
             child.parent = self
             return child

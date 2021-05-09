@@ -11,7 +11,7 @@ import Foundation
 /// currently cannot bundle resource with Swift package
 
 func parseFile(_ fileName: String) -> Bool {
-    if tr3Parse.parseTr3(root,fileName) {
+    if tr3Parse.parseTr3(root, fileName) {
         return 0
     }
     else {
@@ -26,7 +26,7 @@ func testInherit() { print("\n━━━━━━━━━━━━━━━━�
     err += parseFile("multimerge")
     let actual = root.makeScript()
     print(actual)
-    XCTAssertEqual(err,0)
+    XCTAssertEqual(err, 0)
 }
 
 
@@ -34,7 +34,7 @@ func testSky() { print("\n━━━━━━━━━━━━━━━━━━
 
     var err = 0
     let root = Tr3("√")
-    func parseFile(_ fileName: String) { tr3Parse.parseTr3(root,fileName) }
+    func parseFile(_ fileName: String) { tr3Parse.parseTr3(root, fileName) }
 
     err += parseFile("sky.main")
     err += parseFile("sky.shader")
@@ -54,13 +54,13 @@ func testSky() { print("\n━━━━━━━━━━━━━━━━━━
 
     // aways last to connect ruleOn, value state between dots
 
-    let actual = root.makeScript(0,pretty: true)
+    let actual = root.makeScript(0, pretty: true)
     let planned = ReadFile(SkyExpectedResult) // copy the 
 
     err += ParStr.testCompare(planned, actual, echo: true)
     //print(actual)
     let d3Script = root.makeD3Script()
     print(d3Script)
-    XCTAssertEqual(err,0)
+    XCTAssertEqual(err, 0)
 }
 #endif

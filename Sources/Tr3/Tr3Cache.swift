@@ -18,7 +18,7 @@ struct Tr3CacheItem {
 /// double buffer list of cache items
 public class Tr3Cache {
 
-    static var cache = [[Tr3CacheItem](),[Tr3CacheItem]()]
+    static var cache = [[Tr3CacheItem](), [Tr3CacheItem]()]
     static var input = 0
     static var output = 1
     static var flushing = false
@@ -44,14 +44,14 @@ public class Tr3Cache {
                 let opt = cache.opt
                 let visit = cache.visit
 
-                tr3.setVal(any,opt,visit)
+                tr3.setVal(any, opt, visit)
             }
             flushing = false
         }
     }
 
     /// add an Tr3CacheItem to cache to be flushed during next frame update
-    public static func add(_ tr3: Tr3,_ any: Any, _ opt: Tr3SetOptions,_ visitor: Visitor) {
+    public static func add(_ tr3: Tr3, _ any: Any, _ opt: Tr3SetOptions, _ visitor: Visitor) {
         let cacheItem = Tr3CacheItem(tr3: tr3, any: any, opt: opt, visit: visitor)
         cache[input].append(cacheItem)
     }

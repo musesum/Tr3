@@ -31,7 +31,7 @@ extension Tr3 {
      and not `a<<b { z }` to a<<b.z,
      */
     func canShortenWithDot() -> Bool {
-        if val != nil,edgeDefs.edgeDefs.count > 0 {
+        if val != nil, edgeDefs.edgeDefs.count > 0 {
             return true
         }
         return false 
@@ -66,7 +66,7 @@ extension Tr3 {
             return script
         }
 
-        func bracketChildren(_ openBracket: String,_  closeBracket: String) {
+        func bracketChildren(_ openBracket: String, _  closeBracket: String) {
             script.plus(openBracket)
             script.plus(getTr3Comment())
             var index = 0
@@ -122,7 +122,7 @@ extension Tr3 {
         return result
     }
 
-    func getTypeEdges(_ edges:[Tr3Edge],_ session: Bool) -> String {
+    func getTypeEdges(_ edges: [Tr3Edge], _ session: Bool) -> String {
 
         if edges.isEmpty { return  ""}
         var script = edges.first?.scriptEdgeFlag() ?? ""
@@ -176,7 +176,7 @@ extension Tr3 {
         }
         return nil
     }
-    func getChildren(_ indent: Int,_ session: Bool) -> String {
+    func getChildren(_ indent: Int, _ session: Bool) -> String {
         var result = ""
         if children.count > 0 {
             result = "{ " + getTr3Comment() + "\n"
@@ -212,7 +212,7 @@ extension Tr3 {
         return script
     }
     
-    static func dumpTr3s(_ tr3s:[Tr3]) -> String {
+    static func dumpTr3s(_ tr3s: [Tr3]) -> String {
 
         if tr3s.isEmpty { return "" }
         var script = tr3s.count > 1 ? "(" : ""

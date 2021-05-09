@@ -27,7 +27,7 @@ extension Tr3 {
         
         var script = "\t\t{'id':\(id), 'name':'\(name)'"
         if children.count > 0 {
-            script += ", 'children':["
+            script += ", 'children': ["
             var sep = ""
             for child in children {
                 script += sep + "\(child.id)"
@@ -43,7 +43,7 @@ extension Tr3 {
                 }
             }
             if leftEdgeCount > 0 {
-                script += ", 'edges':["
+                script += ", 'edges': ["
                 var sep = ""
                 for edge in tr3Edges.values {
                     if edge.leftTr3?.id == id {

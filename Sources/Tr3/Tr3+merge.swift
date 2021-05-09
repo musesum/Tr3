@@ -81,7 +81,7 @@ extension Tr3 {
         }
         return result
     }
-    func scriptChildren(_ children:[Tr3]) -> String {
+    func scriptChildren(_ children: [Tr3]) -> String {
         var script = "["
         var delim = ""
         for child in children {
@@ -147,7 +147,7 @@ extension Tr3 {
 
     func bindFindPath() -> [Tr3]? {
 
-        let found = findAnchor(name, [.parents,.children])
+        let found = findAnchor(name, [.parents, .children])
 
         if found.count == 1, found.first?.id == id,
             self.children.isEmpty {
@@ -172,12 +172,12 @@ extension Tr3 {
     }
     func bindMakePath() -> [Tr3] {
 
-        let found = findPathTr3s(name, [.parents,.children])
+        let found = findPathTr3s(name, [.parents, .children])
 
         type = .remove
         // no anchor to start from so make path starting from root
         if found.isEmpty {
-            if let pathChain = makePath(name,self) {
+            if let pathChain = makePath(name, self) {
                 // e.f, a.b.c.d in `a.b.c.d { e.f }` -- in that order
                 return [pathChain]
             }
@@ -218,10 +218,10 @@ extension Tr3 {
         return [self]
     }
     /// find duplicates in children and merge their children
-    /// a,a in `a.b { c d } a.e { f g }`
-    func mergeChildren(_ kids :[Tr3]) {
+    /// a, a in `a.b { c d } a.e { f g }`
+    func mergeChildren(_ kids: [Tr3]) {
 
-        func mergeDuplicate(_ priorTr3: Tr3,_ kid: Tr3) {
+        func mergeDuplicate(_ priorTr3: Tr3, _ kid: Tr3) {
             // override old value with new value if it exists
             if let val = kid.val { priorTr3.val = val }
             // add new edge definitions
@@ -286,8 +286,8 @@ extension Tr3 {
     /// split path into a solo child that
     /// inherits original's children and edges
     ///
-    ///     a.b:0 <- c { d } // becomes
-    ///     a { b:0 <- c { d } }
+    ///     a.b: 0 <- c { d } // becomes
+    ///     a { b: 0 <- c { d } }
     ///
     func spawnChild(from suf: String) -> Tr3 {
 
@@ -339,7 +339,7 @@ extension Tr3 {
         }
     }
     /// Expand pure path `a.b.c` into `a { b { c } }` --
-    /// do no allow search paths `a˚b` or prototypes `a:b`
+    /// do no allow search paths `a˚b` or prototypes `a: b`
     ///
     /// - note: May override public to debug specific paths.
     ///
@@ -454,8 +454,8 @@ extension Tr3 {
     public func bindRoot() {
 
         func log(_ num: Int) {
-            if      Tr3.BindDumpScript { print(dumpScript(0,session: true) + " // \(num)") }
-            else if Tr3.BindMakeScript { print(makeScript(               ) + " // \(num)") }
+            if      Tr3.BindDumpScript { print(dumpScript(0, session: true) + " // \(num)") }
+            else if Tr3.BindMakeScript { print(makeScript(                ) + " // \(num)") }
         }
         bindTopDown()     ; log(1)
         bindBottomUp()    ; log(2)

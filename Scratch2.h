@@ -1,9 +1,9 @@
 b(x 1, y 2)
-(√,child)                [name, exprs]
-  (√,name)               [b]
-  (b,exprs)              [expr, expr]
-     (b,expr)            [name, scalar1]
-     (b,expr)            [name, scalar1]
+(√, child)                [name, exprs]
+  (√, name)               [b]
+  (b, exprs)              [expr, expr]
+     (b, expr)            [name, scalar1]
+     (b, expr)            [name, scalar1]
 ⟹ √ { b(x 1, y 2) } ✓
 
  √ {

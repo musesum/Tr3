@@ -12,7 +12,7 @@ extension Tr3ValTern {
                        _ act: Tr3Act) -> Bool {
 
          // check if both match and are scalars or quotes
-        func bothMatchFlags(_ left: Tr3Val,_ right: Tr3Val,_ matchFlags:[Tr3ValFlags]) -> Bool {
+        func bothMatchFlags(_ left: Tr3Val, _ right: Tr3Val, _ matchFlags: [Tr3ValFlags]) -> Bool {
             for matchFlag in matchFlags {
                 if  left.valFlags.contains(matchFlag),
                     right.valFlags.contains(matchFlag) {
@@ -40,7 +40,7 @@ extension Tr3ValTern {
 
             for pathTr3 in pathTr3s {
                 if let pathVal = pathTr3.val {
-                    if bothMatchFlags(pathVal,rightVal,[.scalar,.quote])  {
+                    if bothMatchFlags(pathVal, rightVal, [.scalar, .quote])  {
 
                         switch compareOp {
                         case "==": return pathVal == rightVal
@@ -53,7 +53,7 @@ extension Tr3ValTern {
                         }
                     }
                         // data and tuples will only test for equivalence
-                    else if bothMatchFlags(pathVal, rightVal,[.exprs,.data]) {
+                    else if bothMatchFlags(pathVal, rightVal, [.exprs, .data]) {
 
                         switch compareOp {
                         case "==": return pathVal == rightVal 

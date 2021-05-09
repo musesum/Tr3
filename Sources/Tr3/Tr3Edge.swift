@@ -39,14 +39,14 @@ public class Tr3Edge: Hashable {
         makeKey()
     }
 
-    convenience init (_ leftTr3_: Tr3?,_ rightTr3_: Tr3?,_ edgeflags_: Tr3EdgeFlags) {
+    convenience init (_ leftTr3_: Tr3?, _ rightTr3_: Tr3?, _ edgeflags_: Tr3EdgeFlags) {
         self.init()
         edgeFlags = edgeflags_
         leftTr3   = leftTr3_
         rightTr3  = rightTr3_
         makeKey()
     }
-    convenience init (_ def_: Tr3EdgeDef,_ leftTr3_: Tr3,_ rightTr3_: Tr3, _ tr3Val: Tr3Val?) {
+    convenience init (_ def_: Tr3EdgeDef, _ leftTr3_: Tr3, _ rightTr3_: Tr3, _ tr3Val: Tr3Val?) {
         self.init()
         edgeFlags = def_.edgeFlags
         leftTr3   = leftTr3_

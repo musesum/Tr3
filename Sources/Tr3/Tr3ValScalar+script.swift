@@ -18,7 +18,7 @@ extension Tr3ValScalar {
         if valFlags.contains(.max)  { script += String(format: "%g", max) }
         if valFlags.intersection([.dflt,.num]) != [] {
             if valFlags.contains([.min,.max]) { script += " = " }
-            script += String(format: "%g",num)
+            script += String(format: "%g", num)
         }
         script += parens ? ")" : ""
         return script

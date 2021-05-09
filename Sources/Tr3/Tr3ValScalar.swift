@@ -81,7 +81,7 @@ public class Tr3ValScalar: Tr3Val {
             num = min
         } else if valFlags.contains(.max), num > max {
            num = max
-        } else if valFlags.intersection([.num,.min,.max,.dflt]) == [] {
+        } else if valFlags.intersection([.num, .min, .max, .dflt]) == [] {
             valFlags.insert([.num, .dflt])
             dflt = num 
         }
@@ -110,9 +110,9 @@ public class Tr3ValScalar: Tr3Val {
 
     public func inRange(of test: Float) -> Bool {
 
-        if valFlags.contains(.modu),test > max { return false }
-        if valFlags.contains(.min), test < min { return false }
-        if valFlags.contains(.max), test > max { return false }
+        if valFlags.contains(.modu), test > max { return false }
+        if valFlags.contains(.min),  test < min { return false }
+        if valFlags.contains(.max),  test > max { return false }
         return true
     }
 
@@ -125,13 +125,13 @@ public class Tr3ValScalar: Tr3Val {
 
     func setRangeFrom01(_ val_: Float) {
 
-        if valFlags.contains(.modu) { num = fmod(val_,fmax(1,max)) }
+        if valFlags.contains(.modu) { num = fmod(val_, fmax(1, max)) }
         else                        { num = val_ * (max - min) + min }
     }
 
     func rangeTo01() -> Float {
         return valFlags.contains(.modu)
-            ? fmod(num,max) / fmaxf(1, max-1)
+            ? fmod(num, max) / fmaxf(1, max-1)
             : (num - min) / fmaxf(1, max - min)
     }
 
@@ -156,8 +156,8 @@ public class Tr3ValScalar: Tr3Val {
         else if valFlags.contains(.modu) {
 
             min = 0
-            max = fmaxf(1,max)
-            num = fmodf(v.num,max)
+            max = fmaxf(1, max)
+            num = fmodf(v.num, max)
         }
         else {
             num = v.num

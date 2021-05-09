@@ -28,11 +28,11 @@ public class Tr3Comments {
     var comments = [Tr3Comment]()
     var haveType = Set<Tr3CommentType>()
 
-    public func addComment(_ tr3: Tr3, _ parItem: ParItem,_ prior: String) {
+    public func addComment(_ tr3: Tr3, _ parItem: ParItem, _ prior: String) {
         if parItem.node?.pattern == "comment",
            let value = parItem.nextPars.first?.value {
 
-            func insertComment(_ type: Tr3CommentType,_ index: Int ) {
+            func insertComment(_ type: Tr3CommentType, _ index: Int ) {
                 let tr3Comment = Tr3Comment(type, tr3.name, value, index)
                 haveType.insert(type)
                 comments.append(tr3Comment)
@@ -45,7 +45,7 @@ public class Tr3Comments {
         }
     }
 
-    public func mergeComments(_ tr3: Tr3,_ merge: Tr3) {
+    public func mergeComments(_ tr3: Tr3, _ merge: Tr3) {
 
         tr3.comments.comments.append(contentsOf: merge.comments.comments) // TODO really  merge both
         tr3.comments.haveType = tr3.comments.haveType.union(merge.comments.haveType)

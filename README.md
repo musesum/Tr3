@@ -24,7 +24,7 @@ a {b c}.{d e} // produces a { b { d e } c { d e } }
 A tree can copy the contents of another tree with a `:name`
 ```c
 a {b c}.{d e} // produces a { b { d e } c { d e } }
-z:a           // produces z { b { d e } c { d e } }
+z: a          // produces z { b { d e } c { d e } }
 ```
 ### Edges
 

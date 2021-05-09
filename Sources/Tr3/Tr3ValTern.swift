@@ -28,14 +28,14 @@ public enum Tr3TernState { case
 ///     w <- (a == b : 1 1s˺) // recv value 1 to w after 1 second delay
 ///     w <- (a == b ? c : d) // recv c or d to w
 ///     w <- (a ? 1 : b ? 2 : c ? 3) // recv 1 if a, 2 if a&b, 3 if a & b & c
-///     w <- (a ? a1 : a2 | b ? b1 : b2 | c ? c1 : c2) // if a, recv a1, else recv a2, b block b1,b2,c1,c2
+///     w <- (a ? a1 : a2 | b ? b1 : b2 | c ? c1 : c2) // if a, recv a1, else recv a2, b block b1, b2, c1, c2
 ///
 ///     w -> (a == b) // undefined
 ///     w -> (a == b : 1) // undefined
 ///     w -> (a == b : 1 1s˺) // undefined
 ///     w -> (a == b ? c : d) // if a==b, send w to c, else send w to d
 ///     w -> (a ? 1 : b ? 2 : c ? 3) // recv 1 if a, 2 if a&b, 3 if a & b & c
-///     w -> (a ? a1 : a2 | b ? b1 : b2 | c ? c1 : c2) // if a, recv a1, else recv a2, b block b1,b2,c1,c2
+///     w -> (a ? a1 : a2 | b ? b1 : b2 | c ? c1 : c2) // if a, recv a1, else recv a2, b block b1, b2, c1, c2
 ///
 ///     w <- (a ? 1 | b ? b1 : b2 | c ? c1 ? c2 | d ? d1 : d2)
 ///     w <- (a ? a1 : a2 ) | (b ? b2 : b2) | (c ? c1 : c2)
@@ -46,7 +46,7 @@ public class Tr3ValTern: Tr3ValPath {
     
     static var ternStack = [Tr3ValTern]() // only single threaded parse allowed
 
-    var parseLevel = 0 // a,b,c are at different levels in (a ? b ? c ? 3 : 2 : 1 )
+    var parseLevel = 0 // a, b, c are at different levels in (a ? b ? c ? 3 : 2 : 1 )
     var ternState = Tr3TernState.If
     var compareRight: Tr3ValPath?   // b in `(a == b ? c : d)`, Tr3ValPath.path contains a
     var compareOp = ""              // "==" in (a == b ? c : d)
@@ -106,7 +106,7 @@ public class Tr3ValTern: Tr3ValPath {
         return nil
     }
     
-    static func setTernState(_ ternState_: Tr3TernState,_ level: Int) {
+    static func setTernState(_ ternState_: Tr3TernState, _ level: Int) {
         if let tern = getTernLevel(level) {
             tern.ternState = ternState_
         }

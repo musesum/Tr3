@@ -8,7 +8,7 @@ import Foundation
 
 extension Tr3EdgeDef {
 
-    func connectNewEdge(_ leftTr3: Tr3,_ rightTr3: Tr3,_ tr3Val: Tr3Val?) {
+    func connectNewEdge(_ leftTr3: Tr3, _ rightTr3: Tr3, _ tr3Val: Tr3Val?) {
         
         let edge = Tr3Edge(self, leftTr3, rightTr3, tr3Val)
         leftTr3.tr3Edges[edge.key] = edge
@@ -18,7 +18,7 @@ extension Tr3EdgeDef {
             connectCopyr(leftTr3, rightTr3, tr3Val)
         }
     }
-    func connectCopyr(_ leftTr3: Tr3,_ rightTr3: Tr3,_ tr3Val: Tr3Val?)  {
+    func connectCopyr(_ leftTr3: Tr3, _ rightTr3: Tr3, _ tr3Val: Tr3Val?)  {
         var rights = [String: Tr3]()
         for rightChild in rightTr3.children {
             rights[rightChild.name] = rightChild
@@ -35,10 +35,10 @@ extension Tr3EdgeDef {
     func connectTernCondition(_ tern: Tr3ValTern, _ tr3: Tr3, _ ternPathTr3s: [Tr3]) {
 
         /// input to Ternary is output from pathTr3
-        func connectTernIfEdge(_ ternPathTr3: Tr3,_ pathTr3: Tr3) {
+        func connectTernIfEdge(_ ternPathTr3: Tr3, _ pathTr3: Tr3) {
 
             //print(pathTr3.scriptLineage(2) + " ╌> " + ternPathTr3.scriptLineage(2))
-            let edge = Tr3Edge(pathTr3, ternPathTr3, [.output,.ternary])
+            let edge = Tr3Edge(pathTr3, ternPathTr3, [.output, .ternary])
             pathTr3.tr3Edges[edge.key] = edge
 
             for edgeDef in ternPathTr3.edgeDefs.edgeDefs {
@@ -53,13 +53,13 @@ extension Tr3EdgeDef {
 
         tern.pathTr3s.removeAll()
 
-        let found = tr3.findPathTr3s(tern.path,[.parents,.children])
+        let found = tr3.findPathTr3s(tern.path, [.parents, .children])
         if found.isEmpty {
             // find b1 relative to d.a1 and c1 relative to d.a1.b1
             // paths with a˚b may produce duplicates so filter out with foundSet
             var foundSet = Set<Tr3>()
             for ternPathTr3 in ternPathTr3s {
-                let foundThen = ternPathTr3.findPathTr3s(tern.path,[.parents,.children])
+                let foundThen = ternPathTr3.findPathTr3s(tern.path, [.parents, .children])
                 for tr3 in foundThen {
                     foundSet.insert(tr3)
                 }
@@ -75,7 +75,7 @@ extension Tr3EdgeDef {
         for pathTr3 in tern.pathTr3s {
             connectTernIfEdge(tr3, pathTr3)
             if tern.compareOp != "",  let compareRight = tern.compareRight {
-                compareRight.pathTr3s = pathTr3.findPathTr3s(compareRight.path,[.parents,.children])
+                compareRight.pathTr3s = pathTr3.findPathTr3s(compareRight.path, [.parents, .children])
                 for rightTr3 in compareRight.pathTr3s {
                     connectTernIfEdge(tr3, rightTr3)
                 }
@@ -84,7 +84,7 @@ extension Tr3EdgeDef {
     }
 
     /// output from ternary is input to pathTr3
-    func connectTernPathEdge(_ ternTr3: Tr3,_ pathTr3: Tr3) {
+    func connectTernPathEdge(_ ternTr3: Tr3, _ pathTr3: Tr3) {
         //print(pathTr3.scriptLineage(3) + " ╌> " + pathTr3.scriptLineage(2))
         let flipFlags = Tr3EdgeFlags(flipIO: edgeFlags)
         let edge = Tr3Edge(pathTr3, ternTr3, flipFlags)
@@ -108,12 +108,12 @@ extension Tr3EdgeDef {
     /// so use a Set<Tr3> to filter out redundant tr3s
     /// before saving filtered results into valPath.pathTr3s
     ///
-    func connectValPath(_ valPath: Tr3ValPath,_ tr3: Tr3, _ leftTr3s: [Tr3]) {
+    func connectValPath(_ valPath: Tr3ValPath, _ tr3: Tr3, _ leftTr3s: [Tr3]) {
 
         var foundSet = Set<Tr3>()
 
         for leftTr3 in leftTr3s {
-            let foundTr3s = leftTr3.findPathTr3s(valPath.path,[.parents,.children])
+            let foundTr3s = leftTr3.findPathTr3s(valPath.path, [.parents, .children])
             for tr3 in foundTr3s {
                 foundSet.insert(tr3)
             }
@@ -134,7 +134,7 @@ extension Tr3EdgeDef {
     ///
     /// will find b1 as child of d.a1
     ///
-    func connectValTern(_ tern: Tr3ValTern,_ tr3: Tr3, _ foundTr3s: [Tr3]) {
+    func connectValTern(_ tern: Tr3ValTern, _ tr3: Tr3, _ foundTr3s: [Tr3]) {
          //print("tr3: \(tr3.scriptLineage(3))  found: \(Tr3.dumpTr3s(foundTr3s))  pathTr3s: \(Tr3.dumpTr3s(tern.pathTr3s))" )
         // IF
         connectTernCondition(tern, tr3, foundTr3s) // f.i
@@ -167,19 +167,19 @@ extension Tr3EdgeDef {
                 
                 if let pathrefs = tr3.pathrefs {
                     for pathref in pathrefs {
-                        let rightTr3s = pathref.findPathTr3s(path,[.parents,.children])
+                        let rightTr3s = pathref.findPathTr3s(path, [.parents, .children])
                         if let tr3Val = pathVals.pathDict[path] {
                             for rightTr3 in rightTr3s {
-                                connectNewEdge(pathref,rightTr3, tr3Val)
+                                connectNewEdge(pathref, rightTr3, tr3Val)
                             }
                         }
                     }
                 }
                 else {
-                    let rightTr3s = tr3.findPathTr3s(path,[.parents,.children])
+                    let rightTr3s = tr3.findPathTr3s(path, [.parents, .children])
                     if let tr3Val = pathVals.pathDict[path] {
                         for rightTr3 in rightTr3s {
-                            connectNewEdge(tr3,rightTr3, tr3Val)
+                            connectNewEdge(tr3, rightTr3, tr3Val)
                         }
                     }
                 }
@@ -189,7 +189,7 @@ extension Tr3EdgeDef {
         else if let tern = ternVal {
             // a˚z <- (...)
             if tr3.type == .path {
-                let found =  tr3.findAnchor(tr3.name, [.parents,.children])
+                let found =  tr3.findAnchor(tr3.name, [.parents, .children])
                 if found.count > 0 {
                     for foundi in found {
                         let foundTern = Tr3ValTern(with: tern)
