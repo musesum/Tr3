@@ -452,7 +452,7 @@ panel.shader.tile {
             tap2 (x -1, y -1)
             lag (0)
             user (0..1 = 1) >> tileOn.value (1)
-            value (0..1, 0..1) >> sky.shader.render.buffer.repeat
+            value (x 0..1, y 0..1) >> sky.shader.render.buffer.repeat
         }
         mirrorBox {
             type "box"
