@@ -63,10 +63,7 @@ b(x 1, y 2)
             }
         }
         shader {
-            _compute {
-                type "compute" file "whatever.metal" on (0..1) buffer {
-                    version (0..1) }
-            }
+            _compute { type "compute" file "whatever.metal" on (0..1) buffer { version (0..1) } }
             cellMelt: _compute {
                 type "compute" file "cell.melt.metal" on (0..1) buffer {
                     version (0..1) }
@@ -314,19 +311,13 @@ b(x 1, y 2)
                 }
             }
             brush {
-                base {
-                    type "brush" title "Brush" frame (x 0, y 0, w 262, h 120) icon "icon.cell.brush.png" }
+                base { type "brush" title "Brush" frame (x 0, y 0, w 262, h 120) icon "icon.cell.brush.png" }
                 controls {
-                    hide {
-                        type "panelx" title "hide" frame (x 0, y 0, w 40, h 40) icon "icon.thumb.X.png" value (0..1) }
-                    brushSize {
-                        type "slider" title "Size" frame (x 10, y 40, w 192, h 32) value (0..1) <>draw.brush.size user >>controls.brushPress.value(0) }
-                    brushPress {
-                        type "switch" title "Pressure" frame (x 210, y 40, w 44, h 32) icon "icon.pen.press.png" value (0..1) <>draw.brush.press }
-                    bitplane {
-                        type "slider" title "Bit Plane" frame (x 10, y 80, w 192, h 32) icon "icon.pearl.white.png" value (0..1) >>colorize.buffer.bitplane }
-                    fillOne {
-                        type "trigger" title "clear 0xFFFF" frame (x 210, y 80, w 32, h 32) icon "icon.drop.gray.png" value (0..1) >>draw.screen.fillOne }
+                    hide { type "panelx" title "hide" frame (x 0, y 0, w 40, h 40) icon "icon.thumb.X.png" value (0..1) }
+                    brushSize { type "slider" title "Size" frame (x 10, y 40, w 192, h 32) value (0..1) <>draw.brush.size user >>controls.brushPress.value(0) }
+                    brushPress { type "switch" title "Pressure" frame (x 210, y 40, w 44, h 32) icon "icon.pen.press.png" value (0..1) <>draw.brush.press }
+                    bitplane { type "slider" title "Bit Plane" frame (x 10, y 80, w 192, h 32) icon "icon.pearl.white.png" value (0..1) >>colorize.buffer.bitplane }
+                    fillOne { ype "trigger" title "clear 0xFFFF" frame (x 210, y 80, w 32, h 32) icon "icon.drop.gray.png" value (0..1) >>draw.screen.fillOne }
                 }
             }
             scroll {

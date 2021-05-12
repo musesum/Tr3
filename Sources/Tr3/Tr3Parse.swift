@@ -10,8 +10,8 @@ import Par
 public class Tr3Parse {
 
     public static let shared = Tr3Parse()
-    public var rootParNode: ParNode!
-    var tr3Keywords = [String: Tr3PriorParItem]()
+    private var rootParNode: ParNode
+    private var tr3Keywords = [String: Tr3PriorParItem]()
 
     public init() {
         rootParNode = Par.shared.parse(script: Tr3Par)
