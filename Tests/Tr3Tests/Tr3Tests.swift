@@ -1,27 +1,8 @@
+import CoreFoundation
 import XCTest
 import Par
 
 @testable import Tr3
-
-class Resource {
-    static var resourcePath = "./Tests/Resources"
-
-    let name: String
-    let type: String
-
-    init(name: String, type: String) {
-        self.name = name
-        self.type = type
-    }
-
-    var path: String {
-        guard let path: String = Bundle(for: Swift.type(of: self)).path(forResource: name, ofType: type) else {
-            let filename: String = type.isEmpty ? name : "\(name).\(type)"
-            return "\(Resource.resourcePath)/\(filename)"
-        }
-        return path
-    }
-}
 
 final class Tr3Tests: XCTestCase {
 
@@ -1272,22 +1253,6 @@ body {left right}.{shoulder.elbow.wrist {thumb index middle ring pinky}.{meta pr
         XCTAssertEqual(err, 0)
     }
 
-    func testSkyMain() { headline(#function)
-        var err = 0
-        let root = Tr3("√")
-        let tr3Parse = Tr3Parse()
-
-        func parse(_ name: String, _ script: String) -> Int {
-            let success = tr3Parse.parseScript(root, script, whitespace: "\n\t ")
-            print("\(name) " + (success ? "✓" : "🚫 parse failed") )
-            return success ? 0 : 1
-        }
-        err += parse("SkyMainTr3", SkyMainTr3)
-        let actual = root.makeScript(0, pretty: false)
-        err += ParStr.testCompare("√ { \(SkyMainTr3) }", actual)
-
-        XCTAssertEqual(err, 0)
-    }
 
     func testSky() { headline(#function)
     
@@ -1295,29 +1260,52 @@ body {left right}.{shoulder.elbow.wrist {thumb index middle ring pinky}.{meta pr
         let root = Tr3("√")
         let tr3Parse = Tr3Parse()
 
-        func parse(_ name: String, _ script: String) -> Int {
-            let success = tr3Parse.parseScript(root, script, whitespace: "\n\t ")
-            print(name + (success ? " ✓" : " 🚫 parse failed"))
-            return success ? 0 : 1
+        func read(_ filename: String) -> String? {
+            let url = Bundle.module.url(forResource: filename, withExtension: "tr3.h")
+            if let path = url?.path {
+                do { return try String(contentsOfFile: path) } catch {}
+            }
+            print("*** \(#function) cannot find:\(filename)")
+            return nil
         }
-        err += parse("SkyMainTr3", SkyMainTr3)
-        err += parse("SkyShaderTr3", SkyShaderTr3)
-        err += parse("PanelCellTr3", PanelCellTr3)
-        err += parse("PanelCellFaderTr3", PanelCellFaderTr3)
-        err += parse("PanelCellFredkinTr3", PanelCellFredkinTr3)
-        err += parse("PanelCellTimeTunnelTr3", PanelCellTimeTunnelTr3)
-        err += parse("PanelCellZhabatinskiTr3", PanelCellZhabatinskiTr3)
-        err += parse("PanelCellMeltTr3", PanelCellMeltTr3)
-        err += parse("PanelCellAverageTr3", PanelCellAverageTr3)
-        err += parse("PanelCellSlideTr3", PanelCellSlideTr3)
-        err += parse("PanelCellBrushTr3", PanelCellBrushTr3)
-        err += parse("PanelShaderColorizeTr3", PanelShaderColorizeTr3)
-        err += parse("PanelCellScrollTr3", PanelCellScrollTr3)
-        err += parse("PanelShaderTileTr3", PanelShaderTileTr3)
-        err += parse("PanelSpeedTr3", PanelSpeedTr3)
+        func parse(_ name: String) -> Int {
+            if let script = read(name),
+               tr3Parse.parseScript(root, script, whitespace: "\n\t ") {
+                print (name +  " ✓")
+                return 0
+            } else {
+                print(name + " 🚫 parse failed")
+                return 1
+            }
+        }
+
+        err += parse("sky.main")
+        err += parse("sky.midi")
+        err += parse("sky.shader")
+        err += parse("panel.cell")
+        err += parse("panel.cell.average")
+        err += parse("panel.cell.brush")
+        err += parse("panel.cell.camera")
+        err += parse("panel.cell.drift")
+        err += parse("panel.cell.fader")
+        err += parse("panel.cell.fredkin")
+        err += parse("panel.cell.gas")
+        err += parse("panel.cell.melt")
+        err += parse("panel.cell.midi")
+        err += parse("panel.cell.modulo")
+        err += parse("panel.cell.record")
+        err += parse("panel.cell.scroll")
+        err += parse("panel.cell.slide")
+        err += parse("panel.cell.speed")
+        err += parse("panel.cell.timeTunnel")
+        err += parse("panel.cell.zhabatinski")
+        err += parse("panel.shader.colorize")
+        err += parse("panel.shader.tile")
+        err += parse("panel.shader.weave")
 
         let actual = root.dumpScript(0)
-        err += ParStr.testCompare(SkyOutput, actual)
+        let expect = read("test.output") ?? ""
+        err += ParStr.testCompare(expect, actual)
 
         XCTAssertEqual(err, 0)
     }

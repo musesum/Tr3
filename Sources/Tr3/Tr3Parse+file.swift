@@ -9,9 +9,9 @@ import Par
 
 class BundleResource {
 
-    let resourcePath = "../Resources"
-    let name: String
-    let type: String
+    private let resourcePath = "../Resources"
+    private let name: String
+    private let type: String
 
     init(name: String, type: String) {
         self.name = name
@@ -33,12 +33,11 @@ public extension Tr3Parse {
 
     func read(_ filename: String, _ ext: String) -> String {
 
-        let resource = BundleResource(name: filename, type: ext)
+        let path = BundleResource(name: filename, type: ext).path
         do {
-            let resourcePath = resource.path
-            return try String(contentsOfFile: resourcePath) }
+            return try String(contentsOfFile: path) }
         catch {
-            print("*** ParStr::\(#function) error:\(error) loading contents of:\(resource.path)")
+            print("*** ParStr::\(#function) error:\(error) loading contents of:\(path)")
         }
         return ""
     }

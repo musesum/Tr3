@@ -1,4 +1,4 @@
-// swift-tools-version:5.1
+// swift-tools-version:5.3
 
 import PackageDescription
 
@@ -16,7 +16,8 @@ let package = Package(
     targets: [
         .target(
             name: "Tr3",
-            dependencies: ["Par"]),
+            dependencies: ["Par"],
+            resources: [.process("Resources")]),
         .testTarget(
             name: "Tr3Tests",
             dependencies: ["Tr3"]),

@@ -27,7 +27,7 @@ public class Tr3: Hashable {
     var cacheVal: Any? = nil        // cached value is drained
 
     var edgeDefs = Tr3EdgeDefs()    // for a<-(b.*++), this saves "++" and "b.*)
-    var tr3Edges = [String: Tr3Edge]()      // some edges are defined by another Tr3
+    var tr3Edges = [String: Tr3Edge]() // some edges are defined by another Tr3
 
     var closures = [Tr3Visitor]()  // during activate call a list of closures and return with Tr3Val ((Tr3Val?)->(Tr3Val?))
     public var type = Tr3Type.unknown
