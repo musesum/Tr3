@@ -1,42 +1,62 @@
 
-# Tr3
+# Tr3 /trē/
 
-Tr3 (pronounced "Tree") is a functional data flow graph with the following features
+Tr3 (as in "tree") is a data flow graph with the following features:
 
-- Nodes with: edges, values, and closures
-- Edges connecting: namespace tree, inputs, and outputs
-- Script describing graph in idiomatic Swift
+- **Node** with names, values, edges, and closures
+- **Edges** with inputs, outputs, and switches
+- **Values** may transform, as it flows through a graph
 
-### Nodes
+## Goals
 
-Each node at least one parent node and zero or more child nodes:  
+- Realtime coordination between devices 
+- Human readable declarative data flow 
+- Play nice with syntax highlighting and code folding
+- Minimal use of parsing cruft, like semicommas, and commas
+- Explore live patching without crashing or infinite loops 
+- Concise expression of full body input as controller
+- Synchronize state while managing circular references
+- Synchronize amorphous devices and ledgers 
+
+## Nodes
+
+Each node has two kinds of edges: tree and graph. The tree allows each node to be addressed by name and its relationship within a group. The graph allows each node to activate each other based on inputs and outputs. 
+
+### Tree
+
+Each node has a single parent with any number of children. 
+
 ```c
-a { b c } // a has two children b & c while b & c have one parent a
+a { b c } // a has 2 children: b & c 
+          // b & c have 1 parent and no children
 ```
 Declaring a path will auto create a tree of names
 ```c
 a.b.c // produces the structure a { b { c } }
 ```
-A tree can be decorated with another tree
+A tree can be decorated with sub trees
 ```c
 a {b c}.{d e} // produces a { b { d e } c { d e } }
 ```
-A tree can copy the contents of another tree with a `:name`
+A tree can copy the contents of another tree with a `: name`
 ```c
 a {b c}.{d e} // produces a { b { d e } c { d e } }
 z: a          // produces z { b { d e } c { d e } }
 ```
-### Edges
+### Graph
 
-Nodes connect to each other via edges
+Each node may have any number of input and output edges, which attach to other nodes. A node can activate other nodes when its value changes (as outputs `>>` ) or when another node's value changs (as inputs `<<`)
+
 ```c
 b >> c // b flows to c, akin to a function call
 d << e // d flows from e, akin to a callback
 f <> g // f & g flow between each other, akin to sync
 ```
-Nodes activate other nodes when its value changes or when it is activated by other nodes
 
-Nodes can have activation loops:
+#### Loops
+
+Tr3 allows cyclic graphs which auto break activation loops. When a node is activated, it sends an event to its output edges. The event contains a shared set of places that the event has visited. When it encounters a node that it has visited before, it stops. 
+
 ```c
 a >> b // if a activates, it will activate b
 b >> c // which, in turn, activates c
@@ -44,32 +64,46 @@ c >> a // and finally, c stops here
 ```
 A Tr3 event collects a set of nodes it has visited. When it finds a node it already has visited, it stops.
 
+####  Activate anywhere
+
 So, in the above `a`,`b`,`c` example, the activation could start anywhere:
 ```c
-a >> b >> c // starts at a, stops at c
-b >> c >> a // starts at b, stops at a
-c >> a >> b // starts at c, stops at b
+a! activates b! activates c! // starts at a, stops at c
+b! activates c! activates a! // starts at b, stops at a
+c! activates a! activates b! // starts at c, stops at b
 ```
 This is a simple way to synchronize a model. Akin to how a co-pilot's wheel synchronizes in a cockpit.
 
-### Values
+### Closures
 
-Each node may have scalar, tuple, or string
+Swift source code may attach a closure to a Tr3 node, which gets executed whenever a that node is activated. 
+
+```swift
+brushSize = brush.findPath("sky.draw.brush.size");
+brushSize?.addClosure  { tr3, _ in
+self.brushRadius = tr3.CGFloatVal() ?? 1 }
+```
+In the above example, `brushSize` attaches a closure to `sky.draw.brush.size`, which then updates its internal value `brushRadius`.
+
+## Values
+
+Each node may have a value of: scalar, expression, string, or embedded script
 ```c
-a (1)           // an initial value of 1
-b (0..1)        // a ranged value between 0 and 1
-c (0..127 = 1)  // a ranged vale between 0 and 127, initialized to 1
-d (0 0 0)       // three unnamed float values
-e (x 0..1, y 0..1, z 0..1) // three named float values with range 0..1 
-f "yo"          // a string value "yo"
+a (1)               // scalar with an initial value of 1
+b (0..1)            // scalar that ranges between 0 and 1
+c (0..127 = 1)      // scalar betwwn 0 and 127, defaulting to 1
+d "yo"              // a string value "yo"
+e (x 0..1, y 0..1)  // an expression (see below)
+
 ```
 Tr3 automatically remaps scalar ranges, given the nodes `b` & `c`
 ```c 
-b (0..1)        // range 0 to 1
+b (0..1)        // range 0 to 1, defaults to 0
 c (0..127 = 1)  // range 0 to 127, with initial value of 1
 b <> c          // synchronize b and c and auto-remap values
 ```
-When the value of `b` is changed to `0.5` it activates `C` and remaps its value to `63`
+When the value of `b` is changed to `0.5` it activates `c` and remaps its value to `63`
+When the value of `c` is changes to `31`, it activates  `b` and remapts its value to `0.25`
 
 A common case are sensors, which have a fixed range of values. For example, 
 a 3G (gravity) accelerometer  may have a range from `-3.0` to `3.0` 
@@ -77,25 +111,66 @@ a 3G (gravity) accelerometer  may have a range from `-3.0` to `3.0`
 accelerometer (x -3.0..3.0, y -3.0..3.0, z -3.0..3.0) >> model
 model (x -1..1, y -1..1, z -1..1) // auto rescale
 ```
-Nodes may pass through values
+### Nodes may pass through values
 ```c
 a (0..1) >> b  // may pass along value to b
-b >> c         // has no value; will forward a to c
+b >> c         // has no value, will forward a to c
 c (0..10)      // gets a's value via b, remaps ranges
 ```
-Edges may contain values
-```c
-d >> e (0..1 = 1) // an activated d sends an ranged 1 to e
-```
-#### Overrides, and wildcards
+### Graph's inputs and ouputs may contain values
 
-override nodes with values
+activations values can be passed as either inputs, outputs, or syncs
+
+```c
+a >> b(1) // an activated a (or a!) sends 1 to b
+b << c(2) // an activated c (or c!) sends 2 to a
+d <> e(3) // d! send a 3, while c! does nothing
+f >> g(0..1 = 0) // f! sends a ranged 0 to g
+h << i(0..1 = 1) // i! sends a ranged 1 to h
+```
+sending a ranged value can tell receiver to remap values,
+which can become a convenient way to set `min`, `mid`, or `max` values 
+
+```c
+j(10..20) << k(0..1 = 0) // k! maps j to 10 (max)
+m(10..20) << n(0..1 = 0.5) // n! maps m to 15 (mid)
+p(10..20) << q(0..1 = 1) // q! maps p to 20
+```
+
+## Expressions
+
+An epression is a series of named values and conditionals. They are expessed together as a group.
+
+```c
+a (x 1, y 2)  // x and y are sent together as a tuple
+b (x 0..1, y 0..1)  // can contain ranges
+c (x 0..1 = 1, y 0..1 = 1)  // and default values
+```
+An expession may 
+```c
+z (x 1, y 2) // when z! (is activated)  
+d (x 0) << z // z! => d(x 1) -- ignore y
+e (y 0) << z // z! => e(y 2) -- ignore x
+f (x 0, y 0, t 0) << z // z! is ignored, no z.t
+```
+```c
+f (x==0, y 0) // z! is ignored as z.x != 0 
+g (x==1, y 0) // z! => g(x 1, y 2) 
+h (x<10, y<10) // z! => h(x 1, y 2) 
+i (x in -1..3, y 0) // z! z.x >= -1 && z.x <= 3 
+```
+#### Overrides
+
+override nodes with values 
 ```c
 a {b c}.{d(1) e} // produces    a { b { d(1) e } c { d (1) e } }
 a.b.d (2)        // changes to  a { b { d(2) e } c { d (1) e } }
 ```
-Wildcard connections, with new ˚ (option-k) wildcard
+#### Wildcards
+
+ Wildcard connections, with new ˚ (option-k) wildcard
 ```c
+a {b c}.{d e}  // produces a { b { d e } c { d e } }
 p << a.*.d  // produces p << a.b.d << a.c.d
 q << a˚d    // produces q << a.b.d << a.c.d
 r << a˚.    // produces r << a.b.d << a.b.e << a.c.d << a.c.e
@@ -116,7 +191,9 @@ Because the visitor pattern breaks loops, the `˚˚<>..`  maps well to devices t
 
 ### Ternaries
 
-conditionals may switch the flow of data
+Edges may contain ternaries that switches dataflow. Somewhat akin to railroad switch, traffic may flow in either direction and do need to reevealate the switch as passes through. 
+
+conditionals may switch the flow of data 
 ```c
 a >> (b ? c : d)  // a flows to either c or d, when b activates
 e << (f ? g : h)  // f directs flow from either g or h, when f acts
@@ -142,87 +219,76 @@ Ternaries act like railroad switches, where the condition merely switches the ga
 - when `b` acts, it connects `c` and disconnects `d`
 - when `n`, `p`, or `q` acts, it is switching between `n1`, `p1`, `q1`
 
-Ternaries may aggregate or broadcast
+#### Bidirectional flow
+Ternaries may aggregate multiple ihputs or broadcast to multiple outputs
 ```c
 a {b c}.{d e}.{f g} // produces a{b {d {f g} e {f g}} c {d {f g} e {f g}}}
 p >> (a.b ? b˚. | a.c ? c˚.) // broadcast p to all leaf nodes of either b or c
 q << (a.b ? b˚. | a.c ? c˚.) // aggregate to q from all leaves of either b or c
 ```
-
-### Closures
-
-A .swift source may attach a closure to a Tr3 node
-```swift
-brushSize˚ = brush.findPath("sky.draw.brush.size");
-brushSize˚?.addClosure  { tr3, _ in
-self.brushRadius = tr3.CGFloatVal() ?? 1 }
-```
-In the above example, brushSize˚ attaches a closure to sky.draw.brush.size, which then updates its internal value brushRadius.
-
-(BTW, the `˚` in `brushSize˚` is merely a naming convention; you can call it anything)
-
 ### Embedded  Script
+
+Tr3 may include external script inside of double curly brackets `{{ whatever }}` . Whatever is inside the double bracks is ignored by the script, but is available calling swift code. This is intended for the app  `DeepMuse`  to embed shader code, which can be recompiled at runtime. 
+
 ```c
 shader {{
-    // Metal or Vulcan code goes here
+// Metal or Vulcan code goes here
 }}
 ```
-The previous version of Tr3 supported embed OpenGL Shaders. Which could be compiled at runtime.
+## Tests
 
-The new version of Tr3 will support embedded Metal Shaders. Untested with toy app: "Muse Sky"
+`Tests/Tr3Tests/Tr3Tests.swift` contain basic syntax tests
+`Sources/Tr3/Resources/*.tr3.h` contains scripts from `Deep Muse` app
+`Sources/Tr3/Resources/test.output.tr3.h` contains scripts from `Deep Muse` app
+
+The `Deep Muse` app script should provide some insight as to how Tr3 is used in a production app. 
+
 
 ## Use cases
 
-#### Platform for visual music synthesis and real-time media performance
+### Deep Muse iOS App
 
 Toy Visual Synth for iPad and iPhone called "Muse Sky"
-- See script in Tests/Tr3Tests/testSky()
-- pretty version of output in  Tests/Tr3Tests/SkyOutput.h
-- code folding and syntax highlighting works in Xcode
-- coming soon to Apple App store late 2019/2020
+- See test script in Sources/Tr3/Resources/*.tr3.h
+- See test output in  Sources/Tr3/Resources/test.output.tr3.h
+- Code folding and syntax highlighting works in Xcode
 - Demo [here](https://www.youtube.com/watch?v=peZFo8JnhuU)
 
 encourage users to tweak Tr3 scripts without recompiling
 - pass along Tr3 scripts, somewhat akin to Midi files for music synthesis
 - connect musical instruments to visual synth via OSC, Midi, or proprietary APIs
 
-inspired by
-- analog music synthesizers, like Moog Modular, Arp 2600, with patchchords
-- dataflow languages : Max, QuartzComposer, TensorFlow
+Inspired by:
+- Analog music synthesizers, like Moog Modular, Arp 2600, with patchchords
+- Media Dataflow scripting : Max, QuartzComposer, Plogue Bidule
 
-#### Avatars and Robots
+### Avatars
 
 Check out Body.h, which shows the output of an Human body skelton defined in 3 lines of code:
 ```c
-body {left right}.{ shoulder.elbow.wrist.{thumb index middle ring pinky}.{meta prox dist}, hip.knee.ankle.toes }
-˚˚ { pos (x 0..1, y 0..1, z 0..1), angle (roll %360, pitch %360, yaw %360), mm (0..3000) }
-˚˚pos <> ...pos,  ˚˚angle <> ...angle // connect every node to its parent
+body {left right}.{shoulder.elbow.wrist {thumb index middle ring pinky}.{meta prox dist} hip.knee.ankle.toes}
+˚˚ <> ..
+˚˚ { pos(x 0..1, y 0..1, z 0..1) angle(roll %360, pitch %360, yaw %360) mm(0..3000)})
 ```
 Apply machine learning to representation of graph
 - Record total state of  `graph << body˚˚`
 - Playback total state of  `graph >> body˚˚`
 - Inspired by a Kinect/OpenNI experiment, shown [here](https://www.youtube.com/watch?v=aFO6j6tvdk8)
 
-#### SpaceCraft - NASA's Virtual IronBird
+### SpaceCraft 
 
 NASA conference on representing spacecraft in a functional ontology
 - Simulate spacecraft by mapping all architecture, sensor, actuators
 - Contingency planning by apply GANs (Generative Adversarial Networks)
 
-#### Project Management
+### Smart Cities
 
-- Map work breakdown structure to hierarchy.
-- Map activities to nodes with values as cost, duration, and constraints
-
-#### Smart Cities
-
-- Model sensors and traffic signals into an ontology.
+- Synchronize state accross millions of sensors
 - Apply Machine learning to find threats and optimize energy and flow of people
-- Contingency planning by apply GANs
 
-#### Companion packages
+#### Packages
 
-Par -  parser for DSLs and flexible NLP in Swift
+Par - parser for DSLs and flexible NLP in Swift
 
 - tree + graph base parser
 - contains a definition of the Tr3 Syntax
@@ -233,145 +299,73 @@ Tr3D3 (pending)
 
 - simple visualization of the Tr3 graph, using D3JS
 - continuation of prototype of previous version of Tr3
-- Proof of concept [here]( https://www.youtube.com/watch?v=a703TTbxghc) (from previous version of Tr3)
+- Proof of concept [here]( https://www.youtube.com/watch?v=a703TTbxghc) (using Prefuse toolkit)
 
 Tr3Dock (pending)
 
 - Tr3 based UI with dataflow broadcasting and ternaries 
 - Demo of UI [here](https://www.youtube.com/watch?v=peZFo8JnhuU)
 
-#### Implications
+## Background
 
-User readable code
+There have been a dozen or so versions of Tr3, since 1999. The original version was written in C++ for visual music synthesizer and was performed at hundreds of concert venues to provide backing visuals to live musical performances. It never crashed. 
 
-Tr3 runtime was ported from C++ to Swift. There were several incentives:
-- Attaching Swift closures to C++ was complicated
-- `TensorFlow for Swift` project implies a single code base
-- Future support for `TensorFlow/MLIR`
+Here is a [demo of the tablet inteface](https://youtu.be/hXlkzZubHnM) and various setups [here](https://youtu.be/5W1jmovV5SM) and [here](https://youtu.be/iXLP1B5fzpo)
 
-Works well within XCode IDE
-- syntax highlighting similar to Swift 
-- code folding of hierarchy works
+During the first years, the was event called Groove Garden, hosted by Martin Tickle. It was a non-alcoholic event inside of a community church. Parents would come with their children. So, I would put the tablet in the hand of kids and learn how they would play. The took to it easily, with an incredible amount of enthusiasm and focus. 
 
-Cross between Swift, Json, and Python
-- Tr3 syntax follows Swift idiom
-- eliminates`;` which obfuscates readability
-- intermediate step between scripting and compiling 
+Then an inspiration hit: through play these kids were peforming with the basic building blocks of AI. You see, the tablet was seeding artificial life, sometime referred to a cellular automata -- kind of like a neural net in flatland. The supporting script was a dataflow ontology. Tr3 is that dataflow ontology. By playing with both, you develop a feel for both connectionist AI and Symbolic AI. 
 
-#### Amorphous computation:
+In 2004, NASA put on a conference called [Virtual Iron Bird](https://www.nasa.gov/vision/earth/technologies/Virtual_Iron_Bird_jb.html) to encourage modeling of Spacecraft. The question was how to manage the dataflow between sensors and actuators. One approach, Instead of centrallized control, is to treat each sensor and actuator as a node on a graph, which reached equilibrium counterparts. Such an approach would work, not only for spacecraft, but also with robots, autonomous vehicles, and smart cities. In fact, any peer-to-peer network would benefit from a framework that can synchronize state. 
 
-Visitor pattern for multithreading 
-- each Visitor set replaces a stack
-- possible to replace Threadgroup in compute shader? 
+In 2010, the visual synth was ported to the iPad, under the name `Plaz`. It premiered at the Makers Faire in California. Kids started to line up to use it. Sometimes 2 or 3 at a time. Some kids would drag their parents back from other exhibits. It was a hit. Sorta. Except ... well ... one kid came back, found a really flashy setting, like a strobe light of flashing patterns, and then stuck his face right up against the glass. Was this safe? I wasn't sure. It felt like it was too much. So, I pulled back from releasing `Plaz` a product. 
 
-Amorphous threading
-- multiple visitors may converge and emanate from single node
-- convergence may occur in parallel
+In 2014, the iPad version was rewritten and release under the name `Pyr`, to concide with the Punto Y Raya Visual Music festival. The focus was to create a create a set of lessons to perform live visuals from a tablet. 
 
-Competing threads (future version)
-- node may enforce a refractory period 
-- node may choose to aggregate or separate multiple visitors at a time
-- somewhat akin to McCoullough-Pitts model of inhibitory synapses
-- somewhat akin to biological Axons with 5K-30K synapses
-- test conjecture regarding similarities to neocortex.
+In 2019, the iPad version was rewritten again. About 49K lines of C++/ObjectiveC++ code was ported to about 29K lines of Soft. Some of the flashy effects were scaled back. The Tr3 syntax was refined so that the script would play well in the XCode IDE; syntax highlighting code folding works quite well. It probably works well in other editors and IDEs, but hasn't been tested.     
 
-# Future
+As of 2021, work is ongoing with visual synth, now called `Deep Muse`, most likely release by end of 2021. All of the device input, tablet UI, and Shaders pipeline is scripted with Tr3. 
 
-#### parsing
+## Future
 
-- Better error trapping for parsing errors
-- Merge with Par, where modified BNF becomes a value type
+### Classes  
+
+- Add **timeline** class to record, playback, state of tr3 (2021)
+- Extend expressions with string parsing, using Par syntax (2022)
+- Add node based visitor coordination to synchronize beyond a single device (2022)
+- Support cryptographically synchronized timelines between devices (2022)
+
+### Syntax
+
+- Map Pythonic `INDENT`/`REDENT`/`DEDENT` to `{`  / `,` / `}` respectively 
+- Better error trapping for parsing errors 
+- Merge with Par, where modified BNF becomes a value type 
+
+### Values
+
+- Fully connected node layers
+- Tanh, RELU support
+- Refractory periods for edges (ADSR style)
+- String parser as expression
+
+### Runtime
+
+- Runtime edge creation, akin to neuroplasticity
+- Command line tool to activate and inspect ontology
 - Command line interpreter to create and manipulate graphs
 
-#### Values
-
-- Tr3ValBool — add boolean value support
-- Tr3ValRegx — regular expression strings
-- Tr3ValPar — integrate Par NLP/DSL parser
-
-#### Edges
-
-Runtime model enhancements
-- Refractory periods for edges (ADSR style)
-- change parent [child] contains to edges
-- runtime edge creation, akin to neuroplasticity
-
-Compute shaders -> runtime compiler
+### Backend
 
 - embed Metal shaders (for Muse Sky app)
-- integrate TensorFlow via CoreML
-- integrate TensorFlow/MLIR?
-- support AutoGraph?
+- optimize for MLIR
+- support AutoGraph
 
-Visual editor - extend Tr3D3 to allow
+### D3.JS
+- Visualize Graph, port of [Prefuse version]( https://www.youtube.com/watch?v=a703TTbxghc)
+- Visualize dataflow as cross between Sankey and Node diagram (see Vizster demos)
 
-- live editing of scripted nodes, edges, values
-- query subgraphs via search bar or selecting 2 or more nodes
-
-Huffman navigator with hierarchy of inputs and outputs
-- tree of inputs on left side with probability cutoff 
-- tree of outputs on right side with probability cutoff 
-
-Compiler
-
-- ostensibly integrate with TensorFlow/MLIR
-- support an AutoGraph-like conversion of procedural code to a flow graph
-- support new scalars for ML
-
-Secure computing with Petri Nets
-
-- The visitor pattern collects previously visited nodes,
-- whereby the node to stops if it had already been visited once.
-
-Secure synchronization by extending the visitor set
-
-- whereby the node only executes only when a required set matches.
-
-#### Education / Tutorials
-
-Machine Learning Concepts (bottom up)
-- Handwriting recognition, starting with NIST 
-- McCullough-Pitts neural model
-- Object recognition with CNNs
-- Language recognition with RNNs
-
-Realtime Ontologies
-- Integrate MIDI music controllers
-- Integrate OSC devices
-
-Symbolic AI (top down)
-- Parsers and Chat bots
-- Hybrid with GANs
-
-Fine grained computation
-- Cellular Automata
-- Metal (and TensorFlow?) experiments
-- Synthesizing imaginary objects
-
-Crystallography
-- Tilings and Escher drawings 
-- 5 Platonic solids (animated mirror ball)
-
-Waveforms
-- Music and Waves
-- FFTs and Triggers
-
-Flow fields
-- parametric shaders
-- video feedback
-- Julia sets 
-
-#### Research
-
-Create an artificial Temporal Huffman machine
-
-- Extend Visitor pattern's set of visited nodes
-- Apply attack envelops (ADSR) to attenuate vivacity of each visited node
-- Aggregate vivacities to active higher probabilities sooner
-- Apply refractory periods to block lower probabilities
-
-Model biological Neocortex
-
-- Support runtime generation of connections to emulate neuroplasticity
-- Apply MLIR to support up to 30K edges to simulate Axon connections
+### Editor
+- auto layout vertical / horizontal
+- auto map  `INDENT`/`REDENT`/`DEDENT` to `{`  / `,` / `}` respectively 
+- Pinch to Fold/Unfold
 
