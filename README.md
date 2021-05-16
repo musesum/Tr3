@@ -32,16 +32,16 @@ a { b c } // a has 2 children: b & c
 ```
 Declaring a path will auto create a tree of names
 ```c
-a.b.c // produces the structure a { b { c } }
+a.b.c // produces the structure `a { b { c } }`
 ```
 A tree can be decorated with sub trees
 ```c
-a {b c}.{d e} // produces a { b { d e } c { d e } }
+a {b c}.{d e} // produces `a { b { d e } c { d e } }`
 ```
 A tree can copy the contents of another tree with a `: name`
 ```c
-a {b c}.{d e} // produces a { b { d e } c { d e } }
-z: a          // produces z { b { d e } c { d e } }
+a {b c}.{d e} // produces `a { b { d e } c { d e } }`
+z: a          // produces `z { b { d e } c { d e } }`
 ```
 ### Graph
 
@@ -66,7 +66,7 @@ So, no infinit loops.
 
 ####  Activate anywhere
 
-So, in the above `a`,`b`,`c` example, the activation could start anywhere:
+So, in the above `a`, `b`, `c` example, the activation could start anywhere:
 ```c
 a! activates b! activates c! // starts at a, stops at c
 b! activates c! activates a! // starts at b, stops at a
@@ -78,10 +78,15 @@ This is a simple way to synchronize a model. Akin to how a co-pilot's wheel sync
 
 Swift source code may attach a closure to a Tr3 node, which gets executed whenever a that node is activated. 
 
+Given the tr3 script snippet:
+```c
+sky { draw { brush { size << midi.modulationWheel } } }
+```
+write a closure in Swift to capture a changed value
 ```swift
-brushSize = brush.findPath("sky.draw.brush.size");
-brushSize?.addClosure  { tr3, _ in
-self.brushRadius = tr3.CGFloatVal() ?? 1 }
+if let brushSize = brush.findPath("sky.draw.brush.size") {
+    brushSize.addClosure { tr3, _ in 
+        self.brushRadius = tr3.CGFloatVal() ?? 1 } } 
 ```
 In the above example, `brushSize` attaches a closure to `sky.draw.brush.size`, which then updates its internal value `brushRadius`.
 
@@ -94,7 +99,6 @@ b (0..1)            // scalar that ranges between 0 and 1
 c (0..127 = 1)      // scalar betwwn 0 and 127, defaulting to 1
 d "yo"              // a string value "yo"
 e (x 0..1, y 0..1)  // an expression (see below)
-
 ```
 Tr3 automatically remaps scalar ranges, given the nodes `b` & `c`
 ```c 
@@ -102,11 +106,10 @@ b (0..1)        // range 0 to 1, defaults to 0
 c (0..127 = 1)  // range 0 to 127, with initial value of 1
 b <> c          // synchronize b and c and auto-remap values
 ```
-When the value of `b` is changed to `0.5` it activates `c` and remaps its value to `63`
+When the value of `b` is changed to `0.5` it activates `c` and remaps its value to `63`;
 When the value of `c` is changed to `31`, it activates  `b` and remapts its value to `0.25`
 
-A common case are sensors, which have a fixed range of values. For example, 
-a 3G (gravity) accelerometer  may have a range from `-3.0` to `3.0` 
+A common case are sensors, which have a fixed range of values. For example,  a 3G (gravity) accelerometer  may have a range from `-3.0` to `3.0` 
 ```c 
 accelerometer (x -3.0..3.0, y -3.0..3.0, z -3.0..3.0) >> model
 model (x -1..1, y -1..1, z -1..1) // auto rescale
@@ -119,7 +122,7 @@ c (0..10)      // gets a's value via b, remaps ranges
 ```
 ### Graph's inputs and ouputs may contain values
 
-activations values can be passed as either inputs, outputs, or syncs
+Activations values can be passed as either inputs, outputs, or syncs
 
 ```c
 a >> b(1) // an activated a (or a!) sends 1 to b
@@ -128,32 +131,51 @@ d <> e(3) // d! sends a 3, while c! does nothing
 f >> g(0..1 = 0) // f! sends a ranged 0 to g
 h << i(0..1 = 1) // i! sends a ranged 1 to h
 ```
-sending a ranged value to receiver will remap values,
-which can become a convenient way to set `min`, `mid`, or `max` values 
+Sending a ranged value to receiver will remap values, which can become a convenient way to set `min`, `mid`, or `max` values 
 
 ```c
-j(10..20) << k(0..1 = 0) // k! maps j to 10 (max)
+j(10..20) << k(0..1 = 0)   // k! maps j to 10 (max)
 m(10..20) << n(0..1 = 0.5) // n! maps m to 15 (mid)
-p(10..20) << q(0..1 = 1) // q! maps p to 20 (min)
+p(10..20) << q(0..1 = 1)   // q! maps p to 20 (min)
 ```
+### Connect by Name
+In addition to subclassing a tree, a new tree can connect edges by name
+```c
+a {b c}.{d e}
+x:a <: a // input from a  
+y:a :> a // output to a
+z:a <:> a // synchronize with a
+```
+which expands to
+```c
+a { b { d e } c { d e } }
+x << a { b << a.b { d << a.b.d e << a.b.e } 
+         c << a.c { d << a.c.e e << a.c.e } }
+y >> a { b >> a.b { d >> a.b.d e >> a.b.e } 
+         c >> a.c { d >> a.c.e e >> a.c.e } }
+z <> a { b <> a.b { d <> a.b.d e <> a.b.e } 
+         c <> a.c { d <> a.c.e e <> a.c.e } }
+```
+Thus, it is possible to create a functional twin of a model that captures state in realtime.
+
+Use cases include: co-pilot in cockpit, "digital twin" for building information modeling, overriding input contollers, dancing with robots 
 
 ## Expressions
 
-An epression is a series of named values and conditionals. They are expessed together as a group.
-
+An epression is a series of named values and conditionals; they are expessed together as a group
 ```c
 a (x 1, y 2)  // x and y are sent together as a tuple
 b (x 0..1, y 0..1)  // can contain ranges
 c (x 0..1 = 1, y 0..1 = 1)  // and default values
 ```
-An receiver may capture a subset of a send event
+A receiver may capture a subset of a send event
 ```c
 z (x 1, y 2) // when z! (is activated)  
 d (x 0) << z // z! => d(x 1) -- ignore y
 e (y 0) << z // z! => e(y 2) -- ignore x
 f (x 0, y 0, t 0) << z // z! is ignored, no z.t
 ```
-But the the sending even must have all of the values captured by the receiver
+But, the sending event must have all of the values captured by the receiver, or it will be ignored
 ```c
 f (x==0, y 0) // z! is ignored as z.x != 0 
 g (x==1, y 0) // z! => g(x 1, y 2) 
@@ -162,26 +184,24 @@ i (x in -1..3, y 0) // z! z.x >= -1 && z.x <= 3
 ```
 #### Overrides
 
-override nodes with values 
+Override nodes with values 
 ```c
-a {b c}.{d(1) e} // produces    a { b { d(1) e } c { d (1) e } }
-a.b.d (2)        // changes to  a { b { d(2) e } c { d (1) e } }
+a {b c}.{d(1) e} // produces    `a { b { d(1) e } c { d (1) e } }`
+a.b.d (2)        // changes to  `a { b { d(2) e } c { d (1) e } }`
 ```
 #### Wildcards
 
- Wildcard connections, with new ˚ (option-k) wildcard
+Include subtrees with wildcards. The new `˚` (option-k) wildcard behaves like an Xpath `/*/` where  it will perform a search on children, grandchildren, and so on. Using `˚.` includes all leaves,  and  `˚˚` will include the whole subtree
 ```c
-a {b c}.{d e}  // produces a { b { d e } c { d e } }
-p << a.*.d  // produces p << (a.b.d, a.c.d)
-q << a˚d    // produces q << (a.b.d, a.c.d
-r << a˚.    // produces r << (a.b.d, a.b.e, a.c.d, a.c.e)
-s << a˚˚    // produces s << (a a.b, a.b.d, a.b.e, a.c, a.c.d, a.c.e)
+a {b c}.{d e} // produces `a { b { d e } c { d e } }`
+p << a.*.d    // produces `p << (a.b.d, a.c.d)`
+q << a˚d      // produces `q << (a.b.d, a.c.d)`
+r << a˚.      // produces `r << (a.b.d, a.b.e, a.c.d, a.c.e)`
+s << a˚˚      // produces `s << (a a.b, a.b.d, a.b.e, a.c, a.c.d, a.c.e)`
 ```
-In above, the `˚` operator is akin to an xpath's `//` search node anywhere in subtree
-
-Variations include `˚.` to find leaf nodes, `˚˚` include all greedy all nodes
+Wildcard searches can occur on both left and rights sides to support fully connected trees and graphs
 ```c
-˚˚<-..  // flow from each node to its parent, bottom up
+˚˚<<..  // flow from each node to its parent, bottom up
 ˚˚>>.*  // flow from each node to its children, top down
 ˚˚<>..  // flow in both directions,  middle out?
 ```
@@ -189,6 +209,7 @@ Because the visitor pattern breaks loops, the `˚˚<>..`  maps well to devices t
 -  a flying fader on a mix board, 
 - a co-pilot's steering wheel, or 
 - the joints on an Human body capture skeleton
+- future hash trees (like Merkle trees) and graphs
 
 ### Ternaries
 
@@ -223,7 +244,7 @@ Ternaries act like railroad switches, where the condition merely switches the ga
 #### Bidirectional flow
 Ternaries may aggregate multiple ihputs or broadcast to multiple outputs
 ```c
-a {b c}.{d e}.{f g} // produces a{b {d {f g} e {f g}} c {d {f g} e {f g}}}
+a {b c}.{d e}.{f g} // produces `a{b {d {f g} e {f g}} c {d {f g} e {f g}}}`
 p >> (a.b ? b˚. | a.c ? c˚.) // broadcast p to all leaf nodes of either b or c
 q << (a.b ? b˚. | a.c ? c˚.) // aggregate to q from all leaves of either b or c
 ```
@@ -237,12 +258,12 @@ shader {{
 }}
 ```
 ## Tests
-
+Basic example of syntax may be found in the test cases here:  
 - `Tests/Tr3Tests/Tr3Tests.swift` contain basic syntax tests
+
+The `Deep Muse` app script should provide some insight as to how Tr3 is used in a production app, which is also in the test suite
 - `Sources/Tr3/Resources/*.tr3.h` contains scripts from `Deep Muse` app
 - `Sources/Tr3/Resources/test.output.tr3.h` contains scripts from `Deep Muse` app
-
-The `Deep Muse` app script should provide some insight as to how Tr3 is used in a production app. 
 
 ## Future
 
@@ -262,6 +283,8 @@ The `Deep Muse` app script should provide some insight as to how Tr3 is used in 
 ### Values
 
 - Fully connected node layers
+- Sha256
+- L-systems to generate Merkle trees
 - Tanh, RELU support
 - Refractory periods for edges (ADSR style)
 - String parser as expression
@@ -274,8 +297,8 @@ The `Deep Muse` app script should provide some insight as to how Tr3 is used in 
 
 ### Backend
 
-- embed Metal shaders (for Muse Sky app)
-- optimize for MLIR
+- embed Metal shaders (for Muse Sky app) (worked for OpenGL)
+- optimize for MLIR?
 - support AutoGraph
 
 ### D3.JS
@@ -318,7 +341,7 @@ Toy Visual Synth for iPad and iPhone called "Muse Sky"
 - Code folding and syntax highlighting works in Xcode
 - Demo [here](https://www.youtube.com/watch?v=peZFo8JnhuU)
 
-encourage users to tweak Tr3 scripts without recompiling
+Encourage users to tweak Tr3 scripts without recompiling
 - pass along Tr3 scripts, somewhat akin to Midi files for music synthesis
 - connect musical instruments to visual synth via OSC, Midi, or proprietary APIs
 
@@ -337,6 +360,7 @@ body {left right}.{shoulder.elbow.wrist {thumb index middle ring pinky}.{meta pr
 Imagine wearing a motion capture suit that you have record every movement and then playback
 - Record total state of  `graph << body˚˚`
 - Playback total state of  `graph >> body˚˚`
+- Create a functional twin `twin: body <:> body`
 - Inspired by a Kinect/OpenNI experiment, shown [here](https://www.youtube.com/watch?v=aFO6j6tvdk8)
 
 ### SpaceCraft 
@@ -346,3 +370,9 @@ In 2004, NASA put on a conference called [Virtual Iron Bird](https://www.nasa.go
 ### Smart Cities
 
 - Data flow through digital twin of BIM and GIS 
+
+### Ledgers
+
+- Imagine a billion people with a billion private graphs 
+- each with millions of nodes, which synchronize 
+- as subgraphs on trillions of discardable ledgers

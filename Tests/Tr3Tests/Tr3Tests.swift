@@ -571,6 +571,7 @@ final class Tr3Tests: XCTestCase {
         XCTAssertEqual(err, 0)
     }
 
+    /// test `a {b c}.{f g} z >> a˚g(2)`
     func testEdgeVal3b() { headline(#function)
 
         var err = 0
@@ -620,7 +621,7 @@ final class Tr3Tests: XCTestCase {
     func testCopyAtR1() { headline(#function)
         var err = 0
         // selectively set tuples by name, ignore the reset
-        let script = "a {b(1) c(2)}.{d(3) e(4)} z: a <: a"
+        let script = "a {b(1) c(2)}.{d(3) e(4)} z:a <:a"
         print("\n" + script)
 
         let root = Tr3("√")
@@ -650,13 +651,12 @@ final class Tr3Tests: XCTestCase {
             ace.setVal(50, .activate)
 
             let result1 =  root.dumpScript(session: false)
-            let expect1 =
-            """
+            let expect1 = """
 
-            √ {       a { b(10)       { d(30)         e(40)         }
+            √ { a       { b(10)       { d(30)         e(40)         }
                           c(20)       { d(50)         e(50)         }}
-                z: a <: a { b(10) <: a.b { d(30) <: a.b.d e(40) <: a.b.e }
-                          c(20) <: a.c { d(50) <: a.c.d e(50) <: a.c.e }}}
+                z:a <:a { b(10) <:a.b { d(30) <:a.b.d e(40) <:a.b.e }
+                          c(20) <:a.c { d(50) <:a.c.d e(50) <:a.c.e }}}
             """
             err += ParStr.testCompare(expect1, result1)
 
@@ -668,13 +668,12 @@ final class Tr3Tests: XCTestCase {
             zce.setVal(66, .activate)
 
             let result2 =  root.dumpScript(session: false)
-            let expect2 =
-            """
+            let expect2 = """
 
-            √ {       a { b(10)       { d(30)         e(40)         }
+            √ {  a      { b(10)       { d(30)         e(40)         }
                           c(20)       { d(50)         e(50)         }}
-                z: a <: a { b(11) <: a.b { d(33) <: a.b.d e(44) <: a.b.e }
-                          c(22) <: a.c { d(55) <: a.c.d e(66) <: a.c.e }}}
+                z:a <:a { b(11) <:a.b { d(33) <:a.b.d e(44) <:a.b.e }
+                          c(22) <:a.c { d(55) <:a.c.d e(66) <:a.c.e }}}
             """
             err += ParStr.testCompare(expect2, result2)
 
@@ -720,10 +719,10 @@ final class Tr3Tests: XCTestCase {
             let result1 =  root.dumpScript(session: false)
             let expect1 = """
 
-            √ {    a { b(10)        { d(30)          e(40)          }
-                       c(20)        { d(50)          e(60)          } }
-            z: a <:>a { b(10) <:>a.b { d(30) <:>a.b.d e(40) <:>a.b.e }
-                       c(20) <:>a.c { d(50) <:>a.c.d e(60) <:>a.c.e } } }
+            √ { a {        b(10)        { d(30)          e(40)          }
+                           c(20)        { d(50)          e(60)          } }
+                z:a <:>a { b(10) <:>a.b { d(30) <:>a.b.d e(40) <:>a.b.e }
+                           c(20) <:>a.c { d(50) <:>a.c.d e(60) <:>a.c.e } } }
             """
             err += ParStr.testCompare(expect1, result1)
 
@@ -737,10 +736,10 @@ final class Tr3Tests: XCTestCase {
             let result2 =  root.dumpScript(session: false)
             let expect2 = """
 
-            √ {     a { b(11)         { d(33)           e(44)           }
-                        c(22)         { d(55)           e(66)           } }
-            z: a <:> a { b(11) <:> a.b { d(33) <:> a.b.d e(44) <:> a.b.e }
-                        c(22) <:> a.c { d(55) <:> a.c.d e(66) <:> a.c.e } } }
+            √ { a        { b(11)        { d(33)          e(44)          }
+                           c(22)        { d(55)          e(66)          } }
+                z:a <:>a { b(11) <:>a.b { d(33) <:>a.b.d e(44) <:>a.b.e }
+                           c(22) <:>a.c { d(55) <:>a.c.d e(66) <:>a.c.e } } }
             """
             err += ParStr.testCompare(expect2, result2)
 
@@ -1117,7 +1116,7 @@ final class Tr3Tests: XCTestCase {
     }
 
     /// test snapshot of `Deep Muse` app
-    func testSky() { headline(#function)
+    func testDeepMuse() { headline(#function)
 
         let root = Tr3("√")
         func parse(_ name: String) -> Int { return self.parse(name, root) }
@@ -1184,6 +1183,6 @@ final class Tr3Tests: XCTestCase {
         ("testEdges", testEdges),
 
         ("testBodySkeleton", testBodySkeleton),
-        ("testSky", testSky),
+        ("testDeepMuse", testDeepMuse),
     ]
 }
