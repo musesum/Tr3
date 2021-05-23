@@ -215,7 +215,7 @@ public class Tr3ValTern: Tr3ValPath {
             script += radioNext.scriptVal(parens: false)
         }
         script += parens ? ") " : ""
-        return script.with(trailing:" ")
+        return script.with(trailing: " ")
 
     }
     override func dumpVal(parens: Bool = true, session: Bool = false) -> String  {
@@ -243,6 +243,6 @@ public class Tr3ValTern: Tr3ValPath {
             script += radioNext.dumpVal(parens: false)
         }
         script += parens ? ")" : ""
-        return script.with(trailing:" ")
+        return script.with(trailing: " ")
     }
 }

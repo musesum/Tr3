@@ -22,7 +22,7 @@ final class Tr3Tests: XCTestCase {
 
         if tr3Parse.parseScript(root, script, whitespace: "\n\t ") {
 
-            let actual = root.dumpScript(session: session)
+            let actual = root.dumpScript(indent: 0, session: session)
             err = ParStr.testCompare(expected, actual)
         }
         else  {
@@ -40,7 +40,37 @@ final class Tr3Tests: XCTestCase {
         //let titled = title.titleCase()
         print("━━━━━━━━━━━ \(title) ━━━━━━━━━━━")
     }
-
+    func read(_ filename: String) -> String? {
+        let url = Bundle.module.url(forResource: filename, withExtension: "tr3.h")
+        if let path = url?.path {
+            do { return try String(contentsOfFile: path) } catch {}
+        }
+        print("*** \(#function) cannot find:\(filename)")
+        return nil
+    }
+    func parse(_ name: String,_ root: Tr3) -> Int {
+        if let script = read(name),
+           Tr3Parse().parseScript(root, script, whitespace: "\n\t ") {
+            print (name +  " ✓")
+            return 0
+        } else {
+            print(name + " 🚫 parse failed")
+            return 1
+        }
+    }
+    func testFile(_ input: String, out: String)  -> Int {
+        let root = Tr3("√")
+        if let script = read(input),
+           Tr3Parse().parseScript(root, script, whitespace: "\n\t ") {
+            print (name +  " ✓")
+            let actual = root.dumpScript(indent: 0)
+            let expect = read(out) ?? ""
+            let err = ParStr.testCompare(expect, actual)
+            return err
+        } else {
+            return 1 // error
+        }
+    }
     func testParseShort() { headline(#function)
         var err = 0
 
@@ -161,79 +191,6 @@ final class Tr3Tests: XCTestCase {
         subhead("copyat")
         err += test("a {b c} d: a ", "√ { a { b c } d: a { b c } }")
         err += test("_a { b { c \"yo\" } } d: _a { b { c \"oy\" } }")
-
-        XCTAssertEqual(err, 0)
-    }
-
-    func testParseSkyControl() { headline(#function)
-        var err = 0
-        err += test("""
-            _controlBase {
-                base {
-                    type "unknown"
-                    title "Unknown"
-                    frame (x 0, y 0, w 320, h 176)
-                    icon "control.ring.white.png"
-                }
-                elements {
-                    ruleOn  {
-                        type "switch"
-                        title "Active"
-                        frame (x 266, y 6, w 48, h 32)
-                        lag (0)
-                        value (0..1)
-                    }
-                }
-            }
-            _controlRule: _controlBase {
-                base {
-                    type "rule"
-                    title "Rule"
-                    frame (x 0, y 0, w 320, h 168)
-                }
-                elements {
-                    version {
-                        type "segment"
-                        title "Version"
-                        frame (x 70, y 52, w 192, h 44)
-                        value (1..2 = 1) //<> cell.rule.<name>.version
-                    }
-                    fillZero {
-                        type  "trigger"
-                        title "clear 0"
-                        frame (x 10, y 108, w 44, h 44)
-                        icon  "control.drop.clear.png"
-                        value (0..1) >> sky.cell.rule.zero
-                    }
-                    fillOne {
-                        type  "trigger"
-                        title "clear 0xFFFF"
-                        frame (x 266, y 108, w 44, h 44)
-                        icon  "control.drop.gray.png"
-                        value (0..1) >> sky.cell.rule.one
-                    }
-                    plane  {
-                        type  "slider"
-                        title "Rule Plane"
-                        frame (x 70, y 108, w 192, h 44)
-                        icon  "control.pearl.white.png"
-                        value (0..1) >> control.shader˚uniform.shift
-                    }
-                }
-            }
-            """,
-                    """
-             √ { _controlBase { base { type "unknown" title "Unknown" frame (x 0, y 0, w 320, h 176) icon "control.ring.white.png" }
-             elements { ruleOn { type "switch" title "Active" frame (x 266, y 6, w 48, h 32) lag(0) value(0..1) } } }
-             _controlRule: _controlBase { base { type "rule" title "Rule" frame (x 0, y 0, w 320, h 168) icon "control.ring.white.png" }
-                 elements {
-                     ruleOn { type "switch" title "Active" frame (x 266, y 6, w 48, h 32) lag(0) value(0..1) }
-                     version { type "segment" title "Version" frame (x 70, y 52, w 192, h 44) value(1..2 = 1 ) //<> cell.rule.<name>.version \n }
-                     fillZero { type "trigger" title "clear 0" frame (x 10, y 108, w 44, h 44) icon "control.drop.clear.png" value(0..1) >> sky.cell.rule.zero }
-                     fillOne { type "trigger" title "clear 0xFFFF" frame (x 266, y 108, w 44, h 44) icon "control.drop.gray.png" value(0..1) >> sky.cell.rule.one }
-                     plane { type "slider" title "Rule Plane" frame (x 70, y 108, w 192, h 44) icon "control.pearl.white.png" value(0..1) >> control.shader˚uniform.shift } } } }
-
-             """)
 
         XCTAssertEqual(err, 0)
     }
@@ -518,7 +475,7 @@ final class Tr3Tests: XCTestCase {
             let b =  root.findPath("b") {
 
             b.activate()
-            let result =  root.dumpScript(session: true)
+            let result =  root.dumpScript(indent: 0, session: true)
             err = ParStr.testCompare("√ { a(2) b >> a(2) }", result)
         }
         else {
@@ -542,7 +499,7 @@ final class Tr3Tests: XCTestCase {
             let b = root.findPath("b") {
 
             b.activate()
-            let result = root.dumpScript(session: true)
+            let result = root.dumpScript(indent: 0, session: true)
             err = ParStr.testCompare("√ { a { a1(2) a2(2) } b >> (a.a1(2) a.a2(2)) }", result)
         }
         else {
@@ -562,7 +519,7 @@ final class Tr3Tests: XCTestCase {
         let root = Tr3("√")
         
         if tr3Parse.parseScript(root, script) {
-            let result = root.dumpScript(session: true)
+            let result = root.dumpScript(indent: 0, session: true)
             err += ParStr.testCompare("√ { a { b { f g } c { f g } } }", result)
         }
         else {
@@ -585,7 +542,7 @@ final class Tr3Tests: XCTestCase {
             //let a =  root.findPath("a"),
             let z =  root.findPath("z") {
             z.activate()
-            let result = root.dumpScript(session: true)
+            let result = root.dumpScript(indent: 0, session: true)
             err += ParStr.testCompare("√ { a { b { f g(2) } c { f g(2) } } z >> (a.b.g(2) a.c.g(2)) }", result)
         }
         else {
@@ -608,7 +565,7 @@ final class Tr3Tests: XCTestCase {
             let z =  root.findPath("z") {
 
             z.activate()
-            let result =  root.dumpScript(session: false)
+            let result =  root.dumpScript(indent: 0, session: false)
             err += ParStr.testCompare("√ { a { b { f(1) g(2) } c { f g(2) } } z >> (a.b.f(1) a.b.g(2) a.c.g(2)) }", result)
         }
         else {
@@ -650,7 +607,7 @@ final class Tr3Tests: XCTestCase {
             acd.setVal(50, .activate)
             ace.setVal(50, .activate)
 
-            let result1 =  root.dumpScript(session: false)
+            let result1 =  root.dumpScript(indent: 0, session: false)
             let expect1 = """
 
             √ { a       { b(10)       { d(30)         e(40)         }
@@ -667,7 +624,7 @@ final class Tr3Tests: XCTestCase {
             zcd.setVal(55, .activate)
             zce.setVal(66, .activate)
 
-            let result2 =  root.dumpScript(session: false)
+            let result2 =  root.dumpScript(indent: 0, session: false)
             let expect2 = """
 
             √ {  a      { b(10)       { d(30)         e(40)         }
@@ -716,7 +673,7 @@ final class Tr3Tests: XCTestCase {
             acd.setVal(50, .activate)
             ace.setVal(60, .activate)
 
-            let result1 =  root.dumpScript(session: false)
+            let result1 =  root.dumpScript(indent: 0, session: false)
             let expect1 = """
 
             √ { a {        b(10)        { d(30)          e(40)          }
@@ -733,7 +690,7 @@ final class Tr3Tests: XCTestCase {
             zcd.setVal(55, .activate)
             zce.setVal(66, .activate)
 
-            let result2 =  root.dumpScript(session: false)
+            let result2 =  root.dumpScript(indent: 0, session: false)
             let expect2 = """
 
             √ { a        { b(11)        { d(33)          e(44)          }
@@ -788,7 +745,7 @@ final class Tr3Tests: XCTestCase {
             // 0, 0, 0 --------------------------------------------------
             let t0 = Tr3Exprs(pairs: [("x", 0), ("y", 0), ("z", 0)])
             w.setVal(t0, .activate)
-            let result0 = root.dumpScript(session: true)
+            let result0 = root.dumpScript(indent: 0, session: true)
             let expect0 = """
 
             √ { a { b { d (x 0, y 0, z 0) e (x 0, y 0, z 0) }
@@ -800,7 +757,7 @@ final class Tr3Tests: XCTestCase {
             // 10, 11, 12 --------------------------------------------------
             let t1 = Tr3Exprs(pairs: [("x", 10), ("y", 11), ("z", 12)])
             w.setVal(t1, .activate)
-            let result1 = root.dumpScript(session: true)
+            let result1 = root.dumpScript(indent: 0, session: true)
             let expect1 = """
 
             √ { a { b { d (x 10, y 11, z 12) e (x 0, y 0, z 0) }
@@ -812,7 +769,7 @@ final class Tr3Tests: XCTestCase {
             // 20, 21, 22 --------------------------------------------------
             let t2 = Tr3Exprs(pairs: [("x", 20), ("y", 21), ("z", 22)])
             w.setVal(t2, .activate)
-            let result2 = root.dumpScript(session: true)
+            let result2 = root.dumpScript(indent: 0, session: true)
             let expect2 = """
 
             √ { a { b { d (x 10, y 11, z 12) e (x 20, y 21, z 22) }
@@ -824,7 +781,7 @@ final class Tr3Tests: XCTestCase {
             // 10, 21, 33 --------------------------------------------------
             let t3 = Tr3Exprs(pairs: [("x", 10), ("y", 21), ("z", 33)])
             w.setVal(t3, .activate)
-            let result3 = root.dumpScript(session: true)
+            let result3 = root.dumpScript(indent: 0, session: true)
             let expect3 = """
 
             √ { a { b { d (x 10, y 21, z 33) e (x 10, y 21, z 33) }
@@ -853,7 +810,7 @@ final class Tr3Tests: XCTestCase {
             let c = root.findPath("c") {
             let p = CGPoint(x: 1, y: 2)
             c.setVal(p, .activate)
-            let result = root.dumpScript(session: true)
+            let result = root.dumpScript(indent: 0, session: true)
             let expect = "√ { a(x 1) << c, b(y 2) << c, c(x 1, y 2) }"
             err = ParStr.testCompare(expect, result, echo: true)
         }
@@ -883,11 +840,11 @@ final class Tr3Tests: XCTestCase {
             }
             a.setVal(p0, [.activate])
 
-            let result0 = root.dumpScript(session: true)
+            let result0 = root.dumpScript(indent: 0, session: true)
             let expect0 = "√ { a(x 1, y 1) }"
             err += ParStr.testCompare(expect0, result0, echo: true)
 
-            let result1 = root.dumpScript(session: false)
+            let result1 = root.dumpScript(indent: 0, session: false)
             let expect1 = "√ { a(x 0..2, y 0..2) }"
             err += ParStr.testCompare(expect1, result1, echo: true)
         }
@@ -912,14 +869,14 @@ final class Tr3Tests: XCTestCase {
         if tr3Parse.parseScript(root, script),
            let a = root.findPath("a") {
 
-            let result0 = root.dumpScript(session: false)
+            let result0 = root.dumpScript(indent: 0, session: false)
             let expect0 = "√ { a (x in 2..4, y in 3..5) >>b b (x 1..2, y 2..3) }"
             err += ParStr.testCompare(expect0, result0, echo: true)
 
             let p1 = CGPoint(x: 3, y: 4)
             a.setVal(p1, [.activate])
 
-            let result1 = root.dumpScript(session: true)
+            let result1 = root.dumpScript(indent: 0, session: true)
             let expect1 = "√ { a(x 3, y 4) >>b b (x 1.5, y 2.5) }"
             err += ParStr.testCompare(expect1, result1, echo: true)
 
@@ -971,7 +928,7 @@ final class Tr3Tests: XCTestCase {
             let c = root.findPath("c"),
             let w = root.findPath("w") {
 
-            err += ParStr.testCompare("√ { a⋯>w b⋯>w c⋯>w w(0)<<(a ? 1 : b ? 2 : c ? 3) }", root.dumpScript(session: true), echo: true)
+            err += ParStr.testCompare("√ { a⋯>w b⋯>w c⋯>w w(0)<<(a ? 1 : b ? 2 : c ? 3) }", root.dumpScript(indent: 0, session: true), echo: true)
 
             w.addClosure { tr3, _ in self.addCallResult(w, tr3.val!) }
             err += testAct("a !",  "w(1.0) ") { a.activate() }
@@ -980,7 +937,7 @@ final class Tr3Tests: XCTestCase {
             err += testAct("b(0)", "w(2.0)")  { b.setVal(0, [.create,.activate]) }
             err += testAct("c !",  "w(3.0) ") { c.activate() }
 
-            err += ParStr.testCompare(" √ { a(0)⋯>w b(0)⋯>w c⋯>w w(3)<<(a ? 1 : b ? 2 : c ? 3) }", root.dumpScript(session: true), echo: true)
+            err += ParStr.testCompare(" √ { a(0)⋯>w b(0)⋯>w c⋯>w w(3)<<(a ? 1 : b ? 2 : c ? 3) }", root.dumpScript(indent: 0, session: true), echo: true)
         }
         else {
             err += 1
@@ -1000,7 +957,7 @@ final class Tr3Tests: XCTestCase {
             let y = root.findPath("y"),
             let w = root.findPath("w") {
 
-            err += ParStr.testCompare("√ { a(0)⋯>w x(10)╌>w y(20)╌>w w<<(a ? x : y) }", root.dumpScript(session: true), echo: true)
+            err += ParStr.testCompare("√ { a(0)⋯>w x(10)╌>w y(20)╌>w w<<(a ? x : y) }", root.dumpScript(indent: 0, session: true), echo: true)
 
             w.addClosure { tr3, _ in self.addCallResult(w, tr3.val!) }
             err += testAct("a(0)",  "w(20.0)")  { a.setVal(0,.activate) }
@@ -1011,7 +968,7 @@ final class Tr3Tests: XCTestCase {
             err += testAct("y(22)", "")         { y.setVal(22,.activate) }
 
             err += testAct("a(0)", "w(22.0)")  { a.setVal(0,.activate) }
-            err += ParStr.testCompare("√ { a(0)⋯>w x(12)╌>w y(22)>>w w(y)<<(a ? x : y) }", root.dumpScript(session: true), echo: true)
+            err += ParStr.testCompare("√ { a(0)⋯>w x(12)╌>w y(22)>>w w(y)<<(a ? x : y) }", root.dumpScript(indent: 0, session: true), echo: true)
         }
         else {
             err += 1
@@ -1031,7 +988,7 @@ final class Tr3Tests: XCTestCase {
             let y = root.findPath("y"),
             let w = root.findPath("w") {
 
-            err += ParStr.testCompare("√ { a⋯>w x(10)<╌>w y(20)<╌>w w<>(a ? x : y) }", root.dumpScript(session: true), echo: true)
+            err += ParStr.testCompare("√ { a⋯>w x(10)<╌>w y(20)<╌>w w<>(a ? x : y) }", root.dumpScript(indent: 0, session: true), echo: true)
 
             w.addClosure { tr3, _ in self.addCallResult(w, tr3.val!) }
             x.addClosure { tr3, _ in self.addCallResult(x, tr3.val!) }
@@ -1041,7 +998,7 @@ final class Tr3Tests: XCTestCase {
             err += testAct("a(1)", "w(3.0)  x(3.0)")  { a.setVal(1,.activate) }
             err += testAct("w(4)", "w(4.0)  x(4.0)")  { w.setVal(4, [.activate]) }
 
-            err += ParStr.testCompare("√ { a(1)⋯>w x(4)<>w y(3)<╌>w w(4)<>(a ? x : y) }", root.dumpScript(session: true), echo: true)
+            err += ParStr.testCompare("√ { a(1)⋯>w x(4)<>w y(3)<╌>w w(4)<>(a ? x : y) }", root.dumpScript(indent: 0, session: true), echo: true)
         }
         else {
             err += 1
@@ -1059,7 +1016,7 @@ final class Tr3Tests: XCTestCase {
 
         if tr3Parse.parseScript(root, script, whitespace: "\n\t ") {
 
-            let pretty = root.makeScript(0, pretty: true)
+            let pretty = root.makeScript(indent: 0, pretty: true)
             print(pretty)
 
             let d3Script = root.makeD3Script()
@@ -1072,39 +1029,7 @@ final class Tr3Tests: XCTestCase {
     }
 
 
-    func read(_ filename: String) -> String? {
-        let url = Bundle.module.url(forResource: filename, withExtension: "tr3.h")
-        if let path = url?.path {
-            do { return try String(contentsOfFile: path) } catch {}
-        }
-        print("*** \(#function) cannot find:\(filename)")
-        return nil
-    }
 
-    func parse(_ name: String,_ root: Tr3) -> Int {
-        if let script = read(name),
-           Tr3Parse().parseScript(root, script, whitespace: "\n\t ") {
-            print (name +  " ✓")
-            return 0
-        } else {
-            print(name + " 🚫 parse failed")
-            return 1
-        }
-    }
-
-    func testFile(_ input: String, out: String)  -> Int {
-        let root = Tr3("√")
-        if let script = read(input),
-           Tr3Parse().parseScript(root, script, whitespace: "\n\t ") {
-            print (name +  " ✓")
-            let actual = root.dumpScript(0)
-            let expect = read(out) ?? ""
-            let err = ParStr.testCompare(expect, actual)
-            return err
-        } else {
-            return 1 // error
-        }
-    }
     /// test Avatar and Robot definitions
     func testBodySkeleton() { headline(#function)
 
@@ -1145,7 +1070,7 @@ final class Tr3Tests: XCTestCase {
         err += parse("panel.shader.tile")
         err += parse("panel.shader.weave")
 
-        let actual = root.dumpScript(0)
+        let actual = root.dumpScript(indent: 0)
         let expect = read("test.sky.output") ?? ""
         err += ParStr.testCompare(expect, actual)
 
@@ -1156,7 +1081,6 @@ final class Tr3Tests: XCTestCase {
 
         ("testParseShort", testParseShort),
         ("testParseBasics", testParseBasics),
-        ("testParseSkyControl", testParseSkyControl),
         ("testParsePathCopy", testParsePathCopy),
         ("testParsePaths", testParsePaths),
         ("testParseValues", testParseValues),

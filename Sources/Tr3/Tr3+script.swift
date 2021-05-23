@@ -37,7 +37,7 @@ extension Tr3 {
         return false 
     }
     
-    public func makeScript(_ indent: Int = 0, pretty: Bool = false) -> String {
+    public func makeScript(indent: Int, pretty: Bool, commented: Bool = true) -> String {
 
         var script = name
 
@@ -62,7 +62,9 @@ extension Tr3 {
             else /* not pretty */            { bracketChildren("{ ","} ") }
 
             script.plus(edgeDefs.makeScript())
-            script.plus(comments.getComments(.edges, index: -1))
+            if commented {
+                script.plus(comments.getComments(.edges, index: -1))
+            }
             return script
         }
 
@@ -72,7 +74,7 @@ extension Tr3 {
             var index = 0
             for child in children {
                 if script.last != "\n", !child.hasSoloDescendants() { script += "\n" }
-                script.plus(child.makeScript(indent + 1, pretty: pretty))
+                script.plus(child.makeScript(indent: indent + 1, pretty: pretty))
                 index += 1
                 script.plus(comments.getComments(.child, index: index))
             }
@@ -83,7 +85,7 @@ extension Tr3 {
         func soloDotChild() {
             script += "."
             for child in children {
-                script += child.makeScript(indent + 1, pretty: pretty)
+                script += child.makeScript(indent: indent + 1, pretty: pretty)
             }
         }
         return begin() // ────────────────────────────
@@ -183,7 +185,8 @@ extension Tr3 {
             var index = 0 // index indicates how many children already added when comment was added
             for child in children {
                 index += 1
-                result += result.parenSpace() + child.dumpScript(indent+1, session: session)
+                result += result.parenSpace() + child.dumpScript(indent: indent + 1,
+                                                                 session: session)
             }
             result += result.parenSpace() + "}\n"
         }
@@ -196,7 +199,7 @@ extension Tr3 {
         - indent: depth level in tree deterimines indentation
         - session: show instance for session instead of full declaration
      */
-    public func dumpScript(_ indent: Int = 0, session: Bool = false) -> String {
+    public func dumpScript(indent: Int, session: Bool = false) -> String {
 
         var script = name
 

@@ -44,11 +44,11 @@ public class Tr3ValPath: Tr3Val {
                 script += script.parenSpace() + (pathTr3.val?.printVal() ?? pathTr3.name)
             }
             if pathTr3s.count > 1 { return script.with(trailing:")") }
-            else                  { return script.with(trailing:" ") }
+            else                  { return script.with(trailing: " ") }
         }
     }
     override func scriptVal(parens: Bool = true) -> String  {
-        return path.with(trailing:" ")
+        return path.with(trailing: " ")
     }
     override func dumpVal(parens: Bool = true, session: Bool = false) -> String  {
         var script = Tr3.dumpTr3s(pathTr3s)

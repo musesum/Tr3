@@ -129,7 +129,7 @@ public class Tr3EdgeDefs {
         for edgeDef in edgeDefs {
             script += edgeDef.scriptVal()
         }
-        return script.with(trailing:" ") 
+        return script.with(trailing: " ") 
     }
     
     func dumpScript(_ tr3: Tr3) -> String  {

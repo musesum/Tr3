@@ -5,7 +5,7 @@ Tr3 (as in "tree") is a data flow graph with the following features:
 
 - **Node** with names, values, edges, and closures
 - **Edges** with inputs, outputs, and switches
-- **Values** may transform, as it flows through a graph
+- **Values** that transform, as it flows through a graph
 
 ## Goals
 
@@ -45,7 +45,10 @@ z: a          // produces `z { b { d e } c { d e } }`
 ```
 ### Graph
 
-Each node may have any number of input and output edges, which attach to other nodes. A node can activate other nodes when its value changes (as outputs `>>` ) or when another node's value changs (as inputs `<<`)
+Each node may have any number of input and output edges, which attach to other nodes. A node can activate 
+- other nodes when its value changes as outputs( `>>` ) or 
+- itself when another node's value changs as inputs (`<<`), or
+- synchronize both nodes as both input and ouput `<>`).
 
 ```c
 b >> c // b flows to c, akin to a function call
@@ -62,7 +65,7 @@ a >> b // if a activates, it will activate b
 b >> c // which, in turn, activates c
 c >> a // and finally, c stops here
 ```
-So, no infinit loops.
+So, no infinite loops.
 
 ####  Activate anywhere
 
@@ -139,12 +142,12 @@ m(10..20) << n(0..1 = 0.5) // n! maps m to 15 (mid)
 p(10..20) << q(0..1 = 1)   // q! maps p to 20 (min)
 ```
 ### Connect by Name
-In addition to subclassing a tree, a new tree can connect edges by name
+In addition to copying a tree, a new tree can connect edges by name
 ```c
 a {b c}.{d e}
-x:a <: a // input from a  
-y:a :> a // output to a
-z:a <:> a // synchronize with a
+x:a <: a // input from a˚˚
+y:a :> a // output to a˚˚
+z:a <:> a // synchronize with a˚˚
 ```
 which expands to
 ```c
@@ -156,9 +159,7 @@ y >> a { b >> a.b { d >> a.b.d e >> a.b.e }
 z <> a { b <> a.b { d <> a.b.d e <> a.b.e } 
          c <> a.c { d <> a.c.e e <> a.c.e } }
 ```
-Thus, it is possible to create a functional twin of a model that captures state in realtime.
-
-Use cases include: co-pilot in cockpit, "digital twin" for building information modeling, overriding input contollers, dancing with robots 
+Thus, it is possible to mirror a model in realtime. Use cases include: co-pilot in cockpit, "digital twin" for building information modeling, overriding input contollers, dancing with robots 
 
 ## Expressions
 
@@ -170,17 +171,17 @@ c (x 0..1 = 1, y 0..1 = 1)  // and default values
 ```
 A receiver may capture a subset of a send event
 ```c
-z (x 1, y 2) // when z! (is activated)  
-d (x 0) << z // z! => d(x 1) -- ignore y
-e (y 0) << z // z! => e(y 2) -- ignore x
-f (x 0, y 0, t 0) << z // z! is ignored, no z.t
+z (x 1, y 2)            // when z! (is activated)  
+d (x 0) << z            // z! => d(x 1) -- ignore y
+e (y 0) << z            // z! => e(y 2) -- ignore x
+f (x 0, y 0, t 0) << z  // z! is ignored, no z.t
 ```
 But, the sending event must have all of the values captured by the receiver, or it will be ignored
 ```c
-f (x==0, y 0) // z! is ignored as z.x != 0 
-g (x==1, y 0) // z! => g(x 1, y 2) 
-h (x<10, y<10) // z! => h(x 1, y 2) 
-i (x in -1..3, y 0) // z! z.x >= -1 && z.x <= 3 
+g (x==0, y 0) << z       // z! is ignored as z.x != 0 
+h (x==1, y 0) << z       // z! activates h(x 1, y 2) 
+i (x<10, y<10) << z      // z! activates i(x 1, y 2) 
+j (x in -1..3, y 0) << z // z! activates j(x 1, y 2) 
 ```
 #### Overrides
 
@@ -250,13 +251,33 @@ q << (a.b ? b˚. | a.c ? c˚.) // aggregate to q from all leaves of either b or 
 ```
 ### Embedded  Script
 
-Tr3 may include external script inside of double curly brackets `{{ whatever }}` . Whatever is inside the double bracks is ignored by the script, but is available calling swift code. This is intended for the app  `DeepMuse`  to embed shader code, which can be recompiled at runtime. 
+Tr3 may include external script inside of double curly brackets `{{ whatever }}`. Whatever is inside the double bracks is ignored by the script, but is available calling swift code. This is intended for the app  `DeepMuse`  to embed shader code, which can be recompiled at runtime. 
 
 ```c
-shader {{
-   // Metal or Vulcan code goes here
-}}
+example {
+   
+   metal {{
+        // Metal code goes here
+        ...
+    }}
+    gl {{
+        // OpenGL code goes here
+        ...
+    }}
+    js {{
+        // javascript
+        ...
+    }}
+    whatever {{
+        // you want
+        ...
+    }}
+}
 ```
+When activating `example.*!`  the Tr3 nodes named `metal`, `gl`, `js`, and `whatever` are activated. 
+Any closure, attached to those nodes, can get the contents between the brakets `{{ ... }}`
+The contents are whatever you want, they are interpreted at run time.
+
 ## Tests
 Basic example of syntax may be found in the test cases here:  
 - `Tests/Tr3Tests/Tr3Tests.swift` contain basic syntax tests
@@ -330,7 +351,6 @@ Tr3Dock (pending)
 - Tr3 based UI with dataflow broadcasting and ternaries 
 - Demo of UI [here](https://www.youtube.com/watch?v=peZFo8JnhuU)
 
-
 ## Use cases
 
 ### Deep Muse iOS App
@@ -360,12 +380,12 @@ body {left right}.{shoulder.elbow.wrist {thumb index middle ring pinky}.{meta pr
 Imagine wearing a motion capture suit that you have record every movement and then playback
 - Record total state of  `graph << body˚˚`
 - Playback total state of  `graph >> body˚˚`
-- Create a functional twin `twin: body <:> body`
+- Create a functional mirror `twin: body <:> body`
 - Inspired by a Kinect/OpenNI experiment, shown [here](https://www.youtube.com/watch?v=aFO6j6tvdk8)
 
 ### SpaceCraft 
 
-In 2004, NASA put on a conference called [Virtual Iron Bird](https://www.nasa.gov/vision/earth/technologies/Virtual_Iron_Bird_jb.html) to encourage modeling of Spacecraft. The question was how to manage the dataflow between sensors and actuators. One approach, Instead of centrallized control, is to treat each sensor and actuator as a node on a graph, which reached equilibrium counterparts. Such an approach would work, not only for spacecraft, but also with robots, autonomous vehicles, and smart cities. In fact, any peer-to-peer network would benefit from a framework that can synchronize state. 
+In 2004, NASA put on a conference called [Virtual Iron Bird](https://www.nasa.gov/vision/earth/technologies/Virtual_Iron_Bird_jb.html) to encourage modeling of Spacecraft. One question was how to manage the dataflow between sensors and actuators. 
 
 ### Smart Cities
 
@@ -373,6 +393,7 @@ In 2004, NASA put on a conference called [Virtual Iron Bird](https://www.nasa.go
 
 ### Ledgers
 
-- Imagine a billion people with a billion private graphs 
-- each with millions of nodes, which synchronize 
-- as subgraphs on trillions of discardable ledgers
+- A billion people with a billion private graphs 
+- each with millions of nodes,
+- which synchronize
+

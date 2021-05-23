@@ -28,12 +28,12 @@ extension Tr3ValTern {
             }
         }
 
-        func forTernPathVal(_ val: Tr3Val?, call: @escaping CallTern) {
+        func forTernPathVal(_ val: Tr3Val?, callTern: @escaping CallTern) {
 
             if let pathTr3s = (val as? Tr3ValTern)?.pathTr3s {
                 for pathTr3 in pathTr3s {
                     if let tern = pathTr3.val as? Tr3ValTern {
-                        call(tern)
+                        callTern(tern)
                     }
                 }
             }

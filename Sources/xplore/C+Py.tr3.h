@@ -3,7 +3,7 @@ Rules:
         "↘︎" next line INDENT tab
         "↓" next line NODENT same column on next line
         "↙︎" next line DEDENT tab
-        "," same line - equivalent to "↓"
+        "," same line - equivalent to NODENT "↓"
         "{ ... }" same line - equivalent to "↘︎ ... ↙︎"
 
     "A,B"  ( user removes "," after A) => "A↓B"

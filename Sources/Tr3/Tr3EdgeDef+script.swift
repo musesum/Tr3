@@ -51,7 +51,7 @@ extension Tr3EdgeDef {
             }
             if pathVals.pathList.count > 1 { script += ")" }
         }
-        return script.with(trailing:" ")
+        return script.with(trailing: " ")
     }
 
     public func dumpEdge(_ tr3: Tr3) -> String {
@@ -69,9 +69,8 @@ extension Tr3EdgeDef {
             }
             script += edges.count > 1 ? ")" : ""
         }
-        return script.with(trailing:" ")
+        return script.with(trailing: " ")
     }
-
 
 }
 

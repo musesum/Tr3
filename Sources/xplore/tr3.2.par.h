@@ -1,4 +1,4 @@
-tr3 ~ name (edges | values | branches | comment)* {
+tr3 ~ (path | name) (edges | values | branches | comment)* {
 
     edges ~ edgeOp (edgePar | edge) comment* {
         edgeOp ~ '^([<][<⋯!\:&\=\╌>]+|[⋯!\:&\=\╌>]+[>])'
