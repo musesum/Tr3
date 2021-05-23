@@ -14,9 +14,14 @@ public class Tr3Parse {
     private var tr3Keywords = [String: Tr3PriorParItem]()
 
     public init() {
-        rootParNode = Par.shared.parse(script: Tr3Par)
-        rootParNode.reps.repMax = Int.max
-        makeParTr3()
+        if let tr3Root = Par.shared.parse(script: Tr3Par) {
+            rootParNode = tr3Root
+            rootParNode.reps.repMax = Int.max
+            makeParTr3()
+        } else {
+            rootParNode = ParNode("",[])
+            print("*** Tr33Parse::init could not parse Tr3Par")
+        }
     }
     /**
      create a dictionary of parsing closures as a global dispatch
@@ -102,8 +107,8 @@ public class Tr3Parse {
         if let pattern = parItem.node?.pattern {
 
             switch pattern {
-            case "comment": tr3.comments.addComment(tr3, parItem, prior)
-            default: break
+                case "comment": tr3.comments.addComment(tr3, parItem, prior)
+                default: break
             }
         }
         return tr3
@@ -319,19 +324,17 @@ public class Tr3Parse {
      Add edges to Tr3, set state of current TernaryEdge */
     func parseEdge(_ tr3: Tr3, _ prior: String, parItem: ParItem, _ level: Int) -> Tr3 {
 
-        let pattern = parItem.node?.pattern
-
-        if let pattern = pattern {
+        if let pattern = parItem.node?.pattern {
 
             switch pattern {
-            case "edgeOp":      tr3.edgeDefs.addEdgeDef(parItem.getFirstValue())
-            case "edges":       break
-            case "ternIf":      tr3.edgeDefs.addEdgeTernary(Tr3ValTern(tr3, level))
-            case "ternThen":    Tr3ValTern.setTernState(.Then,  level)
-            case "ternElse":    Tr3ValTern.setTernState(.Else,  level)
-            case "ternRadio":   Tr3ValTern.setTernState(.Radio, level)
-            case "ternCompare": Tr3ValTern.setCompare(parItem.getFirstValue())
-            default: break
+                case "edgeOp":      tr3.edgeDefs.addEdgeDef(parItem.getFirstValue())
+                case "edges":       break
+                case "ternIf":      tr3.edgeDefs.addEdgeTernary(Tr3ValTern(tr3, level))
+                case "ternThen":    Tr3ValTern.setTernState(.Then,  level)
+                case "ternElse":    Tr3ValTern.setTernState(.Else,  level)
+                case "ternRadio":   Tr3ValTern.setTernState(.Radio, level)
+                case "ternCompare": Tr3ValTern.setCompare(parItem.getFirstValue())
+                default: break
             }
             return parseNext(tr3, pattern, parItem, level+1)
         }
@@ -428,7 +431,6 @@ public class Tr3Parse {
             let tr3Parse = tr3Keywords[pattern] {
 
             return tr3Parse(tr3, prior, parItem, level+1)
-
         }
         // `^( < | <= | > | >= | == | \* | \\ | \+= | \-= | \% )`
         else if let value = parItem.value,
