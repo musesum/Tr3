@@ -42,11 +42,10 @@ public extension Tr3Parse {
         return ""
     }
 
-    @discardableResult
-    func parseTr3(_ tr3: Tr3, _ filename: String) -> Bool {
-        let script = read(filename,"tr3")
-        print(filename, terminator:" ")
-        let success = parseScript(tr3, script)
+    func parseTr3(_ root: Tr3, _ filename: String, _ ext: String = "tr3.h") -> Bool {
+        let script = read(filename, ext)
+        print(filename, terminator: " ")
+        let success = parseScript(root, script)
         print(success ? "✓" : "🚫 parse failed")
         return success
     }
