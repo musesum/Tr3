@@ -137,9 +137,9 @@ h << i(0..1 = 1) // i! sends a ranged 1 to h
 Sending a ranged value to receiver will remap values, which can become a convenient way to set `min`, `mid`, or `max` values 
 
 ```c
-j(10..20) << k(0..1 = 0)   // k! maps j to 10 (max)
+j(10..20) << k(0..1 = 0)   // k! maps j to 10 (min)
 m(10..20) << n(0..1 = 0.5) // n! maps m to 15 (mid)
-p(10..20) << q(0..1 = 1)   // q! maps p to 20 (min)
+p(10..20) << q(0..1 = 1)   // q! maps p to 20 (max)
 ```
 ### Connect by Name
 In addition to copying a tree, a new tree can connect edges by name
@@ -152,12 +152,12 @@ z:a <:> a // synchronize with a˚˚
 which expands to
 ```c
 a { b { d e } c { d e } }
-x << a { b << a.b { d << a.b.d e << a.b.e } 
-         c << a.c { d << a.c.e e << a.c.e } }
-y >> a { b >> a.b { d >> a.b.d e >> a.b.e } 
-         c >> a.c { d >> a.c.e e >> a.c.e } }
-z <> a { b <> a.b { d <> a.b.d e <> a.b.e } 
-         c <> a.c { d <> a.c.e e <> a.c.e } }
+x << a { b << a.b { d << a.b.d, e << a.b.e } 
+         c << a.c { d << a.c.e, e << a.c.e } }
+y >> a { b >> a.b { d >> a.b.d, e >> a.b.e } 
+         c >> a.c { d >> a.c.e, e >> a.c.e } }
+z <> a { b <> a.b { d <> a.b.d, e <> a.b.e } 
+         c <> a.c { d <> a.c.e, e <> a.c.e } }
 ```
 Thus, it is possible to mirror a model in realtime. Use cases include: co-pilot in cockpit, "digital twin" for building information modeling, overriding input contollers, dancing with robots 
 
@@ -182,6 +182,7 @@ g (x==0, y 0) << z       // z! is ignored as z.x != 0
 h (x==1, y 0) << z       // z! activates h(x 1, y 2) 
 i (x<10, y<10) << z      // z! activates i(x 1, y 2) 
 j (x in -1..3, y 0) << z // z! activates j(x 1, y 2) 
+k (x 0, y 0, z 0, t 0)   // z! ignored due to missing t
 ```
 #### Overrides
 
@@ -204,11 +205,11 @@ Wildcard searches can occur on both left and rights sides to support fully conne
 ```c
 ˚˚<<..  // flow from each node to its parent, bottom up
 ˚˚>>.*  // flow from each node to its children, top down
-˚˚<>..  // flow in both directions,  middle out?
+˚˚<>..  // flow in both directions, middle out?
 ```
 Because the visitor pattern breaks loops, the `˚˚<>..`  maps well to devices that combine sensors and actuators, such as:
 -  a flying fader on a mix board, 
-- a co-pilot's steering wheel, or 
+- a co-pilot's steering wheel 
 - the joints on an Human body capture skeleton
 - future hash trees (like Merkle trees) and graphs
 
@@ -251,7 +252,7 @@ q << (a.b ? b˚. | a.c ? c˚.) // aggregate to q from all leaves of either b or 
 ```
 ### Embedded  Script
 
-Tr3 may include external script inside of double curly brackets `{{ whatever }}`. Whatever is inside the double bracks is ignored by the script, but is available calling swift code. This is intended for the app  `DeepMuse`  to embed shader code, which can be recompiled at runtime. 
+Tr3 may include external script inside of double curly brackets `{{ whatever }}`. Whatever is inside the double bracks is ignored by the script, but is available calling swift code. This is intended for the app  `DeepMuse`  to embed shader code, which can be safely recompiled at runtime. 
 
 ```c
 example {
@@ -276,7 +277,7 @@ example {
 ```
 When activating `example.*!`  the Tr3 nodes named `metal`, `gl`, `js`, and `whatever` are activated. 
 Any closure, attached to those nodes, can get the contents between the brakets `{{ ... }}`
-The contents are whatever you want, they are interpreted at run time.
+The contents are whatever you want, they are interpreted by the closure at run time.
 
 ## Tests
 Basic example of syntax may be found in the test cases here:  
@@ -393,7 +394,7 @@ In 2004, NASA put on a conference called [Virtual Iron Bird](https://www.nasa.go
 
 ### Ledgers
 
-- A billion people with a billion private graphs 
+- A billion people with a billion private graphs ,
 - each with millions of nodes,
 - which synchronize
 
