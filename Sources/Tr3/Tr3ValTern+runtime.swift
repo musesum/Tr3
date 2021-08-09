@@ -135,8 +135,8 @@ extension Tr3ValTern {
                 _ act:     Tr3Act,
                 _ visitor: Visitor) {
 
-        guard let prevTr3 = prevTr3 else { print("*** prevTr3 = nil"); return }
-        guard let nextTr3 = nextTr3 else { print("*** nextTr3 = nil"); return }
+        guard let prevTr3 = prevTr3 else { print("🚫 prevTr3 = nil"); return }
+        guard let nextTr3 = nextTr3 else { print("🚫 nextTr3 = nil"); return }
         // a in `w <-(a ? x : y)`
         // a in `w <-(a == b ? x : y)`  when a == b
         if testCondition(prevTr3, act) {

@@ -101,7 +101,7 @@ public class Tr3ValTern: Tr3ValPath {
             return ternLast
         }
         else {
-            print("*** Tr3ValTern.getTernLevel(\(level)) not found")
+            print("🚫 Tr3ValTern.getTernLevel(\(level)) not found")
         }
         return nil
     }

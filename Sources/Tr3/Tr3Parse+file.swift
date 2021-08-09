@@ -37,7 +37,7 @@ public extension Tr3Parse {
         do {
             return try String(contentsOfFile: path) }
         catch {
-            print("*** ParStr::\(#function) error:\(error) loading contents of:\(path)")
+            print("🚫 ParStr::\(#function) error:\(error) loading contents of:\(path)")
         }
         return ""
     }

@@ -76,7 +76,7 @@ public class Tr3Expr {
             switch frRvalue {
             case let n as ExprName: rvalue = n
             case let s as Tr3ValScalar: rvalue = Tr3ValScalar(with: s)
-            default: print("*** unknown Tr3Expr from next: \(frRvalue)")
+            default: print("🚫 unknown Tr3Expr from next: \(frRvalue)")
             }
         }
     }
@@ -91,7 +91,7 @@ public class Tr3Expr {
             exprOp = op
             options.insert(.op)
         } else {
-            print("*** unknown exprOp: \(opStr)")
+            print("🚫 unknown exprOp: \(opStr)")
         }
     }
     func addExprName(_ name: String) {
@@ -208,7 +208,7 @@ public class Tr3Expr {
 
                 default:
 
-                    print("*** unknown script rvalue: \(rvalue)")
+                    print("🚫 unknown script rvalue: \(rvalue)")
             }
         }
         return script

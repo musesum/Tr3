@@ -45,7 +45,7 @@ extension Tr3 {
             case let v as CGPoint:           val = Tr3Exprs(with: v)
             case let v as [(String, Float)]: val = Tr3Exprs(pairs: v)
             case let v as String:            val = Tr3ValQuote(with: v)
-            default: print("*** unknown val(\(any))")
+            default: print("🚫 unknown val(\(any))")
             }
         }
         // maybe pass along my Tr3Val to other Tr3Nodes and closures

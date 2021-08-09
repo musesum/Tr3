@@ -20,7 +20,7 @@ public class Tr3Parse {
             makeParTr3()
         } else {
             rootParNode = ParNode("",[])
-            print("*** Tr33Parse::init could not parse Tr3Par")
+            print("🚫 Tr33Parse::init could not parse Tr3Par")
         }
     }
     /**
@@ -191,21 +191,21 @@ public class Tr3Parse {
                 if prior != "num" {
                     exprs.addOper(nextPar.value)
                 } else {
-                    print("*** unexpected \(#function)")
+                    print("🚫 unexpected \(#function)")
                 }
             }
             func addName() {
                 if let name = nextPar.nextPars.first?.value {
                     exprs.addName(name)
                 } else {
-                    print("*** unexpected \(#function)")
+                    print("🚫 unexpected \(#function)")
                 }
             }
             func addOper() {
                 if let oper = nextPar.nextPars.first?.value {
                     exprs.addOper(oper)
                 } else {
-                    print("*** unexpected \(#function)")
+                    print("🚫 unexpected \(#function)")
                 }
             }
 
@@ -230,7 +230,7 @@ public class Tr3Parse {
 
         case "edges": tr3.edgeDefs.addEdgeExprs()
 
-        default: print("*** unknown prior: \(prior)")
+        default: print("🚫 unknown prior: \(prior)")
         }
         let pattern = parItem.node?.pattern ?? ""
         let nextTr3 = parseNext(tr3, pattern, parItem, level+1)
@@ -248,7 +248,7 @@ public class Tr3Parse {
                  "*", "/", "+", "-", "%", "in":
                 val.addOper(oper)
             default:
-                print("*** unknown prior: \(prior)")
+                print("🚫 unknown prior: \(prior)")
             }
             let pattern = parItem.node?.pattern ?? ""
             let nextTr3 = parseNext(tr3, pattern, parItem, level+1)

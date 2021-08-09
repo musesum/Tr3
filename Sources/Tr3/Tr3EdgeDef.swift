@@ -56,7 +56,7 @@ public class Tr3EdgeDef {
             }
         }
         else {
-            print("*** Tr3EdgeDef: \(self) cannot process addPath(\(parItem))")
+            print("🚫 Tr3EdgeDef: \(self) cannot process addPath(\(parItem))")
         }
     }
 
