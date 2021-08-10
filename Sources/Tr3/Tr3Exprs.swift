@@ -339,4 +339,20 @@ public class Tr3Exprs: Tr3Val {
             }
         }
     }
+    public override func getVal() -> Any {
+        var nums = [Float]()
+        if names.count > 0 {
+            for name in names {
+                if let num = nameScalar[name]?.num {
+                    nums.append(num)
+                }
+            }
+        } else if scalars.count > 0 {
+            for scalar in scalars {
+                nums.append(scalar.num)
+            }
+        }
+        return nums
+
+    }
 }

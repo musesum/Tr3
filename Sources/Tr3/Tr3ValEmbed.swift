@@ -32,5 +32,7 @@ public class Tr3ValEmbed: Tr3Val {
             embed = v.embed
         }
     }
-
+    public override func getVal() -> Any {
+        return embed
+    }
 }

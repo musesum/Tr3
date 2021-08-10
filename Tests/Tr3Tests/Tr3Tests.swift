@@ -45,7 +45,7 @@ final class Tr3Tests: XCTestCase {
         if let path = url?.path {
             do { return try String(contentsOfFile: path) } catch {}
         }
-        print("*** \(#function) cannot find:\(filename)")
+        print("🚫 \(#function) cannot find:\(filename)")
         return nil
     }
     func parse(_ name: String,_ root: Tr3) -> Int {

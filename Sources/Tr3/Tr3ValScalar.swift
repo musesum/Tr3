@@ -177,7 +177,7 @@ public class Tr3ValScalar: Tr3Val {
             case let v as CGFloat: zero1 ? setFloat01(v) : setFloat(v)
             case let v as Double:  zero1 ? setFloat01(v) : setFloat(v)
             case let v as Int:     zero1 ? setFloat01(v) : setFloat(v)
-            default: print("*** mismatched setVal(\(val))")
+            default: print("🚫 setVal unknown type for: \(from))")
             }
         }
     }
@@ -192,6 +192,7 @@ public class Tr3ValScalar: Tr3Val {
     func setFloat01(_ v: CGFloat){ setRangeFrom01(Float(v)) }
     func setFloat01(_ v: Float)  { setRangeFrom01(v) }
 
-    //    func increment()            { num += 1 ; setInRange() }
-    //    func decrement()            { num -= 1 ; setInRange() }
+    public override func getVal() -> Any {
+        return num
+    }
 }

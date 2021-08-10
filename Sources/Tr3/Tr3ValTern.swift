@@ -143,7 +143,7 @@ public class Tr3ValTern: Tr3ValPath {
     }
 
     /// While parsing, get most recently added Tr3Val to decorate with additional attributes.
-    func getVal() -> Tr3Val! {
+    func getVal() -> Tr3Val? {
         switch ternState {
         case .If:    return nil
         case .Then:  return thenVal
