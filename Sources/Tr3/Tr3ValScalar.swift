@@ -177,7 +177,7 @@ public class Tr3ValScalar: Tr3Val {
             case let v as CGFloat: zero1 ? setFloat01(v) : setFloat(v)
             case let v as Double:  zero1 ? setFloat01(v) : setFloat(v)
             case let v as Int:     zero1 ? setFloat01(v) : setFloat(v)
-            default: print("🚫 setVal unknown type for: \(from))")
+            default: print("🚫 setVal unknown type for: from")
             }
         }
     }
