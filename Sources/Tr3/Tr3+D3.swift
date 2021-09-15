@@ -10,15 +10,8 @@ import Foundation
 extension Tr3Edge {
 
     func makeD3Edge(_ separator: String) -> String {
-
-        if  let leftId = leftTr3?.id,
-            let rightId = rightTr3?.id {
-            let arrow = scriptEdgeFlag()
-            return separator + "'\(leftId)\(arrow)\(rightId)'"
-        }
-        else {
-            return ""
-        }
+        let arrow = scriptEdgeFlag()
+        return separator + "'\(leftTr3.id)\(arrow)\(rightTr3.id)'"
     }
 }
 extension Tr3 {
@@ -38,7 +31,7 @@ extension Tr3 {
         if tr3Edges.count > 0 {
             var leftEdgeCount = 0
             for edge in tr3Edges.values {
-                if edge.leftTr3?.id == id {
+                if edge.leftTr3.id == id {
                     leftEdgeCount += 1
                 }
             }
@@ -46,7 +39,7 @@ extension Tr3 {
                 script += ", 'edges': ["
                 var sep = ""
                 for edge in tr3Edges.values {
-                    if edge.leftTr3?.id == id {
+                    if edge.leftTr3.id == id {
                         script += edge.makeD3Edge(sep)
                         sep = ","
                     }
@@ -82,10 +75,10 @@ extension Tr3 {
         var script = ""
 
         for edge in tr3Edges.values {
-
-            if  let leftId = edge.leftTr3?.id,
-                let rightId = edge.rightTr3?.id,
-                leftId == id {
+            
+            let leftId = edge.leftTr3.id
+            let rightId = edge.rightTr3.id
+            if leftId == id {
 
                 let type = edge.scriptEdgeFlag()
                 script += "{'id':'\(leftId)\(type)\(rightId)', 'source':\(leftId), 'target':\(rightId), 'type':'\(type)'},\n"

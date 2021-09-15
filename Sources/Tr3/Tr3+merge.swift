@@ -344,7 +344,7 @@ extension Tr3 {
     /// - note: May override public to debug specific paths.
     ///
     @discardableResult
-    public func expandDotPath() -> Bool{
+    public func expandDotPath() -> Bool {
 
         var index = 0
         if name.contains("˚") { return false }

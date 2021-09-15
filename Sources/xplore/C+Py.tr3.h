@@ -92,7 +92,7 @@ sky // visual music program
         cellDrift: _compute { type "compute", file "cell.drift.metal", on (0..1), buffer.version (0..1) }
         cellTimetunnel: _compute { type "compute", file "cell.timetunnel.metal", on (0..1), buffer.version (0..1) }
         cellZhabatinski: _compute { type "compute", file "cell.zhabatinski.metal", on (0..1), buffer.version (0..1), bits (2..0.4 = 3), repeat (11) }
-        cellRecord { type "record", file "cell.record.metal", on (0..1), buffer.version (0..1), flip (0..1) }
+        record { type "record", file "record.metal", on (0..1), buffer.version (0..1), flip (0..1) }
         cellCamera { type "camera", file "cell.camera.metal", on (0..1), buffer.version (0..1), flip (0..1) }
         cellCamix { type "camix", file "cell.camix.metal", on (0..1), buffer.version (0..1), flip (0..1) }
         drawScroll { type "draw", file "drawScroll.metal", on (0..1), buffer.scroll (x 0..1.5, y 0..1.5) }

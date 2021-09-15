@@ -1060,7 +1060,7 @@ final class Tr3Tests: XCTestCase {
         err += parse("panel.cell.melt")
         err += parse("panel.cell.midi")
         err += parse("panel.cell.modulo")
-        err += parse("panel.cell.record")
+        err += parse("panel.record")
         err += parse("panel.cell.scroll")
         err += parse("panel.cell.slide")
         err += parse("panel.cell.speed")
