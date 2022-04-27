@@ -59,4 +59,4 @@ panel.record {
             value (0..1) >> sky.draw.screen.fillOne
         }
     }
-}ce
+}

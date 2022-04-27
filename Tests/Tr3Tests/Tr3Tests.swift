@@ -253,6 +253,8 @@ final class Tr3Tests: XCTestCase {
         err += test("g(p 0..1 = 0.5, q 0..1 = 0.5, r 0..1 = 0.5)", "√ { g(p 0..1 = 0.5, q 0..1 = 0.5, r 0..1 = 0.5) }")
         err += test("h(p 0..1 = 0.5, q 0..1 = 0.5, r 0..1 = 0.5)", "√ { h(p 0..1 = 0.5, q 0..1 = 0.5, r 0..1 = 0.5) }")
         err += test("i(0..1 = 0.5, 0..1 = 0.5, 0..1 = 0.5)", "√ { i(0..1 = 0.5, 0..1 = 0.5, 0..1 = 0.5) }")
+        err += test("j(one 1, two 2)")
+        err += test("k(one \"1\", two \"2\")")
         XCTAssertEqual(err, 0)
     }
 
@@ -825,7 +827,7 @@ final class Tr3Tests: XCTestCase {
         Par.trace2 = false
         var err = 0
 
-        let script = "a(x 0..2, y 0..2)"
+        let script = "a(x 0..2, y 0..2, z 99), b (x 0..2, y 0..2) << a"
         print("\n" + script)
 
         let p0 = CGPoint(x: 1, y: 1)
@@ -841,11 +843,11 @@ final class Tr3Tests: XCTestCase {
             a.setVal(p0, [.activate])
 
             let result0 = root.dumpScript(indent: 0, session: true)
-            let expect0 = "√ { a(x 1, y 1) }"
+            let expect0 = "√ { a(x 1, y 1, z 99), b(x 1, y 1) << a }"
             err += ParStr.testCompare(expect0, result0, echo: true)
 
             let result1 = root.dumpScript(indent: 0, session: false)
-            let expect1 = "√ { a(x 0..2, y 0..2) }"
+            let expect1 = "√ { a(x 0..2, y 0..2, z 99), b(x 0..2, y 0..2) << a }"
             err += ParStr.testCompare(expect1, result1, echo: true)
         }
         else {
@@ -1029,7 +1031,6 @@ final class Tr3Tests: XCTestCase {
     }
 
 
-
     /// test Avatar and Robot definitions
     func testBodySkeleton() { headline(#function)
 
@@ -1039,6 +1040,62 @@ final class Tr3Tests: XCTestCase {
         //Tr3Log.dump()
         XCTAssertEqual(err, 0)
     }
+
+
+    func testDeepMenu() { headline(#function)
+        var err = 0
+        err += test(
+        """
+        menu {
+            canvas (title "canvas", type "node", icon "icon.drop.clear") {
+                fill (title "fill", type "node", icon "icon.speed.png") {
+                    plane (title "Bit Plane", type "slider", value 0..1)
+                    zero  (title "Fill Zero", type "pad"   , value 0..1, icon "icon.drop.clear") // fillZero
+                    one   (title "Fill Ones", type "pad"   , value 0..1, icon "icon.drop.gray") // fillOne
+                }
+                tile (title "tile", type "node", icon "icon.shader.tile.png") {
+                    mirror (title "Mirror", type "rectXY", x 0..1, y 0..1, icon "icon.pearl.white.png") // mirrorBox
+                    repeat (title "Repeat", type "rectXY", x 0..1, y 0..1, icon "icon.pearl.white.png") // repeatBox
+                }
+                scroll (title "scroll", type "node", icon "icon.cell.scroll.png") {
+                    box  (title "Screen Scroll", type "rectXY", x 0..1, y 0..1, icon "icon.cell.scroll.png") // scrollBox
+                    tilt (title "Brush Tilt"   , type "toggle", value 0..1, icon "icon.pen.tilt.png") // brushTilt
+                }
+                color(title "color", type "node", icon "icon.pal.main.png") {
+                    fade (title "Screen Scroll", type "rectXY", x 0..1, y 0..1 , icon "icon.scroll.png") // scrollBox
+                    tilt (title "Brush Tilt"   , type "toggle", value 0..1, icon "icon.pen.tilt.png") // brushTilt
+                }
+            }
+            speed (title "speed", type "node", icon "icon.speed.png") {
+                fps   (title "fps"  , type "slider", value 0..1, icon "icon.speed.png")
+                pause (title "pause", type "toggle", value 0..1, icon "icon.thumb.x.png")
+            }
+            brush (title "brush", type "node", icon "icon.cell.brush.png") {
+                size  (title "brush size", type "slider", value 0..1, icon "icon.pen.press.png") // brushSize
+                press (title "pen press" , type "toggle", value 0..1, icon "icon.pen.press.png") // brushPress
+                tilt  (title "pen title", type "toggle", value 0..1, icon "icon.pen.tilt.png") // brushPress
+            }
+            cell (title "cell", type "node") {
+                fade  (title "fade away"   , type "slider" , value 0..1, icon "icon.cell.fader")
+                ave   (title "average"     , type "slider" , value 0..1, icon "icon.cell.average")
+                melt  (title "reaction"    , type "slider" , value 0..1, icon "icon.cell.melt")
+                tunl  (title "time tunnel" , type "segment", value 0..5, icon "icon.cell.time")
+                zha   (title "zhabatinski" , type "segment", value 0..6, icon "icon.cell.zhabatinski")
+                slide (title "slide planes", type "segment", value 0..7, icon "icon.cell.slide.png")
+                fred  (title "fredkin"     , type "segment", value 0..4, icon "icon.cell.fredkin.png")
+            }
+            camera (title "camera", type "node", icon "icon.camera.png") {
+                fake (title "false color", type "toggle", value 0..1, icon "icon.camera.png")
+                real (title "real color" , type "toggle", value 0..1, icon "icon.camera.png")
+                face (title "facing"     , type "toggle", value 0..1, icon "icon.camera.flip.png") >> sky.shader.cellCamera.flip
+                xfade(title "cross fade" , type "slider", value 0..1, icon "icon.pearl.white.png")
+                snap (title "snapshot"   , type "pad"   , value 0..1, icon "icon.camera.png")
+            }
+        }
+        """)
+        XCTAssertEqual(err, 0)
+    }
+
 
     /// test snapshot of `Deep Muse` app
     func testDeepMuse() { headline(#function)
@@ -1107,6 +1164,7 @@ final class Tr3Tests: XCTestCase {
         ("testEdges", testEdges),
 
         ("testBodySkeleton", testBodySkeleton),
+        ("testDeepMenu", testDeepMenu),
         ("testDeepMuse", testDeepMuse),
     ]
 }

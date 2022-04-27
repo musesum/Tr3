@@ -208,6 +208,14 @@ public class Tr3Parse {
                     print("🚫 unexpected \(#function)")
                 }
             }
+            func addQuote() {
+                if let quote = nextPar.nextPars.first?.value {
+                    exprs.addQuote(quote)
+                    //?? print("*** quote: \(quote)")
+                } else {
+                    print("🚫 unexpected \(#function)")
+                }
+            }
 
             let pattern = nextPar.node?.pattern
             switch pattern {
@@ -215,6 +223,7 @@ public class Tr3Parse {
                 case "name":    addName()
                 case "exprOp":  addOper()
                 case "scalar1": addDeepScalar()
+                case "quote":   addQuote()
                 default: break
             }
         }

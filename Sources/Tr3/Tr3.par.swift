@@ -26,6 +26,7 @@ tr3 ~ left right* {
     value1 ~ scalar1 | exprs | quote
 
     scalar ~ "(" scalar1 ")"
+    scalars ~ "(" scalar1 ("," scalar1)* ")"
     scalar1 ~ (thru | modu | data | num) {
         thru ~ num ".." num ("=" num)?
         modu ~ "%" num ("=" num)?
@@ -33,7 +34,7 @@ tr3 ~ left right* {
         data ~ "*"
     }
     exprs ~ "(" expr+ ("," expr+)* ")" {
-        expr ~ (exprOp | name | scalar1)
+        expr ~ (exprOp | name | scalars | scalar1 | quote)
         exprOp ~ '^(<=|>=|==|<|>|\*[ ]|\/[ ]|\+[ ]|\-[ ]|in)'
     }
     edges ~ edgeOp (edgePar | edgeItem) comment* {

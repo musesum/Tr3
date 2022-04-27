@@ -163,6 +163,12 @@ public class Tr3Exprs: Tr3Val {
             options.insert(.op)
         }
     }
+    func addQuote(_ quote: String?) {
+        if let quote = quote?.without(trailing: " ")  {
+            exprs.last?.addQuote(quote)
+            options.insert(.quote)
+        }
+    }
     func addName(_ name: String?) {
         guard let name = name else { return }
         if !nameScalar.keys.contains(name) {

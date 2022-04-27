@@ -26,6 +26,7 @@
         input {  // phone and tablet pencil input
 
             azimuth (x -0.2..0.2, y -0.2..0.2)  // pen tilt
+
             accel (x -0.3..0.3, y -0.3..0.3, z -0.3..0.3) {  // accelerometer
                 on (0..1) }
             radius (1..92 = 9)  // finger silhouette
@@ -132,7 +133,7 @@
                 hide {
                     type "panelx" title "hide" frame (x 0, y 0, w 40, h 40) icon "icon.thumb.X.png" value (0..1) }
                 ruleOn {
-                    type "panelon" title "Active" frame (x 202, y 4, w 40, h 32) icon "icon.ring.white.png" value (0..1) >>(controls.ruleOn.value(0) controls.ruleOn.value(0) controls.ruleOn.value(0) controls.ruleOn.value(0) controls.ruleOn.value(0) controls.ruleOn.value(0) controls.ruleOn.value(0) controls.ruleOn.value(0) controls.ruleOn.value(0) controls.ruleOn.value(0) controls.ruleOn.value(0) cell.speed.restart) , lag (0) }
+                    type "panelon" title "Active" frame (x 202, y 4, w 40, h 32) icon "icon.ring.white.png" value (0..1) >>(controls.ruleOn.value(0) controls.ruleOn.value(0) controls.ruleOn.value(0) controls.ruleOn.value(0) controls.ruleOn.value(0) controls.ruleOn.value(0) controls.ruleOn.value(0) controls.ruleOn.value(0) controls.ruleOn.value(0) controls.ruleOn.value(0) cell.speed.restart) , lag (0) }
                 version {
                     type "segment" title "Version" frame (x 10, y 44, w 192, h 32) value (0..1 = 1) user >>controls.ruleOn.value(1) }
                 lock {
@@ -141,11 +142,9 @@
                     value (0..1) lag (0) }
                 bitplane {
                     type "slider" title "Bit Plane" frame (x 10, y 84, w 192, h 32) icon "icon.pearl.white.png" value (0..1) >>colorize.buffer.bitplane }
-                fillZero {  
-
+                fillZero {
                     type "trigger" title "Fill Zeros" frame (x 210, y 44, w 32, h 32) icon "icon.drop.gray.png" value (0..1) >>draw.screen.fillZero }
-                fillOne {  
-
+                fillOne {
                     type "trigger" title "Fill Ones" frame (x 210, y 84, w 32, h 32) icon "icon.drop.gray.png" value (0..1) >>draw.screen.fillOne }
             }
         }
@@ -157,7 +156,7 @@
                     hide {
                         type "panelx" title "hide" frame (x 0, y 0, w 40, h 40) icon "icon.thumb.X.png" value (0..1) }
                     ruleOn {
-                        type "panelon" title "Active" frame (x 202, y 4, w 40, h 32) icon "icon.cell.average.png" value (0..1) >>(controls.ruleOn.value(0) controls.ruleOn.value(0) controls.ruleOn.value(0) controls.ruleOn.value(0) controls.ruleOn.value(0) controls.ruleOn.value(0) controls.ruleOn.value(0) controls.ruleOn.value(0) controls.ruleOn.value(0) controls.ruleOn.value(0) controls.ruleOn.value(0) cell.speed.restart shader.cellAverage.on) , lag (0) }
+                        type "panelon" title "Active" frame (x 202, y 4, w 40, h 32) icon "icon.cell.average.png" value (0..1) >>(controls.ruleOn.value(0) controls.ruleOn.value(0) controls.ruleOn.value(0) controls.ruleOn.value(0) controls.ruleOn.value(0) controls.ruleOn.value(0) controls.ruleOn.value(0) controls.ruleOn.value(0) controls.ruleOn.value(0) controls.ruleOn.value(0) cell.speed.restart shader.cellAverage.on) , lag (0) }
                     version {
                         type "segment" title "Version" frame (x 10, y 44, w 192, h 32) value (0..1 = 0.4) >>cellAverage.buffer.version user >>controls.ruleOn.value(1) }
                     lock {
@@ -166,11 +165,9 @@
                         value (0..1) lag (0) }
                     bitplane {
                         type "slider" title "Bit Plane" frame (x 10, y 84, w 192, h 32) icon "icon.pearl.white.png" value (0..1) >>colorize.buffer.bitplane }
-                    fillZero {  
-
+                    fillZero {
                         type "trigger" title "Fill Zeros" frame (x 210, y 44, w 32, h 32) icon "icon.drop.gray.png" value (0..1) >>draw.screen.fillZero }
-                    fillOne {  
-
+                    fillOne {
                         type "trigger" title "Fill Ones" frame (x 210, y 84, w 32, h 32) icon "icon.drop.gray.png" value (0..1) >>draw.screen.fillOne }
                 }
             }
@@ -211,7 +208,7 @@
                     hide {
                         type "panelx" title "hide" frame (x 0, y 0, w 40, h 40) icon "icon.thumb.X.png" value (0..1) }
                     ruleOn {
-                        type "panelon" title "Active" frame (x 202, y 4, w 40, h 32) icon "icon.cell.drift.png" value (0..1) >>(controls.ruleOn.value(0) controls.ruleOn.value(0) controls.ruleOn.value(0) controls.ruleOn.value(0) controls.ruleOn.value(0) controls.ruleOn.value(0) controls.ruleOn.value(0) controls.ruleOn.value(0) controls.ruleOn.value(0) controls.ruleOn.value(0) controls.ruleOn.value(0) cell.speed.restart shader.cellDrift.on) , lag (0) }
+                        type "panelon" title "Active" frame (x 202, y 4, w 40, h 32) icon "icon.cell.drift.png" value (0..1) >>(controls.ruleOn.value(0) controls.ruleOn.value(0) controls.ruleOn.value(0) controls.ruleOn.value(0) controls.ruleOn.value(0) controls.ruleOn.value(0) controls.ruleOn.value(0) controls.ruleOn.value(0) controls.ruleOn.value(0) controls.ruleOn.value(0) cell.speed.restart shader.cellDrift.on) , lag (0) }
                     version {
                         type "segment" title "Version" frame (x 10, y 44, w 192, h 32) value (0..1 = 1) >>cellDrift.buffer.version user >>controls.ruleOn.value(1) }
                     lock {
@@ -220,11 +217,9 @@
                         value (0..1) lag (0) }
                     bitplane {
                         type "slider" title "Bit Plane" frame (x 10, y 84, w 192, h 32) icon "icon.pearl.white.png" value (0..1) >>colorize.buffer.bitplane }
-                    fillZero {  
-
+                    fillZero {
                         type "trigger" title "Fill Zeros" frame (x 210, y 44, w 32, h 32) icon "icon.drop.gray.png" value (0..1) >>draw.screen.fillZero }
-                    fillOne {  
-
+                    fillOne {
                         type "trigger" title "Fill Ones" frame (x 210, y 84, w 32, h 32) icon "icon.drop.gray.png" value (0..1) >>draw.screen.fillOne }
                 }
             }
@@ -235,7 +230,7 @@
                     hide {
                         type "panelx" title "hide" frame (x 0, y 0, w 40, h 40) icon "icon.thumb.X.png" value (0..1) }
                     ruleOn {
-                        type "panelon" title "Active" frame (x 202, y 4, w 40, h 32) icon "icon.cell.fader.png" value (0..1) >>(controls.ruleOn.value(0) controls.ruleOn.value(0) controls.ruleOn.value(0) controls.ruleOn.value(0) controls.ruleOn.value(0) controls.ruleOn.value(0) controls.ruleOn.value(0) controls.ruleOn.value(0) controls.ruleOn.value(0) controls.ruleOn.value(0) controls.ruleOn.value(0) cell.speed.restart shader.cellFader.on) , lag (0) }
+                        type "panelon" title "Active" frame (x 202, y 4, w 40, h 32) icon "icon.cell.fader.png" value (0..1) >>(controls.ruleOn.value(0) controls.ruleOn.value(0) controls.ruleOn.value(0) controls.ruleOn.value(0) controls.ruleOn.value(0) controls.ruleOn.value(0) controls.ruleOn.value(0) controls.ruleOn.value(0) controls.ruleOn.value(0) controls.ruleOn.value(0) cell.speed.restart shader.cellFader.on) , lag (0) }
                     version {
                         type "segment" title "Version" frame (x 10, y 44, w 192, h 32) value (0..1 = 0.5) >>cellFader.buffer.version user >>controls.ruleOn.value(1) }
                     lock {
@@ -244,10 +239,9 @@
                         value (0..1) lag (0) }
                     bitplane {
                         type "slider" title "Bit Plane" frame (x 10, y 84, w 192, h 32) icon "icon.pearl.white.png" value (0..1 = 0.2) >>colorize.buffer.bitplane }
-                    fillZero {  
+                    fillZero {
                         type "trigger" title "Fill Zeros" frame (x 210, y 44, w 32, h 32) icon "icon.drop.gray.png" value (0..1) >>draw.screen.fillZero }
-                    fillOne {  
-
+                    fillOne {
                         type "trigger" title "Fill Ones" frame (x 210, y 84, w 32, h 32) icon "icon.drop.gray.png" value (0..1) >>draw.screen.fillOne }
                 }
             }
@@ -258,7 +252,7 @@
                     hide {
                         type "panelx" title "hide" frame (x 0, y 0, w 40, h 40) icon "icon.thumb.X.png" value (0..1) }
                     ruleOn {
-                        type "panelon" title "Active" frame (x 202, y 4, w 40, h 32) icon "icon.cell.fredkin.png" value (0..1) >>(controls.ruleOn.value(0) controls.ruleOn.value(0) controls.ruleOn.value(0) controls.ruleOn.value(0) controls.ruleOn.value(0) controls.ruleOn.value(0) controls.ruleOn.value(0) controls.ruleOn.value(0) controls.ruleOn.value(0) controls.ruleOn.value(0) controls.ruleOn.value(0) cell.speed.restart shader.cellFredkin.on) , lag (0) }
+                        type "panelon" title "Active" frame (x 202, y 4, w 40, h 32) icon "icon.cell.fredkin.png" value (0..1) >>(controls.ruleOn.value(0) controls.ruleOn.value(0) controls.ruleOn.value(0) controls.ruleOn.value(0) controls.ruleOn.value(0) controls.ruleOn.value(0) controls.ruleOn.value(0) controls.ruleOn.value(0) controls.ruleOn.value(0) controls.ruleOn.value(0) cell.speed.restart shader.cellFredkin.on) , lag (0) }
                     version {
                         type "segment" title "Version" frame (x 10, y 44, w 192, h 32) value (0..1 = 0.5) >>cellFredkin.buffer.version user >>controls.ruleOn.value(1) }
                     lock {
@@ -267,9 +261,9 @@
                         value (0..1) lag (0) }
                     bitplane {
                         type "slider" title "Bit Plane" frame (x 10, y 84, w 192, h 32) icon "icon.pearl.white.png" value (0..1) >>colorize.buffer.bitplane }
-                    fillZero {  
+                    fillZero {
                         type "trigger" title "Fill Zeros" frame (x 210, y 44, w 32, h 32) icon "icon.drop.gray.png" value (0..1) >>draw.screen.fillZero }
-                    fillOne {  
+                    fillOne {
                         type "trigger" title "Fill Ones" frame (x 210, y 84, w 32, h 32) icon "icon.drop.gray.png" value (0..1) >>draw.screen.fillOne }
                 }
             }
@@ -280,7 +274,7 @@
                     hide {
                         type "panelx" title "hide" frame (x 0, y 0, w 40, h 40) icon "icon.thumb.X.png" value (0..1) }
                     ruleOn {
-                        type "panelon" title "Active" frame (x 202, y 4, w 40, h 32) icon "icon.cell.gas.png" value (0..1) >>(controls.ruleOn.value(0) controls.ruleOn.value(0) controls.ruleOn.value(0) controls.ruleOn.value(0) controls.ruleOn.value(0) controls.ruleOn.value(0) controls.ruleOn.value(0) controls.ruleOn.value(0) controls.ruleOn.value(0) controls.ruleOn.value(0) controls.ruleOn.value(0) cell.speed.restart shader.cellGas.on) , lag (0) }
+                        type "panelon" title "Active" frame (x 202, y 4, w 40, h 32) icon "icon.cell.gas.png" value (0..1) >>(controls.ruleOn.value(0) controls.ruleOn.value(0) controls.ruleOn.value(0) controls.ruleOn.value(0) controls.ruleOn.value(0) controls.ruleOn.value(0) controls.ruleOn.value(0) controls.ruleOn.value(0) controls.ruleOn.value(0) controls.ruleOn.value(0) cell.speed.restart shader.cellGas.on) , lag (0) }
                     version {
                         type "segment" title "Version" frame (x 10, y 44, w 192, h 32) value (0..1 = 1) >>cellGas.buffer.version user >>controls.ruleOn.value(1) }
                     lock {
@@ -289,11 +283,9 @@
                         value (0..1) lag (0) }
                     bitplane {
                         type "slider" title "Bit Plane" frame (x 10, y 84, w 192, h 32) icon "icon.pearl.white.png" value (0..1) >>colorize.buffer.bitplane }
-                    fillZero {  
-
+                    fillZero {
                         type "trigger" title "Fill Zeros" frame (x 210, y 44, w 32, h 32) icon "icon.drop.gray.png" value (0..1) >>draw.screen.fillZero }
-                    fillOne {  
-
+                    fillOne {
                         type "trigger" title "Fill Ones" frame (x 210, y 84, w 32, h 32) icon "icon.drop.gray.png" value (0..1) >>draw.screen.fillOne }
                 }
             }
@@ -304,7 +296,7 @@
                     hide {
                         type "panelx" title "hide" frame (x 0, y 0, w 40, h 40) icon "icon.thumb.X.png" value (0..1) }
                     ruleOn {
-                        type "panelon" title "Active" frame (x 202, y 4, w 40, h 32) icon "icon.cell.melt.png" value (0..1) >>(controls.ruleOn.value(0) controls.ruleOn.value(0) controls.ruleOn.value(0) controls.ruleOn.value(0) controls.ruleOn.value(0) controls.ruleOn.value(0) controls.ruleOn.value(0) controls.ruleOn.value(0) controls.ruleOn.value(0) controls.ruleOn.value(0) controls.ruleOn.value(0) cell.speed.restart shader.cellMelt.on) , lag (0) }
+                        type "panelon" title "Active" frame (x 202, y 4, w 40, h 32) icon "icon.cell.melt.png" value (0..1) >>(controls.ruleOn.value(0) controls.ruleOn.value(0) controls.ruleOn.value(0) controls.ruleOn.value(0) controls.ruleOn.value(0) controls.ruleOn.value(0) controls.ruleOn.value(0) controls.ruleOn.value(0) controls.ruleOn.value(0) controls.ruleOn.value(0) cell.speed.restart shader.cellMelt.on) , lag (0) }
                     version {
                         type "segment" title "Version" frame (x 10, y 44, w 192, h 32) value (0..1 = 1) >>cellMelt.buffer.version user >>controls.ruleOn.value(1) }
                     lock {
@@ -313,9 +305,9 @@
                         value (0..1) lag (0) }
                     bitplane {
                         type "slider" title "Bit Plane" frame (x 10, y 84, w 192, h 32) icon "icon.pearl.white.png" value (0..1) >>colorize.buffer.bitplane }
-                    fillZero {  
+                    fillZero {
                         type "trigger" title "Fill Zeros" frame (x 210, y 44, w 32, h 32) icon "icon.drop.gray.png" value (1.67772e+07) >>draw.screen.fillZero }
-                    fillOne {  
+                    fillOne {
                         type "trigger" title "Fill Ones" frame (x 210, y 84, w 32, h 32) icon "icon.drop.gray.png" value (1.67772e+07) >>draw.screen.fillOne }
                 }
             }
@@ -339,45 +331,18 @@
                     hide {
                         type "panelx" title "hide" frame (x 0, y 0, w 40, h 40) icon "icon.thumb.X.png" value (0..1) }
                     ruleOn {
-                        type "panelon" title "Active" frame (x 202, y 4, w 40, h 32) icon "icon.cell.modulo.png" value (0..1) >>(controls.ruleOn.value(0) controls.ruleOn.value(0) controls.ruleOn.value(0) controls.ruleOn.value(0) controls.ruleOn.value(0) controls.ruleOn.value(0) controls.ruleOn.value(0) controls.ruleOn.value(0) controls.ruleOn.value(0) controls.ruleOn.value(0) controls.ruleOn.value(0) cell.speed.restart shader.cellModulo.on) , lag (0) }
+                        type "panelon" title "Active" frame (x 202, y 4, w 40, h 32) icon "icon.cell.modulo.png" value (0..1) >>(controls.ruleOn.value(0) controls.ruleOn.value(0) controls.ruleOn.value(0) controls.ruleOn.value(0) controls.ruleOn.value(0) controls.ruleOn.value(0) controls.ruleOn.value(0) controls.ruleOn.value(0) controls.ruleOn.value(0) controls.ruleOn.value(0) cell.speed.restart shader.cellModulo.on) , lag (0) }
                     version {
                         type "segment" title "Version" frame (x 10, y 44, w 192, h 32) value (0..1 = 1) >>cellModulo.buffer.version user >>controls.ruleOn.value(1) }
                     lock {
                         type "switch" title "Lock" frame (x 210, y 44, w 32, h 32) icon {
                             off "icon.lock.closed.png" on "icon.lock.open.png" }
                         value (0..1) lag (0) }
-                    
                     bitplane {
                         type "slider" title "Bit Plane" frame (x 10, y 84, w 192, h 32) icon "icon.pearl.white.png" value (0..1) >>colorize.buffer.bitplane }
-                    fillZero {  
-
+                    fillZero {
                         type "trigger" title "Fill Zeros" frame (x 210, y 44, w 32, h 32) icon "icon.drop.gray.png" value (0..1) >>draw.screen.fillZero }
-                    fillOne {  
-
-                        type "trigger" title "Fill Ones" frame (x 210, y 84, w 32, h 32) icon "icon.drop.gray.png" value (0..1) >>draw.screen.fillOne }
-                }
-            }
-            record : _cell {
-                base {
-                    type "record" title "Record" frame (x 0, y 0, w 250, h 130) icon "icon.record.png" }
-                controls {
-                    hide {
-                        type "panelx" title "hide" frame (x 0, y 0, w 40, h 40) icon "icon.thumb.X.png" value (0..1) }
-                    ruleOn {
-                        type "panelon" title "Active" frame (x 202, y 4, w 40, h 32) icon "icon.record.png" value (0..1) >>(controls.ruleOn.value(0) controls.ruleOn.value(0) controls.ruleOn.value(0) controls.ruleOn.value(0) controls.ruleOn.value(0) controls.ruleOn.value(0) controls.ruleOn.value(0) controls.ruleOn.value(0) controls.ruleOn.value(0) controls.ruleOn.value(0) controls.ruleOn.value(0) cell.speed.restart shader.record.on) , lag (0) }
-                    version {
-                        type "segment" title "Version" frame (x 10, y 44, w 192, h 32) value (0..1 = 0.5)  >> sky.shader.record.buffer.version user >>controls.ruleOn.value(1) }
-                    lock {
-                        type "switch" title "Lock" frame (x 210, y 44, w 32, h 32) icon "icon.camera.flip.png" {
-                            off "icon.lock.closed.png" on "icon.lock.open.png" }
-                        value (0..1)  >> sky.shader.record.flip lag (0) }
-                    bitplane {
-                        type "slider" title "Bit Plane" frame (x 10, y 84, w 192, h 32) icon "icon.pearl.white.png" value (0..1 = 0.2) >>colorize.buffer.bitplane }
-                    fillZero {  
-
-                        type "trigger" title "Fill Zeros" frame (x 210, y 44, w 32, h 32) icon "icon.drop.gray.png" value (0..1) >>draw.screen.fillZero }
-                    fillOne {  
-
+                    fillOne {
                         type "trigger" title "Fill Ones" frame (x 210, y 84, w 32, h 32) icon "icon.drop.gray.png" value (0..1) >>draw.screen.fillOne }
                 }
             }
@@ -404,7 +369,7 @@
                     hide {
                         type "panelx" title "hide" frame (x 0, y 0, w 40, h 40) icon "icon.thumb.X.png" value (0..1) }
                     ruleOn {
-                        type "panelon" title "Active" frame (x 202, y 4, w 40, h 32) icon "icon.cell.slide.png" value (0..1) >>(controls.ruleOn.value(0) controls.ruleOn.value(0) controls.ruleOn.value(0) controls.ruleOn.value(0) controls.ruleOn.value(0) controls.ruleOn.value(0) controls.ruleOn.value(0) controls.ruleOn.value(0) controls.ruleOn.value(0) controls.ruleOn.value(0) controls.ruleOn.value(0) cell.speed.restart shader.cellSlide.on) , lag (0) }
+                        type "panelon" title "Active" frame (x 202, y 4, w 40, h 32) icon "icon.cell.slide.png" value (0..1) >>(controls.ruleOn.value(0) controls.ruleOn.value(0) controls.ruleOn.value(0) controls.ruleOn.value(0) controls.ruleOn.value(0) controls.ruleOn.value(0) controls.ruleOn.value(0) controls.ruleOn.value(0) controls.ruleOn.value(0) controls.ruleOn.value(0) cell.speed.restart shader.cellSlide.on) , lag (0) }
                     version {
                         type "segment" title "Version" frame (x 10, y 44, w 192, h 32) value (0..1 = 1) >>cellSlide.buffer.version user >>controls.ruleOn.value(1) }
                     lock {
@@ -413,11 +378,9 @@
                         value (0..1) lag (0) }
                     bitplane {
                         type "slider" title "Bit Plane" frame (x 10, y 84, w 192, h 32) icon "icon.pearl.white.png" value (0..1) >>colorize.buffer.bitplane }
-                    fillZero {  
-
+                    fillZero {
                         type "trigger" title "Fill Zeros" frame (x 210, y 44, w 32, h 32) icon "icon.drop.gray.png" value (0..1) >>draw.screen.fillZero }
-                    fillOne {  
-
+                    fillOne {
                         type "trigger" title "Fill Ones" frame (x 210, y 84, w 32, h 32) icon "icon.drop.gray.png" value (0..1) >>draw.screen.fillOne }
                 }
             }
@@ -441,7 +404,7 @@
                     hide {
                         type "panelx" title "hide" frame (x 0, y 0, w 40, h 40) icon "icon.thumb.X.png" value (0..1) }
                     ruleOn {
-                        type "panelon" title "Active" frame (x 202, y 4, w 40, h 32) icon "icon.cell.timeTunnel.png" value (0..1) >>(controls.ruleOn.value(0) controls.ruleOn.value(0) controls.ruleOn.value(0) controls.ruleOn.value(0) controls.ruleOn.value(0) controls.ruleOn.value(0) controls.ruleOn.value(0) controls.ruleOn.value(0) controls.ruleOn.value(0) controls.ruleOn.value(0) controls.ruleOn.value(0) cell.speed.restart shader.cellTimetunnel.on) , lag (0) }
+                        type "panelon" title "Active" frame (x 202, y 4, w 40, h 32) icon "icon.cell.timeTunnel.png" value (0..1) >>(controls.ruleOn.value(0) controls.ruleOn.value(0) controls.ruleOn.value(0) controls.ruleOn.value(0) controls.ruleOn.value(0) controls.ruleOn.value(0) controls.ruleOn.value(0) controls.ruleOn.value(0) controls.ruleOn.value(0) controls.ruleOn.value(0) cell.speed.restart shader.cellTimetunnel.on) , lag (0) }
                     version {
                         type "segment" title "Version" frame (x 10, y 44, w 192, h 32) value (0..1 = 1) >>cellTimetunnel.buffer.version user >>controls.ruleOn.value(1) }
                     lock {
@@ -450,11 +413,9 @@
                         value (0..1) lag (0) }
                     bitplane {
                         type "slider" title "Bit Plane" frame (x 10, y 84, w 192, h 32) icon "icon.pearl.white.png" value (0..1) >>colorize.buffer.bitplane }
-                    fillZero {  
-
+                    fillZero {
                         type "trigger" title "Fill Zeros" frame (x 210, y 44, w 32, h 32) icon "icon.drop.gray.png" value (0..1) >>draw.screen.fillZero }
-                    fillOne {  
-
+                    fillOne {
                         type "trigger" title "Fill Ones" frame (x 210, y 84, w 32, h 32) icon "icon.drop.gray.png" value (0..1) >>draw.screen.fillOne }
                 }
             }
@@ -465,7 +426,7 @@
                     hide {
                         type "panelx" title "hide" frame (x 0, y 0, w 40, h 40) icon "icon.thumb.X.png" value (0..1) }
                     ruleOn {
-                        type "panelon" title "Active" frame (x 202, y 4, w 40, h 32) icon "icon.cell.zhabatinski.png" value (0..1) >>(controls.ruleOn.value(0) controls.ruleOn.value(0) controls.ruleOn.value(0) controls.ruleOn.value(0) controls.ruleOn.value(0) controls.ruleOn.value(0) controls.ruleOn.value(0) controls.ruleOn.value(0) controls.ruleOn.value(0) controls.ruleOn.value(0) controls.ruleOn.value(0) cell.speed.restart shader.cellZhabatinski.on) , lag (0) }
+                        type "panelon" title "Active" frame (x 202, y 4, w 40, h 32) icon "icon.cell.zhabatinski.png" value (0..1) >>(controls.ruleOn.value(0) controls.ruleOn.value(0) controls.ruleOn.value(0) controls.ruleOn.value(0) controls.ruleOn.value(0) controls.ruleOn.value(0) controls.ruleOn.value(0) controls.ruleOn.value(0) controls.ruleOn.value(0) controls.ruleOn.value(0) cell.speed.restart shader.cellZhabatinski.on) , lag (0) }
                     version {
                         type "segment" title "Version" frame (x 10, y 44, w 192, h 32) value (0..1 = 0.75) >>cellZhabatinski.buffer.version user >>controls.ruleOn.value(1) }
                     lock {
@@ -474,13 +435,33 @@
                         value (0..1) lag (0) }
                     bitplane {
                         type "slider" title "Bit Plane" frame (x 10, y 84, w 192, h 32) icon "icon.pearl.white.png" value (0..1) >>colorize.buffer.bitplane }
-                    fillZero {  
-
+                    fillZero {
                         type "trigger" title "Fill Zeros" frame (x 210, y 44, w 32, h 32) icon "icon.drop.gray.png" value (0..1) >>draw.screen.fillZero }
-                    fillOne {  
-
+                    fillOne {
                         type "trigger" title "Fill Ones" frame (x 210, y 84, w 32, h 32) icon "icon.drop.gray.png" value (0..1) >>draw.screen.fillOne }
                 }
+            }
+        }
+        record {
+            base {
+                type "record" title "Record" icon "icon.record.png" }
+            controls {
+                hide {
+                    type "panelx" title "hide" frame (x 0, y 0, w 40, h 40) icon "icon.thumb.X.png" value (0..1) }
+                ruleOn {
+                    type "panelon" title "Active" frame (x 202, y 4, w 40, h 32) icon "icon.record.png" value (0..1) >>shader.record.on lag (0) }
+                version {
+                    type "segment" title "Version" frame (x 10, y 44, w 192, h 32) value (0..1 = 0.5) >>record.buffer.version user >>controls.ruleOn.value(1) }
+                lock {
+                    type "switch" title "Lock" frame (x 210, y 44, w 32, h 32) lock {
+                        icon "icon.camera.flip.png" value >>shader.record.flip }
+                    lag (0) }
+                bitplane {
+                    type "slider" title "Bit Plane" frame (x 10, y 84, w 192, h 32) icon "icon.pearl.white.png" value (0..1 = 0.2) }
+                fillZero {
+                    type "trigger" title "Fill Zeros" frame (x 210, y 44, w 32, h 32) icon "icon.drop.gray.png" value (0..1) >>draw.screen.fillZero }
+                fillOne {
+                    type "trigger" title "Fill Ones" frame (x 210, y 84, w 32, h 32) icon "icon.drop.gray.png" value (0..1) >>draw.screen.fillOne }
             }
         }
         shader {
@@ -526,4 +507,4 @@
             }
         }
     }
-    }
+}
