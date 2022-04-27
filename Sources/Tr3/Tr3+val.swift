@@ -8,7 +8,7 @@ import Par
 
 extension Tr3 {
 
-    public func StringVal()->String? {
+    public func StringVal() -> String? {
         if let v = val as? Tr3ValQuote {
             return v.quote
         }
@@ -37,6 +37,7 @@ extension Tr3 {
         }
         return nil
     }
+
 
     public func IntVal() -> Int? {
         if let num = FloatVal() { return Int(num) }

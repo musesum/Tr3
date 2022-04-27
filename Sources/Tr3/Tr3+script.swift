@@ -130,7 +130,7 @@ extension Tr3 {
         var script = edges.first?.scriptEdgeFlag() ?? ""
         if edges.count > 1 { script += "(" }
         for edge in edges  {
-            if let pathrefs = edge.rightTr3?.pathrefs,
+            if let pathrefs = edge.rightTr3.pathrefs,
                pathrefs.count > 0   {
                 if pathrefs.count > 1 { script += "(" }
                 for pathref in pathrefs {

@@ -43,5 +43,8 @@ public class Tr3ValQuote: Tr3Val {
              quote = v.quote
         }
     }
+    public override func getVal() -> Any {
+        return quote
+    }
 
 }

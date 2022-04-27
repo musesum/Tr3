@@ -13,6 +13,7 @@ public struct Tr3ExprOptions: OptionSet {
     public static let name    = Tr3ExprOptions(rawValue: 1 << 2)
     public static let scalar  = Tr3ExprOptions(rawValue: 1 << 3)
     public static let rvalue  = Tr3ExprOptions(rawValue: 1 << 4)
+    public static let quote   = Tr3ExprOptions(rawValue: 1 << 5)
 
     public init(rawValue: Int = 0) { self.rawValue = rawValue }
 
@@ -21,6 +22,7 @@ public struct Tr3ExprOptions: OptionSet {
         (.op     , "op"      ),
         (.name   , "name"    ),
         (.scalar , "scalar"  ),
+        (.quote  , "quote"   ),
         (.rvalue , "rvalue"  ),
     ]
 
@@ -52,7 +54,7 @@ public class Tr3Expr {
 
     var name: ExprName = ""
     var exprOp = Tr3ExprOp.none
-    var rvalue: Any? // name | scalar
+    var rvalue: Any? // name | scalar | quote
     var options = Tr3ExprOptions(rawValue: 0)
 
     init() {
@@ -76,7 +78,7 @@ public class Tr3Expr {
             switch frRvalue {
             case let n as ExprName: rvalue = n
             case let s as Tr3ValScalar: rvalue = Tr3ValScalar(with: s)
-            default: print("*** unknown Tr3Expr from next: \(frRvalue)")
+            default: print("🚫 unknown Tr3Expr from next: \(frRvalue)")
             }
         }
     }
@@ -85,13 +87,16 @@ public class Tr3Expr {
         let result = Tr3Expr(with: self)
         return result
     }
-
+    func addQuote(_ quote: String) {
+        rvalue = quote
+        options.insert(.quote)
+    }
     func addOpStr (_ opStr: String) {
         if let op = Tr3ExprOp(rawValue: opStr) {
             exprOp = op
             options.insert(.op)
         } else {
-            print("*** unknown exprOp: \(opStr)")
+            print("🚫 unknown exprOp: \(opStr)")
         }
     }
     func addExprName(_ name: String) {
@@ -197,18 +202,23 @@ public class Tr3Expr {
 
             switch rvalue {
 
-                case let n as ExprName:
+                case let s as String:
 
-                    script += delim + n
+                    if options.contains(.quote) {
+                        script += delim + "\"\(s)\""
+                    } else {
+                        script += delim + s
+                    }
 
-                case let s as Tr3ValScalar:
+                case let v as Tr3ValScalar:
 
-                    let scalar = s.dumpVal(parens: false, session: session)
+                    let scalar = v.dumpVal(parens: false, session: session)
                     script += delim + scalar
+
 
                 default:
 
-                    print("*** unknown script rvalue: \(rvalue)")
+                    print("🚫 unknown script rvalue: \(rvalue)")
             }
         }
         return script

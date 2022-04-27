@@ -19,14 +19,14 @@ public class Tr3Exprs: Tr3Val {
     var names = ContiguousArray<ExprName>()
 
     /// `t(1, 2)` ⟹ `[1, 2]`
-    var scalars = ContiguousArray<Tr3ValScalar>()
+    var scalars = ContiguousArray<Tr3ValScalar>() 
 
     /// `t(x/2, y/2) << u(x 1, y 2)` ⟹ `u(x 0.5, y 1.0)` // after t fires
     var exprs = ContiguousArray<Tr3Expr>()
 
     var options = Tr3ExprOptions(rawValue: 0)
     
-    override init () {
+    override init() {
         super.init()
     }
     override init(with tr3Val: Tr3Val) {
@@ -161,6 +161,12 @@ public class Tr3Exprs: Tr3Val {
         if let opStr = opStr?.without(trailing: " ")  {
             exprs.last?.addOpStr(opStr)
             options.insert(.op)
+        }
+    }
+    func addQuote(_ quote: String?) {
+        if let quote = quote?.without(trailing: " ")  {
+            exprs.last?.addQuote(quote)
+            options.insert(.quote)
         }
     }
     func addName(_ name: String?) {
@@ -335,8 +341,24 @@ public class Tr3Exprs: Tr3Val {
                 case let v as Double:   setFloat(Float(v))
                 case let v as CGPoint:  setPoint(v)
                 case let v as Tr3Exprs: setExprs(v)
-                default: print("*** mismatched setVal(\(any))")
+                default: print("🚫 mismatched setVal(\(any))")
             }
         }
+    }
+    public override func getVal() -> Any {
+        var nums = [Float]()
+        if names.count > 0 {
+            for name in names {
+                if let num = nameScalar[name]?.num {
+                    nums.append(num)
+                }
+            }
+        } else if scalars.count > 0 {
+            for scalar in scalars {
+                nums.append(scalar.num)
+            }
+        }
+        return nums
+
     }
 }

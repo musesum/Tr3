@@ -88,7 +88,7 @@ public class Tr3EdgeDefs {
              Tr3ValTern.ternStack.append(tern_)
          }
          else {
-             print("*** \(#function) no edgeDefs to add edge")
+             print("🚫 \(#function) no edgeDefs to add edge")
          }
      }
     /** add exprs to array of edgeDefs
@@ -98,7 +98,7 @@ public class Tr3EdgeDefs {
             pathVals.add(val: Tr3Exprs())
         }
         else {
-            print("*** \(#function) no edgeDefs to add edge")
+            print("🚫 \(#function) no edgeDefs to add edge")
         }
     }
 

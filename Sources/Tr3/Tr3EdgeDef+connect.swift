@@ -9,13 +9,31 @@ import Foundation
 extension Tr3EdgeDef {
 
     func connectNewEdge(_ leftTr3: Tr3, _ rightTr3: Tr3, _ tr3Val: Tr3Val?) {
-        
-        let edge = Tr3Edge(self, leftTr3, rightTr3, tr3Val)
-        leftTr3.tr3Edges[edge.key] = edge
-        rightTr3.tr3Edges[edge.key] = edge
-        edges[edge.key] = edge
-        if edgeFlags.contains(.copyat) {
+
+        let newEdge = Tr3Edge(self, leftTr3, rightTr3, tr3Val)
+        let newKey = newEdge.key
+
+        func addEdge() {
+            leftTr3.tr3Edges[newKey] = newEdge
+            rightTr3.tr3Edges[newKey] = newEdge
+            edges[newKey] = newEdge
+        }
+        func excludeEdge() {
+            if let oldEdge = edges[newKey] {
+                oldEdge.edgeFlags.remove(edgeFlags)
+                if oldEdge.edgeFlags.isEmpty {
+                    edges.removeValue(forKey: newKey)
+                }
+            }
+        }
+        // begin -----------------------------
+        if edgeFlags.contains(.exclude) {
+            excludeEdge()
+        } else if edgeFlags.contains(.copyat) {
+            addEdge()
             connectCopyr(leftTr3, rightTr3, tr3Val)
+        } else {
+            addEdge()
         }
     }
     func connectCopyr(_ leftTr3: Tr3, _ rightTr3: Tr3, _ tr3Val: Tr3Val?)  {

@@ -61,5 +61,8 @@ public class Tr3ValPath: Tr3Val {
     public override func setVal(_ any: Any?, _ options: Any? = nil) {
          //TODO: is ever used during runtime?
     }
+    public override func getVal() -> Any {
+        return path
+    }
 
 }

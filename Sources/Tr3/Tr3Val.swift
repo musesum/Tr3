@@ -14,6 +14,8 @@ protocol Tr3ValProtocal {
     func scriptVal(parens: Bool) -> String
     func dumpVal(parens: Bool, session: Bool) -> String
     func copy() -> Tr3Val
+    func setVal(_ from: Any?, _ option: Any?)
+    func getVal() -> Any
 }
 public class Tr3Val: Comparable, Tr3ValProtocal {
 
@@ -57,7 +59,10 @@ public class Tr3Val: Comparable, Tr3ValProtocal {
         valFlags.insert(flag_)
     }
     public func setVal(_ from: Any?, _ option: Any? = nil) {
-        assertionFailure("setVal needs override")
+        assertionFailure("🚫 setVal needs override")
+    }
+    public func getVal() -> Any {
+        assertionFailure("🚫 getVal needs override")
     }
 }
 

@@ -10,7 +10,7 @@ sky.shader {
     cellDrift: _compute { file "cell.drift.metal" }
     cellTimetunnel: _compute { file "cell.timetunnel.metal" }
     cellZhabatinski: _compute { file "cell.zhabatinski.metal" repeat (11) buffer.bits (2..4 = 3) }
-    cellRecord { type "record" file "cell.record.metal" on (0..1) buffer { version (0..1) } flip (0..1) }
+    record { type "record" file "record.metal" on (0..1) buffer { version (0..1) } flip (0..1) }
     cellCamera { type "camera" file "cell.camera.metal" on (0..1) buffer { version (0..1) } flip (0..1) }
     cellCamix { type "camix" file "cell.camix.metal" on (0..1) buffer { version (0..1) } flip (0..1) }
     drawScroll { type "draw" file "drawScroll.metal" on (0..1) buffer.scroll (x 0..1 = 0.5, y 0..1 = 0.5) }
