@@ -8,8 +8,11 @@ import Foundation
 
 extension Tr3Edge {
     
-    public func scriptEdgeFlag() -> String {
-        let script = Tr3EdgeDef.scriptEdgeFlag(edgeFlags, active)
+    public func scriptEdgeFlag(padSpace: Bool = false) -> String {
+        var script = Tr3EdgeDef.scriptEdgeFlag(edgeFlags, active)
+        if padSpace, script.count > 0 {
+            script += " "
+        }
         return script
     }
 }

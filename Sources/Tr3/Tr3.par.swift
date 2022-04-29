@@ -20,7 +20,7 @@ tr3 ~ left right* {
     child ~ "{" comment* tr3+ "}"
     many ~ "." "{" tr3+ "}"
     array ~ "[" thru "]"
-    copyat ~ ":" (path | name)
+    copyat ~ ":" (path | name) ("," (path | name))*
 
     value ~ scalar | exprs | quote
     value1 ~ scalar1 | exprs | quote

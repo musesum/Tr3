@@ -34,7 +34,7 @@ extension Tr3EdgeDef {
         return script
     }
 
-    public func scriptVal() -> String {
+    public func scriptVal_() -> String {
 
         var script = (" " + Tr3EdgeDef.scriptEdgeFlag(edgeFlags)).with(trailing: " ")
 
@@ -51,27 +51,8 @@ extension Tr3EdgeDef {
             }
             if pathVals.pathList.count > 1 { script += ")" }
         }
-        return script.with(trailing: " ")
+        return script
     }
-
-    public func dumpEdge(_ tr3: Tr3) -> String {
-
-        var script = ""
-        script += Tr3EdgeDef.scriptEdgeFlag(edgeFlags).with(trailing: " ")
-
-        if let tern = ternVal {
-            script += tern.dumpVal()
-        }
-        else {
-            script += edges.count > 1 ? "(" : ""
-            for edge in edges.values {
-                script += edge.dumpVal(tr3) + " "
-            }
-            script += edges.count > 1 ? ")" : ""
-        }
-        return script.with(trailing: " ")
-    }
-
 }
 
 

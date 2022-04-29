@@ -1,17 +1,18 @@
 tr3 ~ left right* {
 
-    left ~ (path | name | quote)
+    left ~ (path | name)
     right ~ (value | child | many | copyat | array | edges | embed | comment)+
 
     child ~ "{" comment* tr3+ "}"
     many ~ "." "{" tr3+ "}"
     array ~ "[" thru "]"
-    copyat ~ ":" (path | name)
+    copyat ~ ":" (path | name) ("," (path | name))*
 
     value ~ scalar | exprs | quote
     value1 ~ scalar1 | exprs | quote
 
     scalar ~ "(" scalar1 ")"
+    scalars ~ "(" scalar1 ("," scalar1)* ")"
     scalar1 ~ (thru | modu | data | num) {
         thru ~ num ".." num ("=" num)?
         modu ~ "%" num ("=" num)?
@@ -19,16 +20,16 @@ tr3 ~ left right* {
         data ~ "*"
     }
     exprs ~ "(" expr+ ("," expr+)* ")" {
-        expr ~ (exprOp | name | scalar1)
+        expr ~ (exprOp | name | scalars | scalar1 | quote)
         exprOp ~ '^(<=|>=|==|<|>|\*[ ]|\/[ ]|\+[ ]|\-[ ]|in)'
     }
     edges ~ edgeOp (edgePar | edgeItem) comment* {
 
         edgeOp ~ '^([<][<⋯!\:&\=\╌>]+|[⋯!\:&\=\╌>]+[>])'
-        edgePar ~ "(" edgeItem ("," edgeItem)* ")" edges?
-        edgeItem ~ (edgeVal | ternary) comment* {
-            edgeVal ~ (path | name) (edges+ | value)?
-        }
+        edgePar ~ "(" edgeItem+ ")" edges?
+        edgeItem ~ (edgeVal | ternary) comment*
+        edgeVal ~ (path | name) (edges+ | value)?
+
         ternary ~ "(" tern ")" | tern {
             tern ~ ternIf ternThen ternElse? ternRadio?
             ternIf ~ (path | name) ternCompare?
@@ -38,11 +39,11 @@ tr3 ~ left right* {
             ternRadio ~ "|" ternary
         }
     }
-    path    ~ '^(([A-Za-z_][A-Za-z0-9_]*)?[.º˚*]+[A-Za-z0-9_.º˚*]*)'
-    name    ~ '^([A-Za-z_][A-Za-z0-9_]*)'
-    quote   ~ '^\"([^\"]*)\"'
-    num     ~ '^([+-]*([0-9]+[.][0-9]+|[.][0-9]+|[0-9]+[.](?![.])|[0-9]+)([e][+-][0-9]+)?)'
+    path ~ '^(([A-Za-z_][A-Za-z0-9_]*)?[.º˚*]+[A-Za-z0-9_.º˚*]*)'
+    name ~ '^([A-Za-z_][A-Za-z0-9_]*)'
+    quote ~ '^\"([^\"]*)\"'
+    num ~ '^([+-]*([0-9]+[.][0-9]+|[.][0-9]+|[0-9]+[.](?![.])|[0-9]+)([e][+-][0-9]+)?)'
     comment ~ '^([,]+|^[/]{2,}[ ]*(.*?)[\n\r\t]+|\/[*]+.*?\*\/)'
     compare ~ '^[<>!=][=]?'
-    embed   ~ '^[{][{](?s)(.*?)[}][}]'
+    embed ~ '^[{][{](?s)(.*?)[}][}]'
 }

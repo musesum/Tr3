@@ -61,9 +61,9 @@ extension Tr3 {
             }
             else /* not pretty */            { bracketChildren("{ ","} ") }
 
-            script.plus(edgeDefs.makeScript())
+            script.plus(edgeDefs.dumpScript_())
             if commented {
-                script.plus(comments.getComments(.edges, index: -1))
+                //?? script.plus(comments.getComments(.edges, index: -1))
             }
             return script
         }
@@ -105,48 +105,70 @@ extension Tr3 {
     
     func getCopiedFrom() -> String {
         var result = ""
+        var delim = ": "
         for copyTr3 in copied {
-            result += ": " + copyTr3.name + " "
+            result += delim + copyTr3.name
+            delim = ", "
+        }
+        if result.count > 0 {
+            result += " "
         }
         return result
     }
 
-    func getEdgeDefs(_ session: Bool) -> String {
-        var result = ""
-        if let edges = getTr3Edges(session) {
-            result = edges
-            result += comments.getComments(.edges, index: -1)
+    private func dumpEdgeDefs(_ session: Bool) -> String {
+        var script = ""
+        if let edgesScript = dumpTr3Edges(session) {
+            script = edgesScript
+            if tr3Edges.count == 1 {
+                script += comments.getComments(.edges, index: -1) //??
+            }
         }
         else if edgeDefs.edgeDefs.count > 0 {
-            result += edgeDefs.makeScript()
-            result += comments.getComments(.edges, index: -1)
+            script += edgeDefs.dumpScript_()
+            script += comments.getComments(.edges, index: -1)
         }
-        return result
-    }
-
-    func getTypeEdges(_ edges: [Tr3Edge], _ session: Bool) -> String {
-
-        if edges.isEmpty { return  ""}
-        var script = edges.first?.scriptEdgeFlag() ?? ""
-        if edges.count > 1 { script += "(" }
-        for edge in edges  {
-            if let pathrefs = edge.rightTr3.pathrefs,
-               pathrefs.count > 0   {
-                if pathrefs.count > 1 { script += "(" }
-                for pathref in pathrefs {
-                    script += script.parenSpace() + pathref.scriptLineage(2)
-                }
-                if pathrefs.count > 1 { script+=") " }
-            }
-            else {
-                script += edge.dumpVal(self, session: session)
-            }
-        }
-        if edges.count > 1 { script.removeLast() ; script += ") " }
         return script
     }
 
-    func getTr3Edges(_ session: Bool) -> String? {
+    private func dumpPathRefs(_ edge: Tr3Edge) -> String {
+
+        if let pathrefs = edge.rightTr3.pathrefs, pathrefs.count > 0  {
+            var script = pathrefs.count > 1 ? "(" : ""
+            var delim = ""
+
+            for pathref in pathrefs {
+                script += delim + pathref.scriptLineage(2)
+                delim = comments.getEdgesDelim()
+            }
+            if pathrefs.count > 1 { script += ") " }
+            return script
+        }
+        return ""
+    }
+    func dumpTypeEdges(_ edges: [Tr3Edge], _ session: Bool) -> String {
+
+        if edges.isEmpty { return  "" }
+        guard let firstEdge = edges.first else { return "" }
+        var script = firstEdge.scriptEdgeFlag(padSpace: true)
+        if edges.count > 1 { script += "(" }
+        var delim = ""
+        for edge in edges  {
+        
+            let pathScript = dumpPathRefs(edge)
+            if pathScript.count > 0 {
+                script += delim + pathScript
+            }
+            else {
+                script += delim + edge.dumpEdgeVal(self, session: session)
+                delim = comments.getEdgesDelim()
+            }
+        }
+        if edges.count > 1 { script += ")" }
+        return script
+    }
+
+    private func dumpTr3Edges(_ session: Bool) -> String? {
 
         if tr3Edges.count > 0 {
 
@@ -167,12 +189,12 @@ extension Tr3 {
                     if edge.edgeFlags != edgeFlags {
 
                         edgeFlags = edge.edgeFlags
-                        result += getTypeEdges(leftTypeEdges, session)
+                        result += dumpTypeEdges(leftTypeEdges, session)
                         leftTypeEdges.removeAll()
                     }
                     leftTypeEdges.append(edge)
                 }
-                result += getTypeEdges(leftTypeEdges, session)
+                result += dumpTypeEdges(leftTypeEdges, session)
                 return result
             }
         }
@@ -185,8 +207,7 @@ extension Tr3 {
             var index = 0 // index indicates how many children already added when comment was added
             for child in children {
                 index += 1
-                result += result.parenSpace() + child.dumpScript(indent: indent + 1,
-                                                                 session: session)
+                result += result.parenSpace() + child.dumpScript(indent: indent + 1, session: session)
             }
             result += result.parenSpace() + "}\n"
         }
@@ -202,12 +223,15 @@ extension Tr3 {
     public func dumpScript(indent: Int, session: Bool = false) -> String {
 
         var script = name
-
         script.plus(getCopiedFrom())
-        script.plus(val?.dumpVal(session: session))
-        script.plus(getEdgeDefs(session))
+        let dumpVal = val?.dumpVal(session: session)
+        script.plus(dumpVal)
+        script.plus(dumpEdgeDefs(session))
         if children.isEmpty {
             script.plus(getTr3Comment())
+            if dumpVal != nil {
+                script += "\n"
+            }
         }
         else {
             script.plus(getChildren(indent, session))

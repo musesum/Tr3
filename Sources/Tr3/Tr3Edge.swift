@@ -54,7 +54,7 @@ public class Tr3Edge: Hashable {
         let arrow = scriptEdgeFlag()
         key = lhs+arrow+rhs
     }
-    func dumpVal(_ tr3: Tr3, session: Bool = false) -> String {
+    func dumpEdgeVal(_ tr3: Tr3, session: Bool = false) -> String {
 
         var script = ""
 
@@ -64,7 +64,7 @@ public class Tr3Edge: Hashable {
         else if rightTr3 == tr3 {
             script += leftTr3.scriptLineage(Tr3Edge.LineageDepth)
         }
-        script += defVal?.dumpVal(session: session).with(trailing: " ") ?? " "
+        script += defVal?.dumpVal(session: session) ?? ""
         return script
     }
 
