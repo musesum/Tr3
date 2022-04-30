@@ -52,7 +52,7 @@ enum Tr3ExprOp: String {
 
 public class Tr3Expr {
 
-    var name: ExprName = ""
+    public var name: ExprName = ""
     var exprOp = Tr3ExprOp.none
     var rvalue: Any? // name | scalar | quote
     var options = Tr3ExprOptions(rawValue: 0)
@@ -186,6 +186,11 @@ public class Tr3Expr {
         }
     }
     
+    public var string: String {
+        get {
+            return rvalue as? String ?? ""
+        }
+    }
     func script(session: Bool) -> String {
         
         var script = name

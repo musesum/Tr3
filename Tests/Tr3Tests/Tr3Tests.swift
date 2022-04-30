@@ -81,7 +81,7 @@ final class Tr3Tests: XCTestCase {
 
         err += test(
             /**/"a { b { c(1) } } z: a { b.c(2) }",
-            "√ { a { b { c(1) } } z: a { b { c(2) } } }")
+                "√ { a { b { c(1) } } z: a { b { c(2) } } }")
 
         err += test("a, b { // yo \n c }")
         err += test("a { b { // yo \n c } } ")
@@ -99,12 +99,12 @@ final class Tr3Tests: XCTestCase {
 
         err += test("a {b c}.{d e}.{f g}.{h i} z >> a.b˚g.h",
                     "√ { a { b { d { f { h i } g { h i } } e { f { h i } g { h i } } } " +
-                        "    c { d { f { h i } g { h i } } e { f { h i } g { h i } } } } " +
-            " z >> (d.g.h e.g.h) }")
+                    "    c { d { f { h i } g { h i } } e { f { h i } g { h i } } } } " +
+                    " z >> (d.g.h e.g.h) }")
 
         err += test("a {b c}.{d e f>>b(1) } z: a z.b.f=>c(1) ",
                     "√ { a   { b { d e f>>a.b(1) } c { d e f>>a.b(1) } }" +
-                        "z: a { b { d e f=>z.c(1) } c { d e f>>z.b(1) } } }")
+                    "z: a { b { d e f=>z.c(1) } c { d e f>>z.b(1) } } }")
 
         err += test("a._c { d { e { f \"ff\" } } } a.c.z: _c { d { e.f    \"ZZ\" } }",
                     "√ { a { _c { d { e { f \"ff\" } } } c { z: _c { d { e { f \"ZZ\" } } } } } }")
@@ -116,24 +116,24 @@ final class Tr3Tests: XCTestCase {
 
         err += test("a {b c}.{d e}.{f g}.{i j} a.b˚f << (f.i ? f.j : 0) ",
                     "√ { a { b { d { f << (f.i ? f.j : 0) { i⋯>b.d.f j>>b.d.f } g { i j } }" +
-                        "        e { f << (f.i ? f.j : 0) { i⋯>b.e.f j>>b.e.f } g { i j } } }" +
-                        "    c { d { f { i j } g { i j } }" +
-                        "        e { f { i j } g { i j } } } } a.b˚f << (f.i ? f.j : 0 ) }" +
-                        "")
+                    "        e { f << (f.i ? f.j : 0) { i⋯>b.e.f j>>b.e.f } g { i j } } }" +
+                    "    c { d { f { i j } g { i j } }" +
+                    "        e { f { i j } g { i j } } } } a.b˚f << (f.i ? f.j : 0 ) }" +
+                    "")
 
         err += test("a {b c}.{d e}.{f g}.{i j} a.b˚f << (f.i ? f.j : 0) ",
                     "√ { a { b { d { f << (f.i ? f.j : 0) { i⋯>b.d.f j>>b.d.f } g { i j } }" +
-                        "        e { f << (f.i ? f.j : 0) { i⋯>b.e.f j>>b.e.f } g { i j } } }" +
-                        "    c { d { f { i j } g { i j } }" +
-                        "        e { f { i j } g { i j } } } } a.b˚f << (f.i ? f.j : 0 ) }" +
-                        "")
+                    "        e { f << (f.i ? f.j : 0) { i⋯>b.e.f j>>b.e.f } g { i j } } }" +
+                    "    c { d { f { i j } g { i j } }" +
+                    "        e { f { i j } g { i j } } } } a.b˚f << (f.i ? f.j : 0 ) }" +
+                    "")
 
         err += test("a {b c}.{d << (b ? 1 | c ? 2) e } z: a z.b.d << (b ? 5 | c ? 6)",
                     "√ { a { b⋯>(a.b.d a.c.d) { d << (b ? 1 | c ? 2) e } " +
-                       "     c⋯>(a.b.d a.c.d) { d << (b ? 1 | c ? 2) e } } " +
-                       "z: a{ b⋯>(z.b.d z.c.d) { d << (b ? 5 | c ? 6) e } " +
-                       "     c⋯>(z.b.d z.c.d) { d << (b ? 1 | c ? 2) e } } }" +
-            "")
+                    "     c⋯>(a.b.d a.c.d) { d << (b ? 1 | c ? 2) e } } " +
+                    "z: a{ b⋯>(z.b.d z.c.d) { d << (b ? 5 | c ? 6) e } " +
+                    "     c⋯>(z.b.d z.c.d) { d << (b ? 1 | c ? 2) e } } }" +
+                    "")
 
 
         err += test("a b >> a(1)", "√ { a b >> a(1) }")
@@ -141,13 +141,13 @@ final class Tr3Tests: XCTestCase {
         err += test("a << (b c)", "√ { a << (b c) }")
 
         err += test(     "a, b.c << (a ? 1) d: b ",
-                    "√ { a⋯>(b.c d.c), b { c << (a ? 1 ) } d: b { c << (a ? 1 ) } }")
+                         "√ { a⋯>(b.c d.c), b { c << (a ? 1 ) } d: b { c << (a ? 1 ) } }")
         
         err += test("a {b << (a ? 1) c} ", "√ { a⋯>a.b { b << (a ? 1 ) c } }")
         
         err += test("a {b c}.{d << (b ? 1 | c ? 2) e} ",
                     "√ { a { b⋯>(a.b.d a.c.d) { d << (b ? 1 | c ? 2) e } " +
-                        /**/"c⋯>(a.b.d a.c.d) { d << (b ? 1 | c ? 2) e } } }")
+                    /**/"c⋯>(a.b.d a.c.d) { d << (b ? 1 | c ? 2) e } } }")
 
         err += test("a b c w << (a ? 1 : b ? 2 : c ? 3)",
                     "√ { a⋯>w b⋯>w c⋯>w w << (a ? 1 : b ? 2 : c ? 3) }")
@@ -206,10 +206,10 @@ final class Tr3Tests: XCTestCase {
 
         err += test("a {b c}.{d e}.{f g}.{i j} a.b˚f << (f.i ? f.j : 0) ",
                     "√ { a { b { d { f << (f.i ? f.j : 0 ) { i⋯>b.d.f j >> b.d.f } g { i j } }" +
-                        "        e { f << (f.i ? f.j : 0 ) { i⋯>b.e.f j >> b.e.f } g { i j } } }" +
-                        "    c { d { f { i j } g { i j } }" +
-                        "        e { f { i j } g { i j } } } } a.b˚f << (f.i ? f.j : 0 ) }" +
-                        "")
+                    "        e { f << (f.i ? f.j : 0 ) { i⋯>b.e.f j >> b.e.f } g { i j } } }" +
+                    "    c { d { f { i j } g { i j } }" +
+                    "        e { f { i j } g { i j } } } } a.b˚f << (f.i ? f.j : 0 ) }" +
+                    "")
 
         XCTAssertEqual(err, 0)
     }
@@ -275,13 +275,13 @@ final class Tr3Tests: XCTestCase {
         err += test("ab { a(1) b(2) } ab { c(4) d(5) }", "√ { ab { a(1) b(2) c(4) d(5) } }")
 
         err += test("ab { a(1) b(2) } cd { c(4) d(5) } ab˚.: cd",
-                "√ { ab { a(1) { c(4) d(5) } b(2) { c(4) d(5) } } cd { c(4) d(5) } }")
+                    "√ { ab { a(1) { c(4) d(5) } b(2) { c(4) d(5) } } cd { c(4) d(5) } }")
 
         err += test("a.b { _c { c1 c2 } c: _c { d e } }",
-              "√ { a { b { _c { c1 c2 } c: _c { c1 c2 d e } } } }")
+                    "√ { a { b { _c { c1 c2 } c: _c { c1 c2 d e } } } }")
 
         err += test("a.b { _c { c1 c2 } c { d e }: _c }",
-              "√ { a { b { _c { c1 c2 } c: _c { d e c1 c2 } } } }")
+                    "√ { a { b { _c { c1 c2 } c: _c { d e c1 c2 } } } }")
 
         err += test("a.b.c.d { e.f }", "√ { a { b { c { d { e { f } } } } } }")
         XCTAssertEqual(err, 0)
@@ -353,17 +353,17 @@ final class Tr3Tests: XCTestCase {
 
         err += test("a {b c}.{d e}.{f g}.{i j} a.b˚f << (f.i == f.j ? 1 : 0) ",
                     "√ { a { b { d { f << (f.i == f.j ? 1 : 0 ) { i⋯>b.d.f j⋯>b.d.f } g { i j } }" +
-                        "        e { f << (f.i == f.j ? 1 : 0 ) { i⋯>b.e.f j⋯>b.e.f } g { i j } } }" +
-                        "    c { d { f { i j } g { i j } }" +
-                        "        e { f { i j } g { i j } } } } a.b˚f << (f.i == f.j ? 1 : 0) }" +
-                        "")
+                    "        e { f << (f.i == f.j ? 1 : 0 ) { i⋯>b.e.f j⋯>b.e.f } g { i j } } }" +
+                    "    c { d { f { i j } g { i j } }" +
+                    "        e { f { i j } g { i j } } } } a.b˚f << (f.i == f.j ? 1 : 0) }" +
+                    "")
 
         err += test("a {b c}.{d e}.{f g}.{i j} a.b˚f << (f.i ? f.j : 0) ",
                     "√ { a { b { d { f << (f.i ? f.j : 0 ) { i⋯>b.d.f j>>b.d.f } g { i j } }" +
-                        "        e { f << (f.i ? f.j : 0 ) { i⋯>b.e.f j>>b.e.f } g { i j } } }" +
-                        "    c { d { f { i j } g { i j } }" +
-                        "        e { f { i j } g { i j } } } } a.b˚f << (f.i ? f.j : 0 ) }" +
-            "")
+                    "        e { f << (f.i ? f.j : 0 ) { i⋯>b.e.f j>>b.e.f } g { i j } } }" +
+                    "    c { d { f { i j } g { i j } }" +
+                    "        e { f { i j } g { i j } } } } a.b˚f << (f.i ? f.j : 0 ) }" +
+                    "")
 
         subhead("ternary radio")
 
@@ -376,10 +376,10 @@ final class Tr3Tests: XCTestCase {
 
         err += test("a {b c}.{d e}.{f g}.{i j} a.b˚f << (f.i ? 1 | a˚j ? 0) ",
                     "√ { a { b { d { f << (f.i ? 1 | a˚j ? 0 ) { i⋯>b.d.f j⋯>(b.d.f b.e.f) } g { i j⋯>(b.d.f b.e.f) } } " +
-                        "        e { f << (f.i ? 1 | a˚j ? 0 ) { i⋯>b.e.f j⋯>(b.d.f b.e.f) } g { i j⋯>(b.d.f b.e.f) } } } " +
-                        "    c { d { f { i j⋯>(b.d.f b.e.f) } g { i j⋯>(b.d.f b.e.f) } } " +
-                        "        e { f { i j⋯>(b.d.f b.e.f) } g { i j⋯>(b.d.f b.e.f) } } } } a.b˚f << (f.i ? 1 | a˚j ? 0 ) }" +
-            "")
+                    "        e { f << (f.i ? 1 | a˚j ? 0 ) { i⋯>b.e.f j⋯>(b.d.f b.e.f) } g { i j⋯>(b.d.f b.e.f) } } } " +
+                    "    c { d { f { i j⋯>(b.d.f b.e.f) } g { i j⋯>(b.d.f b.e.f) } } " +
+                    "        e { f { i j⋯>(b.d.f b.e.f) } g { i j⋯>(b.d.f b.e.f) } } } } a.b˚f << (f.i ? 1 | a˚j ? 0 ) }" +
+                    "")
         XCTAssertEqual(err, 0)
     }
 
@@ -402,35 +402,35 @@ final class Tr3Tests: XCTestCase {
                     "√ { d { a1⋯>h { b1⋯>h { c1╌>h c2 } b2 { c1 c2 } } a2 { b1 { c1 c2 } b2 { c1 c2 } } } h<<(d.a1 ? b1 ? c1 : 1) }")
 
         err += test("d {a1 a2}.{b1 b2}.{c1 c2} " +
-                        "e << (d˚b1 ? b1˚. : d˚b2 ? b2˚.) " +
-                        "f << (d˚b1 ? b1˚. : b2˚.) " +
-                        "g << (d˚b1 ? b1˚.) <<(d˚b2 ? b2˚.) " +
-                        "h << (d.a1 ? b1 ? c1 : 1) " +
-                        "i << (d˚b1 ? b1˚. | d˚b2 ? b2˚.)",
+                    "e << (d˚b1 ? b1˚. : d˚b2 ? b2˚.) " +
+                    "f << (d˚b1 ? b1˚. : b2˚.) " +
+                    "g << (d˚b1 ? b1˚.) <<(d˚b2 ? b2˚.) " +
+                    "h << (d.a1 ? b1 ? c1 : 1) " +
+                    "i << (d˚b1 ? b1˚. | d˚b2 ? b2˚.)",
 
                     "√ { d { " +
-                        "a1⋯>h { b1⋯>(e f g h i) { c1╌>(e f g h i) c2╌>(e f g i) } b2⋯>(e g i) { c1╌>(e f g i) c2╌>(e f g i) } } " +
-                        "a2   { b1⋯>(e f g i)   { c1╌>(e f g i)   c2╌>(e f g i) } b2⋯>(e g i) { c1╌>(e f g i) c2╌>(e f g i) } } } " +
-                        "e << (d˚b1 ? b1˚. : d˚b2 ? b2˚.) " +
-                        "f << (d˚b1 ? b1˚. : b2˚.) " +
-                        "g << (d˚b1 ? b1˚.) << (d˚b2 ? b2˚.) " +
-                        "h << (d.a1 ? b1 ? c1 : 1) " +
-                        "i << (d˚b1 ? b1˚. | d˚b2 ? b2˚.) }" +
-                        "")
+                    "a1⋯>h { b1⋯>(e f g h i) { c1╌>(e f g h i) c2╌>(e f g i) } b2⋯>(e g i) { c1╌>(e f g i) c2╌>(e f g i) } } " +
+                    "a2   { b1⋯>(e f g i)   { c1╌>(e f g i)   c2╌>(e f g i) } b2⋯>(e g i) { c1╌>(e f g i) c2╌>(e f g i) } } } " +
+                    "e << (d˚b1 ? b1˚. : d˚b2 ? b2˚.) " +
+                    "f << (d˚b1 ? b1˚. : b2˚.) " +
+                    "g << (d˚b1 ? b1˚.) << (d˚b2 ? b2˚.) " +
+                    "h << (d.a1 ? b1 ? c1 : 1) " +
+                    "i << (d˚b1 ? b1˚. | d˚b2 ? b2˚.) }" +
+                    "")
 
         err += test("d {a1 a2}.{b1 b2}.{c1 c2} e << (d˚b1 ? b1˚. : d˚b2 ? b2˚.) ",
                     "√ { d { " +
-                        "a1 { b1⋯>e { c1╌>e c2╌>e } b2⋯>e { c1╌>e c2╌>e } } " +
-                        "a2 { b1⋯>e { c1╌>e c2╌>e } b2⋯>e { c1╌>e c2╌>e } } } " +
-                        "e<<(d˚b1 ? b1˚. : d˚b2 ? b2˚.) }" +
-            "")
+                    "a1 { b1⋯>e { c1╌>e c2╌>e } b2⋯>e { c1╌>e c2╌>e } } " +
+                    "a2 { b1⋯>e { c1╌>e c2╌>e } b2⋯>e { c1╌>e c2╌>e } } } " +
+                    "e<<(d˚b1 ? b1˚. : d˚b2 ? b2˚.) }" +
+                    "")
 
         err += test("w {a b}.{c d}.{e f}.{g h} x << (w˚c ? c˚. : w˚d ? d˚.) ",
                     "√ { w { " +
-                        "a { c⋯>x { e { g╌>x h╌>x } f { g╌>x h╌>x } } d⋯>x { e { g╌>x h╌>x } f { g╌>x h╌>x } } } " +
-                        "b { c⋯>x { e { g╌>x h╌>x } f { g╌>x h╌>x } } d⋯>x { e { g╌>x h╌>x } f { g╌>x h╌>x } } } } " +
-                        "x<<(w˚c ? c˚. : w˚d ? d˚.) }" +
-            "")
+                    "a { c⋯>x { e { g╌>x h╌>x } f { g╌>x h╌>x } } d⋯>x { e { g╌>x h╌>x } f { g╌>x h╌>x } } } " +
+                    "b { c⋯>x { e { g╌>x h╌>x } f { g╌>x h╌>x } } d⋯>x { e { g╌>x h╌>x } f { g╌>x h╌>x } } } } " +
+                    "x<<(w˚c ? c˚. : w˚d ? d˚.) }" +
+                    "")
         XCTAssertEqual(err, 0)
     }
 
@@ -473,8 +473,8 @@ final class Tr3Tests: XCTestCase {
         let root = Tr3("√")
 
         if tr3Parse.parseScript(root, script),
-            //let a =  root.findPath("a"),
-            let b =  root.findPath("b") {
+           //let a =  root.findPath("a"),
+           let b =  root.findPath("b") {
 
             b.activate()
             let result =  root.dumpScript(indent: 0, session: true)
@@ -497,8 +497,8 @@ final class Tr3Tests: XCTestCase {
         let root = Tr3("√")
 
         if tr3Parse.parseScript(root, script),
-            //let a = root.findPath("a"),
-            let b = root.findPath("b") {
+           //let a = root.findPath("a"),
+           let b = root.findPath("b") {
 
             b.activate()
             let result = root.dumpScript(indent: 0, session: true)
@@ -541,8 +541,8 @@ final class Tr3Tests: XCTestCase {
         let root = Tr3("√")
 
         if tr3Parse.parseScript(root, script),
-            //let a =  root.findPath("a"),
-            let z =  root.findPath("z") {
+           //let a =  root.findPath("a"),
+           let z =  root.findPath("z") {
             z.activate()
             let result = root.dumpScript(indent: 0, session: true)
             err += ParStr.testCompare("√ { a { b { f g(2) } c { f g(2) } } z >> (a.b.g(2) a.c.g(2)) }", result)
@@ -563,8 +563,8 @@ final class Tr3Tests: XCTestCase {
         let root = Tr3("√")
 
         if tr3Parse.parseScript(root, script),
-            //let a =  root.findPath("a"),
-            let z =  root.findPath("z") {
+           //let a =  root.findPath("a"),
+           let z =  root.findPath("z") {
 
             z.activate()
             let result =  root.dumpScript(indent: 0, session: false)
@@ -576,13 +576,14 @@ final class Tr3Tests: XCTestCase {
         XCTAssertEqual(err, 0)
     }
 
-    /// test `z:a <: a`
+    /// test `z: _b,_c
     func testCopyAt() { headline(#function)
         var err = 0
         err += test("a { _b.bb _c.cc z: _b,_c }",
                     "√ { a { _b { bb } _c { cc } z: _b, _c { bb cc } } }")
         XCTAssertEqual(err, 0)
     }
+
     /// test `z:a <: a`
     func testCopyAtR1() { headline(#function)
         var err = 0
@@ -593,21 +594,21 @@ final class Tr3Tests: XCTestCase {
         let root = Tr3("√")
 
         if tr3Parse.parseScript(root, script),
-            let a =  root.findPath("a"),
-            let ab = a.findPath("b"),
-            let ac = a.findPath("c"),
-            let abd = ab.findPath("d"),
-            let abe = ab.findPath("e"),
-            let acd = ac.findPath("d"),
-            let ace = ac.findPath("e"),
+           let a =  root.findPath("a"),
+           let ab = a.findPath("b"),
+           let ac = a.findPath("c"),
+           let abd = ab.findPath("d"),
+           let abe = ab.findPath("e"),
+           let acd = ac.findPath("d"),
+           let ace = ac.findPath("e"),
 
             let z =  root.findPath("z"),
-            let zb = z.findPath("b"),
-            let zc = z.findPath("c"),
-            let zbd = zb.findPath("d"),
-            let zbe = zb.findPath("e"),
-            let zcd = zc.findPath("d"),
-            let zce = zc.findPath("e") {
+           let zb = z.findPath("b"),
+           let zc = z.findPath("c"),
+           let zbd = zb.findPath("d"),
+           let zbe = zb.findPath("e"),
+           let zcd = zc.findPath("d"),
+           let zce = zc.findPath("e") {
 
             ab.setVal(10, .activate)
             ac.setVal(20, .activate)
@@ -659,21 +660,21 @@ final class Tr3Tests: XCTestCase {
         let root = Tr3("√")
 
         if tr3Parse.parseScript(root, script),
-            let a = root.findPath("a"),
-            let ab = a.findPath("b"),
-            let ac = a.findPath("c"),
-            let abd = ab.findPath("d"),
-            let abe = ab.findPath("e"),
-            let acd = ac.findPath("d"),
-            let ace = ac.findPath("e"),
+           let a = root.findPath("a"),
+           let ab = a.findPath("b"),
+           let ac = a.findPath("c"),
+           let abd = ab.findPath("d"),
+           let abe = ab.findPath("e"),
+           let acd = ac.findPath("d"),
+           let ace = ac.findPath("e"),
 
             let z = root.findPath("z"),
-            let zb = z.findPath("b"),
-            let zc = z.findPath("c"),
-            let zbd = zb.findPath("d"),
-            let zbe = zb.findPath("e"),
-            let zcd = zc.findPath("d"),
-            let zce = zc.findPath("e") {
+           let zb = z.findPath("b"),
+           let zc = z.findPath("c"),
+           let zbd = zb.findPath("d"),
+           let zbe = zb.findPath("e"),
+           let zcd = zc.findPath("d"),
+           let zce = zc.findPath("e") {
 
             ab.setVal(10, .activate)
             ac.setVal(20, .activate)
@@ -749,7 +750,7 @@ final class Tr3Tests: XCTestCase {
         let root = Tr3("√")
 
         if tr3Parse.parseScript(root, script),
-            let w = root.findPath("w") {
+           let w = root.findPath("w") {
 
             // 0, 0, 0 --------------------------------------------------
             let t0 = Tr3Exprs(pairs: [("x", 0), ("y", 0), ("z", 0)])
@@ -816,12 +817,12 @@ final class Tr3Tests: XCTestCase {
         let root = Tr3("√")
 
         if tr3Parse.parseScript(root, script),
-            let c = root.findPath("c") {
+           let c = root.findPath("c") {
             let p = CGPoint(x: 1, y: 2)
             c.setVal(p, .activate)
             let result = root.dumpScript(indent: 0, session: true)
             let expect = "√ { a(x 1) << c, b(y 2) << c, c(x 1, y 2) }"
-    //                   "√ { a(x 1) <<🚫, c b (y 2) <<, c c (x 1, y 2)  }"
+            //                   "√ { a(x 1) <<🚫, c b (y 2) <<, c c (x 1, y 2)  }"
             err = ParStr.testCompare(expect, result, echo: true)
         }
         else {
@@ -843,7 +844,7 @@ final class Tr3Tests: XCTestCase {
 
         let root = Tr3("√")
         if tr3Parse.parseScript(root, script),
-            let a = root.findPath("a") {
+           let a = root.findPath("a") {
             a.addClosure { tr3, _ in
                 p1 = tr3.CGPointVal() ?? .zero
                 print("p0\(p0) => p1\(p1)")
@@ -905,9 +906,9 @@ final class Tr3Tests: XCTestCase {
 
         let root = Tr3("√")
         if tr3Parse.parseScript(root, script),
-            let a = root.findPath("a"),
-            let b = root.findPath("b"),
-            let c = root.findPath("c") {
+           let a = root.findPath("a"),
+           let b = root.findPath("b"),
+           let c = root.findPath("c") {
 
             a.addClosure { tr3, _ in self.addCallResult(a, tr3.val!) }
             b.addClosure { tr3, _ in self.addCallResult(b, tr3.val!) }
@@ -933,10 +934,10 @@ final class Tr3Tests: XCTestCase {
 
         let root = Tr3("√")
         if tr3Parse.parseScript(root, script),
-            let a = root.findPath("a"),
-            let b = root.findPath("b"),
-            let c = root.findPath("c"),
-            let w = root.findPath("w") {
+           let a = root.findPath("a"),
+           let b = root.findPath("b"),
+           let c = root.findPath("c"),
+           let w = root.findPath("w") {
 
             err += ParStr.testCompare("√ { a⋯>w b⋯>w c⋯>w w(0)<<(a ? 1 : b ? 2 : c ? 3) }", root.dumpScript(indent: 0, session: true), echo: true)
 
@@ -962,10 +963,10 @@ final class Tr3Tests: XCTestCase {
 
         let root = Tr3("√")
         if tr3Parse.parseScript(root, script),
-            let a = root.findPath("a"),
-            let x = root.findPath("x"),
-            let y = root.findPath("y"),
-            let w = root.findPath("w") {
+           let a = root.findPath("a"),
+           let x = root.findPath("x"),
+           let y = root.findPath("y"),
+           let w = root.findPath("w") {
 
             err += ParStr.testCompare("√ { a(0)⋯>w x(10)╌>w y(20)╌>w w<<(a ? x : y) }", root.dumpScript(indent: 0, session: true), echo: true)
 
@@ -993,10 +994,10 @@ final class Tr3Tests: XCTestCase {
 
         let root = Tr3("√")
         if tr3Parse.parseScript(root, script),
-            let a = root.findPath("a"),
-            let x = root.findPath("x"),
-            let y = root.findPath("y"),
-            let w = root.findPath("w") {
+           let a = root.findPath("a"),
+           let x = root.findPath("x"),
+           let y = root.findPath("y"),
+           let w = root.findPath("w") {
 
             err += ParStr.testCompare("√ { a⋯>w x(10)<╌>w y(20)<╌>w w<>(a ? x : y) }", root.dumpScript(indent: 0, session: true), echo: true)
 
@@ -1038,7 +1039,6 @@ final class Tr3Tests: XCTestCase {
         XCTAssertEqual(err, 0)
     }
 
-
     /// test Avatar and Robot definitions
     func testBodySkeleton() { headline(#function)
 
@@ -1061,16 +1061,21 @@ final class Tr3Tests: XCTestCase {
 
     func testMidi2() { headline(#function)
         var err = 0
-         err += testFile("test.midi.input",  out: "test.midi.output")
+        err += testFile("test.midi.input",  out: "test.midi.output")
         XCTAssertEqual(err, 0)
     }
 
     func testDeepMenu() { headline(#function)
         var err = 0
-         err += testFile("test.deepMenu.input",  out: "test.deepMenu.output")
+        err += testFile("test.deepMenu.input",  out: "test.deepMenu.output")
         XCTAssertEqual(err, 0)
     }
 
+    func testSkyShader() { headline(#function)
+        var err = 0
+        err += testFile("sky.shader",  out: "test.sky.shader.output")
+        XCTAssertEqual(err, 0)
+    }
 
     /// test snapshot of `Deep Muse` app
     func testDeepMuse() { headline(#function)
@@ -1081,26 +1086,6 @@ final class Tr3Tests: XCTestCase {
         err += parse("sky.main")
         err += parse("sky.midi")
         err += parse("sky.shader")
-        err += parse("panel.cell")
-        err += parse("panel.cell.average")
-        err += parse("panel.cell.brush")
-        err += parse("panel.cell.camera")
-        err += parse("panel.cell.drift")
-        err += parse("panel.cell.fader")
-        err += parse("panel.cell.fredkin")
-        err += parse("panel.cell.gas")
-        err += parse("panel.cell.melt")
-        err += parse("panel.cell.midi")
-        err += parse("panel.cell.modulo")
-        err += parse("panel.record")
-        err += parse("panel.cell.scroll")
-        err += parse("panel.cell.slide")
-        err += parse("panel.cell.speed")
-        err += parse("panel.cell.timeTunnel")
-        err += parse("panel.cell.zhabatinski")
-        err += parse("panel.shader.colorize")
-        err += parse("panel.shader.tile")
-        err += parse("panel.shader.weave")
 
         let actual = root.dumpScript(indent: 0)
         let expect = read("test.deepMuse.output") ?? ""

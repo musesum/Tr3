@@ -8,7 +8,7 @@
 import QuartzCore
 import Par
 
-typealias ExprName = String
+public typealias ExprName = String
 
 public class Tr3Exprs: Tr3Val {
 
@@ -22,7 +22,7 @@ public class Tr3Exprs: Tr3Val {
     var scalars = ContiguousArray<Tr3ValScalar>() 
 
     /// `t(x/2, y/2) << u(x 1, y 2)` ⟹ `u(x 0.5, y 1.0)` // after t fires
-    var exprs = ContiguousArray<Tr3Expr>()
+    public var exprs = ContiguousArray<Tr3Expr>()
 
     var options = Tr3ExprOptions(rawValue: 0)
     

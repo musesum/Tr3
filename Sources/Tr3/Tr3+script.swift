@@ -228,8 +228,9 @@ extension Tr3 {
         script.plus(dumpVal)
         script.plus(dumpEdgeDefs(session))
         if children.isEmpty {
-            script.plus(getTr3Comment())
-            if dumpVal != nil {
+            let comments = getTr3Comment()
+            script.plus(comments)
+            if dumpVal != nil, comments.isEmpty {
                 script += "\n"
             }
         }
