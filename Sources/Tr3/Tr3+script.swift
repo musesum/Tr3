@@ -62,9 +62,6 @@ extension Tr3 {
             else /* not pretty */            { bracketChildren("{ ","} ") }
 
             script.plus(edgeDefs.dumpScript_())
-            if commented {
-                //?? script.plus(comments.getComments(.edges, index: -1))
-            }
             return script
         }
 
@@ -121,7 +118,7 @@ extension Tr3 {
         if let edgesScript = dumpTr3Edges(session) {
             script = edgesScript
             if tr3Edges.count == 1 {
-                script += comments.getComments(.edges, index: -1) //??
+                script += comments.getComments(.edges, index: -1)
             }
         }
         else if edgeDefs.edgeDefs.count > 0 {
