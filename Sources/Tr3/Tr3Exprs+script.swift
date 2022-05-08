@@ -68,6 +68,6 @@ extension Tr3Exprs {
         } else if options.contains(.scalar) {
             script = scriptScalars(session: session)
         }
-        return script.isEmpty ? "" : parens ? "(\(script))" : script //??
+        return script.isEmpty ? "" : parens ? "(\(script))" : script 
     }
 }

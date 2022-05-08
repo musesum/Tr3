@@ -26,12 +26,14 @@ extension Tr3 {
         if let v = val as? Tr3ValScalar {
             return v.num
         }
-        else if let v = val as? Tr3Exprs {
-            if let name = v.names.last,
-               let scalar = v.nameScalar[name] {
+        else if let exprs = val as? Tr3Exprs {
+            if let f = exprs.nameScalar["v"]?.num {
+                return f
+            } else if let name = exprs.names.last,
+               let scalar = exprs.nameScalar[name] {
                 return scalar.num
-            } else if v.scalars.count >= 1 {
-                let scalar = v.scalars[0]
+            } else if exprs.scalars.count >= 1 {
+                let scalar = exprs.scalars[0]
                 return scalar.num
             }
         }
@@ -56,15 +58,15 @@ extension Tr3 {
 
     public func CGPointVal() -> CGPoint? {
 
-        if let v = val as? Tr3Exprs {
-            if let x = v.nameScalar["x"]?.num,
-               let y = v.nameScalar["y"]?.num {
+        if let exprs = val as? Tr3Exprs {
+            if let x = exprs.nameScalar["x"]?.num,
+               let y = exprs.nameScalar["y"]?.num {
 
                 return CGPoint(x: CGFloat(x), y: CGFloat(y))
             }
-            else if v.scalars.count >= 2 {
-                let x = v.scalars[0].num
-                let y = v.scalars[1].num
+            else if exprs.scalars.count >= 2 {
+                let x = exprs.scalars[0].num
+                let y = exprs.scalars[1].num
 
                 return CGPoint(x: CGFloat(x), y: CGFloat(y))
             }
