@@ -5,8 +5,8 @@ panel.cell.fader: _cell {
     }
     controls {
         ruleOn.icon "icon.cell.fader.png"
-        ruleOn.value >> sky.shader.cellFader.on
-        version.value (0..1 = 0.5) >> sky.shader.cellFader.buffer.version
+        ruleOn.value >> sky.shader.fade.on
+        version.value (0..1 = 0.5) >> sky.shader.fade.buffer.version
         bitplane.value (0..1 = 0.2)
     }
 }

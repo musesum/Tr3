@@ -1,6 +1,6 @@
-panel.shader.colorize {
+panel.shader.color {
     base {
-        type "colorize"
+        type "color"
         title "Colorize"
         frame (x 0, y 0, w 250, h 130)
         icon "icon.pal.main.png"
@@ -18,7 +18,7 @@ panel.shader.colorize {
             title "Palette Cross Fade"
             frame (x 10, y 44, w 192, h 32)
             icon "icon.pearl.white.png"
-            value (0..1) <> sky.colorize.xfade
+            value (0..1) <> sky.color.xfade
             lag (0)
         }
         bitplane {
@@ -26,7 +26,7 @@ panel.shader.colorize {
             title "Bit Plane"
             frame (x 10, y 84, w 192, h 32)
             icon "icon.pearl.white.png"
-            value (0..1) >> sky.shader.colorize.buffer.bitplane
+            value (0..1) >> sky.shader.color.buffer.bitplane
         }
         fillOne {
             type "trigger"

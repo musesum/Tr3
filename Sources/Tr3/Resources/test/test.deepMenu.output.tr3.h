@@ -33,14 +33,14 @@
             ave (slide, icon "icon.cell.average")
             melt (slide, icon "icon.cell.melt")
             tunl (segmt 0..5, icon "icon.cell.time")
-            zha (segmt 0..6, icon "icon.cell.zhabatinski")
+            zha (segmt 0..6, icon "icon.cell.zha")
             slide (segmt 0..7, icon "icon.cell.slide.png")
-            fred (segmt 0..4, icon "icon.cell.fredkin.png")
+            fred (segmt 0..4, icon "icon.cell.fred.png")
         }
         camera (icon "icon.camera.png") {
             fake (toggl, icon "icon.camera.png")
             real (toggl, icon "icon.camera.png")
-            face (toggl, icon "icon.camera.flip.png")  >> sky.shader.cellCamera.flip
+            face (toggl, icon "icon.camera.flip.png")  >> sky.shader.camera.flip
             xfade (slide, icon "icon.pearl.white.png")
             snap (drum, icon "icon.camera.png")
         }

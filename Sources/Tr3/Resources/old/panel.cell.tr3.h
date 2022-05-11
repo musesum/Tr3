@@ -42,7 +42,7 @@ panel._cell {
             title "Bit Plane"
             frame (x 10, y 84, w 192, h 32)
             icon "icon.pearl.white.png"
-            value (0..1) >> sky.shader.colorize.buffer.bitplane
+            value (0..1) >> sky.shader.color.buffer.bitplane
         }
         fillZero {
             type "trigger"

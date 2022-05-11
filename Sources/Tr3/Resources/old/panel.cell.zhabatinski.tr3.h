@@ -1,11 +1,11 @@
-panel.cell.zhabatinski: _cell {
+panel.cell.zha: _cell {
     base {
         title "Zhabatinski"
-        icon "icon.cell.zhabatinski.png"
+        icon "icon.cell.zha.png"
     }
     controls {
-        ruleOn.icon "icon.cell.zhabatinski.png"
-        ruleOn.value >> sky.shader.cellZhabatinski.on
-        version.value (0..1 = 0.75) >> sky.shader.cellZhabatinski.buffer.version
+        ruleOn.icon "icon.cell.zha.png"
+        ruleOn.value >> sky.shader.zha.on
+        version.value (0..1 = 0.75) >> sky.shader.zha.buffer.version
     }
 }

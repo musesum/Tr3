@@ -5,7 +5,7 @@ panel.cell.modulo: _cell {
     }
     controls {
         ruleOn.icon "icon.cell.modulo.png"
-        ruleOn.value >> sky.shader.cellModulo.on
-        version.value >> sky.shader.cellModulo.buffer.version
+        ruleOn.value >> sky.shader.mod.on
+        version.value >> sky.shader.mod.buffer.version
     }
 }

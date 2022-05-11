@@ -48,7 +48,7 @@ panel._camera {
             title "Lock"
             frame (x 202, y 84, w 40, h 32)
             icon "icon.camera.flip.png"
-            value (0..1) >> sky.shader.cellCamera.flip
+            value (0..1) >> sky.shader.camera.flip
             lag (0)
         }
     }

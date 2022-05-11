@@ -5,7 +5,7 @@ panel.cell.slide: _cell {
     }
     controls {
         ruleOn.icon "icon.cell.slide.png"
-        ruleOn.value >> sky.shader.cellSlide.on
-        version.value >> sky.shader.cellSlide.buffer.version
+        ruleOn.value >> sky.shader.slide.on
+        version.value >> sky.shader.slide.buffer.version
     }
 }

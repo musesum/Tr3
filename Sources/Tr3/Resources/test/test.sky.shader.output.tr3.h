@@ -53,11 +53,11 @@
                     version (0..1)
                     flip (0..1)
                 }
-                draw (draw, file "drawScroll.metal") {
+                draw (draw, file "draw.metal") {
                     on (0..1)
                     scroll (x 0..1 = 0.5, y 0..1 = 0.5)
                 }
-                color (colorize, file "colorize.metal") {
+                color (color, file "color.metal") {
                     bitplane (0..1)
                 }
                 render (render, file "render.metal") {

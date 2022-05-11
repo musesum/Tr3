@@ -1,27 +1,37 @@
 √ {
     sky {  // visual music program
+
         main {  // main controls
+
             frame (0)  // frame counter
             fps (1..60 = 60)  // frames per second
             run (1)  // currently running
         }
         pipeline {  // default metal pipeline at atartup
-            drawScroll "draw"  // drawing layer
-            cellAverage "compute"  // compute layer
-            colorize "colorize"  // colorizing layer
+
+            draw "draw"  // drawing layer
+            ave "compute"  // compute layer
+            color "color"  // colorizing layer
             render "render"  // render layer al
         }
         dock {  // list of panel items to put in dock
-            fader average (1)
-            melt timetunnel zhabatinski slide fredkin brush colorize scroll tile speed camera record }
-        colorize {  // false color mapping palette
+
+            fader ave(1)
+            melt tunl zha slide fred brush color scroll tile speed camera record }
+        color {  // false color mapping palette
+
             pal0 "roygbik"  // palette 0: (r)ed (o)range (y)ellow ...
             pal1 "wKZ"  // palette 1: (w)hite blac(K) fractali(Z)e
             xfade (0..1 = 0.5)  // cross fade between pal0 and pal1
         }
         input {  // phone and tablet pencil input
+
+
             azimuth (x -0.2..0.2, y -0.2..0.2)  // pen tilt
+
             accel (x -0.3..0.3, y -0.3..0.3, z -0.3..0.3) {  // accelerometer
+
+
                 on (0..1)
             }
             radius (1..92 = 9)  // finger silhouette
@@ -102,11 +112,11 @@
                     version (0..1)
                     flip (0..1)
                 }
-                draw (draw, file "drawScroll.metal") {
+                draw (draw, file "draw.metal") {
                     on (0..1)
                     scroll (x 0..1 = 0.5, y 0..1 = 0.5)
                 }
-                color (colorize, file "colorize.metal") {
+                color (color, file "color.metal") {
                     bitplane (0..1)
                 }
                 render (render, file "render.metal") {
@@ -117,5 +127,4 @@
             }
         }
     }
-}
-
+    }

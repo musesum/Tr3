@@ -5,7 +5,7 @@ panel.cell.gas: _cell {
     }
     controls {
         ruleOn.icon "icon.cell.gas.png"
-        ruleOn.value >> sky.shader.cellGas.on
-        version.value >> sky.shader.cellGas.buffer.version
+        ruleOn.value >> sky.shader.gas.on
+        version.value >> sky.shader.gas.buffer.version
     }
 }

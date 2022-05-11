@@ -5,17 +5,17 @@ sky { // visual music program
         run (1)          // currently running
     }
     pipeline { // default metal pipeline at atartup
-        drawScroll "draw"     // drawing layer
-        cellAverage "compute" // compute layer
-        colorize "colorize"   // colorizing layer
-        render "render"       // render layer al
+        draw "draw"     // drawing layer
+        ave "compute"   // compute layer
+        color "color"   // colorizing layer
+        render "render" // render layer al
     }
     dock { // list of panel items to put in dock
-        fader average(1) melt timetunnel
-        zhabatinski slide fredkin brush
-        colorize scroll tile speed camera record
+        fader ave(1) melt tunl
+        zha slide fred brush
+        color scroll tile speed camera record
     }
-    colorize { // false color mapping palette
+    color { // false color mapping palette
         pal0 "roygbik"     // palette 0: (r)ed (o)range (y)ellow ...
         pal1 "wKZ"         // palette 1: (w)hite blac(K) fractali(Z)e
         xfade (0..1 = 0.5) // cross fade between pal0 and pal1

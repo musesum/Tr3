@@ -12,11 +12,11 @@ sky.shader {
         zha   (compute, segmt, file "cell.zha.metal"  ) { on (0..1) } { repeat (11) buffer.bits (2..4 = 3) }
     }
     pipeline {
-        record (record,   file "record.metal"     ) { on (0..1) version (0..1) flip (0..1) }
-        camera (camera,   file "cell.camera.metal") { on (0..1) version (0..1) flip (0..1) }
-        camix  (camix,    file "cell.camix.metal" ) { on (0..1) version (0..1) flip (0..1) }
-        draw   (draw,     file "drawScroll.metal" ) { on (0..1) scroll (x 0..1 = 0.5, y 0..1 = 0.5) }
-        color  (colorize, file "colorize.metal"   ) { bitplane (0..1) }
-        render (render,   file "render.metal"     ) { clip (x 0, y 0, w 1080, h 1920) repeat (x, y) mirror (x, y) }
+        record (record, file "record.metal"     ) { on (0..1) version (0..1) flip (0..1) }
+        camera (camera, file "cell.camera.metal") { on (0..1) version (0..1) flip (0..1) }
+        camix  (camix,  file "cell.camix.metal" ) { on (0..1) version (0..1) flip (0..1) }
+        draw   (draw,   file "draw.metal" ) { on (0..1) scroll (x 0..1 = 0.5, y 0..1 = 0.5) }
+        color  (color,  file "color.metal"   ) { bitplane (0..1) }
+        render (render, file "render.metal"     ) { clip (x 0, y 0, w 1080, h 1920) repeat (x, y) mirror (x, y) }
     }
 }

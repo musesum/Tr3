@@ -1,7 +1,7 @@
 panel.cell.scroll {
     base {
         type "cell"
-        title "Scroll"
+        title "Draw"
         frame (x 0, y 0, w 192, h 180)
         icon "icon.scroll.png"
     }
@@ -32,7 +32,7 @@ panel.cell.scroll {
             lag (0)
 
             value (x 0..1 = 0.5,
-                   y 0..1 = 0.5) <> sky.input.azimuth >> sky.shader.drawScroll.buffer.scroll
+                   y 0..1 = 0.5) <> sky.input.azimuth >> sky.shader.draw.buffer.scroll
 
             user >> (brushTilt.value(0),
                      accelTilt.value(0),
