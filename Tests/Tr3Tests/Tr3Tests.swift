@@ -1073,7 +1073,7 @@ final class Tr3Tests: XCTestCase {
 
     func testSkyShader() { headline(#function)
         var err = 0
-        err += testFile("sky.shader",  out: "test.sky.shader.output")
+        err += testFile("sky.shader",  out: "test.shader.output")
         XCTAssertEqual(err, 0)
     }
 
@@ -1083,9 +1083,9 @@ final class Tr3Tests: XCTestCase {
         let root = Tr3("√")
         func parse(_ name: String) -> Int { return self.parse(name, root) }
         var err = 0
-        err += parse("sky.main")
-        err += parse("sky.midi")
+        err += parse("sky")
         err += parse("sky.shader")
+        err += parse("midi")
 
         let actual = root.dumpScript(indent: 0)
         let expect = read("test.deepMuse.output") ?? ""

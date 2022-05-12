@@ -44,7 +44,7 @@ sky // visual music program
         run (1)  // currently running
 
     pipeline // default metal pipeline at atartup
-        draw "draw"  // drawing layer
+        draws "draw"  // drawing layer
         ave "compute"  // compute layer
         color "color"  // colorizing layer
         render "render"  // render layer al
@@ -82,7 +82,7 @@ sky // visual music program
 
     shader
         _compute { type "compute", file "whatever.metal", on (0..1), buffer.version (0..1) }
-        cellMelt: _compute { type "compute", file "cell.melt.metal", on (0..1), buffer.version (0..1) }
+        melt: _compute { type "compute", file "cell.melt.metal", on (0..1), buffer.version (0..1) }
         fred: _compute { type "compute", file "cell.fred.metal", on (0..1), buffer.version (0..1) }
         gas: _compute { type "compute", file "cell.gas.metal", on (0..1), buffer.version (0..1) }
         ave: _compute { type "compute", file "cell.average.metal", on (0..1), buffer.version (0..1) }
@@ -95,7 +95,7 @@ sky // visual music program
         record { type "record", file "record.metal", on (0..1), buffer.version (0..1), flip (0..1) }
         camera { type "camera", file "cell.camera.metal", on (0..1), buffer.version (0..1), flip (0..1) }
         camix { type "camix", file "cell.camix.metal", on (0..1), buffer.version (0..1), flip (0..1) }
-        draw { type "draw", file "draw.metal", on (0..1), buffer.scroll (x 0..1.5, y 0..1.5) }
+        draws { type "draw", file "draw.metal", on (0..1), buffer.scroll (x 0..1.5, y 0..1.5) }
         color { type "color", file "color.metal", buffer.bitplane (0..1) }
         render { type "render", file "render.metal", buffer.repeat (x, y), mirror (x, y) }
 
@@ -164,8 +164,8 @@ panel
             controls
                 hide { type "panelx", title "hide", frame (x 0, y 0, w 40, h 40), icon "icon.thumb.X.png" value (0..1) }
                 ruleOn
-                    type "panelon", title "Active", frame (x 202, y 4, w 40, h 32), icon "icon.cell.melt.png", value (0..1) >>(controls.ruleOn.value(0), controls.ruleOn.value(0), controls.ruleOn.value(0), controls.ruleOn.value(0), controls.ruleOn.value(0), controls.ruleOn.value(0), controls.ruleOn.value(0), cell.speed.restart, shader.cellMelt.on), lag (0)
-                version { type "segment", title "Version", frame (x 10, y 44, w 192, h 32), value (0..1 = 1) >>cellMelt.buffer.version, user >>controls.ruleOn.value(1) }
+                    type "panelon", title "Active", frame (x 202, y 4, w 40, h 32), icon "icon.cell.melt.png", value (0..1) >>(controls.ruleOn.value(0), controls.ruleOn.value(0), controls.ruleOn.value(0), controls.ruleOn.value(0), controls.ruleOn.value(0), controls.ruleOn.value(0), controls.ruleOn.value(0), cell.speed.restart, shader.melt.on), lag (0)
+                version { type "segment", title "Version", frame (x 10, y 44, w 192, h 32), value (0..1 = 1) >>melt.buffer.version, user >>controls.ruleOn.value(1) }
                 lock { type "switch", title "Lock", frame (x 210, y 44, w 32, h 32), icon { "icon.lock.closed.png", on "icon.lock.open.png" }, value (0..1), lag (0) }
                 bitplane { type "slider", title "Bit Plane", frame (x 10, y 84, w 192, h 32), icon "icon.pearl.white.png", value (0..1) >>color.buffer.bitplane }
                 fillOne { type "trigger", title "Fill Ones", frame (x 210, y 84, w 32, h 32), icon "icon.drop.gray.png", value (1.67772e+07) >>draw.screen.fillOne }
@@ -235,7 +235,7 @@ panel
                     type "slider", title "Frames per second", frame (x 10, y 50, w 192, h 44), icon "icon.pearl.white.png", value (1..60 = 60) <>sky.main.fps, user >>controls.speedOn.value(1)
     shader
         color
-            base { type "color", title "Colorize", frame (x 0, y 0, w 250, h 130), icon "icon.pal.main.png" }
+            base { type "color", title "Color", frame (x 0, y 0, w 250, h 130), icon "icon.pal.main.png" }
             controls
                 hide { type "panelx", title "hide", frame (x 0, y 0, w 40, h 40), icon "icon.thumb.X.png", value (0..1) }
                 palFade { type "slider", title "Palette Cross Fade", frame (x 10, y 44, w 192, h 32), icon "icon.pearl.white.png", value (0..1) <>sky.color.xfade, lag (0) }

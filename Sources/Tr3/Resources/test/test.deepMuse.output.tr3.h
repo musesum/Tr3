@@ -9,14 +9,14 @@
         }
         pipeline {  // default metal pipeline at atartup
 
-            draw "draw"  // drawing layer
+            draws "draw"  // drawing layer
             ave "compute"  // compute layer
             color "color"  // colorizing layer
             render "render"  // render layer al
         }
         dock {  // list of panel items to put in dock
 
-            fader ave(1)
+            fader ave (1)
             melt tunl zha slide fred brush color scroll tile speed camera record }
         color {  // false color mapping palette
 
@@ -127,4 +127,4 @@
             }
         }
     }
-    }
+}
