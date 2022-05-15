@@ -37,7 +37,7 @@ extension Tr3 {
         return false 
     }
     
-    public func makeScript(indent: Int, pretty: Bool, commented: Bool = true) -> String {
+    public func makeTr3Script(indent: Int, pretty: Bool, commented: Bool = true) -> String {
 
         var script = name
 
@@ -61,7 +61,7 @@ extension Tr3 {
             }
             else /* not pretty */            { bracketChildren("{ ","} ") }
 
-            script.plus(edgeDefs.dumpScript_())
+            script.plus(edgeDefs.dumpScript(self))
             return script
         }
 
@@ -71,7 +71,7 @@ extension Tr3 {
             var index = 0
             for child in children {
                 if script.last != "\n", !child.hasSoloDescendants() { script += "\n" }
-                script.plus(child.makeScript(indent: indent + 1, pretty: pretty))
+                script.plus(child.makeTr3Script(indent: indent + 1, pretty: pretty))
                 index += 1
                 script.plus(comments.getComments(.child, index: index))
             }
@@ -82,7 +82,7 @@ extension Tr3 {
         func soloDotChild() {
             script += "."
             for child in children {
-                script += child.makeScript(indent: indent + 1, pretty: pretty)
+                script += child.makeTr3Script(indent: indent + 1, pretty: pretty)
             }
         }
         return begin() // ────────────────────────────
@@ -122,7 +122,7 @@ extension Tr3 {
             }
         }
         else if edgeDefs.edgeDefs.count > 0 {
-            script += edgeDefs.dumpScript_()
+            script += edgeDefs.dumpScript(self)
             script += comments.getComments(.edges, index: -1)
         }
         return script
@@ -249,7 +249,8 @@ extension Tr3 {
     }
     /// create "a.b.c" from c in `a{b{c}}`, but not √.b.c from b
     public func scriptLineage(_ level: Int) -> String {
-        if let parent = parent, parent.name != "√",  level > 0 {
+        if let parent = parent, parent.name != "√", level > 0 //?? 
+        {
              return parent.scriptLineage(level-1) + "." + name
         }
         else {

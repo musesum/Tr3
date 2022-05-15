@@ -56,6 +56,17 @@ extension Tr3Exprs {
         }
         return script
     }
+    override func scriptVal(parens: Bool) -> String  {
+        var script = ""
+        if options.contains(.expr) {
+            script = scriptExprs(session: false)
+        } else if options.contains(.name) {
+            script = scriptNames(session: false)
+        } else if options.contains(.scalar) {
+            script = scriptScalars(session: false)
+        }
+        return script.isEmpty ? "" : parens ? "(\(script))" : script
+    }
 
     override func dumpVal(parens: Bool, session: Bool = false) -> String  {
         var script = ""

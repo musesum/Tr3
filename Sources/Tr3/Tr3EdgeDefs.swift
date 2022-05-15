@@ -124,13 +124,18 @@ public class Tr3EdgeDefs {
         }
     }
 
-    func dumpScript_() -> String  {
+    func makeScript() -> String  {
         var script = ""
         for edgeDef in edgeDefs {
-            script += edgeDef.scriptVal_()
+            script += edgeDef.scriptVal()
         }
-        return script
+        return script.with(trailing: " ")
     }
+
+    func dumpScript(_ tr3: Tr3) -> String  {
+        return makeScript()
+    }
+
 
     /// connect direct or ternary edges
     func bindEdges(_ tr3: Tr3) {

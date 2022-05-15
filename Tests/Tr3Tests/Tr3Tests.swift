@@ -1077,7 +1077,7 @@ final class Tr3Tests: XCTestCase {
         XCTAssertEqual(err, 0)
     }
 
-    /// test snapshot of `Deep Muse` app
+    /// tes `Deep Muse` app script
     func testDeepMuse() { headline(#function)
 
         let root = Tr3("√")

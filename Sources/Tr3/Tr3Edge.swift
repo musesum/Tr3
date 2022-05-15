@@ -64,7 +64,7 @@ public class Tr3Edge: Hashable {
         else if rightTr3 == tr3 {
             script += leftTr3.scriptLineage(Tr3Edge.LineageDepth)
         }
-        script += defVal?.dumpVal(session: session) ?? ""
+        script += defVal?.dumpVal(session: session).with(trailing: " ") ?? ""
         return script
     }
 
