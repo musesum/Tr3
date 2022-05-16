@@ -1027,7 +1027,7 @@ final class Tr3Tests: XCTestCase {
 
         if tr3Parse.parseScript(root, script, whitespace: "\n\t ") {
 
-            let pretty = root.makeScript(indent: 0, pretty: true)
+            let pretty = root.makeTr3Script(indent: 0, pretty: true)
             print(pretty)
 
             let d3Script = root.makeD3Script()
