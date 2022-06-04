@@ -140,7 +140,7 @@ public class Tr3Expr {
 
     func evalIsIn(from: Tr3ValScalar) -> Tr3ValScalar? {
         guard let rvalue = rvalue as? Tr3ValScalar else { return nil }
-        var notZeroNum: Float { get { return rvalue.num != 0 ? rvalue.num : 1 } }
+        var notZeroNum: Float { return rvalue.num != 0 ? rvalue.num : 1 }
 
         switch exprOp {
             case .expIn:
@@ -155,7 +155,7 @@ public class Tr3Expr {
     }
     func evalScalars(from: Tr3ValScalar) -> Tr3ValScalar? {
         guard let rvalue = rvalue as? Tr3ValScalar else { return nil }
-        var notZeroNum: Float { get { return rvalue.num != 0 ? rvalue.num : 1 } }
+        var notZeroNum: Float { return rvalue.num != 0 ? rvalue.num : 1 }
 
         switch exprOp {
             case .expIn: return evalIsIn(from: from)
@@ -186,11 +186,8 @@ public class Tr3Expr {
         }
     }
     
-    public var string: String {
-        get {
-            return rvalue as? String ?? ""
-        }
-    }
+    public var string: String { rvalue as? String ?? "" }
+
     func script(session: Bool) -> String {
         
         var script = name

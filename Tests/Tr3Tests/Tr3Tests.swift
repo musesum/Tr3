@@ -1067,13 +1067,14 @@ final class Tr3Tests: XCTestCase {
 
     func testDeepMenu() { headline(#function)
         var err = 0
-        err += testFile("test.deepMenu.input",  out: "test.deepMenu.output")
+        err += testFile("test.deepMenu.input",
+                        out: "test.deepMenu.output")
         XCTAssertEqual(err, 0)
     }
 
-    func testSkyShader() { headline(#function)
+    func testShader() { headline(#function)
         var err = 0
-        err += testFile("sky.shader",  out: "test.shader.output")
+        err += testFile("test.shader.input",  out: "test.shader.output")
         XCTAssertEqual(err, 0)
     }
 
