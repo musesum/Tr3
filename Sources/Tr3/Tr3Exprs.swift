@@ -209,24 +209,36 @@ public class Tr3Exprs: Tr3Val {
     public override func setVal(_ any: Any?, _ opts: Any? = nil) {
 
         func setFloat(_ v: Float) {
-            valFlags.insert(.nameScalars)
-            scalars[0].num = v
+            valFlags.insert(.names)
+            if let n = nameScalar["val"] {
+                n.setVal(v)
+                n.addFlag(.num)
+            }
+            else if !scalars.isEmpty {
+                valFlags.insert(.nameScalars)
+                scalars[0].num = v
+            }
+            else {
+                names.append("val")
+                nameScalar["val"] = Tr3ValScalar(num: v)
+            }
         }
+
         func setPoint(_ p: CGPoint) {
 
             func addPoint() {
                 valFlags.insert(.names)
-                if let x = nameScalar["x"] {
-                    x.setVal(p.x)
-                    x.addFlag(.num)
+                if let n = nameScalar["x"] {
+                    n.setVal(p.x)
+                    n.addFlag(.num)
                 }
                 else {
                     names.append("x")
                     nameScalar["x"] = Tr3ValScalar(num: Float(p.x))
                 }
-                if let y = nameScalar["y"] {
-                    y.setVal(p.y)
-                    y.addFlag(.num)
+                if let n = nameScalar["y"] {
+                    n.setVal(p.y)
+                    n.addFlag(.num)
                 }
                 else {
                     names.append("y")
