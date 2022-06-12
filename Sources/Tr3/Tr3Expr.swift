@@ -187,6 +187,7 @@ public class Tr3Expr {
     }
     
     public var string: String { rvalue as? String ?? "" }
+    public var any: Any? { rvalue  }
 
     func script(session: Bool) -> String {
         

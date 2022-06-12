@@ -13,7 +13,7 @@ extension Tr3 {
 
         /// clean up scaffolding from parsing a Ternary,
         /// todo: scaffolding instead of overloading val
-        if let _ = val as? Tr3ValPath {
+        if val is Tr3ValPath {
             val = nil
         }
         if options.contains(.cache) {
@@ -24,10 +24,9 @@ extension Tr3 {
             // no defined value, so activate will pass fromVal onto edge successors
             if passthrough {
                 val = fromVal
-            }
+            } else {
                 // set my val to fromVal, with rescaling
-            else if let val = val {
-                val.setVal(fromVal)
+                val?.setVal(fromVal)
             }
         }
         // any is not a Tr3Val, so pass onto my Tr3Val if it exists
@@ -36,14 +35,15 @@ extension Tr3 {
         }
             // I don't have a Tr3Val yet, so maybe create one for me
         else if options.contains(.create) {
+
             passthrough = false
 
             switch any {
             case let v as Int:               val = Tr3ValScalar(num: Float(v))
             case let v as Float:             val = Tr3ValScalar(num: v)
             case let v as CGFloat:           val = Tr3ValScalar(num: Float(v))
-            case let v as CGPoint:           val = Tr3Exprs(with: v)
-            case let v as [(String, Float)]: val = Tr3Exprs(pairs: v)
+            case let v as CGPoint:           val = Tr3Exprs(point: v)
+            case let v as [(String, Float)]: val = Tr3Exprs(nameFloats: v)
             case let v as String:            val = Tr3ValQuote(with: v)
             default: print("🚫 unknown val(\(any))")
             }

@@ -753,7 +753,7 @@ final class Tr3Tests: XCTestCase {
            let w = root.findPath("w") {
 
             // 0, 0, 0 --------------------------------------------------
-            let t0 = Tr3Exprs(pairs: [("x", 0), ("y", 0), ("z", 0)])
+            let t0 = Tr3Exprs(nameFloats: [("x", 0), ("y", 0), ("z", 0)])
             w.setVal(t0, .activate)
             let result0 = root.dumpScript(indent: 0, session: true)
             let expect0 = """
@@ -765,7 +765,7 @@ final class Tr3Tests: XCTestCase {
             err += ParStr.testCompare(expect0, result0)
 
             // 10, 11, 12 --------------------------------------------------
-            let t1 = Tr3Exprs(pairs: [("x", 10), ("y", 11), ("z", 12)])
+            let t1 = Tr3Exprs(nameFloats: [("x", 10), ("y", 11), ("z", 12)])
             w.setVal(t1, .activate)
             let result1 = root.dumpScript(indent: 0, session: true)
             let expect1 = """
@@ -777,7 +777,7 @@ final class Tr3Tests: XCTestCase {
             err += ParStr.testCompare(expect1, result1)
 
             // 20, 21, 22 --------------------------------------------------
-            let t2 = Tr3Exprs(pairs: [("x", 20), ("y", 21), ("z", 22)])
+            let t2 = Tr3Exprs(nameFloats: [("x", 20), ("y", 21), ("z", 22)])
             w.setVal(t2, .activate)
             let result2 = root.dumpScript(indent: 0, session: true)
             let expect2 = """
@@ -789,7 +789,7 @@ final class Tr3Tests: XCTestCase {
             err += ParStr.testCompare(expect2, result2)
 
             // 10, 21, 33 --------------------------------------------------
-            let t3 = Tr3Exprs(pairs: [("x", 10), ("y", 21), ("z", 33)])
+            let t3 = Tr3Exprs(nameFloats: [("x", 10), ("y", 21), ("z", 33)])
             w.setVal(t3, .activate)
             let result3 = root.dumpScript(indent: 0, session: true)
             let expect3 = """
@@ -1085,7 +1085,7 @@ final class Tr3Tests: XCTestCase {
         func parse(_ name: String) -> Int { return self.parse(name, root) }
         var err = 0
         err += parse("sky")
-        err += parse("sky.shader")
+        err += parse("shader")
         err += parse("midi")
 
         let actual = root.dumpScript(indent: 0)

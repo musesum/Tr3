@@ -170,8 +170,8 @@ public class Tr3ValScalar: Tr3Val {
         // from contains normalized values 0..1
         let zero1 = (options as? Tr3SetOptions ?? []).contains(.zero1)
 
-        if let val = from {
-            switch val {
+        if let from = from {
+            switch from {
             case let v as Tr3ValScalar: setFromScalar(v)
             case let v as Float:   zero1 ? setFloat01(v) : setFloat(v)
             case let v as CGFloat: zero1 ? setFloat01(v) : setFloat(v)

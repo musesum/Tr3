@@ -11,7 +11,7 @@ extension Tr3Exprs {
 
     override func printVal() -> String {
         var script = "("
-        for num in scalars {
+        for num in nameScalar.values { 
             script += script.parenSpace() + "\(num)"
         }
         return script.with(trailing: ")")
@@ -47,23 +47,12 @@ extension Tr3Exprs {
         return script
     }
 
-    func scriptScalars(session: Bool) -> String {
-        var script = ""
-        var delim = ""
-        for scalar in scalars {
-            script += delim; delim = ", "
-            script += scalar.dumpVal(parens: false, session: session)
-        }
-        return script
-    }
     override func scriptVal(parens: Bool) -> String  {
         var script = ""
         if options.contains(.expr) {
             script = scriptExprs(session: false)
         } else if options.contains(.name) {
             script = scriptNames(session: false)
-        } else if options.contains(.scalar) {
-            script = scriptScalars(session: false)
         }
         return script.isEmpty ? "" : parens ? "(\(script))" : script
     }
@@ -76,8 +65,6 @@ extension Tr3Exprs {
             script = scriptExprs(session: session)
         } else if options.contains(.name) {
             script = scriptNames(session: session)
-        } else if options.contains(.scalar) {
-            script = scriptScalars(session: session)
         }
         return script.isEmpty ? "" : parens ? "(\(script))" : script 
     }

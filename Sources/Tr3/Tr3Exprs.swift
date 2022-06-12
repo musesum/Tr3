@@ -18,9 +18,6 @@ public class Tr3Exprs: Tr3Val {
     /// `t(x, y)` ⟹ `["x", "y"]`
     var names = ContiguousArray<ExprName>()
 
-    /// `t(1, 2)` ⟹ `[1, 2]`
-    var scalars = ContiguousArray<Tr3ValScalar>() 
-
     /// `t(x/2, y/2) << u(x 1, y 2)` ⟹ `u(x 0.5, y 1.0)` // after t fires
     public var exprs = ContiguousArray<Tr3Expr>()
 
@@ -52,27 +49,25 @@ public class Tr3Exprs: Tr3Val {
             valFlags = .scalar // use default values
         }
     }
-    convenience init(with p: CGPoint) {
+    convenience init(point: CGPoint) {
         self.init()
         valFlags.insert([.names, .nameScalars])
-        let x = Tr3ValScalar(num: Float(p.x))
-        let y = Tr3ValScalar(num: Float(p.y))
+        let x = Tr3ValScalar(num: Float(point.x))
+        let y = Tr3ValScalar(num: Float(point.y))
         names = ContiguousArray<ExprName>(["x","y"])
-        scalars = ContiguousArray<Tr3ValScalar>([x, y])
         nameScalar = ["x": x, "y": y]
         options.insert([.name, .scalar])
     }
-    convenience init(pairs: [(ExprName, Float)]) {
+    convenience init(nameFloats: [(ExprName, Float)]) {
         self.init()
         valFlags.insert([.names, .nameScalars])
         names = ContiguousArray<ExprName>()
         nameScalar = [ExprName: Tr3ValScalar]()
         
-        for (name, val) in pairs {
+        for (name, val) in nameFloats {
             let scalar = Tr3ValScalar(num: val)
             names.append(name)
             nameScalar[name] = scalar
-            scalars.append(scalar)
         }
         options.insert([.name, .scalar])
     }
@@ -85,31 +80,9 @@ public class Tr3Exprs: Tr3Val {
         }
         options.insert(.name)
     }
-    convenience init(values: [Float]) {
-        self.init()
-        valFlags.insert([.nameScalars])
-        scalars = ContiguousArray<Tr3ValScalar>()
-        for val in values {
-            scalars.append(Tr3ValScalar(num: val))
-        }
-        options.insert(.scalar)
-    }
     override func copy() -> Tr3Exprs {
         let newTr3Exprs = Tr3Exprs(with: self)
         return newTr3Exprs
-    }
-    
-    public static func < (lhs: Tr3Exprs, rhs: Tr3Exprs) -> Bool {
-        
-        if rhs.scalars.isEmpty ||
-            rhs.scalars.count != lhs.scalars.count {
-            return false
-        }
-        var lsum = Float(0)
-        var rsum = Float(0)
-        for val in lhs.scalars { lsum += val.num * val.num }
-        for val in rhs.scalars { rsum += val.num * val.num }
-        return lsum < rsum
     }
 
     func addExpr() {
@@ -121,12 +94,6 @@ public class Tr3Exprs: Tr3Val {
     func addPath(_ parItem: ParItem) {
         if let name = parItem.nextPars.first?.value {
             addName(name)
-        }
-    }
-    func addScalars(_ scalarStrs: [String]) {
-        valFlags.insert(.nameScalars)
-        for str in scalarStrs {
-            scalars.append(Tr3ValScalar(with: str))
         }
     }
     func addScalar(_ scalar: Tr3ValScalar) {
@@ -195,10 +162,6 @@ public class Tr3Exprs: Tr3Val {
             for scalar in nameScalar.values {
                 scalar.setDefault()
             }
-        } else {
-            for scalar in scalars {
-                scalar.setDefault()
-            }
         }
     }
     /** set this Tuple from another tuple.
@@ -213,10 +176,6 @@ public class Tr3Exprs: Tr3Val {
             if let n = nameScalar["val"] {
                 n.setVal(v)
                 n.addFlag(.num)
-            }
-            else if !scalars.isEmpty {
-                valFlags.insert(.nameScalars)
-                scalars[0].num = v
             }
             else {
                 names.append("val")
@@ -247,7 +206,7 @@ public class Tr3Exprs: Tr3Val {
             }
             // begin -------------------------------
             if exprs.isEmpty { return addPoint() }
-            let exprs = Tr3Exprs(with: p)
+            let exprs = Tr3Exprs(point: p)
             setExprs(exprs)
         }
         func isEligible(_ from: Tr3Exprs) -> Bool {
@@ -283,17 +242,6 @@ public class Tr3Exprs: Tr3Val {
         //a.0 :: f.0 f.5
         //	a.1 in f.3..f.4 ?  a.1 .. f.5..f.6
 
-        func setScalars(to: ContiguousArray<Tr3ValScalar>, fr: ContiguousArray<Tr3ValScalar>) {
-
-            // a(1..2, 3..4) << b(5..6 = 5, 7..8 = 8) ⟹ a(1, 4)
-            let count = min(to.count, fr.count)
-            if count < 1 { return }
-            for i in 0..<scalars.count {
-                let toScalar = to[to.startIndex + i]
-                let frScalar = fr[fr.startIndex + i]
-                toScalar.setVal(frScalar)
-            }
-        }
         func setNamed(to: Tr3Exprs, fr: Tr3Exprs) {
             // a(x _, y _) _
             for name in to.names {
@@ -340,8 +288,6 @@ public class Tr3Exprs: Tr3Val {
                 setExprs(to: self, fr: fr)
             } else if self.options.contains(.name) {
                 setNamed(to: self, fr: fr)
-            } else if self.options.contains(.scalar) {
-               setScalars(to: scalars, fr: fr.scalars)
             }
         }
         // begin -------------------------
@@ -365,12 +311,9 @@ public class Tr3Exprs: Tr3Val {
                     nums.append(num)
                 }
             }
-        } else if scalars.count > 0 {
-            for scalar in scalars {
-                nums.append(scalar.num)
-            }
         }
         return nums
 
     }
+    
 }

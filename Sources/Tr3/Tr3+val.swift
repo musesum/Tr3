@@ -32,9 +32,6 @@ extension Tr3 {
             } else if let name = exprs.names.last,
                let scalar = exprs.nameScalar[name] {
                 return scalar.num
-            } else if exprs.scalars.count >= 1 {
-                let scalar = exprs.scalars[0]
-                return scalar.num
             }
         }
         return nil
@@ -64,12 +61,6 @@ extension Tr3 {
 
                 return CGPoint(x: CGFloat(x), y: CGFloat(y))
             }
-            else if exprs.scalars.count >= 2 {
-                let x = exprs.scalars[0].num
-                let y = exprs.scalars[1].num
-
-                return CGPoint(x: CGFloat(x), y: CGFloat(y))
-            }
         }
         return nil
     }
@@ -78,12 +69,6 @@ extension Tr3 {
         if let v = val as? Tr3Exprs {
             if let w = v.nameScalar["w"]?.num,
                let h = v.nameScalar["h"]?.num {
-
-                return CGSize(width: CGFloat(w), height: CGFloat(h))
-            }
-            else if v.scalars.count >= 2 {
-                let w = v.scalars[0].num
-                let h = v.scalars[1].num
 
                 return CGSize(width: CGFloat(w), height: CGFloat(h))
             }
@@ -116,5 +101,29 @@ extension Tr3 {
         }
         return nil
     }
+    /// convert Tr3Exprs contiguous array to dictionary
+    public func component(in set: Set<String>) -> Any? {
+        if let exprs = val as? Tr3Exprs {
+            for expr in exprs.exprs {
+                if set.contains(expr.name) {
+                    let result = expr.any ?? expr.name
+                    return  result
+                }
+            }
+        }
+        return nil
+    }
     
+    /// convert Tr3Exprs contiguous array to dictionary
+    public func component(named: String) -> Any? {
+        if let exprs = val as? Tr3Exprs {
+            for expr in exprs.exprs {
+                if expr.name == named {
+                    let result = expr.any ?? expr.name
+                    return  result
+                }
+            }
+        }
+        return nil
+    }
 }
