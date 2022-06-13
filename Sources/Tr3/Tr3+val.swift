@@ -111,13 +111,13 @@ extension Tr3 {
         }
         return nil
     }
-
-/// convert Tr3Exprs contiguous array to dictionary
+    
+    /// convert Tr3Exprs contiguous array to dictionary
     public func component(named: String) -> Any? {
         if let exprs = val as? Tr3Exprs,
            let val = exprs.nameScalar[named],
            val.valFlags.contains(.num) {
-
+            
             return val.num
         }
         return nil
