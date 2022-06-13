@@ -101,27 +101,24 @@ extension Tr3 {
         return nil
     }
     /// convert Tr3Exprs contiguous array to dictionary
-    public func component(in set: Set<String>) -> Any? {
+    public func getName(in set: Set<String>) -> String? {
         if let exprs = val as? Tr3Exprs {
             for expr in exprs.exprs {
                 if set.contains(expr.name) {
-                    let result = expr.any ?? expr.name
-                    return  result
+                    return expr.name
                 }
             }
         }
         return nil
     }
-    
-    /// convert Tr3Exprs contiguous array to dictionary
+
+/// convert Tr3Exprs contiguous array to dictionary
     public func component(named: String) -> Any? {
-        if let exprs = val as? Tr3Exprs {
-            for expr in exprs.exprs {
-                if expr.name == named {
-                    let result = expr.any ?? expr.name
-                    return  result
-                }
-            }
+        if let exprs = val as? Tr3Exprs,
+           let val = exprs.nameScalar[named],
+           val.valFlags.contains(.num) {
+
+            return val.num
         }
         return nil
     }
