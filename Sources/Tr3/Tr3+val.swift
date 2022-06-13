@@ -29,8 +29,7 @@ extension Tr3 {
         else if let exprs = val as? Tr3Exprs {
             if let f = exprs.nameScalar["v"]?.num {
                 return f
-            } else if let name = exprs.names.last,
-               let scalar = exprs.nameScalar[name] {
+            } else if let scalar = exprs.nameScalar.values.last {
                 return scalar.num
             }
         }

@@ -165,10 +165,10 @@ public class Tr3ValScalar: Tr3Val {
         }
     }
 
-    public override func setVal(_ from: Any?, _ options: Any? = nil) {
+    public override func setVal(_ from: Any?, _ options: Tr3SetOptions? = nil) {
 
         // from contains normalized values 0..1
-        let zero1 = (options as? Tr3SetOptions ?? []).contains(.zero1)
+        let zero1 = options?.contains(.zero1) ?? false //?? 
 
         if let from = from {
             switch from {

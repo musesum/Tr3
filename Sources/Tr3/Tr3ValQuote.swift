@@ -35,7 +35,7 @@ public class Tr3ValQuote: Tr3Val {
     override func dumpVal(parens: Bool = true, session: Bool = false) -> String  {
         return scriptVal(parens: parens)
     }
-    public override func setVal(_ any: Any?, _ options: Any? = nil) {
+    public override func setVal(_ any: Any?, _ options: Tr3SetOptions? = nil) {
         if let v = any as? String {
             quote = v
         }

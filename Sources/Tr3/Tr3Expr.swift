@@ -9,7 +9,7 @@ import Foundation
 public struct Tr3ExprOptions: OptionSet {
     public let rawValue: Int
     public static let expr    = Tr3ExprOptions(rawValue: 1 << 0)
-    public static let op      = Tr3ExprOptions(rawValue: 1 << 1)
+    public static let oper    = Tr3ExprOptions(rawValue: 1 << 1)
     public static let name    = Tr3ExprOptions(rawValue: 1 << 2)
     public static let scalar  = Tr3ExprOptions(rawValue: 1 << 3)
     public static let rvalue  = Tr3ExprOptions(rawValue: 1 << 4)
@@ -18,12 +18,12 @@ public struct Tr3ExprOptions: OptionSet {
     public init(rawValue: Int = 0) { self.rawValue = rawValue }
 
     static public var debugDescriptions: [(Self, String)] = [
-        (.expr   , "expr"    ),
-        (.op     , "op"      ),
-        (.name   , "name"    ),
-        (.scalar , "scalar"  ),
-        (.quote  , "quote"   ),
-        (.rvalue , "rvalue"  ),
+        (.expr   , "expr"  ),
+        (.oper   , "oper"  ),
+        (.name   , "name"  ),
+        (.scalar , "scalar"),
+        (.quote  , "quote" ),
+        (.rvalue , "rvalue"),
     ]
 
     public var description: String {
@@ -34,7 +34,7 @@ public struct Tr3ExprOptions: OptionSet {
     }
 }
 
-enum Tr3ExprOp: String {
+enum Tr3ExprOperator: String {
 
     case none = ""
     case expEQ = "=="
@@ -53,27 +53,27 @@ enum Tr3ExprOp: String {
 public class Tr3Expr {
 
     public var name: ExprName = ""
-    var exprOp = Tr3ExprOp.none
+    var exprOperator = Tr3ExprOperator.none
     var rvalue: Any? // name | scalar | quote
-    var options = Tr3ExprOptions(rawValue: 0)
+    var exprOptions = Tr3ExprOptions(rawValue: 0)
 
     init() {
     }
 
     init(_ name: String) {
         self.name = name
-        options.insert(.name)
+        exprOptions.insert(.name)
     }
-    init(name: String, exprOp: Tr3ExprOp) {
+    init(name: String, exprOp: Tr3ExprOperator) {
         self.name = name
-        self.exprOp = exprOp
-        options.insert(.rvalue)
+        self.exprOperator = exprOp
+        exprOptions.insert(.rvalue)
     }
 
     init (with from: Tr3Expr) {
         name = from.name
-        exprOp = from.exprOp
-        options = from.options
+        exprOperator = from.exprOperator
+        exprOptions = from.exprOptions
         if let frRvalue = from.rvalue {
             switch frRvalue {
             case let n as ExprName: rvalue = n
@@ -89,37 +89,37 @@ public class Tr3Expr {
     }
     func addQuote(_ quote: String) {
         rvalue = quote
-        options.insert(.quote)
+        exprOptions.insert(.quote)
     }
     func addOpStr (_ opStr: String) {
-        if let op = Tr3ExprOp(rawValue: opStr) {
-            exprOp = op
-            options.insert(.op)
+        if let op = Tr3ExprOperator(rawValue: opStr) {
+            exprOperator = op
+            exprOptions.insert(.oper)
         } else {
             print("🚫 unknown exprOp: \(opStr)")
         }
     }
     func addExprName(_ name: String) {
-        if options.rawValue == 0 {
+        if exprOptions.rawValue == 0 {
             self.name = name
-            options.insert(.name)
+            exprOptions.insert(.name)
         } else {
             self.rvalue = name
-            options.insert(.rvalue)
+            exprOptions.insert(.rvalue)
         }
     }
-    func addExprOp (_ exprOp: Tr3ExprOp) {
-        self.exprOp = exprOp
-        options.insert(.op)
+    func addExprOp (_ exprOp: Tr3ExprOperator) {
+        self.exprOperator = exprOp
+        exprOptions.insert(.oper)
     }
     func addExprScalar(_ scalar: Any) {
         self.rvalue = scalar
-        options.insert(.rvalue)
+        exprOptions.insert(.rvalue)
     }
     
     func eval(frScalar: Tr3ValScalar) -> Tr3ValScalar? {
         if rvalue is Tr3ValScalar {
-            if exprOp == .none {
+            if exprOperator == .none {
                 
                 return frScalar
                 
@@ -142,7 +142,7 @@ public class Tr3Expr {
         guard let rvalue = rvalue as? Tr3ValScalar else { return nil }
         var notZeroNum: Float { return rvalue.num != 0 ? rvalue.num : 1 }
 
-        switch exprOp {
+        switch exprOperator {
             case .expIn:
 
                 if from.inRange(of: rvalue.num) {
@@ -157,7 +157,7 @@ public class Tr3Expr {
         guard let rvalue = rvalue as? Tr3ValScalar else { return nil }
         var notZeroNum: Float { return rvalue.num != 0 ? rvalue.num : 1 }
 
-        switch exprOp {
+        switch exprOperator {
             case .expIn: return evalIsIn(from: from)
             case .expEQ: return from.num == rvalue.num ? from : nil
             case .expLE: return from.num <= rvalue.num ? from : nil
@@ -175,7 +175,7 @@ public class Tr3Expr {
 
     func isEligible(num: Float) -> Bool {
         guard let rvalue = rvalue as? Tr3ValScalar  else { return true }
-        switch exprOp {
+        switch exprOperator {
             case .expEQ: return num == rvalue.num
             case .expLE: return num <= rvalue.num
             case .expGE: return num >= rvalue.num
@@ -192,11 +192,11 @@ public class Tr3Expr {
     func script(session: Bool) -> String {
         
         var script = name
-        if exprOp != .none {
+        if exprOperator != .none {
             if script.isEmpty {
-                script = exprOp.rawValue
+                script = exprOperator.rawValue
             } else {
-                script += " " + exprOp.rawValue
+                script += " " + exprOperator.rawValue
             }
         }
         let delim = name.isEmpty ? "" : " "
@@ -207,7 +207,7 @@ public class Tr3Expr {
 
                 case let s as String:
 
-                    if options.contains(.quote) {
+                    if exprOptions.contains(.quote) {
                         script += delim + "\"\(s)\""
                     } else {
                         script += delim + s
@@ -217,7 +217,6 @@ public class Tr3Expr {
 
                     let scalar = v.dumpVal(parens: false, session: session)
                     script += delim + scalar
-
 
                 default:
 

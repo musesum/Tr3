@@ -11,15 +11,16 @@ let package = Package(
     ],
     dependencies: [
         .package(url: "https://github.com/musesum/Par.git", from: "0.2.0"),
-        //.package(path: "../Par"),
+        .package(url: "https://github.com/apple/swift-collections.git",
+                 .upToNextMajor(from: "1.0.0") // or `.upToNextMinor
+        )
     ],
+
     targets: [
-        .target(
-            name: "Tr3",
-            dependencies: ["Par"],
-            resources: [.process("Resources")]),
-        .testTarget(
-            name: "Tr3Tests",
-            dependencies: ["Tr3"]),
+        .target(name: "Tr3", dependencies: [
+            "Par",
+            .product(name: "Collections", package: "swift-collections")],
+                resources: [.process("Resources")]),
+        .testTarget(name: "Tr3Tests", dependencies: ["Tr3"]),
     ]
 )

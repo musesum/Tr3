@@ -58,7 +58,7 @@ public class Tr3ValPath: Tr3Val {
         }
        return script.with(trailing: " ")
     }
-    public override func setVal(_ any: Any?, _ options: Any? = nil) {
+    public override func setVal(_ any: Any?, _ options: Tr3SetOptions? = nil) {
          //TODO: is ever used during runtime?
     }
     public override func getVal() -> Any {

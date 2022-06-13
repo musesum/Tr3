@@ -6,6 +6,7 @@
 //  License: Apache 2.0 - see License file
 
 import QuartzCore
+import Collections
 import Par
 
 public typealias ExprName = String
@@ -13,15 +14,12 @@ public typealias ExprName = String
 public class Tr3Exprs: Tr3Val {
 
     /// `t(x 1, y 2)` ⟹ `["x": 1, "y": 2]`
-    var nameScalar = [ExprName: Tr3ValScalar]()
-
-    /// `t(x, y)` ⟹ `["x", "y"]`
-    var names = ContiguousArray<ExprName>()
+    var nameScalar: OrderedDictionary<ExprName,Tr3ValScalar> = [:]
 
     /// `t(x/2, y/2) << u(x 1, y 2)` ⟹ `u(x 0.5, y 1.0)` // after t fires
     public var exprs = ContiguousArray<Tr3Expr>()
 
-    var options = Tr3ExprOptions(rawValue: 0)
+    var exprOptions = Tr3ExprOptions(rawValue: 0)
     
     override init() {
         super.init()
@@ -34,15 +32,11 @@ public class Tr3Exprs: Tr3Val {
             valFlags = v.valFlags
             for (name, val) in v.nameScalar {
                 nameScalar[name] = Tr3ValScalar(with: val)
-                options.insert([.name, .scalar])
-            }
-            for name in v.names {
-                names.append(name)
-                options.insert(.name)
+                exprOptions.insert([.name, .scalar])
             }
             for expr in v.exprs {
                 exprs.append(expr.copy())
-                options.insert(.expr)
+                exprOptions.insert(.expr)
             }
         }
         else {
@@ -54,32 +48,21 @@ public class Tr3Exprs: Tr3Val {
         valFlags.insert([.names, .nameScalars])
         let x = Tr3ValScalar(num: Float(point.x))
         let y = Tr3ValScalar(num: Float(point.y))
-        names = ContiguousArray<ExprName>(["x","y"])
         nameScalar = ["x": x, "y": y]
-        options.insert([.name, .scalar])
+        exprOptions.insert([.name, .scalar])
     }
     convenience init(nameFloats: [(ExprName, Float)]) {
         self.init()
         valFlags.insert([.names, .nameScalars])
-        names = ContiguousArray<ExprName>()
-        nameScalar = [ExprName: Tr3ValScalar]()
+        nameScalar = [:]
         
         for (name, val) in nameFloats {
             let scalar = Tr3ValScalar(num: val)
-            names.append(name)
             nameScalar[name] = scalar
         }
-        options.insert([.name, .scalar])
+        exprOptions.insert([.name, .scalar])
     }
-    convenience init(names: [ExprName]) {
-        self.init()
-        valFlags.insert([.names])
-        self.names = ContiguousArray<ExprName>()
-        for name in names {
-            self.names.append(name)
-        }
-        options.insert(.name)
-    }
+
     override func copy() -> Tr3Exprs {
         let newTr3Exprs = Tr3Exprs(with: self)
         return newTr3Exprs
@@ -89,7 +72,7 @@ public class Tr3Exprs: Tr3Val {
         let expr = Tr3Expr()
         exprs.append(expr)
         valFlags.insert(.exprs)
-        options.insert(.expr)
+        exprOptions.insert(.expr)
     }
     func addPath(_ parItem: ParItem) {
         if let name = parItem.nextPars.first?.value {
@@ -99,19 +82,19 @@ public class Tr3Exprs: Tr3Val {
     func addScalar(_ scalar: Tr3ValScalar) {
 
         if let expr = exprs.last {
-            if expr.options.contains(.rvalue) {
+            if expr.exprOptions.contains(.rvalue) {
                 let expr = Tr3Expr()
                 exprs.append(expr)
                 expr.addExprScalar(scalar)
             } else {
                 expr.addExprScalar(scalar)
             }
-            if let lastName = names.last,
-                expr.exprOp == .none {
+            if let lastName = nameScalar.keys.last,
+                expr.exprOperator == .none {
                 nameScalar[lastName] = scalar
             }
         }
-        options.insert(.scalar)
+        exprOptions.insert(.scalar)
     }
     /// parse scalar with `0` in `0..1`
     func addScalar(_ num: Float? = nil ) -> Tr3ValScalar {
@@ -127,30 +110,28 @@ public class Tr3Exprs: Tr3Val {
     func addOper(_ opStr: String?) {
         if let opStr = opStr?.without(trailing: " ")  {
             exprs.last?.addOpStr(opStr)
-            options.insert(.op)
+            exprOptions.insert(.oper)
         }
     }
     func addQuote(_ quote: String?) {
         if let quote = quote?.without(trailing: " ")  {
             exprs.last?.addQuote(quote)
-            options.insert(.quote)
+            exprOptions.insert(.quote)
         }
     }
     func addName(_ name: String?) {
         guard let name = name else { return }
         if !nameScalar.keys.contains(name) {
-            names.append(name)
+            nameScalar[name] = Tr3ValScalar() //placeholder
         }
-        nameScalar[name] = Tr3ValScalar() // placeholder
-        
         if let expr = exprs.last {
             expr.addExprName(name)
         }
         valFlags.insert([.exprs, .names, .scalar, .nameScalars])
-        options.insert(.name)
+        exprOptions.insert(.name)
     }
     func addNum(_ num: Float) {
-        if let name = names.last,
+        if let name = nameScalar.keys.last,
            let scalar = nameScalar[name] {
             scalar.addNum(num)
         } else {
@@ -169,7 +150,7 @@ public class Tr3Exprs: Tr3Val {
 
      or change value `x/2`
      */
-    public override func setVal(_ any: Any?, _ opts: Any? = nil) {
+    public override func setVal(_ any: Any?, _ opts: Tr3SetOptions? = nil) {
 
         func setFloat(_ v: Float) {
             valFlags.insert(.names)
@@ -178,8 +159,7 @@ public class Tr3Exprs: Tr3Val {
                 n.addFlag(.num)
             }
             else {
-                names.append("val")
-                nameScalar["val"] = Tr3ValScalar(num: v)
+                nameScalar["val"] = Tr3ValScalar(num: v) //TODO: remove this kludge for DeepMenu
             }
         }
 
@@ -192,7 +172,6 @@ public class Tr3Exprs: Tr3Val {
                     n.addFlag(.num)
                 }
                 else {
-                    names.append("x")
                     nameScalar["x"] = Tr3ValScalar(num: Float(p.x))
                 }
                 if let n = nameScalar["y"] {
@@ -200,14 +179,13 @@ public class Tr3Exprs: Tr3Val {
                     n.addFlag(.num)
                 }
                 else {
-                    names.append("y")
                     nameScalar["y"] = Tr3ValScalar(num: Float(p.y))
                 }
             }
             // begin -------------------------------
             if exprs.isEmpty { return addPoint() }
             let exprs = Tr3Exprs(point: p)
-            setExprs(exprs)
+            setExprs(to: self, fr: exprs)
         }
         func isEligible(_ from: Tr3Exprs) -> Bool {
             if exprs.isEmpty {
@@ -241,23 +219,6 @@ public class Tr3Exprs: Tr3Val {
         // f(x in 2..4, y in 3..5, x 1..2, y 2..3) ⟹ (x 1, y 2) // no z
         //a.0 :: f.0 f.5
         //	a.1 in f.3..f.4 ?  a.1 .. f.5..f.6
-
-        func setNamed(to: Tr3Exprs, fr: Tr3Exprs) {
-            // a(x _, y _) _
-            for name in to.names {
-                if let toScalar = to.nameScalar[name] {
-                    // a(x 1, y 2) ...
-                    if let frScalar = fr.nameScalar[name] {
-                        // a(x 1, y 2) << b(x 1, y 2) ⟹ a(x 1, y 2)
-                        toScalar.setVal(frScalar)
-                    } else {
-                        // a(x 1, y 2) << b(1, 2) ⟹ a(x 1, y 2)
-                    }
-                } else {
-                    // a(x, y) << b(x 1, y 2) ⟹ a(x 1, y 2)
-                }
-            }
-        }
         func setExprs(to: Tr3Exprs, fr: Tr3Exprs) {
             if isEligible(fr) {
                 // a(x + _, y + _) << b(x _, y _)
@@ -283,13 +244,7 @@ public class Tr3Exprs: Tr3Val {
             }
         }
 
-        func setExprs(_ fr: Tr3Exprs) {
-            if self.options.contains(.expr) {
-                setExprs(to: self, fr: fr)
-            } else if self.options.contains(.name) {
-                setNamed(to: self, fr: fr)
-            }
-        }
+
         // begin -------------------------
 
         if let any = any {
@@ -298,22 +253,11 @@ public class Tr3Exprs: Tr3Val {
                 case let v as CGFloat:  setFloat(Float(v))
                 case let v as Double:   setFloat(Float(v))
                 case let v as CGPoint:  setPoint(v)
-                case let v as Tr3Exprs: setExprs(v)
+                case let v as Tr3Exprs: setExprs(to: self, fr: v)
+               //???  case let v as (String,Any): setNamed(to: <#T##Tr3Exprs#>, fr: <#T##Tr3Exprs#>)
                 default: print("🚫 mismatched setVal(\(any))")
             }
         }
-    }
-    public override func getVal() -> Any {
-        var nums = [Float]()
-        if names.count > 0 {
-            for name in names {
-                if let num = nameScalar[name]?.num {
-                    nums.append(num)
-                }
-            }
-        }
-        return nums
-
     }
     
 }
