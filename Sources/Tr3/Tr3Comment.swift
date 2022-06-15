@@ -9,6 +9,7 @@ import Foundation
 import Par
 
 public enum Tr3CommentType { case unknown, child, edges }
+
 public class Tr3Comment {
     let type: Tr3CommentType
     let name: String
@@ -78,15 +79,14 @@ public class Tr3Comments {
         return ""
     }
     
-    public func getComments(_ getType: Tr3CommentType, index: Int) -> String {
+    public func getComments(_ getType: Tr3CommentType) -> String {
         var result = ""
         if have(type: getType) {
             for comment in comments {
-                if comment.type == getType,
-                   comment.index == index || index == -1 {
+                if comment.type == getType {
                     switch comment.text.prefix(1) {
                         case ",": result += ","
-                        default: result += " " + comment.text
+                        default: result.spacePlus(comment.text)
                     }
                 }
             }

@@ -9,12 +9,10 @@ import QuartzCore
 import Collections
 import Par
 
-public typealias ExprName = String
-
 public class Tr3Exprs: Tr3Val {
 
     /// `t(x 1, y 2)` ⟹ `["x": 1, "y": 2]`
-    var nameScalar: OrderedDictionary<ExprName,Tr3ValScalar> = [:]
+    var nameScalar: OrderedDictionary<String,Tr3ValScalar> = [:]
 
     /// `t(x/2, y/2) << u(x 1, y 2)` ⟹ `u(x 0.5, y 1.0)` // after t fires
     public var exprs = ContiguousArray<Tr3Expr>()
@@ -43,6 +41,7 @@ public class Tr3Exprs: Tr3Val {
             valFlags = .scalar // use default values
         }
     }
+
     convenience init(point: CGPoint) {
         self.init()
         valFlags.insert([.names, .nameScalars])
@@ -51,11 +50,12 @@ public class Tr3Exprs: Tr3Val {
         nameScalar = ["x": x, "y": y]
         exprOptions.insert([.name, .scalar])
     }
-    convenience init(nameFloats: [(ExprName, Float)]) {
+
+    convenience init(nameFloats: [(String, Float)]) {
         self.init()
         valFlags.insert([.names, .nameScalars])
         nameScalar = [:]
-        
+
         for (name, val) in nameFloats {
             let scalar = Tr3ValScalar(num: val)
             nameScalar[name] = scalar
@@ -96,6 +96,7 @@ public class Tr3Exprs: Tr3Val {
         }
         exprOptions.insert(.scalar)
     }
+    
     /// parse scalar with `0` in `0..1`
     func addScalar(_ num: Float? = nil ) -> Tr3ValScalar {
         var scalar: Tr3ValScalar

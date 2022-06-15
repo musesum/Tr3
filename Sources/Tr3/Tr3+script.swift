@@ -9,20 +9,6 @@ import Foundation
 
 extension Tr3 {
 
-    /// test for `a.b.c` and not `a {b c}`
-    func hasSoloDescendants() -> Bool {
-        if children.count > 1 { return false }
-        return true
-    }
-
-    /// `a { b c }` or `a { b.c d.e }`
-    func hasShallowChildren() -> Bool {
-
-        for child in children {
-            if !child.hasSoloDescendants() { return false }
-        }
-        return true
-    }
 
     /** Is this Tr3 elegible to shorten with a dot?
 
@@ -30,76 +16,62 @@ extension Tr3 {
      but not `a(1) { z }` to a(1).z,
      and not `a<<b { z }` to a<<b.z,
      */
-    func canShortenWithDot() -> Bool {
+    private func canShortenWithDot() -> Bool {
         if val != nil, edgeDefs.edgeDefs.count > 0 {
             return true
         }
         return false 
     }
     
-    public func makeTr3Script(indent: Int, pretty: Bool, commented: Bool = true) -> String {
+    public func script(compact: Bool) -> String {
 
-        var script = name
-
-        func begin() -> String {
-
-            script.plus(val?.scriptVal())
-
-            if children.isEmpty {
-                script.plus(getTr3Comment())
+        func scriptChildren() {
+            //?? print(name+"ⁿ" ,terminator: "")
+            script.spacePlus("{")
+            script.spacePlus(comments.getComments(.child))
+            if (script.last != "\n") && (script.last != ",") {
+                script.spacePlus("\n")
             }
-            else if pretty {
-                if canShortenWithDot() {
-                    if hasShallowChildren()  { bracketChildren("{ ","} ") }
-                    else                     { bracketChildren("{\n","}\n") }
-                }
-                else if children.count == 1,
-                        hasSoloDescendants() { soloDotChild() }
-
-                else if hasShallowChildren() { bracketChildren("{ ","}\n") }
-                else                         { bracketChildren("{\n","}\n") }
-            }
-            else /* not pretty */            { bracketChildren("{ ","} ") }
-
-            script.plus(edgeDefs.dumpScript(self))
-            return script
-        }
-
-        func bracketChildren(_ openBracket: String, _  closeBracket: String) {
-            script.plus(openBracket)
-            script.plus(getTr3Comment())
-            var index = 0
             for child in children {
-                if script.last != "\n", !child.hasSoloDescendants() { script += "\n" }
-                script.plus(child.makeTr3Script(indent: indent + 1, pretty: pretty))
-                index += 1
-                script.plus(comments.getComments(.child, index: index))
+                script.spacePlus(child.script(compact: compact))
+                if (script.last != "\n") && (script.last != ",") {
+                    script.spacePlus("\n")
+                }
             }
-            script += closeBracket
+            script.spacePlus("}\n")
         }
-
         /// print `a.b.c` instead of `a { b { c } } }`
-        func soloDotChild() {
+        func scriptOnlyChild() {
+            //?? print(name+"¹" ,terminator: "")
             script += "."
             for child in children {
-                script += child.makeTr3Script(indent: indent + 1, pretty: pretty)
+                script += child.script(compact: compact)
             }
         }
-        return begin() // ────────────────────────────
+
+        // begin --------------------------------------------
+        //?? print(name+"⁰" ,terminator: "")
+        var script = name
+        script.spacePlus(val?.scriptVal())
+
+        if compact {
+            switch children.count {
+                    case 0: script.spacePlus(comments.getComments(.child))
+                    case 1: scriptOnlyChild()
+                    default: scriptChildren()
+            }
+        } else { // not pretty
+            switch children.count {
+                case 0: script.spacePlus(comments.getComments(.child))
+                default: scriptChildren()
+            }
+        }
+        script.spacePlus(edgeDefs.dumpScript(self))
+        script.spacePlus(comments.getComments(.edges))
+        return script
     }
 
-    func getTr3Comment() -> String {
-        var result = ""
-        if comments.have(type: .child) {
-            result = comments.getComments(.child, index: 0)
-            // ToDo: Side effect removes preceeding space
-            if result.count > 0, result.first == "," {
-                //!! script = script.without(trailing: " ")
-            }
-        }
-        return result
-    }
-    
+
     func getCopiedFrom() -> String {
         var result = ""
         var delim = ": "
@@ -118,12 +90,12 @@ extension Tr3 {
         if let edgesScript = dumpTr3Edges(session) {
             script = edgesScript
             if tr3Edges.count == 1 {
-                script += comments.getComments(.edges, index: -1)
+                script += comments.getComments(.edges)
             }
         }
         else if edgeDefs.edgeDefs.count > 0 {
             script += edgeDefs.dumpScript(self)
-            script += comments.getComments(.edges, index: -1)
+            script += comments.getComments(.edges)
         }
         return script
     }
@@ -197,14 +169,19 @@ extension Tr3 {
         }
         return nil
     }
-    func getChildren(_ indent: Int, _ session: Bool) -> String {
+    func getChildren(_ session: Bool) -> String {
         var result = ""
         if children.count > 0 {
-            result = "{ " + getTr3Comment() + "\n"
+            let comment = comments.getComments(.child)
+            if comment == "," {
+                result = "{ " + comment.with(trailing: " ")
+            } else {
+                result = "{ " + comment + "\n"
+            }
             var index = 0 // index indicates how many children already added when comment was added
             for child in children {
                 index += 1
-                result += result.parenSpace() + child.dumpScript(indent: indent + 1, session: session)
+                result += result.parenSpace() + child.dumpScript(session: session)
             }
             result += result.parenSpace() + "}\n"
         }
@@ -214,25 +191,24 @@ extension Tr3 {
     /** create a parse ready String
 
      - Parameters
-        - indent: depth level in tree deterimines indentation
         - session: show instance for session instead of full declaration
      */
-    public func dumpScript(indent: Int, session: Bool = false) -> String {
+    public func dumpScript(session: Bool = false) -> String {
 
         var script = name
-        script.plus(getCopiedFrom())
+        script.spacePlus(getCopiedFrom())
         let dumpVal = val?.dumpVal(session: session)
-        script.plus(dumpVal)
-        script.plus(dumpEdgeDefs(session))
+        script.spacePlus(dumpVal)
+        script.spacePlus(dumpEdgeDefs(session))
         if children.isEmpty {
-            let comments = getTr3Comment()
-            script.plus(comments)
+            let comments = comments.getComments(.child)
+            script.spacePlus(comments)
             if dumpVal != nil, comments.isEmpty {
                 script += "\n"
             }
         }
         else {
-            script.plus(getChildren(indent, session))
+            script.spacePlus(getChildren(session))
         }
         return script
     }
@@ -242,15 +218,15 @@ extension Tr3 {
         if tr3s.isEmpty { return "" }
         var script = tr3s.count > 1 ? "(" : ""
         for tr3 in tr3s {
-            script.plus(tr3.scriptLineage(2))
+            script.spacePlus(tr3.scriptLineage(2))
         }
         script += tr3s.count > 1 ? ")" : ""
         return script
     }
+
     /// create "a.b.c" from c in `a{b{c}}`, but not √.b.c from b
     public func scriptLineage(_ level: Int) -> String {
-        if let parent = parent, parent.name != "√", level > 0 
-        {
+        if let parent = parent, parent.name != "√", level > 0  {
              return parent.scriptLineage(level-1) + "." + name
         }
         else {

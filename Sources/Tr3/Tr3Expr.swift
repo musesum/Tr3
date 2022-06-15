@@ -52,7 +52,7 @@ enum Tr3ExprOperator: String {
 
 public class Tr3Expr {
 
-    public var name: ExprName = ""
+    public var name: String = ""
     var exprOperator = Tr3ExprOperator.none
     var rvalue: Any? // name | scalar | quote
     var exprOptions = Tr3ExprOptions(rawValue: 0)
@@ -76,7 +76,7 @@ public class Tr3Expr {
         exprOptions = from.exprOptions
         if let frRvalue = from.rvalue {
             switch frRvalue {
-            case let n as ExprName: rvalue = n
+            case let n as String: rvalue = n
             case let s as Tr3ValScalar: rvalue = Tr3ValScalar(with: s)
             default: print("🚫 unknown Tr3Expr from next: \(frRvalue)")
             }
@@ -187,43 +187,27 @@ public class Tr3Expr {
     }
     
     public var string: String { rvalue as? String ?? "" }
-    //?? public var any: Any? { rvalue  }
+
 
     func script(session: Bool) -> String {
-        
-        var script = name
-        if exprOperator != .none {
-            if script.isEmpty {
-                script = exprOperator.rawValue
-            } else {
-                script += " " + exprOperator.rawValue
-            }
-        }
-        let delim = name.isEmpty ? "" : " "
-        
+
+        var script = name + " " + exprOperator.rawValue + " "
+
         if let rvalue = rvalue {
-
             switch rvalue {
-
-                case let s as String:
-
-                    if exprOptions.contains(.quote) {
-                        script += delim + "\"\(s)\""
-                    } else {
-                        script += delim + s
-                    }
+                case let v as String:
+                    script += exprOptions.contains(.quote) ? "\"\(v)\"" : v
 
                 case let v as Tr3ValScalar:
-
-                    let scalar = v.dumpVal(parens: false, session: session)
-                    script += delim + scalar
+                    script += v.dumpVal(parens: false, session: session)
 
                 default:
-
                     print("🚫 unknown script rvalue: \(rvalue)")
             }
         }
-        return script
+        let ret = script.reduceSpaces()
+        return ret
     }
 
 }
+
