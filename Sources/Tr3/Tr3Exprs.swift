@@ -245,8 +245,12 @@ public class Tr3Exprs: Tr3Val {
             }
         }
 
-        func setNamed(_ n: String, _ v: Float) {
-            nameScalar[n] = Tr3ValScalar(num: v)
+        func setNamed(_ name: String, _ value: Float) {
+            if let scalar = nameScalar[name] {
+                scalar.num = value
+            } else {
+                nameScalar[name] = Tr3ValScalar(num: value)
+            }
             addFlag(.num)
         }
 
@@ -259,6 +263,7 @@ public class Tr3Exprs: Tr3Val {
                 case let v as Double:   setFloat(Float(v))
                 case let v as CGPoint:  setPoint(v)
                 case let v as Tr3Exprs: setExprs(to: self, fr: v)
+                case let (n,v) as (String,Float): setNamed(n, v)
                 case let (n,v) as (String,CGFloat): setNamed(n, Float(v))
                 default: print("🚫 mismatched setVal(\(any))")
             }

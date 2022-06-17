@@ -9,10 +9,10 @@ import QuartzCore
 public class Tr3ValScalar: Tr3Val {
 
     // default scalar value is (0..1 = 1)
-    var num  = Float(0) // current value
-    var min  = Float(0) // minimum value
-    var max  = Float(1) // maximum value, inclusive for thru
-    var dflt = Float(0) // current value
+    public var num  = Float(0) // current value
+    public var min  = Float(0) // minimum value
+    public var max  = Float(1) // maximum value, inclusive for thru
+    public var dflt = Float(0) // current value
 
     override init() {
         super.init()
