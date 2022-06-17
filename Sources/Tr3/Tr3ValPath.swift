@@ -68,7 +68,7 @@ extension Tr3ValPath {
             if script.first != "(" {
                 script = "(\(script))"
             }
-            return scrip
+            return script
         } else {
             return path
         }
