@@ -1,4 +1,4 @@
-√.midi { // musical instrument device interface
+midi { // musical instrument device interface
     frame (num + 1) // frame counter
     input { // midi input
         note { // note on/off from 0 thru 127

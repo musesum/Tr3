@@ -8,7 +8,7 @@ import Foundation
 
 public class Tr3ValPath: Tr3Val {
 
-    var path = ""
+    @objc  var path = ""
     var pathTr3s = [Tr3]()
 
     override init() {
@@ -32,6 +32,18 @@ public class Tr3ValPath: Tr3Val {
     public static func == (lhs: Tr3ValPath, rhs: Tr3ValPath) -> Bool {
         return lhs.path == rhs.path
     }
+
+
+    public override func setVal(_ any: Any?, _ options: Tr3SetOptions? = nil) {
+         //TODO: is ever used during runtime?
+    }
+    public override func getVal() -> Any {
+        return path
+    }
+
+}
+extension Tr3ValPath {
+    
     override func printVal() -> String {
 
         if pathTr3s.isEmpty {
@@ -41,28 +53,24 @@ public class Tr3ValPath: Tr3Val {
             var script = pathTr3s.count > 1 ? "(" : ""
 
             for pathTr3 in pathTr3s {
-                script += script.parenSpace() + (pathTr3.val?.printVal() ?? pathTr3.name)
+                script.spacePlus(pathTr3.val?.printVal() ?? pathTr3.name)
             }
             if pathTr3s.count > 1 { return script.with(trailing:")") }
             else                  { return script.with(trailing: " ") }
         }
     }
-    override func scriptVal(parens: Bool = true) -> String  {
-        return path.with(trailing: " ")
-    }
-    override func dumpVal(parens: Bool = true, session: Bool = false) -> String  {
-        var script = Tr3.dumpTr3s(pathTr3s)
-        if script.first == " " { script.removeFirst() }
-        if script.first != "(" {
-            script = "(\(script))"
+    override func scriptVal(parens: Bool = true,
+                            session: Bool = false,
+                            expand: Bool = false) -> String  {
+        if expand {
+            var script = Tr3.scriptTr3s(pathTr3s)
+            if script.first == " " { script.removeFirst() }
+            if script.first != "(" {
+                script = "(\(script))"
+            }
+            return script.with(trailing: " ")
+        } else {
+            return path.with(trailing: " ")
         }
-       return script.with(trailing: " ")
     }
-    public override func setVal(_ any: Any?, _ options: Tr3SetOptions? = nil) {
-         //TODO: is ever used during runtime?
-    }
-    public override func getVal() -> Any {
-        return path
-    }
-
 }

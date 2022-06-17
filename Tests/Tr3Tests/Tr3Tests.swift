@@ -18,11 +18,11 @@ final class Tr3Tests: XCTestCase {
 
         print(script)
         let root = Tr3("√")
-        let expected = expected ?? "√ { \(script) }"
+        let expected = expected ?? script
 
         if tr3Parse.parseScript(root, script, whitespace: "\n\t ") {
 
-            let actual = root.dumpScript(session: session)
+            let actual = root.scriptRoot(session: session)
             err = ParStr.testCompare(expected, actual)
         }
         else  {
@@ -64,10 +64,10 @@ final class Tr3Tests: XCTestCase {
            Tr3Parse().parseScript(root, script, whitespace: "\n\t ") {
             print (name +  " ✓")
 
-            let actual = root.script(compact: true)
+            let actual = root.scriptRoot(compact: true)
             // print("\n\n\n\(actual)\n\n\n")
 
-            let expect = read(out) ?? ""
+            let expect = read(out) ?? script
             let err = ParStr.testCompare(expect, actual)
             return err
         } else {
@@ -91,11 +91,11 @@ final class Tr3Tests: XCTestCase {
         err += test(
             /**/"abcdefghijklmnopqrstu1 abcdefghijklmnopqrstu2")
 
-        err += test("a { b { c(1) } } a.b.c(2)", "√ { a { b { c(2) } } }")
+        err += test("a { b { c(1) } } a.b.c(2)", "a { b { c(2) } }")
 
         err += test(
             /**/"a { b { c(1) } } z: a { b.c(2) }",
-                "√ { a { b { c(1) } } z: a { b { c(2) } } }")
+                "a { b { c(1) } } z: a { b { c(2) } }")
 
         err += test("a, b { // yo \n c }")
         err += test("a { b { // yo \n c } } ")
@@ -104,75 +104,82 @@ final class Tr3Tests: XCTestCase {
 
         err += test("a b c => a")
 
-        err += test("a b c d a << (b ? c : d)", "√ { a <<(b ? c : d ) b⋯>a c>>a d>>a }")
+        err += test("a b c d a << (b ? c : d)",
+                    "a <<(b ? c : d ) b⋯>a c>>a d>>a ")
 
-        err += test("value(1.67772e+07)", "√ { value(1.67772e+07) }")
+        err += test("value(1.67772e+07)", "value(1.67772e+07)")
 
         err += test("a.b.c(0..1) z: a { b.c(0..1 = 1) }",
-                    "√ { a { b { c(0..1) } } z: a { b { c(0..1 = 1) } } }")
+                    "a { b { c(0..1) } } z: a { b { c(0..1 = 1) } }")
 
         err += test("a {b c}.{d e}.{f g}.{h i} z >> a.b˚g.h",
-                    "√ { a { b { d { f { h i } g { h i } } e { f { h i } g { h i } } } " +
+                    "a { b { d { f { h i } g { h i } } e { f { h i } g { h i } } } " +
                     "    c { d { f { h i } g { h i } } e { f { h i } g { h i } } } } " +
-                    " z >> (d.g.h e.g.h) }")
+                    " z >> (d.g.h e.g.h)")
 
         err += test("a {b c}.{d e f>>b(1) } z: a z.b.f=>c(1) ",
-                    "√ { a   { b { d e f>>a.b(1) } c { d e f>>a.b(1) } }" +
-                    "z: a { b { d e f=>z.c(1) } c { d e f>>z.b(1) } } }")
+                    "a   { b { d e f>>a.b(1) } c { d e f>>a.b(1) } }" +
+                    "z: a { b { d e f=>z.c(1) } c { d e f>>z.b(1) } }")
 
         err += test("a._c { d { e { f \"ff\" } } } a.c.z: _c { d { e.f    \"ZZ\" } }",
-                    "√ { a { _c { d { e { f \"ff\" } } } c { z: _c { d { e { f \"ZZ\" } } } } } }")
+                    "a { _c { d { e { f \"ff\" } } } c { z: _c { d { e { f \"ZZ\" } } } } }")
 
         err += test("a.b { _c { d e.f(0..1) g} z: _c { g } } ",
-                    "√ { a { b { _c { d e { f(0..1) } g } z: _c { d e { f(0..1) } g } } } }")
+                    "a { b { _c { d e { f(0..1) } g } z: _c { d e { f(0..1) } g } } }")
 
-        err += test("a.b._c {d(1)} a.b.e: _c", "√ { a { b { _c { d(1) } e: _c { d(1) } } } }")
+        err += test("a.b._c {d(1)} a.b.e: _c",
+                    "a { b { _c { d(1) } e: _c { d(1) } } }")
 
         err += test("a {b c}.{d e}.{f g}.{i j} a.b˚f << (f.i ? f.j : 0) ",
-                    "√ { a { b { d { f << (f.i ? f.j : 0) { i⋯>b.d.f j>>b.d.f } g { i j } }" +
+                    "a { b { d { f << (f.i ? f.j : 0) { i⋯>b.d.f j>>b.d.f } g { i j } }" +
                     "        e { f << (f.i ? f.j : 0) { i⋯>b.e.f j>>b.e.f } g { i j } } }" +
                     "    c { d { f { i j } g { i j } }" +
-                    "        e { f { i j } g { i j } } } } a.b˚f << (f.i ? f.j : 0 ) }" +
+                    "        e { f { i j } g { i j } } } } a.b˚f << (f.i ? f.j : 0 )" +
                     "")
 
         err += test("a {b c}.{d e}.{f g}.{i j} a.b˚f << (f.i ? f.j : 0) ",
-                    "√ { a { b { d { f << (f.i ? f.j : 0) { i⋯>b.d.f j>>b.d.f } g { i j } }" +
+                    "a { b { d { f << (f.i ? f.j : 0) { i⋯>b.d.f j>>b.d.f } g { i j } }" +
                     "        e { f << (f.i ? f.j : 0) { i⋯>b.e.f j>>b.e.f } g { i j } } }" +
                     "    c { d { f { i j } g { i j } }" +
-                    "        e { f { i j } g { i j } } } } a.b˚f << (f.i ? f.j : 0 ) }" +
+                    "        e { f { i j } g { i j } } } } a.b˚f << (f.i ? f.j : 0 )" +
                     "")
 
         err += test("a {b c}.{d << (b ? 1 | c ? 2) e } z: a z.b.d << (b ? 5 | c ? 6)",
-                    "√ { a { b⋯>(a.b.d a.c.d) { d << (b ? 1 | c ? 2) e } " +
-                    "     c⋯>(a.b.d a.c.d) { d << (b ? 1 | c ? 2) e } } " +
+                    "  a { b⋯>(a.b.d a.c.d) { d << (b ? 1 | c ? 2) e } " +
+                    "      c⋯>(a.b.d a.c.d) { d << (b ? 1 | c ? 2) e } } " +
                     "z: a{ b⋯>(z.b.d z.c.d) { d << (b ? 5 | c ? 6) e } " +
-                    "     c⋯>(z.b.d z.c.d) { d << (b ? 1 | c ? 2) e } } }" +
+                    "      c⋯>(z.b.d z.c.d) { d << (b ? 1 | c ? 2) e } }" +
                     "")
 
 
-        err += test("a b >> a(1)", "√ { a b >> a(1) }")
+        err += test("a b >> a(1)")
 
-        err += test("a << (b c)", "√ { a << (b c) }")
+        err += test("a << (b c)")
 
-        err += test(     "a, b.c << (a ? 1) d: b ",
-                         "√ { a⋯>(b.c d.c), b { c << (a ? 1 ) } d: b { c << (a ? 1 ) } }")
+        err += test("a, b.c << (a ? 1) d: b ",
+                    "a⋯>(b.c d.c), b { c << (a ? 1 ) } d: b { c << (a ? 1 ) } ")
         
-        err += test("a {b << (a ? 1) c} ", "√ { a⋯>a.b { b << (a ? 1 ) c } }")
+        err += test("a {b << (a ? 1) c} ",
+                    "a⋯>a.b { b << (a ? 1 ) c }")
         
         err += test("a {b c}.{d << (b ? 1 | c ? 2) e} ",
-                    "√ { a { b⋯>(a.b.d a.c.d) { d << (b ? 1 | c ? 2) e } " +
-                    /**/"c⋯>(a.b.d a.c.d) { d << (b ? 1 | c ? 2) e } } }")
+                    "a { b⋯>(a.b.d a.c.d) { d << (b ? 1 | c ? 2) e } " +
+                    /**/"c⋯>(a.b.d a.c.d) { d << (b ? 1 | c ? 2) e } }")
 
         err += test("a b c w << (a ? 1 : b ? 2 : c ? 3)",
-                    "√ { a⋯>w b⋯>w c⋯>w w << (a ? 1 : b ? 2 : c ? 3) }")
+                    "a⋯>w b⋯>w c⋯>w w << (a ? 1 : b ? 2 : c ? 3)")
 
-        err += test("a.b { c d } a.e: a.b { f g } ", "√ { a { b { c d } e: a.b { c d f g } } }")
+        err += test("a.b { c d } a.e: a.b { f g } ",
+                    "a { b { c d } e: a.b { c d f g } }")
 
-        err += test(    "a { b c } d: a { e f } g: d { h i } j: g { k l }",
-                        "√ { a { b c } d: a { b c e f } g: d { b c e f h i } j: g { b c e f h i k l } }")
+        err += test("a { b c } d: a { e f } g: d { h i } j: g { k l }",
+                    "a { b c } d: a { b c e f } g: d { b c e f h i } j: g { b c e f h i k l }")
 
-        err += test("a { b c }    h: a { i j }", "√ { a { b c } h: a { b c i j } }")
-        err += test("a { b c } \n h: a { i j }", "√ { a { b c } h: a { b c i j } }")
+        err += test("a { b c } h: a { i j }",
+                    "a { b c } h: a { b c i j }")
+
+        err += test("a { b c } \n h: a { i j }",
+                    "a { b c } h: a { b c i j }")
 
         XCTAssertEqual(err, 0)
     }
@@ -186,24 +193,28 @@ final class Tr3Tests: XCTestCase {
         err += test("a { b \"bb\" c \"cc\" }")
 
         subhead("comment")
-        err += test("a // yo", "√ { a }")
-        err += test("a { b } // yo", "√ { a { b } }")
-        err += test("a { b // yo \n } ", "√ { a { b // yo \n } }")
-        err += test("a { b { // yo \n c } } ", "√ { a { b { // yo \n c } } }")
-        // error err += test("a b a // yo \n << b // oy\n", "√ { a // yo \n << b // oy\n b }")
+        err += test("a // yo", "a") //?? `a // yo`
+        err += test("a { b } // yo", "a { b }")
+        err += test("a { b // yo \n }")
+        err += test("a { b { // yo \n c } }")
+        // error err += test("a b a // yo \n << b // oy\n", "a // yo \n << b // oy\n b")
 
         subhead("hierarchy")
-        err += test("a { b c }", "√ { a { b c } }")
-        err += test("a { b { c } }", "√ { a { b { c } } }")
-        err += test("a { b { c } d { e } }", "√ { a { b { c } d { e } } }")
-        err += test("a { b { c d } e }", "√ { a { b { c d } e } }")
+        err += test("a { b c }")
+        err += test("a { b { c } }")
+        err += test("a { b { c } d { e } }")
+        err += test("a { b { c d } e }")
 
         subhead("many")
-        err += test("a {b c}.{d e}", "√ { a { b { d e } c { d e } } }")
-        err += test("a {b c}.{d e}.{f g}", "√ { a { b { d { f g } e { f g } } c { d { f g } e { f g } } } }")
+        err += test("a {b c}.{d e}",
+                    "a { b { d e } c { d e } }")
+
+        err += test("a {b c}.{d e}.{f g}",
+                    "a { b { d { f g } e { f g } } c { d { f g } e { f g } } }")
         
         subhead("copyat")
-        err += test("a {b c} d: a ", "√ { a { b c } d: a { b c } }")
+        err += test("a {b c} d: a ",
+                    "a { b c } d: a { b c }")
         err += test("_a { b { c \"yo\" } } d: _a { b { c \"oy\" } }")
 
         XCTAssertEqual(err, 0)
@@ -211,18 +222,23 @@ final class Tr3Tests: XCTestCase {
 
     func testParsePathCopy() { headline(#function)
         var err = 0
-        err += test("a.b.c { b { d } }", "√ { a { b { c { b { d } } } } }")
-        err += test("a.b { c d } e: a { b.c(0) }", "√ { a { b { c d } } e: a { b { c(0) d } } }")
-        err += test("a { b { c } } a.b <> c ", "√ { a { b <> a.b.c { c } } } ")
+        err += test("a.b.c { b { d } }",
+                    "a { b { c { b { d } } } }")
+
+        err += test("a.b { c d } e: a { b.c(0) }",
+                    "a { b { c d } } e: a { b { c(0) d } }")
+
+        err += test("a { b { c } } a.b <> c ",
+                    "a { b <> a.b.c { c } }")
 
         err += test("a { b { c d } } e { b { c d } b(0) }" ,
-                    "√ { a { b { c d } } e { b(0) { c d } } }")
+                    "a { b { c d } } e { b(0) { c d } }")
 
         err += test("a {b c}.{d e}.{f g}.{i j} a.b˚f << (f.i ? f.j : 0) ",
-                    "√ { a { b { d { f << (f.i ? f.j : 0 ) { i⋯>b.d.f j >> b.d.f } g { i j } }" +
+                    "a { b { d { f << (f.i ? f.j : 0 ) { i⋯>b.d.f j >> b.d.f } g { i j } }" +
                     "        e { f << (f.i ? f.j : 0 ) { i⋯>b.e.f j >> b.e.f } g { i j } } }" +
                     "    c { d { f { i j } g { i j } }" +
-                    "        e { f { i j } g { i j } } } } a.b˚f << (f.i ? f.j : 0 ) }" +
+                    "        e { f { i j } g { i j } } } } a.b˚f << (f.i ? f.j : 0 )" +
                     "")
 
         XCTAssertEqual(err, 0)
@@ -248,25 +264,25 @@ final class Tr3Tests: XCTestCase {
         err += test("a(0..1 = 0.5) { b(1..2) { c(2..3) } }")
         err += test("a(x 0..1 = 0.5, y 0..1 = 0.5)")
 
-        print("\n━━━━━━━━━━━━━━━━━━━━━━ tr3 scalars ━━━━━━━━━━━━━━━━━━━━━━\n")
-        err += test("a { b(2) { c } }", "√ { a { b(2) { c } } }")
-        err += test("a(1) { b(2) { c(3) } }", "√ { a(1) { b(2) { c(3) } } }")
-        err += test("a(0..1 = 0.5) { b(1..2) { c(2..3) } }", "√ { a(0..1 = 0.5) { b(1..2) { c(2..3) } } }")
-        err += test("a(%2) b(%2)", "√ { a(%2) b(%2) }")
+        subhead("tr3 scalars")
+        err += test("a { b(2) { c } }")
+        err += test("a(1) { b(2) { c(3) } }")
+        err += test("a(0..1 = 0.5) { b(1..2) { c(2..3) } }")
+        err += test("a(%2) b(%2)")
 
-        print("\n━━━━━━━━━━━━━━━━━━━━━━ tr3 tuples ━━━━━━━━━━━━━━━━━━━━━━\n")
-        err += test("a(x 0..1 = 0.5, y 0..1 = 0.5)", "√ { a(x 0..1 = 0.5, y 0..1 = 0.5) }")
+       subhead("tr3 tuples")
+        err += test("a(x 0..1 = 0.5, y 0..1 = 0.5)")
         err += test("a(x 1..2, y 1..2)")
         err += test("b(x -1, y 2)")
         err += test("c(x 3, y 4)")
         err += test("d(x, y, z)")
-        err += test("m(0, 0, 0), n >> m(1, 1, 1)", "√ { m(0, 0, 0), n >> m(1, 1, 1) }")
-        err += test("m(0, 0, 0), n(1, 1, 1) >> m", "√ { m(0, 0, 0), n(1, 1, 1) >> m }")
-        err += test("e(x -16..16, y -16..16)", "√ { e(x -16..16, y -16..16) }")
-        err += test("f(p 0..1, q 0..1, r 0..1)", "√ { f(p 0..1, q 0..1, r 0..1) }")
-        err += test("g(p 0..1 = 0.5, q 0..1 = 0.5, r 0..1 = 0.5)", "√ { g(p 0..1 = 0.5, q 0..1 = 0.5, r 0..1 = 0.5) }")
-        err += test("h(p 0..1 = 0.5, q 0..1 = 0.5, r 0..1 = 0.5)", "√ { h(p 0..1 = 0.5, q 0..1 = 0.5, r 0..1 = 0.5) }")
-        err += test("i(0..1 = 0.5, 0..1 = 0.5, 0..1 = 0.5)", "√ { i(0..1 = 0.5, 0..1 = 0.5, 0..1 = 0.5) }")
+        err += test("m(0, 0, 0), n >> m(1, 1, 1)")
+        err += test("m(0, 0, 0), n(1, 1, 1) >> m")
+        err += test("e(x -16..16, y -16..16)")
+        err += test("f(p 0..1, q 0..1, r 0..1)")
+        err += test("g(p 0..1 = 0.5, q 0..1 = 0.5, r 0..1 = 0.5)")
+        err += test("h(p 0..1 = 0.5, q 0..1 = 0.5, r 0..1 = 0.5)")
+        err += test("i(0..1 = 0.5, 0..1 = 0.5, 0..1 = 0.5)")
         err += test("j(one 1, two 2)")
         err += test("k(one \"1\", two \"2\")")
         XCTAssertEqual(err, 0)
@@ -274,57 +290,97 @@ final class Tr3Tests: XCTestCase {
 
     func testParsePaths() { headline(#function)
         var err = 0
-        err += test("a { b { c {c1 c2} d } } a e", "√ { a { b { c { c1 c2 } d } } e }")
-        err += test("a { b { c d } } a { e }", "√ { a { b { c d } e } }")
-        err += test("a { b { c {c1 c2} d } b.c { c3 } }", "√ { a { b { c { c1 c2 c3 } d } } }")
-        err += test("a { b { c {c1 c2} d } b.c { c2(2) c3 } }", "√ { a { b { c { c1 c2(2) c3 } d } } }")
-        err += test("a { b { c d } b.e }", "√ { a { b { c d e } } }")
-        err += test("a { b { c d } b.e.f }", "√ { a { b { c d e { f } } } }")
+        err += test("a { b { c {c1 c2} d } } a e",
+                    "a { b { c {c1 c2} d } } e")
 
-        err += test("a { b { c {c1 c2} d {d1 d2} } b.c: b.d  }", "√ { a { b { c { c1 c2 d1 d2 } d { d1 d2 } } } }")
-        err += test("a { b { c d } } a: e", "√ { a { b { c d } e } }")
-        err += test("ab { a(1) b(2) } cd: ab { a(3) c(4) d(5) } ef: cd { b(6) d(7) e(8) f(9) }",
-                    "√ { ab { a(1) b(2) } cd: ab { a(3) b(2) c(4) d(5) } ef: cd { a(3) b(6) c(4) d(7) e(8) f(9) } }")
+        err += test("a { b { c d } } a { e }",
+                    "a { b { c d } e }")
 
-        err += test("ab { a(1) b(2) } ab { c(4) d(5) }", "√ { ab { a(1) b(2) c(4) d(5) } }")
+        err += test("a { b { c d } b.e }",
+                    "a { b { c d e } }")
+
+        err += test("a { b { c d } b.e.f }",
+                    "a { b { c d e { f } } }")
+
+        err += test("a.b.c.d { e.f }",
+                    "a { b { c { d { e { f } } } } }")
+
+        err += test("a { b { c { c1 c2 } d } b.c { c3 } }",
+                    "a { b { c { c1 c2 c3 } d } }")
+
+        subhead("copyAt")
+
+        err += test("a { b { c { c1 c2 } d { d1 d2 } } b.c: b.d  }",
+                    "a { b { c { c1 c2 d1 d2 } d { d1 d2 } } }")
+
+        err += test("a { b { c d } } a: e", // no e
+                    "a { b { c d } e }")
+
+        subhead("override values")
+
+        err += test("a { b { c { c1 c2 } d } b.c { c2(2) c3 } }",
+                    "a { b { c { c1 c2(2) c3 } d } }")
+
+        err += test("ab { a(1) b(2) } cd: ab { a(3) c(4) d(5) }      ef: cd {      b(6)      d(7) e(8) f(9) }",
+                    "ab { a(1) b(2) } cd: ab { a(3) b(2) c(4) d(5) } ef: cd { a(3) b(6) c(4) d(7) e(8) f(9) }")
+
+        err += test("ab { a(1) b(2) } ab { c(4) d(5) }",
+                    "ab { a(1) b(2) c(4) d(5) }")
+
+        subhead("decorate leaves (˚.)")
 
         err += test("ab { a(1) b(2) } cd { c(4) d(5) } ab˚.: cd",
-                    "√ { ab { a(1) { c(4) d(5) } b(2) { c(4) d(5) } } cd { c(4) d(5) } }")
+                    "ab { a(1) { c(4) d(5) } b(2) { c(4) d(5) } } cd { c(4) d(5) }")
 
-        err += test("a.b { _c { c1 c2 } c: _c { d e } }",
-                    "√ { a { b { _c { c1 c2 } c: _c { c1 c2 d e } } } }")
+        subhead("merge copyAt (d:_c)")
 
-        err += test("a.b { _c { c1 c2 } c { d e }: _c }",
-                    "√ { a { b { _c { c1 c2 } c: _c { d e c1 c2 } } } }")
+        err += test("a.b   { _c { c1 c2 } d: _c {       d1 d2 } }",
+                    "a { b { _c { c1 c2 } d: _c { c1 c2 d1 d2 } } }")
 
-        err += test("a.b.c.d { e.f }", "√ { a { b { c { d { e { f } } } } } }")
+        err += test("a.b   { _c { c1 c2 } d     { d1 d2 }: _c }",
+                    "a { b { _c { c1 c2 } d: _c { d1 d2 c1 c2 } } }")
+
         XCTAssertEqual(err, 0)
     }
 
     func testParseEdges() { headline(#function)
         var err = 0
-        err += test("a b c << b", "√ { a b c << b }")
-        err += test("a, b, c >> b", "√ { a, b, c >> b }")
-        err += test("a { a1, a2 } w << a.* ", "√ { a { a1, a2 } w << (a.a1 a.a2) }")
-        err += test("a { b { c } } a <> .* ", "√ { a <> a.b { b { c } } }")
-        err += test("a { b { c } } a.b <> c ", "√ { a { b <> a.b.c { c } } } ")
-        err += test("a { b { c } } a˚˚ <> .* ", "√ { a <> a.b { b <> a.b.c { c } } a˚˚ <> .* }")
-        err += test("a { b { c } } ˚˚ <> .. ", "√ { a <> √ { b <> a { c <> a.b } } ˚˚ <> .. }")
+        err += test("a b c << b")
+        err += test("a, b, c >> b")
+
+        err += test("a { a1, a2 } w << a.* ",
+                    "a { a1, a2 } w << (a.a1 a.a2)")
+
+        err += test("a { b { c } } a <> .* ",
+                    "a <> a.b { b { c } }")
+
+        err += test("a { b { c } } a.b <> c ",
+                    "a { b <> a.b.c { c } }")
+
+        err += test("a { b { c } } a˚˚ <> .* ",
+                    "a <> a.b { b <> a.b.c { c } } a˚˚ <> .*")
+
+        err += test("a { b { c } } ˚˚ <> .. ",
+                    "a <> √ { b <> a { c <> a.b } } ˚˚ <> ..")
 
         subhead("multi edge")
         err += test("a << (b c)")
-        err += test("a << (b c) { b c }", "√ { a << (a.b a.c) { b c } }")
-        err += test("a >> (b c) { b c }", "√ { a >> (a.b a.c) { b c } }")
+
+        err += test("a << (b c) { b c }",
+                    "a << (a.b a.c) { b c }") //??
+
+        err += test("a >> (b c) { b c }",
+                    "a >> (a.b a.c) { b c }") //??
 
         subhead("copyat edge")
         err += test("a {b c} z: a <: a ",
-                    "√ { a { b c } z: a <: a { b <: a.b c <: a.c } }")
+                    "a { b c } z: a <: a { b <: a.b c <: a.c }")
 
         err += test("a {b c}.{d e} z: a <: a",
         """
-        √ { a { b { d e } c { d e } }
+        a { b { d e } c { d e } }
           z: a <: a { b <: a.b { d <: a.b.d e <: a.b.e }
-                    c <: a.c { d <: a.c.d e <: a.c.e } } }
+                    c <: a.c { d <: a.c.d e <: a.c.e } }
         """)
 
         XCTAssertEqual(err, 0)
@@ -332,123 +388,192 @@ final class Tr3Tests: XCTestCase {
 
     func testParseTernarys() { headline(#function)
         var err = 0
-        err += test("a b x y w << (a ? 1 : b ? 2)", "√ { a⋯>w b⋯>w x y w << (a ? 1 : b ? 2) }")
-        err += test("a, x, y, w << (a ? x : y)", "√ { a⋯>w, x╌>w, y╌>w, w << (a ? x : y) }")
-        err += test("a, x, y, w >> (a ? x : y)", "√ { a⋯>w, x<╌w, y<╌w, w >> (a ? x : y) }")
-        err += test("a(1), x, y, w << (a ? x : y)", "√ { a(1)⋯>w, x >> w, y╌>w, w << (a ? x : y) }")
-        err += test("a(1), x, y, w >> (a ? x : y)", "√ { a(1)⋯>w, x << w, y<╌w, w >> (a ? x : y) }")
-        err += test("a(0), x, y, w << (a ? x : y)", "√ { a(0)⋯>w, x╌>w, y╌>w, w << (a ? x : y) }")
-        err += test("a(0), x, y, w >> (a ? x : y)", "√ { a(0)⋯>w, x<╌w, y<╌w, w >> (a ? x : y) }")
+        err += test("a b x y w << (a ? 1 : b ? 2)",
+                    "a⋯>w b⋯>w x y w << (a ? 1 : b ? 2) ")
 
-        err += test("a, x, y, w <>(a ? x : y)", "√ { a⋯>w, x<╌>w, y<╌>w, w <> (a ? x : y) }")
+        err += test("a, x, y, w << (a ? x : y)",
+                    "a⋯>w, x╌>w, y╌>w, w << (a ? x : y)")
 
-        err += test("a, b, x, y, w << (a ? x : b ? y)", "√ { a⋯>w, b⋯>w, x╌>w, y╌>w, w << (a ? x : b ? y) }")
-        err += test("a, b, x, y, w << (a ? 1 : b ? 2)", "√ { a⋯>w, b⋯>w, x, y, w << (a ? 1 : b ? 2) }")
-        err += test("a b c w << (a ? 1 : b ? 2 : c ? 3)", "√ { a⋯>w b⋯>w c⋯>w w<<(a ? 1 : b ? 2 : c ? 3) }")
-        err += test("a, b, c, w << (a ? 1 : b ? 2 : c ? 3)", "√ { a⋯>w, b⋯>w, c⋯>w, w << (a ? 1 : b ? 2 : c ? 3) }")
-        err += test("a, b, c, x << (a ? b ? c ? 3 : 2 : 1)", "√ { a⋯>x, b⋯>x, c⋯>x, x << (a ? b ? c ? 3 : 2 : 1) }")
-        err += test("a, b, c, y << (a ? (b ? (c ? 3) : 2) : 1)", "√ { a⋯>y, b⋯>y, c⋯>y, y << (a ? b ? c ? 3 : 2 : 1) }")
-        err += test("a, b, c, z << (a ? 1) << (b ? 2) << (c ? 3)", "√ { a⋯>z, b⋯>z, c⋯>z, z << (a ? 1) << (b ? 2) << (c ? 3) }")
-        err += test("a, b, w << (a ? 1 : b ? 2 : 3)", "√ { a⋯>w, b⋯>w, w << (a ? 1 : b ? 2 : 3) }"  )
-        err += test("a, b, w <> (a ? 1 : b ? 2 : 3)", "√ { a⋯>w, b⋯>w, w <> (a ? 1 : b ? 2 : 3) }"  )
+        err += test("a, x, y, w >> (a ? x : y)",
+                    "a⋯>w, x<╌w, y<╌w, w >> (a ? x : y)")
+
+        err += test("a(1), x, y, w << (a ? x : y)",
+                    "a(1)⋯>w, x >> w, y╌>w, w << (a ? x : y)")
+
+        err += test("a(1), x, y, w >> (a ? x : y)",
+                    "a(1)⋯>w, x << w, y<╌w, w >> (a ? x : y)")
+
+        err += test("a(0), x, y, w << (a ? x : y)",
+                    "a(0)⋯>w, x╌>w, y╌>w, w << (a ? x : y)")
+
+        err += test("a(0), x, y, w >> (a ? x : y)",
+                    "a(0)⋯>w, x<╌w, y<╌w, w >> (a ? x : y)")
+
+
+        err += test("a, x, y, w <>(a ? x : y)",
+                    "a⋯>w, x<╌>w, y<╌>w, w <> (a ? x : y)")
+
+        err += test("a, b, x, y, w << (a ? x : b ? y)",
+                    "a⋯>w, b⋯>w, x╌>w, y╌>w, w << (a ? x : b ? y)")
+
+        err += test("a, b, x, y, w << (a ? 1 : b ? 2)",
+                    "a⋯>w, b⋯>w, x, y, w << (a ? 1 : b ? 2)")
+
+        err += test("a b c w << (a ? 1 : b ? 2 : c ? 3)",
+                    "a⋯>w b⋯>w c⋯>w w<<(a ? 1 : b ? 2 : c ? 3)")
+
+        err += test("a, b, c, w << (a ? 1 : b ? 2 : c ? 3)",
+                    "a⋯>w, b⋯>w, c⋯>w, w << (a ? 1 : b ? 2 : c ? 3)")
+
+        err += test("a, b, c, x << (a ? b ? c ? 3 : 2 : 1)",
+                    "a⋯>x, b⋯>x, c⋯>x, x << (a ? b ? c ? 3 : 2 : 1)")
+
+        err += test("a, b, c, y << (a ? (b ? (c ? 3) : 2) : 1)",
+                    "a⋯>y, b⋯>y, c⋯>y, y << (a ? b ? c ? 3 : 2 : 1)")
+
+        err += test("a, b, c, z << (a ? 1) << (b ? 2) << (c ? 3)",
+                    "a⋯>z, b⋯>z, c⋯>z, z << (a ? 1) << (b ? 2) << (c ? 3)")
+
+        err += test("a, b, w << (a ? 1 : b ? 2 : 3)",
+                    "a⋯>w, b⋯>w, w << (a ? 1 : b ? 2 : 3)")
+
+        err += test("a, b, w <> (a ? 1 : b ? 2 : 3)",
+                    "a⋯>w, b⋯>w, w <> (a ? 1 : b ? 2 : 3)"  )
 
         subhead("ternary conditionals")
 
         err += test("a1, b1, a2, b2, w << (a1 == a2 ? 1 : b1 == b2 ? 2 : 3)",
-                    "√{ a1⋯>w, b1⋯>w, a2⋯>w, b2⋯>w, w << (a1 == a2 ? 1 : b1 == b2 ? 2 : 3 ) }")
+                    "a1⋯>w, b1⋯>w, a2⋯>w, b2⋯>w, w << (a1 == a2 ? 1 : b1 == b2 ? 2 : 3 )")
 
         err += test("d {a1 a2}.{b1 b2}.{c1 c2} h << (d.a1 ? b1 ? c1 : 1)",
-                    "√ { d { a1⋯>h { b1⋯>h { c1╌>h c2 } b2 { c1 c2 } } a2 { b1 { c1 c2 } b2 { c1 c2 } } } h << (d.a1 ? b1 ? c1 : 1) }")
+                    "d { a1⋯>h { b1⋯>h { c1╌>h c2 } b2 { c1 c2 } } a2 { b1 { c1 c2 } b2 { c1 c2 } } } h << (d.a1 ? b1 ? c1 : 1)")
 
         subhead("ternary paths")
 
         err += test("a {b c}.{d e}.{f g} a << a˚d.g",
-                    "√ { a << (b.d.g c.d.g) { b { d { f g } e { f g } } c { d { f g } e { f g } } } }")
+                    "a << (b.d.g c.d.g) { b { d { f g } e { f g } } c { d { f g } e { f g } } }")
 
         err += test("a {b c}.{d e}.{f g}.{i j} a.b˚f << (f.i == f.j ? 1 : 0) ",
-                    "√ { a { b { d { f << (f.i == f.j ? 1 : 0 ) { i⋯>b.d.f j⋯>b.d.f } g { i j } }" +
-                    "        e { f << (f.i == f.j ? 1 : 0 ) { i⋯>b.e.f j⋯>b.e.f } g { i j } } }" +
-                    "    c { d { f { i j } g { i j } }" +
-                    "        e { f { i j } g { i j } } } } a.b˚f << (f.i == f.j ? 1 : 0) }" +
-                    "")
+                    """
+                    a { b { d { f << (f.i == f.j ? 1 : 0 ) { i⋯>b.d.f j⋯>b.d.f } g { i j } }
+                            e { f << (f.i == f.j ? 1 : 0 ) { i⋯>b.e.f j⋯>b.e.f } g { i j } } }
+                        c { d { f { i j } g { i j } }
+                            e { f { i j } g { i j } } } } a.b˚f << (f.i == f.j ? 1 : 0)
+                    """)
+
 
         err += test("a {b c}.{d e}.{f g}.{i j} a.b˚f << (f.i ? f.j : 0) ",
-                    "√ { a { b { d { f << (f.i ? f.j : 0 ) { i⋯>b.d.f j>>b.d.f } g { i j } }" +
-                    "        e { f << (f.i ? f.j : 0 ) { i⋯>b.e.f j>>b.e.f } g { i j } } }" +
-                    "    c { d { f { i j } g { i j } }" +
-                    "        e { f { i j } g { i j } } } } a.b˚f << (f.i ? f.j : 0 ) }" +
-                    "")
+                    """
+                    a { b { d { f << (f.i ? f.j : 0 ) { i⋯>b.d.f j>>b.d.f } g { i j } }
+                            e { f << (f.i ? f.j : 0 ) { i⋯>b.e.f j>>b.e.f } g { i j } } }
+                        c { d { f { i j } g { i j } }
+                            e { f { i j } g { i j } } } } a.b˚f << (f.i ? f.j : 0 )
+                    """)
 
         subhead("ternary radio")
 
         err += test("a, b, c, x, y, z, w << (a ? 1 | b ? 2 | c ? 3)",
-                    "√ { a⋯>w, b⋯>w, c⋯>w, x, y, z, w << (a ? 1 | b ? 2 | c ? 3 ) } ")
-        err += test("a, b, c, x, y, z, w << (a ? x | b ? y | c ? z)",
-                    "√ { a⋯>w, b⋯>w, c⋯>w, x╌>w, y╌>w, z╌>w, w << (a ? x | b ? y | c ? z) }")
-        err += test("a, b, c, x, y, z, w <> (a ? x | b ? y | c ? z)",
-                    "√ { a⋯>w, b⋯>w, c⋯>w, x<╌>w, y<╌>w, z<╌>w, w <> (a ? x | b ? y | c ? z) }")
+                    "a⋯>w, b⋯>w, c⋯>w, x, y, z, w << (a ? 1 | b ? 2 | c ? 3 ) ")
 
-        err += test("a {b c}.{d e}.{f g}.{i j} a.b˚f << (f.i ? 1 | a˚j ? 0) ",
-                    "√ { a { b { d { f << (f.i ? 1 | a˚j ? 0 ) { i⋯>b.d.f j⋯>(b.d.f b.e.f) } g { i j⋯>(b.d.f b.e.f) } } " +
-                    "        e { f << (f.i ? 1 | a˚j ? 0 ) { i⋯>b.e.f j⋯>(b.d.f b.e.f) } g { i j⋯>(b.d.f b.e.f) } } } " +
-                    "    c { d { f { i j⋯>(b.d.f b.e.f) } g { i j⋯>(b.d.f b.e.f) } } " +
-                    "        e { f { i j⋯>(b.d.f b.e.f) } g { i j⋯>(b.d.f b.e.f) } } } } a.b˚f << (f.i ? 1 | a˚j ? 0 ) }" +
-                    "")
+        err += test("a, b, c, x, y, z, w << (a ? x | b ? y | c ? z)",
+                    "a⋯>w, b⋯>w, c⋯>w, x╌>w, y╌>w, z╌>w, w << (a ? x | b ? y | c ? z)")
+
+        err += test("a, b, c, x, y, z, w <> (a ? x | b ? y | c ? z)",
+                    "a⋯>w, b⋯>w, c⋯>w, x<╌>w, y<╌>w, z<╌>w, w <> (a ? x | b ? y | c ? z)")
+
+        err += test("a {b c}.{d e}.{f g}.{i j} a.b˚f << (f.i ? 1 | a˚j ? 0)",
+                    """
+
+                    a { b { d { f << (f.i ? 1 | a˚j ? 0 ) { i⋯>b.d.f j⋯>(b.d.f b.e.f) }
+                                g { i j⋯>(b.d.f b.e.f) } }
+                            e { f << (f.i ? 1 | a˚j ? 0 ) { i⋯>b.e.f j⋯>(b.d.f b.e.f) }
+                                g { i j⋯>(b.d.f b.e.f) } } }
+                        c { d { f { i j⋯>(b.d.f b.e.f) }
+                                g { i j⋯>(b.d.f b.e.f) } }
+                            e { f { i j⋯>(b.d.f b.e.f) }
+                                g { i j⋯>(b.d.f b.e.f) } } } }
+                    a.b˚f << (f.i ? 1 | a˚j ? 0 )
+                    """)
         XCTAssertEqual(err, 0)
     }
 
     func testParseRelativePaths() { headline(#function)
         var err = 0
-        err += test("d {a1 a2}.{b1 b2} e << d˚b1", "√ { d { a1 { b1 b2 } a2 { b1 b2 } } e << (d.a1.b1 d.a2.b1) }")
-        err += test("d {a1 a2}.{b1 b2} e << d˚˚", "√ { d { a1 { b1 b2 } a2 { b1 b2 } } e << (d d.a1 d.a1.b1 d.a1.b2 d.a2 d.a2.b1 d.a2.b2)  }")
-        err += test("d {a1 a2}.{b1 b2} e << (d˚b1 ? d˚b2)", "√ { d { a1 { b1⋯>e b2╌>e } a2 { b1⋯>e b2╌>e } } e << (d˚b1 ? d˚b2) }")
-        err += test("d {a1 a2}.{b1 b2} e << (d.a1 ? a1.* : d.a2 ? a2.*)", "√ { d { a1⋯>e { b1╌>e b2╌>e } a2⋯>e { b1╌>e b2╌>e } } e << (d.a1 ? a1.* : d.a2 ? a2.*) }")
-        err += test("d {a1 a2}.{b1 b2} e << (d.a1 ? .*   : d.a2 ? .*)",   "√ { d { a1⋯>e { b1╌>e b2╌>e } a2⋯>e { b1╌>e b2╌>e } } e << (d.a1 ? .* : d.a2 ? .*) }")
-        err += test("d {a1 a2}.{b1 b2} e << (d˚a1 ? a1˚. : d˚a2 ? a2˚.)", "√ { d { a1⋯>e { b1╌>e b2╌>e } a2⋯>e { b1╌>e b2╌>e } } e << (d˚a1 ? a1˚. : d˚a2 ? a2˚.) }")
+        err += test("d {a1 a2}.{b1 b2} e << d˚b1",
+                    "d { a1 { b1 b2 } a2 { b1 b2 } } e << (d.a1.b1 d.a2.b1)")
+
+        err += test("d {a1 a2}.{b1 b2} e << d˚˚",
+                    "d { a1 { b1 b2 } a2 { b1 b2 } } e << (d d.a1 d.a1.b1 d.a1.b2 d.a2 d.a2.b1 d.a2.b2)")
+
+        err += test("d {a1 a2}.{b1 b2} e << (d˚b1 ? d˚b2)",
+                    "d { a1 { b1⋯>e b2╌>e } a2 { b1⋯>e b2╌>e } } e << (d˚b1 ? d˚b2)")
+
+        err += test("d {a1 a2}.{b1 b2} e << (d.a1 ? a1.* : d.a2 ? a2.*)",
+                    "d { a1⋯>e { b1╌>e b2╌>e } a2⋯>e { b1╌>e b2╌>e } } e << (d.a1 ? a1.* : d.a2 ? a2.*)")
+
+        err += test("d {a1 a2}.{b1 b2} e << (d.a1 ? .*   : d.a2 ? .*)",
+                    "d { a1⋯>e { b1╌>e b2╌>e } a2⋯>e { b1╌>e b2╌>e } } " +
+                    "e << (d.a1 ? .* : d.a2 ? .*)")
+
+        err += test("d {a1 a2}.{b1 b2} e << (d˚a1 ? a1˚. : d˚a2 ? a2˚.)",
+                    "d { a1⋯>e { b1╌>e b2╌>e } a2⋯>e { b1╌>e b2╌>e } } " +
+                    "e << (d˚a1 ? a1˚. : d˚a2 ? a2˚.)")
 
         err += test("d {a1 a2}.{b1 b2}.{c1 c2} e << (d˚b1 ? b1˚. : d˚b2 ? b2˚.)",
-                    "√ { d { a1 { b1⋯>e { c1╌>e c2╌>e } b2⋯>e { c1╌>e c2╌>e } } a2 { b1⋯>e { c1╌>e c2╌>e } b2⋯>e { c1╌>e c2╌>e } } } e<<(d˚b1 ? b1˚. : d˚b2 ? b2˚.) }")
+                    "d { a1 { b1⋯>e { c1╌>e c2╌>e } b2⋯>e { c1╌>e c2╌>e } } " +
+                    "    a2 { b1⋯>e { c1╌>e c2╌>e } b2⋯>e { c1╌>e c2╌>e } } } " +
+                    "e<<(d˚b1 ? b1˚. : d˚b2 ? b2˚.)")
 
         err += test("d {a1 a2}.{b1 b2}.{c1 c2} e << (d˚b1 ? b1˚. | d˚b2 ? b2˚.)",
-                    "√ { d { a1 { b1⋯>e { c1╌>e c2╌>e } b2⋯>e { c1╌>e c2╌>e } } a2 { b1⋯>e { c1╌>e c2╌>e } b2⋯>e { c1╌>e c2╌>e } } } e<<(d˚b1 ? b1˚. | d˚b2 ? b2˚.) }")
+                    "d { a1 { b1⋯>e { c1╌>e c2╌>e } b2⋯>e { c1╌>e c2╌>e } } " +
+                    "    a2 { b1⋯>e { c1╌>e c2╌>e } b2⋯>e { c1╌>e c2╌>e } } } " +
+                    "e<<(d˚b1 ? b1˚. | d˚b2 ? b2˚.)")
 
         err += test("d {a1 a2}.{b1 b2}.{c1 c2} h << (d.a1 ? b1 ? c1 : 1)",
-                    "√ { d { a1⋯>h { b1⋯>h { c1╌>h c2 } b2 { c1 c2 } } a2 { b1 { c1 c2 } b2 { c1 c2 } } } h<<(d.a1 ? b1 ? c1 : 1) }")
+                    """
+                    d { a1⋯>h { b1⋯>h { c1╌>h c2 } b2 { c1 c2 } }
+                        a2 { b1 { c1 c2 } b2 { c1 c2 } } }
+                    h<<(d.a1 ? b1 ? c1 : 1)
 
-        err += test("d {a1 a2}.{b1 b2}.{c1 c2} " +
-                    "e << (d˚b1 ? b1˚. : d˚b2 ? b2˚.) " +
-                    "f << (d˚b1 ? b1˚. : b2˚.) " +
-                    "g << (d˚b1 ? b1˚.) <<(d˚b2 ? b2˚.) " +
-                    "h << (d.a1 ? b1 ? c1 : 1) " +
-                    "i << (d˚b1 ? b1˚. | d˚b2 ? b2˚.)",
+                    """)
 
-                    "√ { d { " +
-                    "a1⋯>h { b1⋯>(e f g h i) { c1╌>(e f g h i) c2╌>(e f g i) } b2⋯>(e g i) { c1╌>(e f g i) c2╌>(e f g i) } } " +
-                    "a2   { b1⋯>(e f g i)   { c1╌>(e f g i)   c2╌>(e f g i) } b2⋯>(e g i) { c1╌>(e f g i) c2╌>(e f g i) } } } " +
-                    "e << (d˚b1 ? b1˚. : d˚b2 ? b2˚.) " +
-                    "f << (d˚b1 ? b1˚. : b2˚.) " +
-                    "g << (d˚b1 ? b1˚.) << (d˚b2 ? b2˚.) " +
-                    "h << (d.a1 ? b1 ? c1 : 1) " +
-                    "i << (d˚b1 ? b1˚. | d˚b2 ? b2˚.) }" +
-                    "")
+        err += test("""
+                    d {a1 a2}.{b1 b2}.{c1 c2}
+                    e << (d˚b1 ? b1˚. : d˚b2 ? b2˚.)
+                    f << (d˚b1 ? b1˚. : b2˚.)
+                    g << (d˚b1 ? b1˚.) <<(d˚b2 ? b2˚.)
+                    h << (d.a1 ? b1 ? c1 : 1)
+                    i << (d˚b1 ? b1˚. | d˚b2 ? b2˚.)
+                    """,
+                    """
+                    d { a1⋯>h { b1⋯>(e f g h i) { c1╌>(e f g h i) c2╌>(e f g i) }
+                                b2⋯>(e g i)     { c1╌>(e f g i) c2╌>(e f g i) } }
+                        a2    { b1⋯>(e f g i)   { c1╌>(e f g i) c2╌>(e f g i) }
+                                b2⋯>(e g i)     { c1╌>(e f g i) c2╌>(e f g i) } } }
+                    e << (d˚b1 ? b1˚. : d˚b2 ? b2˚.)
+                    f << (d˚b1 ? b1˚. : b2˚.)
+                    g << (d˚b1 ? b1˚.) << (d˚b2 ? b2˚.)
+                    h << (d.a1 ? b1 ? c1 : 1)
+                    i << (d˚b1 ? b1˚. | d˚b2 ? b2˚.)
+                    """)
 
-        err += test("d {a1 a2}.{b1 b2}.{c1 c2} e << (d˚b1 ? b1˚. : d˚b2 ? b2˚.) ",
-                    "√ { d { " +
-                    "a1 { b1⋯>e { c1╌>e c2╌>e } b2⋯>e { c1╌>e c2╌>e } } " +
-                    "a2 { b1⋯>e { c1╌>e c2╌>e } b2⋯>e { c1╌>e c2╌>e } } } " +
-                    "e<<(d˚b1 ? b1˚. : d˚b2 ? b2˚.) }" +
-                    "")
+        err += test("d {a1 a2}.{b1 b2}.{c1 c2} e << (d˚b1 ? b1˚. : d˚b2 ? b2˚.)",
+                    """
+                    d {  a1 { b1⋯>e { c1╌>e c2╌>e } b2⋯>e { c1╌>e c2╌>e } }
+                         a2 { b1⋯>e { c1╌>e c2╌>e } b2⋯>e { c1╌>e c2╌>e } } }
+                    e << (d˚b1 ? b1˚. : d˚b2 ? b2˚.)
+                    """)
 
-        err += test("w {a b}.{c d}.{e f}.{g h} x << (w˚c ? c˚. : w˚d ? d˚.) ",
-                    "√ { w { " +
-                    "a { c⋯>x { e { g╌>x h╌>x } f { g╌>x h╌>x } } d⋯>x { e { g╌>x h╌>x } f { g╌>x h╌>x } } } " +
-                    "b { c⋯>x { e { g╌>x h╌>x } f { g╌>x h╌>x } } d⋯>x { e { g╌>x h╌>x } f { g╌>x h╌>x } } } } " +
-                    "x<<(w˚c ? c˚. : w˚d ? d˚.) }" +
-                    "")
+        err += test("w {a b}.{c d}.{e f}.{g h} x << (w˚c ? c˚. : w˚d ? d˚.)",
+                    """
+                    w { a { c⋯>x { e { g╌>x h╌>x } f { g╌>x h╌>x } }
+                            d⋯>x { e { g╌>x h╌>x } f { g╌>x h╌>x } } }
+                        b { c⋯>x { e { g╌>x h╌>x } f { g╌>x h╌>x } }
+                            d⋯>x { e { g╌>x h╌>x } f { g╌>x h╌>x } } } }
+                    x << (w˚c ? c˚. : w˚d ? d˚.)
+                    """)
         XCTAssertEqual(err, 0)
     }
-
-
 
     /// global result to tes callback
     var result = ""
@@ -491,8 +616,8 @@ final class Tr3Tests: XCTestCase {
            let b =  root.findPath("b") {
 
             b.activate()
-            let result =  root.dumpScript(session: true)
-            err = ParStr.testCompare("√ { a(2) b >> a(2) }", result)
+            let result =  root.scriptRoot(session: true)
+            err = ParStr.testCompare("a(2) b >> a(2)", result)
         }
         else {
             err = 1
@@ -515,8 +640,8 @@ final class Tr3Tests: XCTestCase {
            let b = root.findPath("b") {
 
             b.activate()
-            let result = root.dumpScript(session: true)
-            err = ParStr.testCompare("√ { a { a1(2) a2(2) } b >> (a.a1(2) a.a2(2)) }", result)
+            let result = root.scriptRoot(session: true)
+            err = ParStr.testCompare("a { a1(2) a2(2) } b >> (a.a1(2) a.a2(2))", result)
         }
         else {
             err = 1
@@ -535,8 +660,8 @@ final class Tr3Tests: XCTestCase {
         let root = Tr3("√")
         
         if tr3Parse.parseScript(root, script) {
-            let result = root.dumpScript(session: true)
-            err += ParStr.testCompare("√ { a { b { f g } c { f g } } }", result)
+            let result = root.scriptRoot(session: true)
+            err += ParStr.testCompare("a { b { f g } c { f g } }", result)
         }
         else {
             err += 1
@@ -558,8 +683,8 @@ final class Tr3Tests: XCTestCase {
            //let a =  root.findPath("a"),
            let z =  root.findPath("z") {
             z.activate()
-            let result = root.dumpScript(session: true)
-            err += ParStr.testCompare("√ { a { b { f g(2) } c { f g(2) } } z >> (a.b.g(2) a.c.g(2)) }", result)
+            let result = root.scriptRoot(session: true)
+            err += ParStr.testCompare("a { b { f g(2) } c { f g(2) } } z >> (a.b.g(2) a.c.g(2))", result)
         }
         else {
             err += 1
@@ -581,8 +706,8 @@ final class Tr3Tests: XCTestCase {
            let z =  root.findPath("z") {
 
             z.activate()
-            let result =  root.dumpScript(session: false)
-            err += ParStr.testCompare("√ { a { b { f(1) g(2) } c { f g(2) } } z >> (a.b.f(1) a.b.g(2) a.c.g(2)) }", result)
+            let result =  root.scriptRoot(session: false)
+            err += ParStr.testCompare("a { b { f(1) g(2) } c { f g(2) } } z >> (a.b.f(1) a.b.g(2) a.c.g(2))", result)
         }
         else {
             err += 1
@@ -594,7 +719,7 @@ final class Tr3Tests: XCTestCase {
     func testCopyAt() { headline(#function)
         var err = 0
         err += test("a { _b.bb _c.cc z: _b,_c }",
-                    "√ { a { _b { bb } _c { cc } z: _b, _c { bb cc } } }")
+                    "a { _b { bb } _c { cc } z: _b, _c { bb cc } }")
         XCTAssertEqual(err, 0)
     }
 
@@ -631,13 +756,13 @@ final class Tr3Tests: XCTestCase {
             acd.setVal(50, .activate)
             ace.setVal(50, .activate)
 
-            let result1 =  root.dumpScript(session: false)
+            let result1 =  root.scriptRoot(session: false)
             let expect1 = """
 
-            √ { a       { b(10)       { d(30)         e(40)         }
-                          c(20)       { d(50)         e(50)         }}
-                z:a <:a { b(10) <:a.b { d(30) <:a.b.d e(40) <:a.b.e }
-                          c(20) <:a.c { d(50) <:a.c.d e(50) <:a.c.e }}}
+            a       { b(10)       { d(30)         e(40)         }
+                      c(20)       { d(50)         e(50)         }}
+            z:a <:a { b(10) <:a.b { d(30) <:a.b.d e(40) <:a.b.e }
+                      c(20) <:a.c { d(50) <:a.c.d e(50) <:a.c.e }}
             """
             err += ParStr.testCompare(expect1, result1)
 
@@ -648,13 +773,13 @@ final class Tr3Tests: XCTestCase {
             zcd.setVal(55, .activate)
             zce.setVal(66, .activate)
 
-            let result2 =  root.dumpScript(session: false)
+            let result2 =  root.scriptRoot(session: false)
             let expect2 = """
 
-            √ {  a      { b(10)       { d(30)         e(40)         }
-                          c(20)       { d(50)         e(50)         }}
-                z:a <:a { b(11) <:a.b { d(33) <:a.b.d e(44) <:a.b.e }
-                          c(22) <:a.c { d(55) <:a.c.d e(66) <:a.c.e }}}
+             a      { b(10)       { d(30)         e(40)         }
+                      c(20)       { d(50)         e(50)         }}
+            z:a <:a { b(11) <:a.b { d(33) <:a.b.d e(44) <:a.b.e }
+                      c(22) <:a.c { d(55) <:a.c.d e(66) <:a.c.e }}
             """
             err += ParStr.testCompare(expect2, result2)
 
@@ -697,13 +822,13 @@ final class Tr3Tests: XCTestCase {
             acd.setVal(50, .activate)
             ace.setVal(60, .activate)
 
-            let result1 =  root.dumpScript(session: false)
+            let result1 =  root.scriptRoot(session: false)
             let expect1 = """
 
-            √ { a {        b(10)        { d(30)          e(40)          }
-                           c(20)        { d(50)          e(60)          } }
-                z:a <:>a { b(10) <:>a.b { d(30) <:>a.b.d e(40) <:>a.b.e }
-                           c(20) <:>a.c { d(50) <:>a.c.d e(60) <:>a.c.e } } }
+            a {        b(10)        { d(30)          e(40)          }
+                       c(20)        { d(50)          e(60)          }}
+            z:a <:>a { b(10) <:>a.b { d(30) <:>a.b.d e(40) <:>a.b.e }
+                       c(20) <:>a.c { d(50) <:>a.c.d e(60) <:>a.c.e }}
             """
             err += ParStr.testCompare(expect1, result1)
 
@@ -714,13 +839,13 @@ final class Tr3Tests: XCTestCase {
             zcd.setVal(55, .activate)
             zce.setVal(66, .activate)
 
-            let result2 =  root.dumpScript(session: false)
+            let result2 =  root.scriptRoot(session: false)
             let expect2 = """
 
-            √ { a        { b(11)        { d(33)          e(44)          }
-                           c(22)        { d(55)          e(66)          } }
-                z:a <:>a { b(11) <:>a.b { d(33) <:>a.b.d e(44) <:>a.b.e }
-                           c(22) <:>a.c { d(55) <:>a.c.d e(66) <:>a.c.e } } }
+            a        { b(11)        { d(33)          e(44)          }
+                       c(22)        { d(55)          e(66)          }}
+            z:a <:>a { b(11) <:>a.b { d(33) <:>a.b.d e(44) <:>a.b.e }
+                       c(22) <:>a.c { d(55) <:>a.c.d e(66) <:>a.c.e }}
             """
             err += ParStr.testCompare(expect2, result2)
 
@@ -740,24 +865,24 @@ final class Tr3Tests: XCTestCase {
         err += test("a (w 0, x 1, y 0)")
 
         err += test("a {b c}.{ d(1) e(2) }",
-                    "√ { a { b { d(1) e(2) } c { d(1) e(2) } } }")
+                    "a { b { d(1) e(2) } c { d(1) e(2) } }")
 
         err += test("a {b c}.{ d(x 1) e(y 2) }",
-                    "√ { a { b { d(x 1) e(y 2) } c { d(x 1) e(y 2) } } }")
+                    "a { b { d(x 1) e(y 2) } c { d(x 1) e(y 2) } }")
 
         err += test("a {b c}.{ d(x 1) e(y 2) } w(x 0, y 0, z 0)",
-                    "√ { a { b { d (x 1) e (y 2) } " +
-                    "        c { d (x 1) e (y 2) } } " +
-                    "    w (x 0, y 0, z 0) }")
+                    "a { b { d (x 1) e (y 2) } " +
+                    "    c { d (x 1) e (y 2) } } " +
+                    "w (x 0, y 0, z 0)")
 
         err += test("a {b c}.{ d(x == 10, y 0, z 0) e(x 0, y == 21, z 0) }",
-                    "√ { a { b { d (x == 10, y 0, z 0) e (x 0, y == 21, z 0) } " +
-                    "        c { d (x == 10, y 0, z 0) e (x 0, y == 21, z 0) } } }")
+                    "a { b { d (x == 10, y 0, z 0) e (x 0, y == 21, z 0) } " +
+                    "    c { d (x == 10, y 0, z 0) e (x 0, y == 21, z 0) } }")
 
         err += test("a {b c}.{ d(x == 10, y 0, z 0) e(x 0, y == 21, z  0) } w(x 0, y 0, z 0) <> a˚.",
-                    "√ { a { b { d (x == 10, y 0, z 0) e (x 0, y == 21, z 0) } " +
-                    "        c { d (x == 10, y 0, z 0) e (x 0, y == 21, z 0) } } " +
-                    "    w (x 0, y 0, z 0) <>(a.b.d a.b.e a.c.d a.c.e) }")
+                    "a { b { d (x == 10, y 0, z 0) e (x 0, y == 21, z 0) } " +
+                    "    c { d (x == 10, y 0, z 0) e (x 0, y == 21, z 0) } } " +
+                    "w (x 0, y 0, z 0) <>(a.b.d a.b.e a.c.d a.c.e)")
 
         // selectively set tuples by name, ignore the reset
         let script = "a {b c}.{ d(x == 10, y 0, z 0) e(x 0, y == 21, z 0) } w(x 0, y 0, z 0) <> a˚."
@@ -769,48 +894,48 @@ final class Tr3Tests: XCTestCase {
             // 0, 0, 0 --------------------------------------------------
             let t0 = Tr3Exprs(nameFloats: [("x", 0), ("y", 0), ("z", 0)])
             w.setVal(t0, .activate)
-            let result0 = root.dumpScript(session: true)
+            let result0 = root.scriptRoot(session: true)
             let expect0 = """
 
-            √ { a { b { d (x 0, y 0, z 0) e (x 0, y 0, z 0) }
-                    c { d (x 0, y 0, z 0) e (x 0, y 0, z 0) } }
-                        w (x 0, y 0, z 0) <> (a.b.d a.b.e a.c.d a.c.e) }
+            a { b { d (x 0, y 0, z 0) e (x 0, y 0, z 0) }
+                c { d (x 0, y 0, z 0) e (x 0, y 0, z 0) } }
+                    w (x 0, y 0, z 0) <> (a.b.d a.b.e a.c.d a.c.e)
             """
             err += ParStr.testCompare(expect0, result0)
 
             // 10, 11, 12 --------------------------------------------------
             let t1 = Tr3Exprs(nameFloats: [("x", 10), ("y", 11), ("z", 12)])
             w.setVal(t1, .activate)
-            let result1 = root.dumpScript(session: true)
+            let result1 = root.scriptRoot(session: true)
             let expect1 = """
 
-            √ { a { b { d (x 10, y 11, z 12) e (x 0, y 0, z 0) }
-                    c { d (x 10, y 11, z 12) e (x 0, y 0, z 0) } }
-                        w (x 10, y 11, z 12) <> (a.b.d a.b.e a.c.d a.c.e) }
+            a { b { d (x 10, y 11, z 12) e (x 0, y 0, z 0) }
+                c { d (x 10, y 11, z 12) e (x 0, y 0, z 0) } }
+                    w (x 10, y 11, z 12) <> (a.b.d a.b.e a.c.d a.c.e)
             """
             err += ParStr.testCompare(expect1, result1)
 
             // 20, 21, 22 --------------------------------------------------
             let t2 = Tr3Exprs(nameFloats: [("x", 20), ("y", 21), ("z", 22)])
             w.setVal(t2, .activate)
-            let result2 = root.dumpScript(session: true)
+            let result2 = root.scriptRoot(session: true)
             let expect2 = """
 
-            √ { a { b { d (x 10, y 11, z 12) e (x 20, y 21, z 22) }
-                    c { d (x 10, y 11, z 12) e (x 20, y 21, z 22) } }
-                        w (x 20, y 21, z 22) <> (a.b.d a.b.e a.c.d a.c.e) }
+            a { b { d (x 10, y 11, z 12) e (x 20, y 21, z 22) }
+                c { d (x 10, y 11, z 12) e (x 20, y 21, z 22) } }
+                    w (x 20, y 21, z 22) <> (a.b.d a.b.e a.c.d a.c.e)
             """
             err += ParStr.testCompare(expect2, result2)
 
             // 10, 21, 33 --------------------------------------------------
             let t3 = Tr3Exprs(nameFloats: [("x", 10), ("y", 21), ("z", 33)])
             w.setVal(t3, .activate)
-            let result3 = root.dumpScript(session: true)
+            let result3 = root.scriptRoot(session: true)
             let expect3 = """
 
-            √ { a { b { d (x 10, y 21, z 33) e (x 10, y 21, z 33) }
-                    c { d (x 10, y 21, z 33) e (x 10, y 21, z 33) } }
-                        w (x 10, y 21, z 33) <> (a.b.d a.b.e a.c.d a.c.e) }
+            a { b { d (x 10, y 21, z 33) e (x 10, y 21, z 33) }
+                c { d (x 10, y 21, z 33) e (x 10, y 21, z 33) } }
+                    w (x 10, y 21, z 33) <> (a.b.d a.b.e a.c.d a.c.e)
             """
             err += ParStr.testCompare(expect3, result3)
 
@@ -834,9 +959,8 @@ final class Tr3Tests: XCTestCase {
            let c = root.findPath("c") {
             let p = CGPoint(x: 1, y: 2)
             c.setVal(p, .activate)
-            let result = root.dumpScript(session: true)
-            let expect = "√ { a(x 1) << c, b(y 2) << c, c(x 1, y 2) }"
-            //                   "√ { a(x 1) <<🚫, c b (y 2) <<, c c (x 1, y 2)  }"
+            let result = root.scriptRoot(session: true)
+            let expect = "a(x 1) << c, b(y 2) << c, c(x 1, y 2)"
             err = ParStr.testCompare(expect, result, echo: true)
         }
         else {
@@ -865,12 +989,12 @@ final class Tr3Tests: XCTestCase {
             }
             a.setVal(p0, [.activate])
 
-            let result0 = root.dumpScript(session: true)
-            let expect0 = "√ { a(x 1, y 1, z 99), b(x 1, y 1) << a }"
+            let result0 = root.scriptRoot(session: true)
+            let expect0 = "a(x 1, y 1, z 99), b(x 1, y 1) << a"
             err += ParStr.testCompare(expect0, result0, echo: true)
 
-            let result1 = root.dumpScript(session: false)
-            let expect1 = "√ { a(x 0..2, y 0..2, z 99), b(x 0..2, y 0..2) << a }"
+            let result1 = root.scriptRoot(session: false)
+            let expect1 = "a(x 0..2, y 0..2, z 99), b(x 0..2, y 0..2) << a"
             err += ParStr.testCompare(expect1, result1, echo: true)
         }
         else {
@@ -894,15 +1018,15 @@ final class Tr3Tests: XCTestCase {
         if tr3Parse.parseScript(root, script),
            let a = root.findPath("a") {
 
-            let result0 = root.dumpScript(session: false)
-            let expect0 = "√ { a (x in 2..4, y in 3..5) >>b b (x 1..2, y 2..3) }"
+            let result0 = root.scriptRoot(session: false)
+            let expect0 = "a (x in 2..4, y in 3..5) >>b b (x 1..2, y 2..3)"
             err += ParStr.testCompare(expect0, result0, echo: true)
 
             let p1 = CGPoint(x: 3, y: 4)
             a.setVal(p1, [.activate])
 
-            let result1 = root.dumpScript(session: true)
-            let expect1 = "√ { a(x 3, y 4) >>b b (x 1.5, y 2.5) }"
+            let result1 = root.scriptRoot(session: true)
+            let expect1 = "a(x 3, y 4) >>b b (x 1.5, y 2.5)"
             err += ParStr.testCompare(expect1, result1, echo: true)
 
         } else {
@@ -953,7 +1077,8 @@ final class Tr3Tests: XCTestCase {
            let c = root.findPath("c"),
            let w = root.findPath("w") {
 
-            err += ParStr.testCompare("√ { a⋯>w b⋯>w c⋯>w w(0)<<(a ? 1 : b ? 2 : c ? 3) }", root.dumpScript(session: true), echo: true)
+            err += ParStr.testCompare("a⋯>w b⋯>w c⋯>w w(0)<<(a ? 1 : b ? 2 : c ? 3)",
+                                      root.scriptRoot(session: true), echo: true)
 
             w.addClosure { tr3, _ in self.addCallResult(w, tr3.val!) }
             err += testAct("a !",  "w(1.0) ") { a.activate() }
@@ -962,7 +1087,8 @@ final class Tr3Tests: XCTestCase {
             err += testAct("b(0)", "w(2.0)")  { b.setVal(0, [.create,.activate]) }
             err += testAct("c !",  "w(3.0) ") { c.activate() }
 
-            err += ParStr.testCompare(" √ { a(0)⋯>w b(0)⋯>w c⋯>w w(3)<<(a ? 1 : b ? 2 : c ? 3) }", root.dumpScript(session: true), echo: true)
+            err += ParStr.testCompare("a(0)⋯>w b(0)⋯>w c⋯>w w(3)<<(a ? 1 : b ? 2 : c ? 3)",
+                                      root.scriptRoot(session: true), echo: true)
         }
         else {
             err += 1
@@ -982,7 +1108,8 @@ final class Tr3Tests: XCTestCase {
            let y = root.findPath("y"),
            let w = root.findPath("w") {
 
-            err += ParStr.testCompare("√ { a(0)⋯>w x(10)╌>w y(20)╌>w w<<(a ? x : y) }", root.dumpScript(session: true), echo: true)
+            err += ParStr.testCompare("a(0)⋯>w x(10)╌>w y(20)╌>w w<<(a ? x : y)",
+                                      root.scriptRoot(session: true), echo: true)
 
             w.addClosure { tr3, _ in self.addCallResult(w, tr3.val!) }
             err += testAct("a(0)",  "w(20.0)")  { a.setVal(0,.activate) }
@@ -993,7 +1120,8 @@ final class Tr3Tests: XCTestCase {
             err += testAct("y(22)", "")         { y.setVal(22,.activate) }
 
             err += testAct("a(0)", "w(22.0)")  { a.setVal(0,.activate) }
-            err += ParStr.testCompare("√ { a(0)⋯>w x(12)╌>w y(22)>>w w(y)<<(a ? x : y) }", root.dumpScript(session: true), echo: true)
+            err += ParStr.testCompare("a(0)⋯>w x(12)╌>w y(22)>>w w(y)<<(a ? x : y)",
+                                      root.scriptRoot(session: true), echo: true)
         }
         else {
             err += 1
@@ -1013,7 +1141,8 @@ final class Tr3Tests: XCTestCase {
            let y = root.findPath("y"),
            let w = root.findPath("w") {
 
-            err += ParStr.testCompare("√ { a⋯>w x(10)<╌>w y(20)<╌>w w<>(a ? x : y) }", root.dumpScript(session: true), echo: true)
+            err += ParStr.testCompare("a⋯>w x(10)<╌>w y(20)<╌>w w<>(a ? x : y)",
+                                      root.scriptRoot(session: true), echo: true)
 
             w.addClosure { tr3, _ in self.addCallResult(w, tr3.val!) }
             x.addClosure { tr3, _ in self.addCallResult(x, tr3.val!) }
@@ -1023,7 +1152,8 @@ final class Tr3Tests: XCTestCase {
             err += testAct("a(1)", "w(3.0)  x(3.0)")  { a.setVal(1,.activate) }
             err += testAct("w(4)", "w(4.0)  x(4.0)")  { w.setVal(4, [.activate]) }
 
-            err += ParStr.testCompare("√ { a(1)⋯>w x(4)<>w y(3)<╌>w w(4)<>(a ? x : y) }", root.dumpScript(session: true), echo: true)
+            err += ParStr.testCompare("a(1)⋯>w x(4)<>w y(3)<╌>w w(4)<>(a ? x : y)",
+                                      root.scriptRoot(session: true), echo: true)
         }
         else {
             err += 1
@@ -1066,8 +1196,8 @@ final class Tr3Tests: XCTestCase {
         var err = 0
         err += test("omni { off on mode(0..1) << (off(0), on(1)) } cc: omni",
         """
-        √ { omni { off on mode (0..1) <<(omni.off(0), omni.on(1)) }
-        cc : omni { off on mode (0..1) <<(cc.off(0), cc.on(1)) } }
+        omni { off on mode (0..1) <<(omni.off(0), omni.on(1)) }
+        cc : omni { off on mode (0..1) <<(cc.off(0), cc.on(1)) }
         """)
         XCTAssertEqual(err, 0)
     }
@@ -1100,7 +1230,7 @@ final class Tr3Tests: XCTestCase {
         err += parse("shader")
         err += parse("midi")
 
-        let actual = root.dumpScript()
+        let actual = root.scriptRoot()
         let expect = read("test.deepMuse.output") ?? ""
         err += ParStr.testCompare(expect, actual)
 

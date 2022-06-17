@@ -26,15 +26,8 @@ public class Tr3ValQuote: Tr3Val {
     public static func == (lhs: Tr3ValQuote, rhs: Tr3ValQuote) -> Bool {
         return lhs.quote == rhs.quote
     }
-    override func printVal() -> String {
-        return quote
-    }
-    override func scriptVal(parens: Bool = true) -> String  {
-        return "\"" + quote +  "\" "
-    }
-    override func dumpVal(parens: Bool = true, session: Bool = false) -> String  {
-        return scriptVal(parens: parens)
-    }
+
+
     public override func setVal(_ any: Any?, _ options: Tr3SetOptions? = nil) {
         if let v = any as? String {
             quote = v
@@ -47,4 +40,16 @@ public class Tr3ValQuote: Tr3Val {
         return quote
     }
 
+}
+extension Tr3ValQuote {
+
+    override func printVal() -> String {
+        return quote
+    }
+
+    override func scriptVal(parens: Bool = true,
+                            session: Bool = false,
+                            expand: Bool = false) -> String  {
+        return "\"" + quote +  "\" "
+    }
 }

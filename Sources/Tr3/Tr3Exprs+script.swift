@@ -5,31 +5,33 @@
 //  Created by warren on 12/26/20.
 //
 
-import Par
+import Pardump
 
 extension Tr3Exprs {
 
     override func printVal() -> String {
         var script = "("
         for num in nameScalar.values { 
-            script += script.parenSpace() + "\(num)"
+            script.spacePlus("\(num)")
         }
         return script.with(trailing: ")")
     }
 
-    func scriptNames(session: Bool) -> String {
+    private func scriptNames(session: Bool) -> String {
         var script = ""
         var delim = ""
         for name in nameScalar.keys {
             script += delim + name; delim = ", "
             if let scalar = nameScalar[name] {
-                script += " " + scalar.dumpVal(parens: false, session: session)
+                script += " " + scalar.scriptVal(parens: false,
+                                               session: session,
+                                               expand: true)
             }
         }
         return script
     }
 
-    func scriptExprs(session: Bool) -> String {
+    private func scriptExprs(session: Bool) -> String {
         var script = ""
         var delim = ""
         if session {
@@ -47,17 +49,7 @@ extension Tr3Exprs {
         return script
     }
 
-    override func scriptVal(parens: Bool) -> String  {
-        var script = ""
-        if exprOptions.contains(.expr) {
-            script = scriptExprs(session: false)
-        } else if exprOptions.contains(.name) {
-            script = scriptNames(session: false)
-        }
-        return script.isEmpty ? "" : parens ? "(\(script))" : script
-    }
-
-    override func dumpVal(parens: Bool, session: Bool = false) -> String  {
+    override func scriptVal(parens: Bool, session: Bool = false, expand: Bool) -> String  {
         var script = ""
         if session {
             script = scriptNames(session: session)

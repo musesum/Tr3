@@ -1,4 +1,4 @@
-√.menu {
+menu {
     canvas (icon "icon.drop.clear") {
         fill (icon "icon.speed.png") {
             plane (slide)

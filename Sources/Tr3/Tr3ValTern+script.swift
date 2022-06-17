@@ -8,8 +8,47 @@ import Foundation
 
 extension Tr3ValTern {
 
-    func dumpRadioPrev(start: Bool = false) -> String {
-        var script = radioPrev?.dumpRadioPrev() ?? "("
+   override func printVal() -> String {
+        return "??"
+    }
+
+    override func scriptVal(parens: Bool = true,
+                   session: Bool = false,
+                   expand: Bool = false) -> String  {
+
+        var script = parens ? "(" : ""
+        if expand {
+            script += Tr3.scriptTr3s(pathTr3s)
+            script += compareOp.isEmpty ? "" : " " + compareOp + " "
+            script += Tr3.scriptTr3s(compareRight?.pathTr3s ?? [])
+        } else {
+            script += path
+            script += compareOp.isEmpty ? "" : " " + compareOp + " "
+            script += compareRight?.path ?? ""
+        }
+        if let thenVal = thenVal {
+
+            script.spacePlus("?")
+            script.spacePlus(thenVal.scriptVal(parens: false))
+        }
+        if let elseVal = elseVal {
+
+            script.spacePlus(":")
+            script.spacePlus(elseVal.scriptVal(parens: false))
+        }
+        if let radioNext = radioNext {
+
+            script.spacePlus("|")
+            script.spacePlus(radioNext.scriptVal(parens: false))
+        }
+        script += parens ? ")" : ""
+        return script.with(trailing: " ")
+    }
+}
+extension Tr3ValTern {
+
+    func scriptRadioPrev(start: Bool = false) -> String {
+        var script = radioPrev?.scriptRadioPrev() ?? "("
         if start {
             script += "* "
         }
@@ -20,16 +59,16 @@ extension Tr3ValTern {
         return script
     }
     
-    func dumpRadioNext() -> String {
+    func scriptRadioNext() -> String {
         let lineage = pathTr3s.first?.scriptLineage(1) ?? " ??"
         var script = "\(lineage):\(id) "
-        script += radioNext?.dumpRadioNext() ?? ")"
+        script += radioNext?.scriptRadioNext() ?? ")"
         return script
     }
 
-    func dumpRadio() -> String {
-        var script = dumpRadioPrev(start: true)
-        script += dumpRadioNext()
+    func scriptRadio() -> String {
+        var script = scriptRadioPrev(start: true)
+        script += scriptRadioNext()
         return script
     }
 }

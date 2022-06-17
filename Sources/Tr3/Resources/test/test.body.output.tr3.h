@@ -1,4 +1,4 @@
-√.body {
+body {
     left {
         shoulder {
             elbow {

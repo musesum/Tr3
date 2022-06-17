@@ -34,7 +34,7 @@ class PathVals {
         } else if let lastPath = pathList.last, val != nil {
             pathDict[lastPath] = val
         } else {
-            print("🚫 PathVals::add unhandled path:\(path ?? "nil") val:\(val?.dumpVal() ?? "nil")")
+            print("🚫 PathVals::add unhandled path:\(path ?? "nil") val:\(val?.scriptVal(expand: true) ?? "nil")")
         }
     }
     static func == (lhs: PathVals, rhs: PathVals) -> Bool {

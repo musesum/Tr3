@@ -199,7 +199,9 @@ public class Tr3Expr {
                     script += exprOptions.contains(.quote) ? "\"\(v)\"" : v
 
                 case let v as Tr3ValScalar:
-                    script += v.dumpVal(parens: false, session: session)
+                    script += v.scriptVal(parens: false,
+                                        session: session,
+                                        expand: true)
 
                 default:
                     print("🚫 unknown script rvalue: \(rvalue)")

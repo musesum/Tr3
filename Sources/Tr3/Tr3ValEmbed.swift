@@ -18,21 +18,28 @@ public class Tr3ValEmbed: Tr3Val {
     public static func == (lhs: Tr3ValEmbed, rhs: Tr3ValEmbed) -> Bool {
         return lhs.embed == rhs.embed
     }
-    override func printVal() -> String {
+
+    public override func getVal() -> Any {
         return embed
     }
-    override func scriptVal(parens: Bool = true) -> String  {
-        return " {{\n" + embed +  "}}\n"
-    }
-    override func dumpVal(parens: Bool = true, session: Bool = false) -> String  {
-        return scriptVal(parens: parens)
-    }
+
     public override func setVal(_ any: Any?, _ options: Tr3SetOptions? = nil) {
         if let v = any as? Tr3ValEmbed {
             embed = v.embed
         }
     }
-    public override func getVal() -> Any {
+}
+
+extension Tr3ValEmbed {
+
+    override func printVal() -> String {
         return embed
     }
+    override func scriptVal(parens: Bool = true,
+                            session: Bool = false,
+                            expand: Bool = false) -> String  {
+        
+        return " {{\n" + embed +  "}}\n"
+    }
+
 }

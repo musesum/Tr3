@@ -8,11 +8,12 @@ import Foundation
 import CoreGraphics
 import Par
 
+protocol Tr3ValScriptProtocol {
+    func printVal() -> String
+    func scriptVal(parens: Bool, session: Bool, expand: Bool) -> String
+}
 protocol Tr3ValProtocal {
 
-    func printVal() -> String
-    func scriptVal(parens: Bool) -> String
-    func dumpVal(parens: Bool, session: Bool) -> String
     func copy() -> Tr3Val
     func setVal(_ from: Any?, _ option: Tr3SetOptions?)
     func getVal() -> Any
@@ -40,18 +41,7 @@ public class Tr3Val: Comparable, Tr3ValProtocal {
         print("Tr3Val parsing:" + string)
         return true
     }
-    // print current state "2" in `a:(0..9=2)`
-    @objc dynamic func printVal() -> String {
-        return ""
-    }
-    // print reproducable script "a:(0..9=2)" in `a:(0..9=2)`
-    @objc dynamic func scriptVal(parens: Bool = true) -> String {
-        return " "
-    }
-    // print internal connections "a╌>w", "b╌>w", "c╌>w" in  `w<-(a ? 1 : b ? 2 : c ? 3)`
-    @objc dynamic func dumpVal(parens: Bool = true, session: Bool = false) -> String {
-        return " "
-    }
+
     func copy() -> Tr3Val {
         return Tr3Val(with: self)
     }
@@ -66,4 +56,15 @@ public class Tr3Val: Comparable, Tr3ValProtocal {
     }
 }
 
-
+extension Tr3Val: Tr3ValScriptProtocol {
+    // print current state "2" in `a:(0..9=2)`
+    @objc dynamic func printVal() -> String {
+        return ""
+    }
+    // print internal connections "a╌>w", "b╌>w", "c╌>w" in  `w<-(a ? 1 : b ? 2 : c ? 3)`
+    @objc dynamic func scriptVal(parens: Bool = true,
+                                 session: Bool = false,
+                                 expand: Bool = false) -> String {
+        return " "
+    }
+}

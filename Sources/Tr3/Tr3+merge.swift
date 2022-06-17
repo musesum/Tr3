@@ -81,16 +81,6 @@ extension Tr3 {
         }
         return result
     }
-    func scriptChildren(_ children: [Tr3]) -> String {
-        var script = "["
-        var delim = ""
-        for child in children {
-            script += delim + child.name
-            delim = " "
-        }
-        script += "]"
-        return script
-    }
 
     func bindCopyr() -> [Tr3] {
 
@@ -454,7 +444,7 @@ extension Tr3 {
     public func bindRoot() {
 
         func log(_ num: Int) {
-            if      Tr3.BindDumpScript { print(dumpScript(session: true) + " // \(num)") }
+            if      Tr3.BindDumpScript { print(scriptTr3(session: true) + " // \(num)") }
             else if Tr3.BindMakeScript { print(script(compact: false ) + " // \(num)") }
         }
         bindTopDown()     ; log(1)

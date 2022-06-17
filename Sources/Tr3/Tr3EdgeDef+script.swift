@@ -6,7 +6,7 @@
 
 import Foundation
 
-extension Tr3EdgeDef {
+extension Tr3EdgeDef: Tr3ValScriptProtocol {
 
     static func scriptEdgeFlag(_ flags: Tr3EdgeFlags, _ active: Bool = true) -> String {
 
@@ -33,20 +33,25 @@ extension Tr3EdgeDef {
         if flags.contains(.output)       { script += ">" }
         return script
     }
+    func printVal() -> String {
+        return scriptVal(parens: true, session: true, expand: true)
+    }
 
-    public func scriptVal() -> String {
+    func scriptVal(parens: Bool,
+                   session: Bool,
+                   expand: Bool) -> String {
 
         var script = (" " + Tr3EdgeDef.scriptEdgeFlag(edgeFlags)).with(trailing: " ")
 
         if let tern = ternVal {
-            script += tern.scriptVal()
+            script += tern.scriptVal(parens: parens, session: session)
         }
         else {
             if pathVals.pathList.count > 1 { script += "(" }
             for path in pathVals.pathList {
-                script += script.parenSpace() + path
+                script.spacePlus(path)
                 if let val = pathVals.pathDict[path] {
-                    script += val?.scriptVal() ?? ""
+                    script += val?.scriptVal(expand: expand) ?? ""
                 }
             }
             if pathVals.pathList.count > 1 { script += ")" }

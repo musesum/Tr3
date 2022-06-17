@@ -15,4 +15,19 @@ extension Tr3Edge {
         }
         return script
     }
+
+    func scriptEdgeVal(_ tr3: Tr3, session: Bool = false) -> String {
+
+        var script = ""
+
+        if leftTr3 == tr3 {
+            script += rightTr3.scriptLineage(Tr3Edge.LineageDepth)
+        }
+        else if rightTr3 == tr3 {
+            script += leftTr3.scriptLineage(Tr3Edge.LineageDepth)
+        }
+        script += defVal?.scriptVal(session: session).with(trailing: " ") ?? ""
+        return script
+    }
+
 }

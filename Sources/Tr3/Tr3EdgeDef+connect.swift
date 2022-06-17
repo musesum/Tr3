@@ -153,7 +153,6 @@ extension Tr3EdgeDef {
     /// will find b1 as child of d.a1
     ///
     func connectValTern(_ tern: Tr3ValTern, _ tr3: Tr3, _ foundTr3s: [Tr3]) {
-         //print("tr3: \(tr3.scriptLineage(3))  found: \(Tr3.dumpTr3s(foundTr3s))  pathTr3s: \(Tr3.dumpTr3s(tern.pathTr3s))" )
         // IF
         connectTernCondition(tern, tr3, foundTr3s) // f.i
         // THEN
@@ -170,7 +169,6 @@ extension Tr3EdgeDef {
         }
         // RADIO
         if let radioNext = tern.radioNext {
-            //print(radioNext.dumpRadio() + " => " + tern.dumpRadio())
             connectValTern(radioNext, tr3, [])
         }
     }

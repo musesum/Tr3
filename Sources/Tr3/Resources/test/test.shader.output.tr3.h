@@ -1,4 +1,4 @@
-√.shader {
+shader {
     cell {
         fade (compute, val 0.5, file "cell.fader.metal", on 1)
         ave (compute, val 0.5, file "cell.ave.metal", on 0)

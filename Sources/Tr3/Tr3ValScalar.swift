@@ -71,6 +71,7 @@ public class Tr3ValScalar: Tr3Val {
             num = n
         }
     }
+    
     func setDefault() {
         if valFlags.contains(.modu) {
             num = 0
@@ -86,11 +87,6 @@ public class Tr3ValScalar: Tr3Val {
             dflt = num 
         }
     }
-    
-    override func printVal() -> String {
-        return String(num)
-    }
-
    
     static func |= (lhs: Tr3ValScalar, rhs: Tr3ValScalar) {
         
