@@ -10,7 +10,7 @@ import Foundation
 extension Tr3Edge {
 
     func makeD3Edge(_ separator: String) -> String {
-        let arrow = scriptEdgeFlag()
+        let arrow = scriptEdgeFlag(padSpace: false)
         return separator + "'\(leftTr3.id)\(arrow)\(rightTr3.id)'"
     }
 }
@@ -80,7 +80,7 @@ extension Tr3 {
             let rightId = edge.rightTr3.id
             if leftId == id {
 
-                let type = edge.scriptEdgeFlag()
+                let type = edge.scriptEdgeFlag(padSpace: false)
                 script += "{'id':'\(leftId)\(type)\(rightId)', 'source':\(leftId), 'target':\(rightId), 'type':'\(type)'},\n"
             }
         }

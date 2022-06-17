@@ -25,7 +25,6 @@ extension Tr3EdgeDef: Tr3ValScriptProtocol {
         var script =  flags.contains(.input) ? "<" : ""
         
         if      flags.contains(.solo)    { script += "=" }
-        else if flags.contains(.find)    { script += ":" }
         else if flags.contains(.ternary) { script += "⋯" }
         else if flags.contains(.copyat)  { script += ":" }
         else if active == false          { script += "╌" }
@@ -41,21 +40,21 @@ extension Tr3EdgeDef: Tr3ValScriptProtocol {
                    session: Bool,
                    expand: Bool) -> String {
 
-        var script = (" " + Tr3EdgeDef.scriptEdgeFlag(edgeFlags)).with(trailing: " ")
+        var script = Tr3EdgeDef.scriptEdgeFlag(edgeFlags)
 
         if let tern = ternVal {
-            script += tern.scriptVal(parens: parens, session: session)
+            script.spacePlus(tern.scriptVal(parens: parens, session: session))
         }
         else {
             if pathVals.pathList.count > 1 { script += "(" }
             for path in pathVals.pathList {
                 script.spacePlus(path)
                 if let val = pathVals.pathDict[path] {
-                    script += val?.scriptVal(expand: expand) ?? ""
+                    script.spacePlus(val?.scriptVal(expand: expand) ?? "")
                 }
             }
             if pathVals.pathList.count > 1 { script += ")" }
         }
-        return script.with(trailing: " ")
+        return script//???.with(trailing: " ")
     }
 }

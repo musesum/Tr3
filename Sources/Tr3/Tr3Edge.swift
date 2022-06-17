@@ -31,28 +31,28 @@ public class Tr3Edge: Hashable {
 
     convenience init(with: Tr3Edge) { // was operator = in c++ version
         self.init(with.leftTr3, with.rightTr3, with.edgeFlags)
-        self.active    = with.active
-        self.defVal    = with.defVal
+        self.active = with.active
+        self.defVal = with.defVal
         makeKey()
     }
 
    init(_ leftTr3: Tr3, _ rightTr3: Tr3, _ edgeflags: Tr3EdgeFlags) {
         //self.init()
         self.edgeFlags = edgeflags
-        self.leftTr3   = leftTr3
-        self.rightTr3  = rightTr3
+        self.leftTr3 = leftTr3
+        self.rightTr3 = rightTr3
         makeKey()
     }
     convenience init(_ def: Tr3EdgeDef, _ leftTr3: Tr3, _ rightTr3: Tr3, _ tr3Val: Tr3Val?) {
         self.init(leftTr3, rightTr3, def.edgeFlags)
-        self.defVal    = tr3Val
+        self.defVal = tr3Val
         makeKey()
     }
     func makeKey() {
         let lhs = "\(leftTr3.id)"
         let rhs = "\(rightTr3.id)"
-        let arrow = scriptEdgeFlag()
-        key = lhs+arrow+rhs
+        let arrow = scriptEdgeFlag(padSpace: false)
+        key = lhs + arrow + rhs
     }
     
 }

@@ -56,7 +56,7 @@ extension Tr3ValPath {
                 script.spacePlus(pathTr3.val?.printVal() ?? pathTr3.name)
             }
             if pathTr3s.count > 1 { return script.with(trailing:")") }
-            else                  { return script.with(trailing: " ") }
+            else                  { return script } //???
         }
     }
     override func scriptVal(parens: Bool = true,
@@ -68,9 +68,9 @@ extension Tr3ValPath {
             if script.first != "(" {
                 script = "(\(script))"
             }
-            return script.with(trailing: " ")
+            return script//???.with(trailing: " ")
         } else {
-            return path.with(trailing: " ")
+            return path//???.with(trailing: " ")
         }
     }
 }

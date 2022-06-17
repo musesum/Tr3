@@ -191,7 +191,8 @@ public class Tr3Expr {
 
     func script(session: Bool) -> String {
 
-        var script = name + " " + exprOperator.rawValue + " "
+        var script = name
+        script.spacePlus(exprOperator.rawValue)
 
         if let rvalue = rvalue {
             switch rvalue {
@@ -199,9 +200,8 @@ public class Tr3Expr {
                     script += exprOptions.contains(.quote) ? "\"\(v)\"" : v
 
                 case let v as Tr3ValScalar:
-                    script += v.scriptVal(parens: false,
-                                        session: session,
-                                        expand: true)
+                    let vv =  v.scriptVal(parens: false, session: session, expand: true)
+                    script.spacePlus(vv)
 
                 default:
                     print("🚫 unknown script rvalue: \(rvalue)")
