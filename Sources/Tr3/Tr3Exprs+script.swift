@@ -5,7 +5,7 @@
 //  Created by warren on 12/26/20.
 //
 
-import Pardump
+import Par
 
 extension Tr3Exprs {
 
