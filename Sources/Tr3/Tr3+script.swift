@@ -34,7 +34,6 @@ extension Tr3 {
     public func script(compact: Bool) -> String {
 
         func scriptAddChildren() {
-            //?? print(name+"ⁿ" ,terminator: "")
             script.spacePlus("{")
             script.spacePlus(comments.getComments(.child))
             if (script.last != "\n") && (script.last != ",") {
@@ -50,7 +49,6 @@ extension Tr3 {
         }
         /// print `a.b.c` instead of `a { b { c } } }`
         func scriptAddOnlyChild() {
-            //?? print(name+"¹" ,terminator: "")
             script += "."
             for child in children {
                 script += child.script(compact: compact)
@@ -58,7 +56,6 @@ extension Tr3 {
         }
 
         // begin --------------------------------------------
-        //?? print(name+"⁰" ,terminator: "")
         var script = name
         script.spacePlus(val?.scriptVal())
 

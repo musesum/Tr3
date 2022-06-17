@@ -55,6 +55,6 @@ extension Tr3EdgeDef: Tr3ValScriptProtocol {
             }
             if pathVals.pathList.count > 1 { script += ")" }
         }
-        return script//???.with(trailing: " ")
+        return script
     }
 }
