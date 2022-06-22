@@ -2,13 +2,13 @@ midi { // musical instrument device interface
     frame (num + 1) // frame counter
     input { // midi input
         note { // note on/off from 0 thru 127
-            on (num 0...127, velo 0...127, chan 1...32, port 1...16, time 0)
-            off (num 0...127, velo 0...127, chan 1...32, port 1...16, time 0)
+            on (num 0…127, velo 0…127, chan 1…32, port 1…16, time 0)
+            off (num 0…127, velo 0…127, chan 1…32, port 1…16, time 0)
         }
-        controller (num 0...127, val 0...127, chan 1...32, port 1...16, time 0)
-        afterTouch (num 0...127, val 0...127, chan 1...32, port 1...16, time 0)
-        pitchBend (val 0...16384 = 8192, chan 1...32, port 1...16, time 0)
-        programChange (num 0...255, chan 1...32, port 1...16, time 0) //1, 632, 255
+        controller (num 0…127, val 0…127, chan 1…32, port 1…16, time 0)
+        afterTouch (num 0…127, val 0…127, chan 1…32, port 1…16, time 0)
+        pitchBend (val 0…16384 = 8192, chan 1…32, port 1…16, time 0)
+        programChange (num 0…255, chan 1…32, port 1…16, time 0) //1, 632, 255
     }
     _main {
         bankSelect (num == 0, val, chan, time)
@@ -21,7 +21,7 @@ midi { // musical instrument device interface
         balance (num == 8, val, chan, time)
         panPosition (num == 10, val, chan, time)
         expression (num == 11, val, chan, time)
-        controller (num in 32...63, val, chan, time) // controller 0...31
+        controller (num in 32…63, val, chan, time) // controller 0…31
         portamentoAmount (num == 84, val, chan, time)
     }
     _main2 { // _cc removes from dispatch change to cc._sound to include
@@ -86,9 +86,9 @@ midi { // musical instrument device interface
     _undefined { // _cc removes from dispatch change to cc._sound to include
         undefined_3 (num == 3, val, chan, time)
         undefined_9 (num == 9, val, chan, time)
-        undefined_14_31 (num in 14...31, val, chan, time)
-        undefined_85_90 (num in 85...90, val, chan, time)
-        undefined_102_119 (num in 102...119, val, chan, time)
+        undefined_14_31 (num in 14…31, val, chan, time)
+        undefined_85_90 (num in 85…90, val, chan, time)
+        undefined_102_119 (num in 102…119, val, chan, time)
     }
     _mode { // (on/off)
         allSoundOff (num == 120, val, chan, time)
@@ -101,7 +101,7 @@ midi { // musical instrument device interface
     _omni { // _cc removes from dispatch change to cc._sound to include
         omniModeOff (num == 124, val, chan, time)
         omniModeOn (num == 125, val, chan, time)
-        omniMode (0...1)  << (omniModeOff(0) omniModeOn(1)), }
+        omniMode (0…1)  << (omniModeOff(0) omniModeOn(1)), }
     cc {
         bankSelect (num == 0, val, chan, time)
         modulationWheel (num == 1, val, chan, time)
@@ -113,7 +113,7 @@ midi { // musical instrument device interface
         balance (num == 8, val, chan, time)
         panPosition (num == 10, val, chan, time)
         expression (num == 11, val, chan, time)
-        controller (num in 32...63, val, chan, time) // controller 0...31
+        controller (num in 32…63, val, chan, time) // controller 0…31
         portamentoAmount (num == 84, val, chan, time)
         holdPedal (num == 64, val, chan, time)
         portamento (num == 65, val, chan, time)
@@ -123,6 +123,6 @@ midi { // musical instrument device interface
         hold2Pedal (num == 69, val, chan, time)
         omniModeOff (num == 124, val, chan, time)
         omniModeOn (num == 125, val, chan, time)
-        omniMode (0...1)  << (omniModeOff(0) omniModeOn(1)), }
+        omniMode (0…1)  << (omniModeOff(0) omniModeOn(1)), }
 }
 

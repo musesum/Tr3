@@ -17,7 +17,7 @@ public enum Tr3TernState { case
     If,     // a in a ? b : c
     Then,   // b in a ? b : c
     Else,   // c in a ? b : c
-    Radio,  // ... in (... | ...) exclusive switch, like 'radio' button on a sound mixer
+    Radio,  // … in (… | …) exclusive switch, like 'radio' button on a sound mixer
     Neither // deactivated sub-Tern in Radio
 }
 

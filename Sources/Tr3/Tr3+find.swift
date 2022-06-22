@@ -74,7 +74,7 @@ extension Tr3 {
     }
 
 
-    // returns a in `a.b.c <- ...`
+    // returns a in `a.b.c <- …`
     func getDotParent(_ count: Int) -> Tr3? {
         if count < 1 {
             return self

@@ -11,22 +11,22 @@ public struct Tr3ValFlags: OptionSet {
     public let rawValue: Int
 
     public static let scalar  = Tr3ValFlags(rawValue: 1 << 0) // 1 General type Tr3ValScalar
-    public static let thru    = Tr3ValFlags(rawValue: 1 << 2) // 0...1 range including 1
+    public static let thru    = Tr3ValFlags(rawValue: 1 << 2) // 0…1 range including 1
     public static let modu    = Tr3ValFlags(rawValue: 1 << 3) // %2 modulo
 
     // explicitly declared values
-    public static let min     = Tr3ValFlags(rawValue: 1 << 6) // 0 in 0...1, min of range
-    public static let max     = Tr3ValFlags(rawValue: 1 << 7) // 1 in 0...1, max of range
+    public static let min     = Tr3ValFlags(rawValue: 1 << 6) // 0 in 0…1, min of range
+    public static let max     = Tr3ValFlags(rawValue: 1 << 7) // 1 in 0…1, max of range
     public static let num     = Tr3ValFlags(rawValue: 1 << 8) // current value
     public static let dflt    = Tr3ValFlags(rawValue: 1 << 9) // = n default value
 
     public static let quote   = Tr3ValFlags(rawValue: 1 << 11) // General type Tr3ValQuote
-    public static let embed   = Tr3ValFlags(rawValue: 1 << 12) // embed script between double {{ ... }}
+    public static let embed   = Tr3ValFlags(rawValue: 1 << 12) // embed script between double {{ … }}
 
     public static let data    = Tr3ValFlags(rawValue: 1 << 13) // General type Tr3ValData for palettes, universe, etc
 
     public static let timing  = Tr3ValFlags(rawValue: 1 << 14) //
-    public static let script  = Tr3ValFlags(rawValue: 1 << 15) // for embedded script between name(){...} -- for example shaders
+    public static let script  = Tr3ValFlags(rawValue: 1 << 15) // for embedded script between name(){…} -- for example shaders
 
     public static let exprs      = Tr3ValFlags(rawValue: 1 << 16) // for an array of scalars
     public static let names       = Tr3ValFlags(rawValue: 1 << 17) // (x, y)

@@ -90,7 +90,7 @@ final class Tr3Tests: XCTestCase {
     func testParseShort() { headline(#function)
         var err = 0
 
-        err += test("i(0...1 = 0.5, 0...1 = 0.5, 0...1 = 0.5)")
+        err += test("i(0…1=0.5, 0…1=0.5, 0…1 = 0.5)")
 
         err += test(
             /**/"abcdefghijklmnopqrstu1 abcdefghijklmnopqrstu2")
@@ -113,8 +113,8 @@ final class Tr3Tests: XCTestCase {
 
         err += test("value(1.67772e+07)", "value(1.67772e+07)")
 
-        err += test("a.b.c(0...1) z: a { b.c(0...1 = 1) }",
-                    "a { b { c(0...1) } } z: a { b { c(0...1 = 1) } }")
+        err += test("a.b.c(0…1) z: a { b.c(0…1 = 1) }",
+                    "a { b { c(0…1) } } z: a { b { c(0…1 = 1) } }")
 
         err += test("a {b c}.{d e}.{f g}.{h i} z >> a.b˚g.h",
                     "a { b { d { f { h i } g { h i } } e { f { h i } g { h i } } } " +
@@ -128,8 +128,8 @@ final class Tr3Tests: XCTestCase {
         err += test("a._c { d { e { f \"ff\" } } } a.c.z: _c { d { e.f    \"ZZ\" } }",
                     "a { _c { d { e { f \"ff\" } } } c { z: _c { d { e { f \"ZZ\" } } } } }")
 
-        err += test("a.b { _c { d e.f(0...1) g} z: _c { g } } ",
-                    "a { b { _c { d e { f(0...1) } g } z: _c { d e { f(0...1) } g } } }")
+        err += test("a.b { _c { d e.f(0…1) g} z: _c { g } } ",
+                    "a { b { _c { d e { f(0…1) } g } z: _c { d e { f(0…1) } g } } }")
 
         err += test("a.b._c {d(1)} a.b.e: _c",
                     "a { b { _c { d(1) } e: _c { d(1) } } }")
@@ -251,7 +251,7 @@ final class Tr3Tests: XCTestCase {
     func testParseValues() { headline(#function)
         var err = 0
         err += test("a (1)")
-        err += test("a (1...2)")
+        err += test("a (1…2)")
         err += test("a (1, 2)")
         err += test("a (x 1, y 2)")
         err += test("a (%2)")
@@ -259,34 +259,34 @@ final class Tr3Tests: XCTestCase {
         err += test("b (x 1, y 2)")
         err += test("m (1, 2, 3)")
         err += test("m (1, 2, 3), n >> m(4, 5, 6)")
-        err += test("i (1...2 = 1.5, 3...4 = 3.5, 5...6 = 5.5)")
+        err += test("i (1…2 = 1.5, 3…4 = 3.5, 5…6 = 5.5)")
         err += test("b (x 1, y 2)")
         err += test("b (x 1, y 2)")
         err += test("a (%2)")
-        err += test("a (x 1...2, y 1...2)")
-        err += test("a (x 0...1 = 0.5, y 0...1 = 0.5)")
-        err += test("a (0...1 = 0.5) { b(1...2) { c(2...3) } }")
-        err += test("a (x 0...1 = 0.5, y 0...1 = 0.5)")
+        err += test("a (x 1…2, y 1…2)")
+        err += test("a (x 0…1 = 0.5, y 0…1 = 0.5)")
+        err += test("a (0…1 = 0.5) { b(1…2) { c(2…3) } }")
+        err += test("a (x 0…1 = 0.5, y 0…1 = 0.5)")
 
         subhead("tr3 scalars")
         err += test("a { b(2) { c } }")
         err += test("a (1) { b(2) { c(3) } }")
-        err += test("a (0...1 = 0.5) { b(1...2) { c(2...3) } }")
+        err += test("a (0…1 = 0.5) { b(1…2) { c(2…3) } }")
         err += test("a (%2) b(%2)")
 
        subhead("tr3 tuples")
-        err += test("a (x 0...1 = 0.5, y 0...1 = 0.5)")
-        err += test("a (x 1...2, y 1...2)")
+        err += test("a (x 0…1 = 0.5, y 0…1 = 0.5)")
+        err += test("a (x 1…2, y 1…2)")
         err += test("b (x -1, y 2)")
         err += test("c (x 3, y 4)")
         err += test("d (x, y, z)")
         err += test("m (0, 0, 0), n >> m(1, 1, 1)")
         err += test("m (0, 0, 0), n(1, 1, 1) >> m")
-        err += test("e (x -16...16, y -16...16)")
-        err += test("f (p 0...1, q 0...1, r 0...1)")
-        err += test("g (p 0...1 = 0.5, q 0...1 = 0.5, r 0...1 = 0.5)")
-        err += test("h (p 0...1 = 0.5, q 0...1 = 0.5, r 0...1 = 0.5)")
-        err += test("i (0...1 = 0.5, 0...1 = 0.5, 0...1 = 0.5)")
+        err += test("e (x -16…16, y -16…16)")
+        err += test("f (p 0…1, q 0…1, r 0…1)")
+        err += test("g (p 0…1 = 0.5, q 0…1 = 0.5, r 0…1 = 0.5)")
+        err += test("h (p 0…1 = 0.5, q 0…1 = 0.5, r 0…1 = 0.5)")
+        err += test("i (0…1 = 0.5, 0…1 = 0.5, 0…1 = 0.5)")
         err += test("j (one 1, two 2)")
         err += test("k (one \"1\", two \"2\")")
         XCTAssertEqual(err, 0)
@@ -956,7 +956,7 @@ final class Tr3Tests: XCTestCase {
         Par.trace2 = false
         var err = 0
 
-        let script = "a(x 0...2, y 0...2, z 99), b (x 0...2, y 0...2) << a"
+        let script = "a(x 0…2, y 0…2, z 99), b (x 0…2, y 0…2) << a"
         print("\n" + script)
 
         let p0 = CGPoint(x: 1, y: 1)
@@ -976,7 +976,7 @@ final class Tr3Tests: XCTestCase {
             err += ParStr.testCompare(expect0, result0, echo: true)
 
             let result1 = root.scriptRoot(session: false)
-            let expect1 = "a(x 0...2, y 0...2, z 99), b(x 0...2, y 0...2) << a"
+            let expect1 = "a(x 0…2, y 0…2, z 99), b(x 0…2, y 0…2) << a"
             err += ParStr.testCompare(expect1, result1, echo: true)
         }
         else {
@@ -993,7 +993,7 @@ final class Tr3Tests: XCTestCase {
         Par.trace2 = false
         var err = 0
 
-        let script = "a(x in 2...4, y in 3...5) >> b b(x 1...2, y 2...3)"
+        let script = "a(x in 2…4, y in 3…5) >> b b(x 1…2, y 2…3)"
         print("\n" + script)
 
         let root = Tr3("√")
@@ -1001,7 +1001,7 @@ final class Tr3Tests: XCTestCase {
            let a = root.findPath("a") {
 
             let result0 = root.scriptRoot(session: false)
-            let expect0 = "a (x in 2...4, y in 3...5) >>b b (x 1...2, y 2...3)"
+            let expect0 = "a (x in 2…4, y in 3…5) >>b b (x 1…2, y 2…3)"
             err += ParStr.testCompare(expect0, result0, echo: true)
 
             let p1 = CGPoint(x: 3, y: 4)
@@ -1021,7 +1021,7 @@ final class Tr3Tests: XCTestCase {
 
     func testPassthrough() { headline(#function)
         var err = 0
-        let script = "a(0...1)<<b, b<<c, c(0...10)<<a"
+        let script = "a(0…1)<<b, b<<c, c(0…10)<<a"
         print("\n" + script)
 
         let root = Tr3("√")
@@ -1176,10 +1176,10 @@ final class Tr3Tests: XCTestCase {
 
     func testMidi() { headline(#function)
         var err = 0
-        err += test("omni { off on mode(0...1) << (off(0), on(1)) } cc: omni",
+        err += test("omni { off on mode(0…1) << (off(0), on(1)) } cc: omni",
         """
-        omni { off on mode (0...1) <<(omni.off(0), omni.on(1)) }
-        cc : omni { off on mode (0...1) <<(cc.off(0), cc.on(1)) }
+        omni { off on mode (0…1) <<(omni.off(0), omni.on(1)) }
+        cc : omni { off on mode (0…1) <<(cc.off(0), cc.on(1)) }
         """)
         XCTAssertEqual(err, 0)
     }

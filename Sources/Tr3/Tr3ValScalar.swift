@@ -8,7 +8,7 @@ import QuartzCore
 
 public class Tr3ValScalar: Tr3Val {
 
-    // default scalar value is (0...1 = 1)
+    // default scalar value is (0…1 = 1)
     public var num  = Float(0) // current value
     public var min  = Float(0) // minimum value
     public var max  = Float(1) // maximum value, inclusive for thru
@@ -163,7 +163,7 @@ public class Tr3ValScalar: Tr3Val {
 
     public override func setVal(_ from: Any?, _ options: Tr3SetOptions? = nil) {
 
-        // from contains normalized values 0...1
+        // from contains normalized values 0…1
         let zero1 = options?.contains(.zero1) ?? false
 
         if let from = from {

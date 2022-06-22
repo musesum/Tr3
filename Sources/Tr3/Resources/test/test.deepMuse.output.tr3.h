@@ -1,7 +1,7 @@
 sky { // visual music program
     main { // main controls
         frame (0) // frame counter
-        fps (1...60 = 60) // frames per second
+        fps (1…60 = 60) // frames per second
         run (1) // currently running
     }
     pipeline { // default metal pipeline at atartup
@@ -14,18 +14,18 @@ sky { // visual music program
         fader ave (1)
         melt tunl zha slide fred brush color scroll tile speed camera record }
     color { // false color mapping palette
-        pal0 "roygbik" // palette 0: (r)ed (o)range (y)ellow ...
+        pal0 "roygbik" // palette 0: (r)ed (o)range (y)ellow …
         pal1 "wKZ" // palette 1: (w)hite blac(K) fractali(Z)e
-        xfade (0...1 = 0.5) // cross fade between pal0 and pal1
+        xfade (0…1 = 0.5) // cross fade between pal0 and pal1
     }
     input { // phone and tablet pencil input
-        azimuth (x -0.2...0.2, y -0.2...0.2) // pen tilt
-        accel (x -0.3...0.3, y -0.3...0.3, z -0.3...0.3) { // accelerometer
-            on (0...1)
+        azimuth (x -0.2…0.2, y -0.2…0.2) // pen tilt
+        accel (x -0.3…0.3, y -0.3…0.3, z -0.3…0.3) { // accelerometer
+            on (0…1)
         }
-        radius (1...92 = 9) // finger silhouette
-        tilt (0...1) // use tilt
-        force (0...0.5) >> draw.brush.size // pen pressure
+        radius (1…92 = 9) // finger silhouette
+        tilt (0…1) // use tilt
+        force (0…0.5) >> draw.brush.size // pen pressure
     }
     draw { // draw on metal layer
         screen { // fill 32 bit universe
@@ -34,14 +34,14 @@ sky { // visual music program
         }
         brush { // type of brush and range
             type "dot" // draw a circle
-            size (1...64 = 10) // range of radius
-            press (0...1 = 1) // pressure changes size
-            index (1...255 = 127) // index in 256 color palette
+            size (1…64 = 10) // range of radius
+            press (0…1 = 1) // pressure changes size
+            index (1…255 = 127) // index in 256 color palette
                                  // <<(osc.tuio.z osc.manos˚z) // redirect from OSC
         }
         line { // place holder for line drawing
-            prev (x 0...1, y 0...1) // staring point of segment
-            next (x 0...1, y 0...1) // endint point of segment
+            prev (x 0…1, y 0…1) // staring point of segment
+            next (x 0…1, y 0…1) // endint point of segment
         }
     }
 }
@@ -50,10 +50,10 @@ shader {
         fade (compute , val 0.5, file "cell.fader.metal", on 1)
         ave (compute , val 0.5, file "cell.ave.metal", on 0)
         melt (compute , val 0.5, file "cell.melt.metal", on 0)
-        tunl (compute , seg 0...5 = 1, file "cell.tunl.metal", on 0)
-        slide (compute , seg 0...7 = 3, file "cell.slide.metal", on 0)
-        fred (compute , seg 0...4 = 4, file "cell.fred.metal", on 0)
-        zha (compute , seg 0...6 = 2, file "cell.zha.metal", on 0, repeat 11, bits 2...4 = 3) // buffer.bits
+        tunl (compute , seg 0…5 = 1, file "cell.tunl.metal", on 0)
+        slide (compute , seg 0…7 = 3, file "cell.slide.metal", on 0)
+        fred (compute , seg 0…4 = 4, file "cell.fred.metal", on 0)
+        zha (compute , seg 0…6 = 2, file "cell.zha.metal", on 0, repeat 11, bits 2…4 = 3) // buffer.bits
     }
     pipe {
         record (record , tog 0, file "record.metal") // flip?
@@ -69,13 +69,13 @@ shader {
 midi { // musical instrument device interface
     input { // midi input
         note { // note on/off from 0 thru 127
-            on (num 0...127, velo 0...127, chan 1...32, port 1...16, time 0)
-            off (num 0...127, velo 0...127, chan 1...32, port 1...16, time 0)
+            on (num 0…127, velo 0…127, chan 1…32, port 1…16, time 0)
+            off (num 0…127, velo 0…127, chan 1…32, port 1…16, time 0)
         }
-        controller (num 0...127, val 0...127, chan 1...32, port 1...16, time 0)
-        afterTouch (num 0...127, val 0...127, chan 1...32, port 1...16, time 0)
-        pitchBend (val 0...16384 = 8192, chan 1...32, port 1...16, time 0)
-        programChange (num 0...255, chan 1...32, port 1...16, time 0) //1, 632, 255
+        controller (num 0…127, val 0…127, chan 1…32, port 1…16, time 0)
+        afterTouch (num 0…127, val 0…127, chan 1…32, port 1…16, time 0)
+        pitchBend (val 0…16384 = 8192, chan 1…32, port 1…16, time 0)
+        programChange (num 0…255, chan 1…32, port 1…16, time 0) //1, 632, 255
     }
     cc {
         main {
@@ -84,7 +84,7 @@ midi { // musical instrument device interface
             balance (num == 8, val , chan , time )
             panPosition (num == 10, val , chan , time )
             expression (num == 11, val , chan , time )
-            controller (num in 32...63, val , chan , time ) // controller 0...31
+            controller (num in 32…63, val , chan , time ) // controller 0…31
             portamento {
                 time (num == 5, val , chan , time )
                 amount (num == 84, val , chan , time )
@@ -157,9 +157,9 @@ midi { // musical instrument device interface
             _undefined {
                 undefined_3 (num == 3, val , chan , time )
                 undefined_9 (num == 9, val , chan , time )
-                undefined_14_31 (num in 14...31, val , chan , time )
-                undefined_85_90 (num in 85...90, val , chan , time )
-                undefined_102_119 (num in 102...119, val , chan , time )
+                undefined_14_31 (num in 14…31, val , chan , time )
+                undefined_85_90 (num in 85…90, val , chan , time )
+                undefined_102_119 (num in 102…119, val , chan , time )
             }
             _mode {
                 allSoundOff (num == 120, val , chan , time )
@@ -172,7 +172,7 @@ midi { // musical instrument device interface
             _omni {
                 omniModeOff (num == 124, val , chan , time )
                 omniModeOn (num == 125, val , chan , time )
-                omniMode (0...1) << (_cc._omni.omniModeOff(0) , _cc._omni.omniModeOn(1) )
+                omniMode (0…1) << (_cc._omni.omniModeOff(0) , _cc._omni.omniModeOn(1) )
             }
         }
     }
