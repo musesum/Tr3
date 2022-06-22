@@ -44,7 +44,7 @@ public class Tr3Cache {
                 let opt = cache.opt
                 let visit = cache.visit
 
-                tr3.setVal(any, opt, visit)
+                tr3.setAny(any, opt, visit)
             }
             flushing = false
         }

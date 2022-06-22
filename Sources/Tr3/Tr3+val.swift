@@ -121,4 +121,14 @@ extension Tr3 {
         }
         return nil
     }
+
+    /// convert Tr3Exprs contiguous array to dictionary
+    public func components(named: [String]) -> [(String,Any?)] {
+        var result = [(String,Any?)] ()
+        for name in named {
+            let val = (val as? Tr3Exprs)?.nameScalar[name] ?? nil
+            result.append((name,val))
+        }
+        return result
+    }
 }

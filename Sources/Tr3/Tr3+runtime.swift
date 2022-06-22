@@ -9,7 +9,13 @@ import Par // visitor
 
 extension Tr3 {
 
-    public func setVal(_ any: Any, _ options: Tr3SetOptions, _ visitor: Visitor = Visitor(0)) {
+    public func setAnys(_ anys: [Any], _ options: Tr3SetOptions, _ visitor: Visitor = Visitor(0)) {
+
+        for any in anys {
+            setAny(any, options, visitor)
+        }
+    }
+    public func setAny(_ any: Any, _ options: Tr3SetOptions, _ visitor: Visitor = Visitor(0)) {
 
         /// clean up scaffolding from parsing a Ternary,
         /// todo: scaffolding instead of overloading val
