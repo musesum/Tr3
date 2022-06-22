@@ -14,7 +14,7 @@ tr3 ~ left right* {
     scalar ~ "(" scalar1 ")"
     scalars ~ "(" scalar1 ("," scalar1)* ")"
     scalar1 ~ (thru | modu | data | num) {
-        thru ~ num ".." num ("=" num)?
+        thru ~ num "..." num ("=" num)?
         modu ~ "%" num ("=" num)?
         index ~ "[" (name | num) "]"
         data ~ "*"

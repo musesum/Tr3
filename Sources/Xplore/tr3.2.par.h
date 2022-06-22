@@ -12,7 +12,7 @@ tr3 ~ (path | name) (edges | values | branches | comment)* {
             exprOp ~ '^(<=|>=|==|<|>|\*[ ]|\/[ ]|\+[ ]|\-[ ]|in)'
         }
         scalar ~ (thru | modu | data | num) comma? {
-            thru ~ num ".." num ("=" dflt)?
+            thru ~ num "..." num ("=" dflt)?
             modu ~ "%" num ("=" num)?
             index ~ "[" (name | num) "]"
             data ~ "*"

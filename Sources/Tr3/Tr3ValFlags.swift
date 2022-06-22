@@ -11,12 +11,12 @@ public struct Tr3ValFlags: OptionSet {
     public let rawValue: Int
 
     public static let scalar  = Tr3ValFlags(rawValue: 1 << 0) // 1 General type Tr3ValScalar
-    public static let thru    = Tr3ValFlags(rawValue: 1 << 2) // 0..1 range including 1
+    public static let thru    = Tr3ValFlags(rawValue: 1 << 2) // 0...1 range including 1
     public static let modu    = Tr3ValFlags(rawValue: 1 << 3) // %2 modulo
 
     // explicitly declared values
-    public static let min     = Tr3ValFlags(rawValue: 1 << 6) // 0 in 0..1, min of range
-    public static let max     = Tr3ValFlags(rawValue: 1 << 7) // 1 in 0..1, max of range
+    public static let min     = Tr3ValFlags(rawValue: 1 << 6) // 0 in 0...1, min of range
+    public static let max     = Tr3ValFlags(rawValue: 1 << 7) // 1 in 0...1, max of range
     public static let num     = Tr3ValFlags(rawValue: 1 << 8) // current value
     public static let dflt    = Tr3ValFlags(rawValue: 1 << 9) // = n default value
 

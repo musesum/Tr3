@@ -98,15 +98,15 @@ In the above example, `brushSize` attaches a closure to `sky.draw.brush.size`, w
 Each node may have a value of: scalar, expression, string, or embedded script
 ```c
 a (1)               // scalar with an initial value of 1
-b (0..1)            // scalar that ranges between 0 and 1
-c (0..127 = 1)      // scalar betwwn 0 and 127, defaulting to 1
+b (0...1)            // scalar that ranges between 0 and 1
+c (0...127 = 1)      // scalar betwwn 0 and 127, defaulting to 1
 d "yo"              // a string value "yo"
-e (x 0..1, y 0..1)  // an expression (see below)
+e (x 0...1, y 0...1)  // an expression (see below)
 ```
 Tr3 automatically remaps scalar ranges, given the nodes `b` & `c`
 ```c 
-b (0..1)        // range 0 to 1, defaults to 0
-c (0..127 = 1)  // range 0 to 127, with initial value of 1
+b (0...1)        // range 0 to 1, defaults to 0
+c (0...127 = 1)  // range 0 to 127, with initial value of 1
 b <> c          // synchronize b and c and auto-remap values
 ```
 When the value of `b` is changed to `0.5` it activates `c` and remaps its value to `63`;
@@ -114,14 +114,14 @@ When the value of `c` is changed to `31`, it activates  `b` and remapts its valu
 
 A common case are sensors, which have a fixed range of values. For example,  a 3G (gravity) accelerometer  may have a range from `-3.0` to `3.0` 
 ```c 
-accelerometer (x -3.0..3.0, y -3.0..3.0, z -3.0..3.0) >> model
-model (x -1..1, y -1..1, z -1..1) // auto rescale
+accelerometer (x -3.0...3.0, y -3.0...3.0, z -3.0...3.0) >> model
+model (x -1...1, y -1...1, z -1...1) // auto rescale
 ```
 ### Nodes may pass through values
 ```c
-a (0..1) >> b  // may pass along value to b
+a (0...1) >> b  // may pass along value to b
 b >> c         // has no value, will forward a to c
-c (0..10)      // gets a's value via b, remaps ranges
+c (0...10)      // gets a's value via b, remaps ranges
 ```
 ### Graph's inputs and ouputs may contain values
 
@@ -131,15 +131,15 @@ Activations values can be passed as either inputs, outputs, or syncs
 a >> b(1) // an activated a (or a!) sends 1 to b
 b << c(2) // an activated c (or c!) sends 2 to a
 d <> e(3) // d! sends a 3, while c! does nothing
-f >> g(0..1 = 0) // f! sends a ranged 0 to g
-h << i(0..1 = 1) // i! sends a ranged 1 to h
+f >> g(0...1 = 0) // f! sends a ranged 0 to g
+h << i(0...1 = 1) // i! sends a ranged 1 to h
 ```
 Sending a ranged value to receiver will remap values, which can become a convenient way to set `min`, `mid`, or `max` values 
 
 ```c
-j(10..20) << k(0..1 = 0)   // k! maps j to 10 (min)
-m(10..20) << n(0..1 = 0.5) // n! maps m to 15 (mid)
-p(10..20) << q(0..1 = 1)   // q! maps p to 20 (max)
+j(10...20) << k(0...1 = 0)   // k! maps j to 10 (min)
+m(10...20) << n(0...1 = 0.5) // n! maps m to 15 (mid)
+p(10...20) << q(0...1 = 1)   // q! maps p to 20 (max)
 ```
 ### Connect by Name
 In addition to copying a tree, a new tree can connect edges by name
@@ -166,8 +166,8 @@ Thus, it is possible to mirror a model in realtime. Use cases include: co-pilot 
 An epression is a series of named values and conditionals; they are expessed together as a group
 ```c
 a (x 1, y 2)  // x and y are sent together as a tuple
-b (x 0..1, y 0..1)  // can contain ranges
-c (x 0..1 = 1, y 0..1 = 1)  // and default values
+b (x 0...1, y 0...1)  // can contain ranges
+c (x 0...1 = 1, y 0...1 = 1)  // and default values
 ```
 A receiver may capture a subset of a send event
 ```c
@@ -181,7 +181,7 @@ But, the sending event must have all of the values captured by the receiver, or 
 g (x==0, y 0) << z       // z! is ignored as z.x != 0 
 h (x==1, y 0) << z       // z! activates h(x 1, y 2) 
 i (x<10, y<10) << z      // z! activates i(x 1, y 2) 
-j (x in -1..3, y 0) << z // z! activates j(x 1, y 2) 
+j (x in -1...3, y 0) << z // z! activates j(x 1, y 2) 
 k (x 0, y 0, z 0, t 0)   // z! ignored due to missing t
 ```
 #### Overrides
@@ -376,7 +376,7 @@ Check out `test.robot.input.tr3.h`, which defines a Humanoid robot in three line
 ```c
 body {left right}.{shoulder.elbow.wrist {thumb index middle ring pinky}.{meta prox dist} hip.knee.ankle.toes}
 ˚˚ <> ..
-˚˚ { pos(x 0..1, y 0..1, z 0..1) angle(roll %360, pitch %360, yaw %360) mm(0..3000)})
+˚˚ { pos(x 0...1, y 0...1, z 0...1) angle(roll %360, pitch %360, yaw %360) mm(0...3000)})
 ```
 Imagine wearing a motion capture suit that you have record every movement and then playback
 - Record total state of  `graph << body˚˚`

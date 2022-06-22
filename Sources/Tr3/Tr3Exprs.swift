@@ -97,7 +97,7 @@ public class Tr3Exprs: Tr3Val {
         exprOptions.insert(.scalar)
     }
     
-    /// parse scalar with `0` in `0..1`
+    /// parse scalar with `0` in `0...1`
     func addScalar(_ num: Float? = nil ) -> Tr3ValScalar {
         var scalar: Tr3ValScalar
         if let num = num {
@@ -209,17 +209,17 @@ public class Tr3Exprs: Tr3Val {
         // f4(+)   ⟹ (_ 9)
         // f5(*)   ⟹ (_ 24)
         // f6(x*10, x/10) ⟹ (x 20, x 0.5)
-        // f7(x in 2..4, x 1..2, y in 3..5, y 2..3) ⟹ (x 1, y 2) // no z
-        // f8(x in 2..4, x 1..2, y in 3..5, y 2..3, x + y) ⟹ (x 1, y 2, _ 3)
+        // f7(x in 2...4, x 1...2, y in 3...5, y 2...3) ⟹ (x 1, y 2) // no z
+        // f8(x in 2...4, x 1...2, y in 3...5, y 2...3, x + y) ⟹ (x 1, y 2, _ 3)
         // f9(_ , _ , _ ) ⟹
 
         //   0 1  2 3  4 5
         // a(x 2, y 3, z 4) >> f
         //   0 1  3  4  5 6  7  8 9 10 11 12 13 14
-        // f(x in 2..4, x 1..2, y in 3..5, y 2..3) ⟹ (x 1, y 2) // no z
-        // f(x in 2..4, y in 3..5, x 1..2, y 2..3) ⟹ (x 1, y 2) // no z
+        // f(x in 2...4, x 1...2, y in 3...5, y 2...3) ⟹ (x 1, y 2) // no z
+        // f(x in 2...4, y in 3...5, x 1...2, y 2...3) ⟹ (x 1, y 2) // no z
         //a.0 :: f.0 f.5
-        //	a.1 in f.3..f.4 ?  a.1 .. f.5..f.6
+        //	a.1 in f.3..f.4 ?  a.1 ... f.5..f.6
         func setExprs(to: Tr3Exprs, fr: Tr3Exprs) {
             if isEligible(fr) {
                 // a(x + _, y + _) << b(x _, y _)
@@ -227,7 +227,7 @@ public class Tr3Exprs: Tr3Val {
                     let name = toExpr.name
                     if let frScalar = fr.nameScalar[name] {
 
-                        // a(x in 2..4, y in 3..5) >> b b(x 1..2, y 2..3)
+                        // a(x in 2...4, y in 3...5) >> b b(x 1...2, y 2...3)
                         if let inScalar = toExpr.evalIsIn(from: frScalar) {
                             to.nameScalar[name] = inScalar
                         }

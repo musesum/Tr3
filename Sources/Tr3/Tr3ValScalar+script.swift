@@ -24,7 +24,7 @@ extension Tr3ValScalar {
             var script = parens ? "(" : ""
             if valFlags.rawValue == 0   { return "" }
             if valFlags.contains(.min)  { script += String(format: "%g", min) }
-            if valFlags.contains(.thru) { script += ".." }
+            if valFlags.contains(.thru) { script += "..." }
             if valFlags.contains(.modu) { script += "%" }
             if valFlags.contains(.max)  { script += String(format: "%g", max) }
             if valFlags.intersection([.dflt,.num]) != [] {

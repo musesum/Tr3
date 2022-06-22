@@ -57,7 +57,7 @@ public class Tr3Val: Comparable, Tr3ValProtocal {
 }
 
 extension Tr3Val: Tr3ValScriptProtocol {
-    // print current state "2" in `a:(0..9=2)`
+    // print current state "2" in `a:(0...9=2)`
     @objc dynamic func printVal() -> String {
         return ""
     }

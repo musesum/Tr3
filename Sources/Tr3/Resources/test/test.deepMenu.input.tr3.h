@@ -31,10 +31,10 @@ menu {
         fade  (slide, icon "icon.cell.fader")
         ave   (slide, icon "icon.cell.average")
         melt  (slide, icon "icon.cell.melt")
-        tunl  (segmt 0..5, icon "icon.cell.time")
-        zha   (segmt 0..6, icon "icon.cell.zha")
-        slide (segmt 0..7, icon "icon.cell.slide.png")
-        fred  (segmt 0..4, icon "icon.cell.fred.png")
+        tunl  (segmt 0...5, icon "icon.cell.time")
+        zha   (segmt 0...6, icon "icon.cell.zha")
+        slide (segmt 0...7, icon "icon.cell.slide.png")
+        fred  (segmt 0...4, icon "icon.cell.fred.png")
     }
     camera (icon "icon.camera.png") {
         fake (toggl, icon "icon.camera.png")
