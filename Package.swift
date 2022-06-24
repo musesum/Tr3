@@ -17,9 +17,10 @@ let package = Package(
     ],
 
     targets: [
-        .target(name: "Tr3", dependencies: [
-            "Par",
-            .product(name: "Collections", package: "swift-collections")],
+        .target(name: "Tr3",
+                dependencies: [
+                    .product(name: "Collections", package: "swift-collections"),
+                    .product(name: "Par", package: "Par")],
                 resources: [.process("Resources")]),
         .testTarget(name: "Tr3Tests", dependencies: ["Tr3"]),
     ]

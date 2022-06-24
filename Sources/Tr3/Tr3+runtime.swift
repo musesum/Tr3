@@ -9,10 +9,21 @@ import Par // visitor
 
 extension Tr3 {
 
-    public func setAnys(_ anys: [Any], _ options: Tr3SetOptions, _ visitor: Visitor = Visitor(0)) {
+    /// combine several expressions into one transaction and activate the callbacks only once
+    public func setAnys(_ anys: [Any],
+                        _ options: Tr3SetOptions,
+                        _ visitor: Visitor = Visitor(0)) {
 
+        // defer activation until after setting value
+        let noActivate = options.subtracting(.activate)
+
+        // set all the expressions
         for any in anys {
-            setAny(any, options, visitor)
+            setAny(any, noActivate, visitor)
+        }
+        // do the deferred activations, if there was one
+        if options.contains(.activate) {
+            activate(visitor)
         }
     }
     public func setAny(_ any: Any, _ options: Tr3SetOptions, _ visitor: Visitor = Visitor(0)) {
