@@ -29,7 +29,7 @@ public class Tr3Exprs: Tr3Val {
             
             valFlags = v.valFlags
             for (name, val) in v.nameAny {
-                nameAny[name] = val //??? Tr3ValScalar(with: val)
+                nameAny[name] = val
                 exprOptions.insert([.name, .scalar])
             }
             for expr in v.exprs {
