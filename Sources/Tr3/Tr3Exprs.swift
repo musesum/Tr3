@@ -12,7 +12,7 @@ import Par
 public class Tr3Exprs: Tr3Val {
 
     /// `t(x 1, y 2)` ⟹ `["x": 1, "y": 2]`
-    var nameScalar: OrderedDictionary<String,Tr3ValScalar> = [:]
+    var nameAny: OrderedDictionary<String,Any> = [:]
 
     /// `t(x/2, y/2) << u(x 1, y 2)` ⟹ `u(x 0.5, y 1.0)` // after t fires
     public var exprs = ContiguousArray<Tr3Expr>()
@@ -28,8 +28,8 @@ public class Tr3Exprs: Tr3Val {
         if let v = tr3Val as? Tr3Exprs {
             
             valFlags = v.valFlags
-            for (name, val) in v.nameScalar {
-                nameScalar[name] = Tr3ValScalar(with: val)
+            for (name, val) in v.nameAny {
+                nameAny[name] = val //??? Tr3ValScalar(with: val)
                 exprOptions.insert([.name, .scalar])
             }
             for expr in v.exprs {
@@ -47,18 +47,18 @@ public class Tr3Exprs: Tr3Val {
         valFlags.insert([.names, .nameScalars])
         let x = Tr3ValScalar(num: Float(point.x))
         let y = Tr3ValScalar(num: Float(point.y))
-        nameScalar = ["x": x, "y": y]
+        nameAny = ["x": x, "y": y]
         exprOptions.insert([.name, .scalar])
     }
 
     convenience init(nameFloats: [(String, Float)]) {
         self.init()
         valFlags.insert([.names, .nameScalars])
-        nameScalar = [:]
+        nameAny = [:]
 
         for (name, val) in nameFloats {
             let scalar = Tr3ValScalar(num: val)
-            nameScalar[name] = scalar
+            nameAny[name] = scalar
         }
         exprOptions.insert([.name, .scalar])
     }
@@ -89,9 +89,9 @@ public class Tr3Exprs: Tr3Val {
             } else {
                 expr.addExprScalar(scalar)
             }
-            if let lastName = nameScalar.keys.last,
+            if let lastName = nameAny.keys.last,
                 expr.exprOperator == .none {
-                nameScalar[lastName] = scalar
+                nameAny[lastName] = scalar
             }
         }
         exprOptions.insert(.scalar)
@@ -118,12 +118,15 @@ public class Tr3Exprs: Tr3Val {
         if let quote = quote?.without(trailing: " ")  {
             exprs.last?.addQuote(quote)
             exprOptions.insert(.quote)
+            if let name = nameAny.keys.last {
+                nameAny[name] = quote
+            }
         }
     }
     func addName(_ name: String?) {
         guard let name = name else { return }
-        if !nameScalar.keys.contains(name) {
-            nameScalar[name] = Tr3ValScalar() //placeholder
+        if !nameAny.keys.contains(name) {
+            nameAny[name] = Tr3ValScalar() //placeholder
         }
         if let expr = exprs.last {
             expr.addExprName(name)
@@ -132,17 +135,19 @@ public class Tr3Exprs: Tr3Val {
         exprOptions.insert(.name)
     }
     func addNum(_ num: Float) {
-        if let name = nameScalar.keys.last,
-           let scalar = nameScalar[name] {
+        if let name = nameAny.keys.last,
+           let scalar = nameAny[name] as? Tr3ValScalar {
             scalar.addNum(num)
         } else {
             _ = addScalar(num)
         }
     }
     func setDefaults() {
-        if nameScalar.count > 0 {
-            for scalar in nameScalar.values {
-                scalar.setDefault()
+        if nameAny.count > 0 {
+            for value in nameAny.values {
+                if let scalar = value as? Tr3ValScalar {
+                    scalar.setDefault()
+                }
             }
         }
     }
@@ -155,12 +160,12 @@ public class Tr3Exprs: Tr3Val {
 
         func setFloat(_ v: Float) {
             valFlags.insert(.names)
-            if let n = nameScalar["val"] {
+            if let n = nameAny["val"] as? Tr3ValScalar {
                 n.setVal(v)
                 n.addFlag(.num)
             }
             else {
-                nameScalar["val"] = Tr3ValScalar(num: v) //TODO: remove this kludge for DeepMenu
+                nameAny["val"] = Tr3ValScalar(num: v) //TODO: remove this kludge for DeepMenu
             }
         }
 
@@ -168,19 +173,19 @@ public class Tr3Exprs: Tr3Val {
 
             func addPoint() {
                 valFlags.insert(.names)
-                if let n = nameScalar["x"] {
+                if let n = nameAny["x"] as? Tr3ValScalar {
                     n.setVal(p.x)
                     n.addFlag(.num)
                 }
                 else {
-                    nameScalar["x"] = Tr3ValScalar(num: Float(p.x))
+                    nameAny["x"] = Tr3ValScalar(num: Float(p.x))
                 }
-                if let n = nameScalar["y"] {
+                if let n = nameAny["y"] as? Tr3ValScalar {
                     n.setVal(p.y)
                     n.addFlag(.num)
                 }
                 else {
-                    nameScalar["y"] = Tr3ValScalar(num: Float(p.y))
+                    nameAny["y"] = Tr3ValScalar(num: Float(p.y))
                 }
             }
             // begin -------------------------------
@@ -194,7 +199,7 @@ public class Tr3Exprs: Tr3Val {
             }
             for expr in exprs {
                 let name = expr.name
-                if let frScalar = from.nameScalar[name],
+                if let frScalar = from.nameAny[name] as? Tr3ValScalar ,
                    expr.isEligible(num: frScalar.num) == false {
                         return false
                 }
@@ -225,15 +230,15 @@ public class Tr3Exprs: Tr3Val {
                 // a(x + _, y + _) << b(x _, y _)
                 for toExpr in to.exprs {
                     let name = toExpr.name
-                    if let frScalar = fr.nameScalar[name] {
+                    if let frScalar = fr.nameAny[name] as? Tr3ValScalar {
 
                         // a(x in 2…4, y in 3…5) >> b b(x 1…2, y 2…3)
-                        if let inScalar = toExpr.evalIsIn(from: frScalar) {
-                            to.nameScalar[name] = inScalar
+                        if let inScalar = toExpr.evalIsIn(from: frScalar ) {
+                            to.nameAny[name] = inScalar
                         }
                         // a(x + 1, y + 2) << b(x 3, y 4) ⟹ a(x 4 , y 6)
                         else if let rScalar = toExpr.eval(frScalar: frScalar) ,
-                                let toScalar = to.nameScalar[name] {
+                                let toScalar = to.nameAny[name] as? Tr3ValScalar {
                             
                             toScalar.setVal(rScalar)
                         }
@@ -246,10 +251,10 @@ public class Tr3Exprs: Tr3Val {
         }
 
         func setNamed(_ name: String, _ value: Float) {
-            if let scalar = nameScalar[name] {
+            if let scalar = nameAny[name] as? Tr3ValScalar {
                 scalar.num = value
             } else {
-                nameScalar[name] = Tr3ValScalar(num: value)
+                nameAny[name] = Tr3ValScalar(num: value)
             }
             addFlag(.num)
         }

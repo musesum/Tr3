@@ -27,9 +27,9 @@ extension Tr3 {
             return v.num
         }
         else if let exprs = val as? Tr3Exprs {
-            if let f = exprs.nameScalar["v"]?.num {
+            if let f = (exprs.nameAny["v"] as? Tr3ValScalar)?.num {
                 return f
-            } else if let scalar = exprs.nameScalar.values.last {
+            } else if let scalar = exprs.nameAny.values.last as? Tr3ValScalar  {
                 return scalar.num
             }
         }
@@ -55,8 +55,8 @@ extension Tr3 {
     public func CGPointVal() -> CGPoint? {
 
         if let exprs = val as? Tr3Exprs {
-            if let x = exprs.nameScalar["x"]?.num,
-               let y = exprs.nameScalar["y"]?.num {
+            if let x = (exprs.nameAny["x"] as? Tr3ValScalar)?.num,
+               let y = (exprs.nameAny["y"] as? Tr3ValScalar)?.num {
 
                 return CGPoint(x: CGFloat(x), y: CGFloat(y))
             }
@@ -66,8 +66,8 @@ extension Tr3 {
     
     public func CGSizeVal() -> CGSize? {
         if let v = val as? Tr3Exprs {
-            if let w = v.nameScalar["w"]?.num,
-               let h = v.nameScalar["h"]?.num {
+            if let w = (v.nameAny["w"] as? Tr3ValScalar)?.num,
+               let h = (v.nameAny["h"] as? Tr3ValScalar)?.num {
 
                 return CGSize(width: CGFloat(w), height: CGFloat(h))
             }
@@ -77,12 +77,12 @@ extension Tr3 {
 
     public func CGRectVal() -> CGRect? {
         if let v = val as? Tr3Exprs {
-            let ns = v.nameScalar
+            let ns = v.nameAny
             if ns.count >= 4,
-               let x = ns["x"]?.num,
-               let y = ns["y"]?.num,
-               let w = ns["w"]?.num,
-               let h = ns["h"]?.num {
+               let x = (ns["x"] as? Tr3ValScalar)?.num,
+               let y = (ns["y"] as? Tr3ValScalar)?.num,
+               let w = (ns["w"] as? Tr3ValScalar)?.num,
+               let h = (ns["h"] as? Tr3ValScalar)?.num {
                 let rect = CGRect(x: CGFloat(x),
                                   y: CGFloat(y),
                                   width: CGFloat(w),
@@ -95,8 +95,8 @@ extension Tr3 {
 
     public func NamesVal() -> [String]? {
         if let v = val as? Tr3Exprs,
-           v.nameScalar.count > 0 {
-            return Array<String>(v.nameScalar.keys)
+           v.nameAny.count > 0 {
+            return Array<String>(v.nameAny.keys)
         }
         return nil
     }
@@ -114,10 +114,11 @@ extension Tr3 {
 
     /// convert Tr3Exprs contiguous array to dictionary
     public func component(named: String) -> Any? {
-        if let exprs = val as? Tr3Exprs,
-           let val = exprs.nameScalar[named] {
+        if let exprs = val as? Tr3Exprs {
+            if let val = exprs.nameAny[named] {
 
-            return val
+                return val
+            }
         }
         return nil
     }
@@ -126,7 +127,7 @@ extension Tr3 {
     public func components(named: [String]) -> [(String,Any?)] {
         var result = [(String,Any?)] ()
         for name in named {
-            let val = (val as? Tr3Exprs)?.nameScalar[name] ?? nil
+            let val = (val as? Tr3Exprs)?.nameAny[name] ?? nil
             result.append((name,val))
         }
         return result

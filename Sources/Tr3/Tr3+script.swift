@@ -106,7 +106,6 @@ extension Tr3 {
     }
 
     private func scriptPathRefs(_ edge: Tr3Edge) -> String {
-
         if let pathrefs = edge.rightTr3.pathrefs, pathrefs.count > 0  {
             var script = pathrefs.count > 1 ? "(" : ""
             var delim = ""
@@ -120,6 +119,7 @@ extension Tr3 {
         }
         return ""
     }
+
     func scriptTypeEdges(_ edges: [Tr3Edge], _ session: Bool) -> String {
 
         if edges.isEmpty { return  "" }
@@ -174,6 +174,7 @@ extension Tr3 {
         }
         return nil
     }
+
     func scriptChildren(_ session: Bool) -> String {
         var script = ""
         if children.count > 0 {
