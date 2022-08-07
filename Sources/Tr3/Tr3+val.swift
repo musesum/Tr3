@@ -4,6 +4,7 @@
 //  License: Apache 2.0 - see License file
 
 import QuartzCore
+import Collections
 import Par
 
 extension Tr3 {
@@ -131,5 +132,10 @@ extension Tr3 {
             result.append((name,val))
         }
         return result
+    }
+
+    /// convert Tr3Exprs contiguous array to dictionary
+    public func components() ->  OrderedDictionary<String,Any>? {
+        return (val as? Tr3Exprs)?.nameAny ?? nil
     }
 }

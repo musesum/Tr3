@@ -7,6 +7,7 @@
 
 import QuartzCore
 import Collections
+import Foundation
 import Par
 
 public class Tr3Exprs: Tr3Val {
@@ -273,6 +274,40 @@ public class Tr3Exprs: Tr3Val {
                 default: print("🚫 mismatched setVal(\(any))")
             }
         }
+    }
+    public override func getVal() -> Any {
+
+        func getCGPoint() -> CGPoint? {
+            if nameAny.count == 2,
+               let x = nameAny["x"] as? Tr3ValScalar,
+               let y = nameAny["y"] as? Tr3ValScalar {
+                let xNum = Double(x.num)
+                let yNum = Double(y.num)
+
+                return CGPoint(x: xNum, y: yNum)
+            }
+            return nil
+        }
+
+        func getFloats() -> [Float]? {
+            var floats = [Float]()
+            for value in nameAny.values {
+                switch value {
+                    case let v as Tr3ValScalar: floats.append(Float(v.num))
+                    case let v as CGFloat: floats.append(Float(v))
+                    case let v as Float: floats.append(v)
+                    default: return nil
+                }
+            }
+            return floats.isEmpty ? nil : floats
+        }
+
+        if let cgPoint = getCGPoint() { return cgPoint }
+        if let floats = getFloats() { return floats }
+
+        if nameAny.values.count > 0 { return nameAny.values }
+        print("*** unknown expression values")
+        return []
     }
     
 }
