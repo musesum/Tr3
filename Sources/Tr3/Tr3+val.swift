@@ -112,6 +112,29 @@ extension Tr3 {
         }
         return nil
     }
+    /// convert Tr3Exprs contiguous array to dictionary
+    public func contains(names: [String]) -> Bool {
+        func inNames(_ exprName: String) -> Bool {
+            for name in names {
+                if name == exprName {
+                    return true
+                }
+            }
+            return false
+        }
+        if let exprs = val as? Tr3Exprs {
+            var matchCount = 0
+            for expr in exprs.exprs {
+                if inNames(expr.name) {
+                    matchCount += 1
+                }
+            }
+            if matchCount >= names.count {
+                return true
+            }
+        }
+        return false
+    }
 
     /// convert Tr3Exprs contiguous array to dictionary
     public func component(named: String) -> Any? {
