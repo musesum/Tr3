@@ -10,9 +10,6 @@ sky { // visual music program
         color "color" // colorizing layer
         render "render" // render layer al
     }
-    dock { // list of panel items to put in dock
-        fader ave (1)
-        melt tunl zha slide fred brush color scroll tile speed camera record }
     color { // false color mapping palette
         pal0 "roygbik" // palette 0: (r)ed (o)range (y)ellow …
         pal1 "wKZ" // palette 1: (w)hite blac(K) fractali(Z)e

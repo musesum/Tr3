@@ -1217,9 +1217,9 @@ final class Tr3Tests: XCTestCase {
         let root = Tr3("√")
         func parse(_ name: String) -> Int { return self.parse(name, root) }
         var err = 0
-        err += parse("sky")
-        err += parse("shader")
-        err += parse("midi")
+        err += parse("test.sky")
+        err += parse("test.shader")
+        err += parse("test.midi")
 
         let actual = root.scriptRoot()
         let expect = read("test.deepMuse.output") ?? ""
