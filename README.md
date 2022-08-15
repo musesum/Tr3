@@ -97,11 +97,11 @@ In the above example, `brushSize` attaches a closure to `sky.draw.brush.size`, w
 
 Each node may have a value of: scalar, expression, string, or embedded script
 ```c
-a (1)               // scalar with an initial value of 1
+a (1)              // scalar with an initial value of 1
 b (0…1)            // scalar that ranges between 0 and 1
 c (0…127 = 1)      // scalar betwwn 0 and 127, defaulting to 1
-d "yo"              // a string value "yo"
-e (x 0…1, y 0…1)  // an expression (see below)
+d "yo"             // a string value "yo"
+e (x 0…1, y 0…1)   // an expression (see below)
 ```
 Tr3 automatically remaps scalar ranges, given the nodes `b` & `c`
 ```c 

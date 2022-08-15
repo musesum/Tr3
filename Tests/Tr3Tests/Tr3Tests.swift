@@ -90,6 +90,15 @@ final class Tr3Tests: XCTestCase {
     func testParseShort() { headline(#function)
         var err = 0
 
+
+//        err += test("a { b c } a.*.{ d(0…1) >> a˚on(0) }",
+//                    "a { b { d(0…1) >> a˚.on(0) } c { d(0…1) >> a˚.on(0) } }")
+
+
+        err += test("a { b c } a˚.{ d(0…1) >> a˚.on(0) }",
+                    "a { b { d(0…1) >> a˚.on(0) } c { d(0…1) >> a˚.on(0) } }")
+
+
         err += test("i(0…1=0.5, 0…1=0.5, 0…1 = 0.5)")
 
         err += test(

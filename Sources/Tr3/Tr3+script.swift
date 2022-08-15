@@ -239,7 +239,7 @@ extension Tr3 {
     }
 
     /// create "a.b.c" from c in `a{b{c}}`, but not √.b.c from b
-    public func scriptLineage(_ level: Int) -> String {
+    public func scriptLineage(_ level: Int = 999) -> String {
         if let parent = parent, parent.name != "√", level > 0  {
              return parent.scriptLineage(level-1) + "." + name
         }
