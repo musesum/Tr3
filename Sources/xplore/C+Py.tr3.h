@@ -45,7 +45,7 @@ sky // visual music program
         run (1)  // currently running
 
     pipeline // default metal pipeline at atartup
-        draws "draw"  // drawing layer
+        draw "draw"  // drawing layer
         ave "compute"  // compute layer
         color "color"  // colorizing layer
         render "render"  // render layer al
@@ -96,7 +96,7 @@ sky // visual music program
         record { type "record", file "record.metal", on (0…1), buffer.version (0…1), flip (0…1) }
         camera { type "camera", file "cell.camera.metal", on (0…1), buffer.version (0…1), flip (0…1) }
         camix { type "camix", file "cell.camix.metal", on (0…1), buffer.version (0…1), flip (0…1) }
-        draws { type "draw", file "draw.metal", on (0…1), buffer.scroll (x 0…1.5, y 0…1.5) }
+        draw { type "draw", file "draw.metal", on (0…1), buffer.scroll (x 0…1.5, y 0…1.5) }
         color { type "color", file "color.metal", buffer.bitplane (0…1) }
         render { type "render", file "render.metal", buffer.repeat (x, y), mirror (x, y) }
 

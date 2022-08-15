@@ -1,23 +1,46 @@
-shader {
+hader.model {
     cell {
-        fade  (compute, val 0.5  , file "cell.fader.metal", on 1)
-        ave   (compute, val 0.5  , file "cell.ave.metal"  , on 0)
-        melt  (compute, val 0.5  , file "cell.melt.metal" , on 0)
-        tunl  (compute, seg 0…5=1, file "cell.tunl.metal" , on 0)
-        slide (compute, seg 0…7=3, file "cell.slide.metal", on 0)
-        fred  (compute, seg 0…4=4, file "cell.fred.metal" , on 0)
-        zha   (compute, seg 0…6=2, file "cell.zha.metal"  , on 0,
-               repeat 11, bits 2…4=3) // buffer.bits
+        fade  (val 0…1 = 0.5)
+        ave   (val 0…1 = 0.5)
+        melt  (val 0…1 = 0.5)
+        tunl  (seg 0…5 = 1  )
+        slide (seg 0…7 = 3  )
+        fred  (seg 0…4 = 4  )
+        zha   (seg 0…6 = 2, bits 2…4 = 3)
+        cell˚.{ on(0…1) >> cell˚.on(0) }
+        zha.loops(11)
     }
     pipe {
-        record (record, tog 0, file "record.metal"     ) // flip?
-        camera (camera, tog 0, file "cell.camera.metal") // flip?
-        camix  (camix , tog 0, file "cell.camix.metal" ) // flip?
+        record (tog 0)
+        camera (tog 0) { flip (tog) }
+        camix  (tog 0)
+        draw   (x 0…1 = 0.5,
+                y 0…1 = 0.5)
 
-        scroll (draw  , vxy, x 0.5, y 0.5, file "drawScroll.metal") // scrollBox
-        render (render, box, x 0, y 0, w 1080, h 1920, file "render.metal")
-        repeat (render, vxy, x 0, y 0) // repeatBox
-        mirror (render, vxy, x 0, y 0) // mirrorBox
-        color  (color , val 0, file "colorize.metal")
+        render {
+            frame (x 0, y 0, w 1080, h 1920)
+            repeat (x, y)
+            mirror (x, y)
+        }
+        color(val 0…1 = 0.3) // bitplane
+    }
+}
+shader.file {
+    cell {
+        fade  ("cell.fader.metal")
+        ave   ("cell.ave.metal"  )
+        melt  ("cell.melt.metal" )
+        tunl  ("cell.tunl.metal" )
+        slide ("cell.slide.metal")
+        fred  ("cell.fred.metal" )
+        zha   ("cell.zha.metal"  )
+    }
+    pipe {
+        record
+        camera ("cell.camera.metal")
+        camix  ("cell.camix.metal" )
+        draw   ("pipe.draw.metal" )
+        render ("pipe.render.metal")
+        color  ("pipe.color.metal" )
     }
 }
