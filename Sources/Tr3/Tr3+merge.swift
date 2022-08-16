@@ -1,4 +1,4 @@
-///  Tr3+Merge.swift
+//  Tr3+Merge.swift
 //
 //  Created by warren on 4/8/19.
 //  Copyright © 2019 DeepMuse
@@ -336,8 +336,12 @@ extension Tr3 {
     @discardableResult
     public func expandDotPath() -> Bool {
 
-        var index = 0
+        // only search for explicit a.b.c not a.*.c nor a˚c
         if name.contains("˚") { return false }
+        if name.contains("*") { return false }
+
+        var index = 0
+
         for s in name {
             switch s {
             case "˚": return false

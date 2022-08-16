@@ -89,7 +89,9 @@ extension Tr3 {
 
     // `..`, `...`, `..a`
     func getNearDots(_ wildcard: String, _ suffix: String, _ findFlags: Tr3FindFlags) -> [Tr3] {
-        if wildcard == ".*" { return children }
+        if wildcard == ".*" {
+            return children
+        }
         if let parent = getDotParent(wildcard.count-1) {
             let nextFlags = findFlags.intersection([.parents, .children, .makePath])
             return parent.findPathTr3s(suffix, nextFlags)

@@ -9,6 +9,7 @@ midi { // musical instrument device interface
         pitchBend  (val 0…16384 = 8192, chan 1…32, port 1…16, time 0)
         programChange (num 0…255, chan 1…32, port 1…16, time 0) //1, 632, 255
     }
+    output : input
     cc {
         main {
             modWheel    (num == 1, val, chan, time)
