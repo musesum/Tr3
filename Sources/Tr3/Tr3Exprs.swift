@@ -194,6 +194,7 @@ public class Tr3Exprs: Tr3Val {
             let exprs = Tr3Exprs(point: p)
             setExprs(to: self, fr: exprs)
         }
+
         func isEligible(_ from: Tr3Exprs) -> Bool {
             if exprs.isEmpty {
                 return true
@@ -207,25 +208,25 @@ public class Tr3Exprs: Tr3Val {
             }
             return true
         }
+        /** a(x 2, y 3, z 4) >> f
+         f1(x<y) ⟹ (x 2, y 3, z 4)
+         f2(x>y) ⟹ ()
+         f3(x+y) ⟹ (x 5)
+         f4(+)   ⟹ (_ 9)
+         f5(*)   ⟹ (_ 24)
+         f6(x*10, x/10) ⟹ (x 20, x 0.5)
+         f7(x in 2…4, x 1…2, y in 3…5, y 2…3) ⟹ (x 1, y 2) // no z
+         f8(x in 2…4, x 1…2, y in 3…5, y 2…3, x + y) ⟹ (x 1, y 2, _ 3)
+         f9(_ , _ , _ ) ⟹
 
-        // a(x 2, y 3, z 4) >> f
-        // f1(x<y) ⟹ (x 2, y 3, z 4)
-        // f2(x>y) ⟹ ()
-        // f3(x+y) ⟹ (x 5)
-        // f4(+)   ⟹ (_ 9)
-        // f5(*)   ⟹ (_ 24)
-        // f6(x*10, x/10) ⟹ (x 20, x 0.5)
-        // f7(x in 2…4, x 1…2, y in 3…5, y 2…3) ⟹ (x 1, y 2) // no z
-        // f8(x in 2…4, x 1…2, y in 3…5, y 2…3, x + y) ⟹ (x 1, y 2, _ 3)
-        // f9(_ , _ , _ ) ⟹
-
-        //   0 1  2 3  4 5
-        // a(x 2, y 3, z 4) >> f
-        //   0 1  3  4  5 6  7  8 9 10 11 12 13 14
-        // f(x in 2…4, x 1…2, y in 3…5, y 2…3) ⟹ (x 1, y 2) // no z
-        // f(x in 2…4, y in 3…5, x 1…2, y 2…3) ⟹ (x 1, y 2) // no z
-        //a.0 :: f.0 f.5
-        //	a.1 in f.3..f.4 ?  a.1 … f.5..f.6
+           0 1  2 3  4 5
+         a(x 2, y 3, z 4) >> f
+           0 1  3  4  5 6  7  8 9 10 11 12 13 14
+         f(x in 2…4, x 1…2, y in 3…5, y 2…3) ⟹ (x 1, y 2) // no z
+         f(x in 2…4, y in 3…5, x 1…2, y 2…3) ⟹ (x 1, y 2) // no z
+        a.0 :: f.0 f.5
+        	a.1 in f.3..f.4 ?  a.1 … f.5..f.6
+         */
         func setExprs(to: Tr3Exprs, fr: Tr3Exprs) {
             if isEligible(fr) {
                 // a(x + _, y + _) << b(x _, y _)

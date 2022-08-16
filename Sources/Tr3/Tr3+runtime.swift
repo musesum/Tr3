@@ -116,11 +116,32 @@ extension Tr3 {
             }
             else if let val = val {
                 switch val {
-                case let to as Tr3Exprs:     if let fr = fromVal as? Tr3Exprs { to.setVal(fr) }
-                case let to as Tr3ValScalar: if let fr = fromVal as? Tr3ValScalar { to.setVal(fr) }
-                case let to as Tr3ValQuote:  if let fr = fromVal as? Tr3ValQuote { to.setVal(fr) }
-                case let to as Tr3ValData:   if let fr = fromVal as? Tr3ValData { to.setVal(fr) }
-                default: break
+
+                    case let v as Tr3Exprs:
+
+                        if let fr = fromVal as? Tr3Exprs {
+                            v.setVal(fr)
+                        }
+                    case let v as Tr3ValScalar:
+
+                        if let fr = fromVal as? Tr3ValScalar {
+                            v.setVal(fr)
+                        }
+                        else if let frExprs = fromVal as? Tr3Exprs,
+                                let lastExpr = frExprs.nameAny.values.first,
+                                let fr = lastExpr as? Tr3ValScalar {
+
+                            v.setVal(fr)
+                        }
+                    case let v as Tr3ValQuote:
+                        if let fr = fromVal as? Tr3ValQuote {
+                            v.setVal(fr)
+                        }
+                    case let v as Tr3ValData:
+                        if let fr = fromVal as? Tr3ValData {
+                            v.setVal(fr)
+                        }
+                    default: break
                 }
             }
         }

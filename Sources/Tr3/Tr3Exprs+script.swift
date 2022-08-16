@@ -11,7 +11,7 @@ extension Tr3Exprs {
 
     override func printVal() -> String {
         var script = "("
-        for num in nameAny.values { 
+        for num in nameAny.values {
             script.spacePlus("\(num)")
         }
         return script.with(trailing: ")")
@@ -24,8 +24,8 @@ extension Tr3Exprs {
             script += delim + name; delim = ", "
             if let scalar = nameAny[name] as? Tr3ValScalar {
                 script += " " + scalar.scriptVal(parens: false,
-                                               session: session,
-                                               expand: true)
+                                                 session: session,
+                                                 expand: true)
             }
         }
         return script

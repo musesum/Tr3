@@ -197,7 +197,8 @@ public class Tr3Expr {
         if let rvalue = rvalue {
             switch rvalue {
                 case let v as String:
-                    script += exprOptions.contains(.quote) ? "\"\(v)\"" : v
+                    let vv = exprOptions.contains(.quote) ? "\"\(v)\"" : v
+                    script.spacePlus(vv)
 
                 case let v as Tr3ValScalar:
                     let vv =  v.scriptVal(parens: false, session: session, expand: true)
