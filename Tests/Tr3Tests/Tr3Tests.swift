@@ -586,32 +586,32 @@ final class Tr3Tests: XCTestCase {
     }
 
 
-//    /// test `b >> a(2)` for `b!`
-//    func testEdgeVal0() { headline(#function)
-//        var err = 0
-//
-//        // selectively set tuples by name, ignore the reset
-//        let script = "x(10), y(20), c(0) << (x + y)"
-//        print("\n" + script)
-//
-//        let root = Tr3("√")
-//
-//        if tr3Parse.parseScript(root, script),
-//           let x = root.findPath("x"),
-//           let y = root.findPath("y"),
-//           let c = root.findPath("c") {
-//
-//            x.setAny(1, [.activate])
-//            y.setAny(2, [.activate])
-//
-//            let result =  root.scriptRoot(session: true)
-//            err = ParStr.testCompare("x (1), y (2), c (0) << (x + y)", result)
-//        }
-//        else {
-//            err = 1
-//        }
-//        XCTAssertEqual(err, 0)
-//    }
+    /// test `b >> a(2)` for `b!`
+    func testEdgeVal0() { headline(#function)
+        var err = 0
+
+        // selectively set tuples by name, ignore the reset
+        let script = "x(10), y(20), c(0) << (x + y)"
+        print("\n" + script)
+
+        let root = Tr3("√")
+
+        if tr3Parse.parseScript(root, script, tracePar: true),
+           let x = root.findPath("x"),
+           let y = root.findPath("y"),
+           let c = root.findPath("c") {
+
+            x.setAny(1, .activate)
+            y.setAny(2, .activate)
+
+            let result = root.scriptRoot(session: true)
+            err = ParStr.testCompare("x (1), y (2), c (3) << (x + y)", result)
+        }
+        else {
+            err = 1
+        }
+        XCTAssertEqual(err, 0)
+    }
 
     /// test `b >> a(2)` for `b!`
     func testEdgeVal() { headline(#function)
@@ -760,8 +760,8 @@ final class Tr3Tests: XCTestCase {
            let zcd = zc.findPath("d"),
            let zce = zc.findPath("e") {
 
-            ab.setAny(10, .activate)
-            ac.setAny(20, .activate)
+            ab.setAny (10, .activate)
+            ac.setAny (20, .activate)
             abd.setAny(30, .activate)
             abe.setAny(40, .activate)
             acd.setAny(50, .activate)
@@ -777,8 +777,8 @@ final class Tr3Tests: XCTestCase {
             """
             err += ParStr.testCompare(expect1, result1)
 
-            zb.setAny(11, .activate)
-            zc.setAny(22, .activate)
+            zb.setAny (11, .activate)
+            zc.setAny (22, .activate)
             zbd.setAny(33, .activate)
             zbe.setAny(44, .activate)
             zcd.setAny(55, .activate)
@@ -826,8 +826,8 @@ final class Tr3Tests: XCTestCase {
            let zcd = zc.findPath("d"),
            let zce = zc.findPath("e") {
 
-            ab.setAny(10, .activate)
-            ac.setAny(20, .activate)
+            ab.setAny (10, .activate)
+            ac.setAny (20, .activate)
             abd.setAny(30, .activate)
             abe.setAny(40, .activate)
             acd.setAny(50, .activate)
@@ -843,8 +843,8 @@ final class Tr3Tests: XCTestCase {
             """
             err += ParStr.testCompare(expect1, result1)
 
-            zb.setAny(11, .activate)
-            zc.setAny(22, .activate)
+            zb.setAny (11, .activate)
+            zc.setAny (22, .activate)
             zbd.setAny(33, .activate)
             zbe.setAny(44, .activate)
             zcd.setAny(55, .activate)
@@ -1011,7 +1011,7 @@ final class Tr3Tests: XCTestCase {
                 p1 = tr3.CGPointVal() ?? .zero
                 print("p0\(p0) => p1\(p1)")
             }
-            a.setAny(p0, [.activate])
+            a.setAny(p0, .activate)
 
             let result0 = root.scriptRoot(session: true)
             let expect0 = "a(x 1, y 1, z 99), b(x 1, y 1) << a"
@@ -1047,7 +1047,7 @@ final class Tr3Tests: XCTestCase {
             err += ParStr.testCompare(expect0, result0, echo: true)
 
             let p1 = CGPoint(x: 3, y: 4)
-            a.setAny(p1, [.activate])
+            a.setAny(p1, .activate)
 
             let result1 = root.scriptRoot(session: true)
             let expect1 = "a(x 3, y 4) >>b b (x 1.5, y 2.5)"
@@ -1106,9 +1106,9 @@ final class Tr3Tests: XCTestCase {
 
             w.addClosure { tr3, _ in self.addCallResult(w, tr3.val!) }
             err += testAct("a !",  "w(1.0) ") { a.activate() }
-            err += testAct("a(0)", "w(1.0)")  { a.setAny(0, [.create,.activate]) }
+            err += testAct("a(0)", "w(1.0)")  { a.setAny(0, .activate) }
             err += testAct("b !",  "w(2.0) ") { b.activate() }
-            err += testAct("b(0)", "w(2.0)")  { b.setAny(0, [.create,.activate]) }
+            err += testAct("b(0)", "w(2.0)")  { b.setAny(0, .activate) }
             err += testAct("c !",  "w(3.0) ") { c.activate() }
 
             err += ParStr.testCompare("a(0)⋯>w b(0)⋯>w c⋯>w w(3)<<(a ? 1 : b ? 2 : c ? 3)",
@@ -1136,14 +1136,14 @@ final class Tr3Tests: XCTestCase {
                                       root.scriptRoot(session: true), echo: true)
 
             w.addClosure { tr3, _ in self.addCallResult(w, tr3.val!) }
-            err += testAct("a(0)",  "w(20.0)")  { a.setAny(0,.activate) }
-            err += testAct("x(11)", "")         { x.setAny(11,.activate) }
-            err += testAct("y(21)", "w(21.0)")  { y.setAny(21,.activate) }
-            err += testAct("a(1)",  "w(11.0)")  { a.setAny(1,.activate) }
-            err += testAct("x(12)", "w(12.0)")  { x.setAny(12,.activate) }
-            err += testAct("y(22)", "")         { y.setAny(22,.activate) }
+            err += testAct("a(0)",  "w(20.0)")  { a.setAny( 0, .activate) }
+            err += testAct("x(11)", "")         { x.setAny(11, .activate) }
+            err += testAct("y(21)", "w(21.0)")  { y.setAny(21, .activate) }
+            err += testAct("a(1)",  "w(11.0)")  { a.setAny( 1, .activate) }
+            err += testAct("x(12)", "w(12.0)")  { x.setAny(12, .activate) }
+            err += testAct("y(22)", "")         { y.setAny(22, .activate) }
 
-            err += testAct("a(0)", "w(22.0)")  { a.setAny(0,.activate) }
+            err += testAct("a(0)", "w(22.0)")  { a.setAny(0, .activate) }
             err += ParStr.testCompare("a(0)⋯>w x(12)╌>w y(22)>>w w(y)<<(a ? x : y)",
                                       root.scriptRoot(session: true), echo: true)
         }
@@ -1171,10 +1171,10 @@ final class Tr3Tests: XCTestCase {
             w.addClosure { tr3, _ in self.addCallResult(w, tr3.val!) }
             x.addClosure { tr3, _ in self.addCallResult(x, tr3.val!) }
             y.addClosure { tr3, _ in self.addCallResult(y, tr3.val!) }
-            err += testAct("a(0)", "w(20.0) y(20.0)") { a.setAny(0, [.create,.activate]) }
-            err += testAct("w(3)", "w(3.0)  y(3.0)")  { w.setAny(3, [.create,.activate]) }
-            err += testAct("a(1)", "w(3.0)  x(3.0)")  { a.setAny(1,.activate) }
-            err += testAct("w(4)", "w(4.0)  x(4.0)")  { w.setAny(4, [.activate]) }
+            err += testAct("a(0)", "w(20.0) y(20.0)") { a.setAny(0, .activate) }
+            err += testAct("w(3)", "w(3.0)  y(3.0)")  { w.setAny(3, .activate) }
+            err += testAct("a(1)", "w(3.0)  x(3.0)")  { a.setAny(1, .activate) }
+            err += testAct("w(4)", "w(4.0)  x(4.0)")  { w.setAny(4, .activate) }
 
             err += ParStr.testCompare("a(1)⋯>w x(4)<>w y(3)<╌>w w(4)<>(a ? x : y)",
                                       root.scriptRoot(session: true), echo: true)

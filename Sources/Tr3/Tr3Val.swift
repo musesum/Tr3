@@ -18,7 +18,7 @@ protocol Tr3ValProtocal {
     func setVal(_ from: Any?, _ option: Tr3SetOptions?)
     func getVal() -> Any
 }
-public class Tr3Val: Comparable, Tr3ValProtocal {
+public class Tr3Val: Comparable {
 
     var id = Visitor.nextId()
     var tr3: Tr3?  // tr3 that declared and contains this value

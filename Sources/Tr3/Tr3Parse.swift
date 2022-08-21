@@ -219,7 +219,7 @@ public class Tr3Parse {
 
             let pattern = nextPar.node?.pattern
             switch pattern {
-                case "":        addEmptyPattern()
+                case "":        addEmptyPattern() // edd exprOp here
                 case "name":    addName()
                 case "exprOp":  addOper()
                 case "scalar1": addDeepScalar()
@@ -462,9 +462,10 @@ public class Tr3Parse {
     public func parseScript(_ root:     Tr3,
                             _ script:   String,
                             whitespace: String = "\n\t ",
-                            printGraph: Bool = false) -> Bool {
+                            printGraph: Bool = false,
+                            tracePar: Bool = false) -> Bool {
 
-        ParStr.tracing = true //???
+        ParStr.tracing = tracePar
         // Tr3.BindDumpScript = true
         // Tr3.BindMakeScript = true
 

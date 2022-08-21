@@ -108,7 +108,6 @@ extension Tr3 {
 
         let deeperFlags = findFlags.intersection([.children, .makePath])
 
-
         if name == prefix, type == .name {
             return findPathTr3s(wildcard + suffix, [.children])
         }

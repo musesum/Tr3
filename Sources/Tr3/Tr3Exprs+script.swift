@@ -53,9 +53,9 @@ extension Tr3Exprs {
         var script = ""
         if session {
             script = scriptNames(session: session)
-        } else if exprOptions.contains(.expr) {
+        } else if valFlags.contains(.exprs) {
             script = scriptExprs(session: session)
-        } else if exprOptions.contains(.name) {
+        } else if valFlags.contains(.names) {
             script = scriptNames(session: session)
         }
         return script.isEmpty ? "" : parens ? "(\(script))" : script 

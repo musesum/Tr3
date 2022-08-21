@@ -40,7 +40,7 @@ extension Tr3ValTern {
 
             for pathTr3 in pathTr3s {
                 if let pathVal = pathTr3.val {
-                    if bothMatchFlags(pathVal, rightVal, [.scalar, .quote])  {
+                    if bothMatchFlags(pathVal, rightVal, [.num, .quote])  {
 
                         switch compareOp {
                         case "==": return pathVal == rightVal
@@ -52,8 +52,8 @@ extension Tr3ValTern {
                         default: break
                         }
                     }
-                        // data and tuples will only test for equivalence
-                    else if bothMatchFlags(pathVal, rightVal, [.exprs, .data]) {
+                        // expressions only test for equivalence
+                    else if bothMatchFlags(pathVal, rightVal, [.exprs]) {
 
                         switch compareOp {
                         case "==": return pathVal == rightVal 

@@ -51,7 +51,7 @@ extension Tr3 {
             val.setVal(any, options)
         }
             // I don't have a Tr3Val yet, so maybe create one for me
-        else if options.contains(.create) {
+        else {
 
             passthrough = false
 
@@ -70,8 +70,7 @@ extension Tr3 {
         }
     }
 
-    /// pass along
-    public func activate(_ visitor: Visitor = Visitor(0)) { //func bang() + func allEvents(_ event: Tr3Event) {
+    public func activate(_ visitor: Visitor = Visitor(0)) {
 
         if visitor.newVisit(id) {
             for closure in closures {
@@ -84,7 +83,6 @@ extension Tr3 {
             }
         }
     }
-
 
     func findEdgeTern(_ edge: Tr3Edge) -> Tr3ValTern? {
         for edgeDef in edgeDefs.edgeDefs {

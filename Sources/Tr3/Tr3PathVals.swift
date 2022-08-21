@@ -17,22 +17,25 @@ class PathVals {
 
     var pathDict: OrderedDictionary<String,Tr3Val?> = [:] // eliminate duplicates
 
-    func add(path: String = "", val: Tr3Val?) { 
-        if path.count > 0 {
+    func add(path: String = "", val: Tr3Val?) {
+        if path.isEmpty {
+            if let lastKey = pathDict.keys.last {
+                pathDict[lastKey] = val
+            } else {
+                //??? pathDict[path] = val
+            }
+        } else {
             if pathDict.keys.isEmpty {
                 pathDict[path] = val
             }
-            else if let tuple = pathDict[path] as? Tr3Exprs,
+            else if let exprs = pathDict[path] as? Tr3Exprs,
                     let scalar = val as? Tr3ValScalar {
-                    tuple.addScalar(scalar)
+
+                exprs.addScalar(scalar)
+
             } else {
                 pathDict[path] = val
             }
-        } else if let lastPath = pathDict.keys.last {
-            pathDict[lastPath] = val
-        } else {
-            pathDict[path] = val
- //???           print("🚫 PathVals::add unhandled path:\(path ?? "nil") val:\(val?.scriptVal(expand: true) ?? "nil")")
         }
     }
     static func == (lhs: PathVals, rhs: PathVals) -> Bool {

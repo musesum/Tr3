@@ -12,7 +12,7 @@ public class Tr3ValScalar: Tr3Val {
     public var num  = Float(0) // current value
     public var min  = Float(0) // minimum value
     public var max  = Float(1) // maximum value, inclusive for thru
-    public var dflt = Float(0) // current value
+    public var dflt = Float(0) // default value
 
     override init() {
         super.init()
@@ -112,82 +112,55 @@ public class Tr3ValScalar: Tr3Val {
         return true
     }
 
-    func setInRange() {
 
-        if valFlags.contains(.modu) { num = fmodf(num, max) }
-        if valFlags.contains(.min), num < min { num = min }
-        if valFlags.contains(.max), num > max { num = max }
-    }
+    public override func setVal(_ val: Any?,
+                                _ options: Tr3SetOptions? = nil) {
 
-    func setRangeFrom01(_ val_: Float) {
-
-        if valFlags.contains(.modu) { num = fmod(val_, fmax(1, max)) }
-        else                        { num = val_ * (max - min) + min }
-    }
-
-    func rangeTo01() -> Float {
-        return valFlags.contains(.modu)
-            ? fmod(num, max) / fmaxf(1, max-1)
-            : (num - min) / fmaxf(1, max - min)
-    }
-
-    func changeRangeFrom01(_ val_: Float) -> Bool {
-
-        let oldNum = num
-        setRangeFrom01(val_)
-        return (num != oldNum)
-    }
-
-    func setFromScalar(_ v: Tr3ValScalar) {
-
-        if valFlags.contains(.thru),
-           v.valFlags.contains(.thru) {
-
-            let toMax   = max
-            let frMax   = v.max
-            let toRange = toMax -   min
-            let frRange = frMax - v.min
-            num = (v.num - v.min) * (toRange / frRange) + min
-        }
-        else if valFlags.contains(.modu) {
-
-            min = 0
-            max = fmaxf(1, max)
-            num = fmodf(v.num, max)
-        }
-        else {
-            num = v.num
-            setInRange()
-        }
-    }
-
-    public override func setVal(_ from: Any?, _ options: Tr3SetOptions? = nil) {
-
-        // from contains normalized values 0…1
-        let zero1 = options?.contains(.zero1) ?? false
-
-        if let from = from {
-            switch from {
-            case let v as Tr3ValScalar: setFromScalar(v)
-            case let v as Float:   zero1 ? setFloat01(v) : setFloat(v)
-            case let v as CGFloat: zero1 ? setFloat01(v) : setFloat(v)
-            case let v as Double:  zero1 ? setFloat01(v) : setFloat(v)
-            case let v as Int:     zero1 ? setFloat01(v) : setFloat(v)
-            default: print("🚫 setVal unknown type for: from")
+        if let val = val {
+            switch val {
+                case let v as Tr3ValScalar : setFromScalar(v)
+                case let v as Float        : setFromFloat(v)
+                case let v as CGFloat      : setFromFloat(v)
+                case let v as Double       : setFromFloat(v)
+                case let v as Int          : setFromFloat(v)
+                default: print("🚫 setVal unknown type for: from")
             }
         }
+
+        func setFromScalar(_ v: Tr3ValScalar) {
+
+            if   valFlags.contains(.thru),
+                 v.valFlags.contains(.thru) {
+
+                let toMax   = max
+                let frMax   = v.max
+                let toRange = toMax -   min
+                let frRange = frMax - v.min
+                num = (v.num - v.min) * (toRange / frRange) + min
+            }
+            else if valFlags.contains(.modu) {
+
+                min = 0
+                max = fmaxf(1, max)
+                num = fmodf(v.num, max)
+            }
+            else {
+                num = v.num
+                setInRange()
+            }
+        }
+        func setFromFloat(_ v: Int)      { num = Float(v) ; setInRange() }
+        func setFromFloat(_ v: Double)   { num = Float(v) ; setInRange() }
+        func setFromFloat(_ v: CGFloat)  { num = Float(v) ; setInRange() }
+        func setFromFloat(_ v: Float)    { num = v        ; setInRange() }
+
+        func setInRange() {
+
+            if valFlags.contains(.modu) { num = fmodf(num, max) }
+            if valFlags.contains(.min), num < min { num = min }
+            if valFlags.contains(.max), num > max { num = max }
+        }
     }
-
-    func setFloat(_ v: Int)      { num = Float(v) ; setInRange() }
-    func setFloat(_ v: Double)   { num = Float(v) ; setInRange() }
-    func setFloat(_ v: CGFloat)  { num = Float(v) ; setInRange() }
-    func setFloat(_ v: Float)    { num = v        ; setInRange() }
-
-    func setFloat01(_ v: Int)    { setRangeFrom01(Float(v)) }
-    func setFloat01(_ v: Double) { setRangeFrom01(Float(v)) }
-    func setFloat01(_ v: CGFloat){ setRangeFrom01(Float(v)) }
-    func setFloat01(_ v: Float)  { setRangeFrom01(v) }
-
     public override func getVal() -> Any {
         return num
     }
