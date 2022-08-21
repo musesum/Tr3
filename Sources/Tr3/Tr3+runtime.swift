@@ -61,7 +61,6 @@ extension Tr3 {
             case let v as CGFloat:           val = Tr3ValScalar(num: Float(v))
             case let v as CGPoint:           val = Tr3Exprs(point: v)
             case let v as [(String, Float)]: val = Tr3Exprs(nameFloats: v)
-            case let v as String:            val = Tr3ValQuote(with: v)
             default: print("🚫 unknown val(\(any))")
             }
         }
@@ -131,10 +130,6 @@ extension Tr3 {
                                 let lastExpr = frExprs.nameAny.values.first,
                                 let fr = lastExpr as? Tr3ValScalar {
 
-                            v.setVal(fr)
-                        }
-                    case let v as Tr3ValQuote:
-                        if let fr = fromVal as? Tr3ValQuote {
                             v.setVal(fr)
                         }
                     case let v as Tr3ValData:

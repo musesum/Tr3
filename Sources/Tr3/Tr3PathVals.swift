@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import Collections
 
 /** keeps track of Tr3Vals
 
@@ -14,14 +15,10 @@ import Foundation
  */
 class PathVals {
 
-    var pathDict = [String: Tr3Val?]() // eliminate duplicates
-    var pathList = [String]()         // preserve sequence order
+    var pathDict: OrderedDictionary<String,Tr3Val?> = [:] // eliminate duplicates
 
-    func add(path: String? = nil, val: Tr3Val?) {
-        if let path = path {
-            if !pathDict.keys.contains(path) {
-                pathList.append(path)
-            }
+    func add(path: String = "", val: Tr3Val?) { 
+        if path.count > 0 {
             if pathDict.keys.isEmpty {
                 pathDict[path] = val
             }
@@ -31,16 +28,17 @@ class PathVals {
             } else {
                 pathDict[path] = val
             }
-        } else if let lastPath = pathList.last, val != nil {
+        } else if let lastPath = pathDict.keys.last {
             pathDict[lastPath] = val
         } else {
-            print("🚫 PathVals::add unhandled path:\(path ?? "nil") val:\(val?.scriptVal(expand: true) ?? "nil")")
+            pathDict[path] = val
+ //???           print("🚫 PathVals::add unhandled path:\(path ?? "nil") val:\(val?.scriptVal(expand: true) ?? "nil")")
         }
     }
     static func == (lhs: PathVals, rhs: PathVals) -> Bool {
 
-        for lkey in lhs.pathList {
-            if lhs.pathDict[lkey] == rhs.pathDict[lkey]  { continue }
+        for (key,val) in lhs.pathDict {
+            if val == rhs.pathDict[key]  { continue }
             return false
         }
         return true

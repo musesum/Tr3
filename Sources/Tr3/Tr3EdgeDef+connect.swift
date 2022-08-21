@@ -177,31 +177,26 @@ extension Tr3EdgeDef {
     func connectEdges(_ tr3: Tr3)  {
         
         // non ternary edges
-        if pathVals.pathList.count > 0 {
+        if pathVals.pathDict.count > 0 {
             
-            for path in pathVals.pathList {
-                
+            for (path,val) in pathVals.pathDict {
                 if let pathrefs = tr3.pathrefs {
                     for pathref in pathrefs {
                         let rightTr3s = pathref.findPathTr3s(path, [.parents, .children])
-                        if let tr3Val = pathVals.pathDict[path] {
-                            for rightTr3 in rightTr3s {
-                                connectNewEdge(pathref, rightTr3, tr3Val)
-                            }
+                        for rightTr3 in rightTr3s {
+                            connectNewEdge(pathref, rightTr3, val)
                         }
                     }
                 }
                 else {
                     let rightTr3s = tr3.findPathTr3s(path, [.parents, .children])
-                    if let tr3Val = pathVals.pathDict[path] {
-                        for rightTr3 in rightTr3s {
-                            connectNewEdge(tr3, rightTr3, tr3Val)
-                        }
+                    for rightTr3 in rightTr3s {
+                        connectNewEdge(tr3, rightTr3, val)
                     }
                 }
             }
         }
-            // ternary
+        // ternary
         else if let tern = ternVal {
             // a˚z <- (...)
             if tr3.type == .path {

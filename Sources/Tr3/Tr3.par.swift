@@ -22,8 +22,8 @@ tr3 ~ left right* {
     array ~ "[" thru "]"
     copyat ~ ":" (path | name) ("," (path | name))*
 
-    value ~ scalar | exprs | quote
-    value1 ~ scalar1 | exprs | quote
+    value ~ scalar | exprs
+    value1 ~ scalar1 | exprs
 
     scalar ~ "(" scalar1 ")"
     scalars ~ "(" scalar1 ("," scalar1)* ")"
@@ -35,9 +35,9 @@ tr3 ~ left right* {
     }
     exprs ~ "(" expr+ ("," expr+)* ")" {
         expr ~ (exprOp | name | scalars | scalar1 | quote)
-        exprOp ~ '^(<=|>=|==|<|>|\*[ ]|\/[ ]|\+[ ]|\-[ ]|in)'
+        exprOp ~ '^(<=|>=|==|<|>|\*|\/|\+[ ]|\-[ ]|in)'
     }
-    edges ~ edgeOp (edgePar | edgeItem) comment* {
+    edges ~ edgeOp (edgePar | exprs | edgeItem) comment* {
 
         edgeOp ~ '^([<][<⋯!\:&\=\╌>]+|[⋯!\:&\=\╌>]+[>])'
         edgePar ~ "(" edgeItem+ ")" edges?

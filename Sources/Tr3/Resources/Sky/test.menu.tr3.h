@@ -3,8 +3,6 @@ menu.view {
         tile (image "icon.shader.tile.png") {
             mirror (symbol "arrowtriangle.left.and.line.vertical.and.arrowtriangle.right")
             repeat (symbol "rectangle.grid.2x2" )
-        }
-        scroll (image "icon.cell.scroll.png") {
             shift (image "icon.cell.scroll")
             tilt  (image "icon.pen.tilt")
         }
@@ -44,17 +42,16 @@ menu.view {
 menu.model {
     canvas {
         tile  {
-            mirror (x -1…1,
-                    y -1…1) >> shader.model.pipe.render.mirror
+            mirror (x 0…1 = 0,
+                    y 0…1 = 0) >> shader.model.pipe.render.mirror
 
-            repeat (x -1…1,
-                    y -1…1) >> shader.model.pipe.render.repeat
-        }
-        scroll {
+            repeat (x -1…1 = 0,
+                    y -1…1 = 0) >> shader.model.pipe.render.repeat
+
             shift (x 0…1 = 0.5,
                    y 0…1 = 0.5) >> shader.model.pipe.draw
 
-            tilt  (tog 0…1 = 0) <> sky.input.tilt >> accelTilt.value(0)
+            tilt  (tog 0…1 = 0) <> sky.input.tilt
         }
         color {
             fade  (val 0…1 = 0) <> sky.color.xfade
@@ -68,9 +65,9 @@ menu.model {
         }
     }
     brush {
-        size  (val 0…1 = 0.5) >> sky.draw.brush.size
+        size  (val 0…1 = 0.5) >> (sky.draw.brush.size, press.(tog 0))
         press (tog 0…1 = 1  ) >> sky.draw.brush.press
-        tilt  (tog 0…1 = 1  ) >> sky.input.brush.tilt
+        tilt  (tog 0…1 = 1  ) <> sky.input.tilt
     }
     cell {
         fade  (val 2…3 = 2.2) >> shader.model.cell.fade

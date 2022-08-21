@@ -20,23 +20,20 @@ public class Tr3EdgeDef {
         self.edgeFlags = flags
     }
     
-    init(with: Tr3EdgeDef) {
+    init(with fromDef: Tr3EdgeDef) {
         
-        edgeFlags = with.edgeFlags
-        for path in with.pathVals.pathList { // pathVals = with.pathVal
-            if let val = with.pathVals.pathDict[path] {
-                switch val {
+        edgeFlags = fromDef.edgeFlags
+        for (path,val) in fromDef.pathVals.pathDict { // pathVals = with.pathVal
+            switch val {
                 case let val as Tr3ValTern:   pathVals.add(path: path, val: val.copy())
                 case let val as Tr3ValScalar: pathVals.add(path: path, val: val.copy())
-                case let val as Tr3Exprs:  pathVals.add(path: path, val: val.copy())
-                case let val as Tr3ValQuote:  pathVals.add(path: path, val: val.copy())
+                case let val as Tr3Exprs:     pathVals.add(path: path, val: val.copy())
                 default:                      pathVals.add(path: path, val: val)
-                }
             }
         }
-        ternVal = with.ternVal?.copy()
+        ternVal = fromDef.ternVal?.copy()
     }
-
+    
     func copy() -> Tr3EdgeDef {
         let newEdgeDef = Tr3EdgeDef(with: self)
         return newEdgeDef

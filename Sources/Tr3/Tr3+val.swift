@@ -10,9 +10,7 @@ import Par
 extension Tr3 {
 
     public func StringVal() -> String? {
-        if let v = val as? Tr3ValQuote {
-            return v.quote
-        } else if let exprs = val as? Tr3Exprs,
+        if let exprs = val as? Tr3Exprs,
                   let str = exprs.exprs.first?.rvalue as? String {
             // anonymous String inside expression
             // example `color ("pipe.color.metal")`
