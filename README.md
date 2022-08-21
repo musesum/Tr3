@@ -145,9 +145,9 @@ p(10…20) << q(0…1 = 1)   // q! maps p to 20 (max)
 In addition to copying a tree, a new tree can connect edges by name
 ```c
 a {b c}.{d e}
-x:a <: a // input from a˚˚
-y:a :> a // output to a˚˚
-z:a <:> a // synchronize with a˚˚
+x@a <@ a // input from a˚˚
+y@a @> a // output to a˚˚
+z@a ←@→ a // synchronize with a˚˚
 ```
 which expands to
 ```c
@@ -381,7 +381,7 @@ body {left right}.{shoulder.elbow.wrist {thumb index middle ring pinky}.{meta pr
 Imagine wearing a motion capture suit that you have record every movement and then playback
 - Record total state of  `graph << body˚˚`
 - Playback total state of  `graph >> body˚˚`
-- Create a functional mirror `twin: body <:> body`
+- Create a functional mirror `twin: body ←@→ body`
 - Inspired by a Kinect/OpenNI experiment, shown [here](https://www.youtube.com/watch?v=aFO6j6tvdk8)
 
 ### SpaceCraft 

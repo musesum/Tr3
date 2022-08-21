@@ -79,7 +79,7 @@ extension Tr3 {
 
     func getCopiedFrom() -> String {
         var result = ""
-        var delim = ": "
+        var delim = "@"
         for copyTr3 in copied {
             result += delim + copyTr3.name
             delim = ", "

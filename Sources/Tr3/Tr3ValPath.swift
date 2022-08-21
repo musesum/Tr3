@@ -55,7 +55,7 @@ extension Tr3ValPath {
             for pathTr3 in pathTr3s {
                 script.spacePlus(pathTr3.val?.printVal() ?? pathTr3.name)
             }
-            if pathTr3s.count > 1 { return script.with(trailing:")") }
+            if pathTr3s.count > 1 { return script.with(trailing: ")") }
             else                  { return script }
         }
     }

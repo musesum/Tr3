@@ -55,7 +55,7 @@ extension Tr3EdgeDef {
         /// input to Ternary is output from pathTr3
         func connectTernIfEdge(_ ternPathTr3: Tr3, _ pathTr3: Tr3) {
 
-            //print(pathTr3.scriptLineage(2) + " ╌> " + ternPathTr3.scriptLineage(2))
+            //print(pathTr3.scriptLineage(2) + " ◇→ " + ternPathTr3.scriptLineage(2))
             let edge = Tr3Edge(pathTr3, ternPathTr3, [.output, .ternary])
             pathTr3.tr3Edges[edge.key] = edge
 
@@ -103,7 +103,7 @@ extension Tr3EdgeDef {
 
     /// output from ternary is input to pathTr3
     func connectTernPathEdge(_ ternTr3: Tr3, _ pathTr3: Tr3) {
-        //print(pathTr3.scriptLineage(3) + " ╌> " + pathTr3.scriptLineage(2))
+        //print(pathTr3.scriptLineage(3) + " ◇→ " + pathTr3.scriptLineage(2))
         let flipFlags = Tr3EdgeFlags(flipIO: edgeFlags)
         let edge = Tr3Edge(pathTr3, ternTr3, flipFlags)
         pathTr3.tr3Edges[edge.key] = edge

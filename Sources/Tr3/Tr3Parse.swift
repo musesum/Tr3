@@ -466,8 +466,8 @@ public class Tr3Parse {
                             tracePar: Bool = false) -> Bool {
 
         ParStr.tracing = tracePar
-        // Tr3.BindDumpScript = true
-        // Tr3.BindMakeScript = true
+        Tr3.LogBindScript = false
+        Tr3.LogMakeScript = false
 
         let parStr = ParStr(script)
         parStr.whitespace = whitespace

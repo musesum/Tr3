@@ -6,7 +6,7 @@ tr3 ~ left right* {
     child ~ "{" comment* tr3+ "}"
     many ~ "." "{" tr3+ "}"
     array ~ "[" thru "]"
-    copyat ~ ":" (path | name) ("," (path | name))*
+    copyat ~ "@" (path | name) ("," (path | name))*
 
     value ~ scalar | exprs
     value1 ~ scalar1 | exprs
@@ -25,7 +25,7 @@ tr3 ~ left right* {
     }
     edges ~ edgeOp (edgePar | exprs | edgeItem) comment* {
 
-        edgeOp ~ '^([<][<⋯!\:&\=\╌>]+|[⋯!\:&\=\╌>]+[>])'
+        edgeOp ~ '^([<←][<!@⟐⟡◇→>]+|[!@⟐⟡◇→>]+[>→])'
         edgePar ~ "(" edgeItem+ ")" edges?
         edgeItem ~ (edgeVal | ternary) comment*
         edgeVal ~ (path | name) (edges+ | value)?

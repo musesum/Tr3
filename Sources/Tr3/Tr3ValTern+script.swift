@@ -19,25 +19,22 @@ extension Tr3ValTern {
         var script = parens ? "(" : ""
         if expand {
             script += Tr3.scriptTr3s(pathTr3s)
-            script += compareOp.isEmpty ? "" : " " + compareOp + " "
-            script += Tr3.scriptTr3s(compareRight?.pathTr3s ?? [])
+            script.spacePlus(compareOp)
+            script.spacePlus(Tr3.scriptTr3s(compareRight?.pathTr3s ?? []))
         } else {
             script += path
-            script += compareOp.isEmpty ? "" : " " + compareOp + " "
-            script += compareRight?.path ?? ""
+            script.spacePlus(compareOp)
+            script.spacePlus(compareRight?.path)
         }
         if let thenVal = thenVal {
-
             script.spacePlus("?")
             script.spacePlus(thenVal.scriptVal(parens: false))
         }
         if let elseVal = elseVal {
-
             script.spacePlus(":")
             script.spacePlus(elseVal.scriptVal(parens: false))
         }
         if let radioNext = radioNext {
-
             script.spacePlus("|")
             script.spacePlus(radioNext.scriptVal(parens: false))
         }

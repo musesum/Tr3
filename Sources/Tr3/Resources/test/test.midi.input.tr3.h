@@ -106,5 +106,5 @@ midi { // musical instrument device interface
         omniModeOn        (num == 125, val, chan, time)
         omniMode(0…1) << (omniModeOff(0), omniModeOn(1))
     }
-cc: _main, _pedal, _omni
+cc @ _main, _pedal, _omni
 }

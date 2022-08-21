@@ -14,7 +14,7 @@ public struct Tr3EdgeFlags: OptionSet {
     public static let output  = Tr3EdgeFlags(rawValue: 1 << 1) //  2 > in  a >> b            a <> b
     public static let solo    = Tr3EdgeFlags(rawValue: 1 << 2) //  4 = in  a <= b   a => b   a <=> b
     public static let exclude = Tr3EdgeFlags(rawValue: 1 << 3) //  8 ! in  a <! b   a !> b   a <!> b
-    public static let ternary = Tr3EdgeFlags(rawValue: 1 << 5) // 32 a?>w, b ?> w x<╌>w  y<╌>w i n  a b x y w<->(a ? x : b ? y)
+    public static let ternary = Tr3EdgeFlags(rawValue: 1 << 5) // 32 a?>w, b ?> w x←◇→w  y←◇→w i n  a b x y w<->(a ? x : b ? y)
     public static let copyat  = Tr3EdgeFlags(rawValue: 1 << 6) // 64
     public init(rawValue: Int = 0) { self.rawValue = rawValue }
 
@@ -22,12 +22,12 @@ public struct Tr3EdgeFlags: OptionSet {
         self.init()
         for char in str {
             switch char {
-            case "<": self.insert(.input)   // callback
-            case ">": self.insert(.output)  // call out
-            case "=": self.insert(.solo)    // overwrite
+            case "<","←": self.insert(.input)   // callback
+            case ">","→": self.insert(.output)  // call out
+            case "⟡": self.insert(.solo)    // overwrite
             case "!": self.insert(.exclude) // remove edge(s) //TODO: test
             case "?": self.insert(.ternary) // edge to ternary condition
-            case ":": self.insert(.copyat)  // edge to ternary condition
+            case "@": self.insert(.copyat)  // edge to ternary condition
             default: continue
             }
         }

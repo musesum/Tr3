@@ -10,27 +10,25 @@ extension Tr3EdgeDef: Tr3ValScriptProtocol {
 
     static func scriptEdgeFlag(_ flags: Tr3EdgeFlags, _ active: Bool = true) -> String {
 
-        //  most common use cases
-        switch (flags, active) {
-            case (.input, true): return "<<"
-            case (.input, false): return "<╌"
-            case (.output, true): return ">>"
-            case (.output, false): return "╌>"
-            case ([.input,.output], true): return "<>"
-            case ([.input,.output], false): return "<╌>"
-            default: break
+        let hasImplicitEdge = flags.intersection([.solo,.ternary,.copyat]) != []
+        if hasImplicitEdge || active == false {
+            var script = flags.contains(.input) ? "←" : ""
+            if      active == false          { script += "◇" }
+            else if flags.contains(.solo)    { script += "⟡" }
+            else if flags.contains(.ternary) { script += "⟐" }
+            else if flags.contains(.copyat)  { script += "@" }
+            else if active == false          { script += "◇" }
+            script += flags.contains(.output) ? "→" : ""
+            return script
+        } else {
+            switch flags {
+                case [.input,.output]: return "<>"
+                case [.input]: return "<<"
+                case [.output]: return ">>"
+                default: print( "⚠️ unexpected scriptEdgeFlag")
+            }
         }
-
-        // more complex uses
-        var script =  flags.contains(.input) ? "<" : ""
-        
-        if      flags.contains(.solo)    { script += "=" }
-        else if flags.contains(.ternary) { script += "⋯" }
-        else if flags.contains(.copyat)  { script += ":" }
-        else if active == false          { script += "╌" }
-
-        if flags.contains(.output)       { script += ">" }
-        return script
+        return ""
     }
     func printVal() -> String {
         return scriptVal(parens: true, session: true, expand: true)

@@ -1,8 +1,6 @@
 //  Tr3Val.swift
 //
 //  Created by warren on 3/8/19.
-//  Copyright © 2019 DeepMuse
-//  License: Apache 2.0 - see License file
 
 import Foundation
 import CoreGraphics
