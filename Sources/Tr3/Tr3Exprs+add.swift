@@ -1,3 +1,5 @@
+// Tr3Exprs+add
+//
 //  Created by warren on 8/21/22.
 
 import Foundation
@@ -16,7 +18,6 @@ extension Tr3Exprs {
         }
     }
     func addScalar(_ scalar: Tr3ValScalar) {
-
         if let expr = exprs.last {
             if expr.rvalue != nil {
                 let expr = Tr3Expr()
@@ -34,14 +35,14 @@ extension Tr3Exprs {
     func addScalar(_ num: Float? = nil ) -> Tr3ValScalar {
         var scalar: Tr3ValScalar
         if let num = num {
-            scalar = Tr3ValScalar(num: num)
+            scalar = Tr3ValScalar(self.tr3, num: num)
         } else {
-            scalar = Tr3ValScalar()
+            scalar = Tr3ValScalar(self.tr3)
         }
         addScalar(scalar)
         return scalar
     }
-    func addOper(_ opStr: String?) {
+    func addOpStr(_ opStr: String?) {
         if let opStr = opStr?.without(trailing: " ")  {
             exprs.last?.addOpStr(opStr)
         }
@@ -57,7 +58,7 @@ extension Tr3Exprs {
     func addName(_ name: String?) {
         guard let name = name else { return }
         if !nameAny.keys.contains(name) {
-            nameAny[name] = Tr3ValScalar() //placeholder
+            nameAny[name] = Tr3ValScalar(self.tr3) //placeholder
             valFlags.insert([.names])
         }
         if let expr = exprs.last {

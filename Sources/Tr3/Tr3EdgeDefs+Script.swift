@@ -18,9 +18,7 @@ extension Tr3EdgeDefs: Tr3ValScriptProtocol {
                    expand: Bool = false) -> String {
         var script = ""
         for edgeDef in edgeDefs {
-            let val = edgeDef.scriptVal(parens: parens,
-                                        session: session,
-                                        expand: expand)
+            let val = edgeDef.scriptVal(parens: parens, session: session, expand: expand)
             script.spacePlus(val)
         }
         return script

@@ -51,11 +51,12 @@ extension Tr3Expr {
             case .GE: return lval.num >= rval.num ? lval : nil
             case .LT: return lval.num <  rval.num ? lval : nil
             case .GT: return lval.num >  rval.num ? lval : nil
-            case .Add: return Tr3ValScalar(num: lval.num + rval.num)
-            case .Sub: return Tr3ValScalar(num: lval.num - rval.num)
-            case .Muy: return Tr3ValScalar(num: lval.num * rval.num)
-            case .Div: return Tr3ValScalar(num: lval.num / notZeroNum)
-            case .Mod: return Tr3ValScalar(num: fmodf(lval.num, notZeroNum))
+            case .Add: return Tr3ValScalar(rval.tr3, num: lval.num + rval.num)
+            case .Sub: return Tr3ValScalar(rval.tr3, num: lval.num - rval.num)
+            case .Muy: return Tr3ValScalar(rval.tr3, num: lval.num * rval.num)
+            case .Div: return Tr3ValScalar(rval.tr3, num: lval.num / notZeroNum)
+            case .Mod: return Tr3ValScalar(rval.tr3, num: fmodf(lval.num, notZeroNum))
+            case .Now: return Tr3ValScalar(rval.tr3, num: rval.num)
             default: return lval
         }
     }

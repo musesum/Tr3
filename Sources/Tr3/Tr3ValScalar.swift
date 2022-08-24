@@ -14,16 +14,16 @@ public class Tr3ValScalar: Tr3Val {
     public var max  = Float(1) // maximum value, inclusive for thru
     public var dflt = Float(0) // default value
 
-    override init() {
-        super.init()
+    override init(_ tr3: Tr3) {
+        super.init(tr3)
     }
-    init(with str: String) {
-        super.init()
+    init(_ tr3: Tr3, with str: String) {
+        super.init(tr3)
         let val = Float(str) ?? Float.nan
         addNum(val)
     }
-    init(num: Float) {
-        super.init()
+    init(_ tr3: Tr3, num: Float) {
+        super.init(tr3)
         valFlags = .num
         self.min = fmin(num, 0.0)
         self.max = fmax(num, 1.0)
@@ -31,7 +31,7 @@ public class Tr3ValScalar: Tr3Val {
     }
    
     init (with scalar: Tr3ValScalar) {
-        super.init()
+        super.init(scalar.tr3)
         valFlags = scalar.valFlags // use default values
         num  = scalar.num
         min  = scalar.min

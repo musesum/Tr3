@@ -44,12 +44,12 @@ extension Tr3EdgeDef: Tr3ValScriptProtocol {
             script.spacePlus(tern.scriptVal(parens: parens, session: session))
         }
         else {
-            if pathVals.pathDict.count > 1 { script += "(" }
-            for (path,val) in pathVals.pathDict {
+            if pathVals.pathVal.count > 1 { script += "(" }
+            for (path,val) in pathVals.pathVal {
                 script.spacePlus(path)
                 script.spacePlus(val?.scriptVal(expand: expand) ?? "")
             }
-            if pathVals.pathDict.count > 1 { script += ")" }
+            if pathVals.pathVal.count > 1 { script += ")" }
         }
         return script
     }

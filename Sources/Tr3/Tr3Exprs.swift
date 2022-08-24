@@ -18,8 +18,8 @@ public class Tr3Exprs: Tr3Val {
     /// `t(x/2, y/2) << u(x 1, y 2)` ⟹ `t(x 0.5, y 1.0)` // after u fires
     public var exprs = ContiguousArray<Tr3Expr>()
 
-    override init() {
-        super.init()
+    override init(_ tr3: Tr3) {
+        super.init(tr3)
     }
     override init(with tr3Val: Tr3Val) {
         super.init(with: tr3Val)
@@ -35,20 +35,20 @@ public class Tr3Exprs: Tr3Val {
             }
         }
     }
-    convenience init(point: CGPoint) {
-        self.init()
+    init(_ tr3: Tr3, point: CGPoint) {
+        super.init(tr3)
         valFlags.insert([.names, .num])
-        let x = Tr3ValScalar(num: Float(point.x))
-        let y = Tr3ValScalar(num: Float(point.y))
+        let x = Tr3ValScalar(tr3, num: Float(point.x))
+        let y = Tr3ValScalar(tr3, num: Float(point.y))
         nameAny = ["x": x, "y": y]
     }
-    convenience init(nameFloats: [(String, Float)]) {
-        self.init()
+    init(_ tr3: Tr3, nameFloats: [(String, Float)]) {
+        super.init(tr3) 
         valFlags.insert([.names, .num]) 
         nameAny = [:]
 
         for (name, val) in nameFloats {
-            let scalar = Tr3ValScalar(num: val)
+            let scalar = Tr3ValScalar(tr3, num: val)
             nameAny[name] = scalar
         }
     }

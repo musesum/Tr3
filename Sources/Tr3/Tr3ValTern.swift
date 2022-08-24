@@ -14,33 +14,32 @@ public enum Tr3Act { case
 }
 
 public enum Tr3TernState { case
-    If,     // a in a ? b : c
-    Then,   // b in a ? b : c
-    Else,   // c in a ? b : c
-    Radio,  // … in (… | …) exclusive switch, like 'radio' button on a sound mixer
+    If,     // `a` in `a ? b : c`
+    Then,   // `b` in `a ? b : c`
+    Else,   // `c` in `a ? b : c`
+    Radio,  // … in (… | …) exclusive switch, like 'radio' button 
     Neither // deactivated sub-Tern in Radio
 }
 
 /// bidirection switched flow ternary with radio-button style extension
 ///
-///     w <- (a == b) // receive bang to w with no value
-///     w <- (a == b : 1) // recv value 1 to w
-///     w <- (a == b : 1 1s˺) // recv value 1 to w after 1 second delay
-///     w <- (a == b ? c : d) // recv c or d to w
-///     w <- (a ? 1 : b ? 2 : c ? 3) // recv 1 if a, 2 if a&b, 3 if a & b & c
-///     w <- (a ? a1 : a2 | b ? b1 : b2 | c ? c1 : c2) // if a, recv a1, else recv a2, b block b1, b2, c1, c2
+///     w << (a == b) // receive bang to w with no value
+///     w << (a == b : 1) // recv value 1 to w
+///     w << (a == b ? c : d) // recv c or d to w
+///     w << (a ? 1 : b ? 2 : c ? 3) // recv 1 if a, 2 if a&b, 3 if a & b & c
+///     w << (a ? a1 : a2 | b ? b1 : b2 | c ? c1 : c2) // if a, recv a1, else recv a2, b block b1, b2, c1, c2
 ///
-///     w -> (a == b) // undefined
-///     w -> (a == b : 1) // undefined
-///     w -> (a == b : 1 1s˺) // undefined
-///     w -> (a == b ? c : d) // if a==b, send w to c, else send w to d
-///     w -> (a ? 1 : b ? 2 : c ? 3) // recv 1 if a, 2 if a&b, 3 if a & b & c
-///     w -> (a ? a1 : a2 | b ? b1 : b2 | c ? c1 : c2) // if a, recv a1, else recv a2, b block b1, b2, c1, c2
+///     w >> (a == b) // undefined
+///     w >> (a == b : 1) // undefined
+///     w >> (a == b : 1 1s) // undefined
+///     w >> (a == b ? c : d) // if a==b, send w to c, else send w to d
+///     w >> (a ? 1 : b ? 2 : c ? 3) // recv 1 if a, 2 if a&b, 3 if a & b & c
+///     w >> (a ? a1 : a2 | b ? b1 : b2 | c ? c1 : c2) // if a, recv a1, else recv a2, b block b1, b2, c1, c2
 ///
-///     w <- (a ? 1 | b ? b1 : b2 | c ? c1 ? c2 | d ? d1 : d2)
-///     w <- (a ? a1 : a2 ) | (b ? b2 : b2) | (c ? c1 : c2)
-///     w <- (a ? a1 : a2   |  b ? b1 : b2  |  c ? c1 : c2)
-///     w <-  a ? a1 : a2   |  b ? b1 : b2  |  c ? c1 : c2
+///     w << (a ? 1 | b ? b1 : b2 | c ? c1 ? c2 | d ? d1 : d2)
+///     w << (a ? a1 : a2 ) | (b ? b2 : b2) | (c ? c1 : c2)
+///     w << (a ? a1 : a2   |  b ? b1 : b2  |  c ? c1 : c2)
+///     w <<  a ? a1 : a2   |  b ? b1 : b2  |  c ? c1 : c2
 
 public class Tr3ValTern: Tr3ValPath {
     
@@ -59,27 +58,25 @@ public class Tr3ValTern: Tr3ValPath {
     var radioPrev: Tr3ValTern?
     var radioNext: Tr3ValTern?
     
-    override init (with: Tr3Val) {
+    override init(with from: Tr3Val) {
 
-        if let tvt = with as? Tr3ValTern {
+        if let from = from as? Tr3ValTern {
 
-            super.init(with: tvt)
+            super.init(with: from)
 
-            tr3          = tvt.tr3
-            ternState    = tvt.ternState
-            compareRight = tvt.compareRight?.copy() ?? nil
-            compareOp    = tvt.compareOp
-
-            thenVal     = tvt.thenVal?.copy() ?? nil
-            elseVal     = tvt.elseVal?.copy() ?? nil
-
-            radioPrev   = tvt.radioPrev
-            radioNext   = tvt.radioNext
-
-            parseLevel  = tvt.parseLevel
+            self.tr3     = from.tr3
+            ternState    = from.ternState
+            compareRight = from.compareRight?.copy() ?? nil
+            compareOp    = from.compareOp
+            thenVal      = from.thenVal?.copy() ?? nil
+            elseVal      = from.elseVal?.copy() ?? nil
+            radioPrev    = from.radioPrev
+            radioNext    = from.radioNext
+            parseLevel   = from.parseLevel
         }
         else {
-            super.init()
+            //TODO: placeholder?
+            super.init(Tr3())
         }
     }
     override func copy() -> Tr3ValTern {
@@ -87,10 +84,10 @@ public class Tr3ValTern: Tr3ValPath {
         return newTr3ValTern
     }
 
-    init(_ tr3_: Tr3, _ parseLevel_: Int) {
-        super.init()
-        tr3 = tr3_
-        parseLevel = parseLevel_
+    init(_ tr3: Tr3, _ parseLevel: Int) {
+        super.init(tr3)
+        self.tr3 = tr3
+        self.parseLevel = parseLevel
     }
 
     static func getTernLevel(_ level: Int) -> Tr3ValTern?  {
@@ -119,25 +116,16 @@ public class Tr3ValTern: Tr3ValPath {
             }
         }
     }
-    
 
-    func setState(_ state_: Tr3TernState) { ternState = state_ }
-    
-    func setCondition(_ compareOp_: String) { compareOp = compareOp_ }
-    
-    public func setTernState(_ ternState_: Tr3TernState, _ level: Int) {
-        ternState = ternState_
-    }
-    
     public func addPath(_ path_: String) {
 
         switch ternState {
             
         case .If:   if path == "" { path = path_ }
-         /**/       else { compareRight = Tr3ValPath(with: path_) }
+         /**/       else { compareRight = Tr3ValPath(tr3, with: path_) }
 
-        case .Then: thenVal = Tr3ValPath(with: path_)
-        case .Else: elseVal = Tr3ValPath(with: path_)
+        case .Then: thenVal = Tr3ValPath(tr3, with: path_)
+        case .Else: elseVal = Tr3ValPath(tr3, with: path_)
         default:    break
         }
     }
@@ -158,25 +146,25 @@ public class Tr3ValTern: Tr3ValPath {
         
         if let ternVal = val as? Tr3ValTern {
             switch ternState {
-            case .If, .Then: thenVal = ternVal
-            case .Else:      elseVal = ternVal
-            case .Radio:
+                case .If, .Then: thenVal = ternVal
+                case .Else:      elseVal = ternVal
+                case .Radio:
 
-                if let lastTern = Tr3ValTern.ternStack.last {
-                    if lastTern.id != ternVal.id {
-                        lastTern.radioNext = ternVal
-                        ternVal.radioPrev = lastTern
+                    if let lastTern = Tr3ValTern.ternStack.last {
+                        if lastTern.id != ternVal.id {
+                            lastTern.radioNext = ternVal
+                            ternVal.radioPrev = lastTern
+                        }
                     }
-                }
-          default: break
+                default: break
             }
             Tr3ValTern.ternStack.append(ternVal)
         }
         else {
             switch ternState {
-            case .If, .Then: thenVal = val
-            case .Else:      elseVal = val
-            default: break
+                case .If, .Then: thenVal = val
+                case .Else:      elseVal = val
+                default: break
             }
         }
     }

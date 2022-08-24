@@ -11,18 +11,6 @@ extension Tr3ValTern {
     func testCondition(_ prevTr3: Tr3,
                        _ act: Tr3Act) -> Bool {
 
-         // check if both match and are scalars or quotes
-        func bothMatchFlags(_ left: Tr3Val, _ right: Tr3Val, _ matchFlags: [Tr3ValFlags]) -> Bool {
-            for matchFlag in matchFlags {
-                if  left.valFlags.contains(matchFlag),
-                    right.valFlags.contains(matchFlag) {
-                    return true
-                }
-            }
-            return false
-        }
-        // ────────────── begin ──────────────
-
         // a in `a b w <- (a ? 1: b ? 2)`
         if compareOp == "" {
             
@@ -36,7 +24,7 @@ extension Tr3ValTern {
             }
         }
         else if pathTr3s.count > 0,
-            let rightVal = compareRight?.tr3?.val {
+            let rightVal = compareRight?.tr3.val {
 
             for pathTr3 in pathTr3s {
                 if let pathVal = pathTr3.val {
@@ -65,6 +53,21 @@ extension Tr3ValTern {
             }
         }
         return false
+
+        // check if both match and are scalars or quotes
+        func bothMatchFlags(_ left: Tr3Val,
+                            _ right: Tr3Val,
+                            _ matchFlags: [Tr3ValFlags]) -> Bool {
+            
+            for matchFlag in matchFlags {
+                if  left.valFlags.contains(matchFlag),
+                    right.valFlags.contains(matchFlag) {
+                    return true
+                }
+            }
+            return false
+        }
+
     }
 
 }

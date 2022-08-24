@@ -1,27 +1,10 @@
 //
-//  Tr3ExprOptions.swift
+//  Tr3Expr
 //  
 //
 //  Created by warren on 1/1/21.
 
 import Foundation
-
-
-enum Tr3ExprOperator: String {
-
-    case none = ""
-    case EQ = "=="
-    case LE = "<="
-    case GE = ">="
-    case LT = "<"
-    case GT = ">"
-    case Add = "+"
-    case Sub = "-"
-    case Muy = "*"
-    case Div = "/"
-    case Mod = "%"
-    case In = "in"
-}
 
 public class Tr3Expr {
 
@@ -56,6 +39,7 @@ public class Tr3Expr {
         let result = Tr3Expr(with: self)
         return result
     }
+
     func isEligible(num: Float) -> Bool {
         guard let rvalue = rvalue as? Tr3ValScalar  else { return true }
         switch exprOperator {

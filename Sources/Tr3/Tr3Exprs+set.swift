@@ -1,3 +1,5 @@
+// Tr3Exprs+set
+//
 //  Created by warren on 8/21/22.
 //
 
@@ -12,7 +14,7 @@ extension Tr3Exprs {
             n.addFlag(.num)
         }
         else {
-            nameAny["val"] = Tr3ValScalar(num: v) //TODO: remove this kludge for DeepMenu
+            nameAny["val"] = Tr3ValScalar(tr3, num: v) //TODO: remove this kludge for DeepMenu
         }
     }
 
@@ -25,19 +27,19 @@ extension Tr3Exprs {
                 n.addFlag(.num)
             }
             else {
-                nameAny["x"] = Tr3ValScalar(num: Float(p.x))
+                nameAny["x"] = Tr3ValScalar(tr3, num: Float(p.x))
             }
             if let n = nameAny["y"] as? Tr3ValScalar {
                 n.setVal(p.y)
                 n.addFlag(.num)
             }
             else {
-                nameAny["y"] = Tr3ValScalar(num: Float(p.y))
+                nameAny["y"] = Tr3ValScalar(tr3, num: Float(p.y))
             }
         }
         // begin -------------------------------
         if exprs.isEmpty { return addPoint() }
-        let exprs = Tr3Exprs(point: p)
+        let exprs = Tr3Exprs(tr3, point: p)
         setExprs(to: self, fr: exprs)
     }
 
@@ -56,26 +58,25 @@ extension Tr3Exprs {
     }
 
     func setExprs(to: Tr3Exprs, fr: Tr3Exprs) {
-        if isEligible(fr) {
-            // a(x + _, y + _) << b(x _, y _)
-            for toExpr in to.exprs {
-                let name = toExpr.name
-                if let frScalar = fr.nameAny[name] as? Tr3ValScalar {
+        if !isEligible(fr) { return }
+        // a(x + _, y + _) << b(x _, y _)
+        for toExpr in to.exprs {
+            let name = toExpr.name
+            if let frScalar = fr.nameAny[name] as? Tr3ValScalar {
 
-                    // a(x in 2…4, y in 3…5) >> b b(x 1…2, y 2…3)
-                    if let inScalar = toExpr.evalIsIn(from: frScalar ) {
-                        to.nameAny[name] = inScalar
-                    }
-                    // a(x + 1, y + 2) << b(x 3, y 4) ⟹ a(x 4 , y 6)
-                    else if let rScalar = toExpr.eval(frScalar: frScalar) ,
-                            let toScalar = to.nameAny[name] as? Tr3ValScalar {
-
-                        toScalar.setVal(rScalar)
-                    }
-                } else {
-                    // a(x + 1, y + 2) << b(x, y) ⟹ a(x + 1, y + 2)
-                    // skip
+                // a(x in 2…4, y in 3…5) >> b b(x 1…2, y 2…3)
+                if let inScalar = toExpr.evalIsIn(from: frScalar ) {
+                    to.nameAny[name] = inScalar
                 }
+                // a(x + 1, y + 2) << b(x 3, y 4) ⟹ a(x 4 , y 6)
+                else if let rScalar = toExpr.eval(frScalar: frScalar) ,
+                        let toScalar = to.nameAny[name] as? Tr3ValScalar {
+
+                    toScalar.setVal(rScalar)
+                }
+            } else {
+                // a(x + 1, y + 2) << b(x, y) ⟹ a(x + 1, y + 2)
+                // skip
             }
         }
     }
@@ -84,7 +85,7 @@ extension Tr3Exprs {
         if let scalar = nameAny[name] as? Tr3ValScalar {
             scalar.num = value
         } else {
-            nameAny[name] = Tr3ValScalar(num: value)
+            nameAny[name] = Tr3ValScalar(tr3, num: value)
         }
         addFlag(.num)
     }

@@ -87,11 +87,10 @@ sky { draw { brush { size << midi.modulationWheel } } }
 ```
 write a closure in Swift to capture a changed value
 ```swift
-if let brushSize = brush.findPath("sky.draw.brush.size") {
-    brushSize.addClosure { tr3, _ in 
-        self.brushRadius = tr3.CGFloatVal() ?? 1 } } 
+brush.findPath("sky.draw.brush.size")?.addClosure { tr3, _ in 
+        self.brushRadius = tr3.CGFloatVal() ?? 1 } 
 ```
-In the above example, `brushSize` attaches a closure to `sky.draw.brush.size`, which then updates its internal value `brushRadius`.
+In the above example, attach a closure to `sky.draw.brush.size`, which then updates its internal value `brushRadius`.
 
 ## Values
 
@@ -147,7 +146,7 @@ In addition to copying a tree, a new tree can connect edges by name
 a {b c}.{d e}
 x@a <@ a // input from a˚˚
 y@a @> a // output to a˚˚
-z@a ←@→ a // synchronize with a˚˚
+z@a <@> a // synchronize with a˚˚
 ```
 which expands to
 ```c

@@ -341,17 +341,12 @@ extension Tr3 {
         if name.contains("*") { return false }
 
         var index = 0
-
-        for s in name {
-            switch s {
-            case "˚": return false
-            case ":": return false //??? 
-            case ".":
-
-                divideAndContinue(index)
-                return true
-
-            default: index += 1
+        
+        for char in name {
+            switch char {
+                case "˚" : return false
+                case "." : divideAndContinue(index); return true
+                default  : index += 1
             }
         }
         return false
@@ -400,12 +395,12 @@ extension Tr3 {
 
     - note: Needs forward pass for prototypes that refer to unexpanded paths.
 
-    Because expansion is bottom up, the first a.b in:
+     Since expansion is bottom up, the first a.b in:
 
         a.b { c d } a.e: a.b { f g }
 
     has not been been expanded, when encountering the second a.b.
-    So, deeper a.b was deferred until this forward pass,
+    So, the deeper a.b was deferred until this forward pass,
     where first a.b has finally expanded and can now bind
     its children.
     */
@@ -448,8 +443,8 @@ extension Tr3 {
     public func bindRoot() {
 
         func log(_ num: Int) {
-            if      Tr3.LogBindScript { print(scriptTr3(session: true) + " // \(num)") }
-            else if Tr3.LogMakeScript { print(script(compact: false ) + " // \(num)") }
+            Tr3.LogBindScript ? print(scriptTr3(session: true) + " // \(num)")  :
+            Tr3.LogMakeScript ? print(script(compact: false ) + " // \(num)")  : nil
         }
         bindTopDown()     ; log(1)
         bindBottomUp()    ; log(2)

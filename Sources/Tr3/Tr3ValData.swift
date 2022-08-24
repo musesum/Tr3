@@ -13,11 +13,11 @@ public class Tr3ValData: Tr3Val {
     var size = 0
     var filename = ""
 
-    override init() {
-        super.init()
+    override init(_ tr3: Tr3) {
+        super.init(tr3)
     }
     init(with: Tr3ValData) {
-        super.init()
+        super.init(with.tr3)
         size = with.size
         filename = with.filename
         data = with.data //TODO: allocate new memory and copy}

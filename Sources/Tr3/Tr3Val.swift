@@ -19,7 +19,7 @@ protocol Tr3ValProtocal {
 public class Tr3Val: Comparable {
 
     var id = Visitor.nextId()
-    var tr3: Tr3?  // tr3 that declared and contains this value
+    var tr3: Tr3  // tr3 that declared and contains this value
     var valFlags = Tr3ValFlags(rawValue: 0) // which combination of the following?
 
     public static func == (lhs: Tr3Val, rhs: Tr3Val) -> Bool {
@@ -29,7 +29,8 @@ public class Tr3Val: Comparable {
         return lhs.id < rhs.id
     }
 
-    init() {
+    init(_ tr3: Tr3) {
+        self.tr3 = tr3
     }
     init(with tr3Val: Tr3Val) {
         tr3 = tr3Val.tr3

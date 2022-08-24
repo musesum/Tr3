@@ -1,8 +1,7 @@
 //  Tr3EdgeDef+connect.swift
 //
 //  Created by warren on 4/29/19.
-//  Copyright © 2019 DeepMuse
-//  License: Apache 2.0 - see License file
+
 
 import Foundation
 
@@ -177,9 +176,9 @@ extension Tr3EdgeDef {
     func connectEdges(_ tr3: Tr3)  {
         
         // non ternary edges
-        if pathVals.pathDict.count > 0 {
+        if pathVals.pathVal.count > 0 {
             
-            for (path,val) in pathVals.pathDict {
+            for (path,val) in pathVals.pathVal {
                 if let pathrefs = tr3.pathrefs {
                     for pathref in pathrefs {
                         let rightTr3s = pathref.findPathTr3s(path, [.parents, .children])

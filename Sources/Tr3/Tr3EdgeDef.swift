@@ -10,7 +10,7 @@ import Par // ParItem
 public class Tr3EdgeDef {
 
     var edgeFlags = Tr3EdgeFlags()
-    var pathVals = PathVals()
+    var pathVals = Tr3PathVals()
     var ternVal: Tr3ValTern?
     var edges = [String: Tr3Edge]() // each edge is also shared by two Tr3s
     
@@ -23,7 +23,7 @@ public class Tr3EdgeDef {
     init(with fromDef: Tr3EdgeDef) {
         
         edgeFlags = fromDef.edgeFlags
-        for (path,val) in fromDef.pathVals.pathDict { // pathVals = with.pathVal
+        for (path,val) in fromDef.pathVals.pathVal { // pathVals = with.pathVal
             switch val {
                 case let val as Tr3ValTern:   pathVals.add(path: path, val: val.copy())
                 case let val as Tr3ValScalar: pathVals.add(path: path, val: val.copy())

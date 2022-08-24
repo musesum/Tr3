@@ -406,6 +406,8 @@ final class Tr3Tests: XCTestCase {
 
     func testParseTernarys() { headline(#function)
         var err = 0
+
+        err += test("a b c << (a ? b)", "a⟐→c b◇→c c << (a ? b) ")
         err += test("a b x y w << (a ? 1 : b ? 2)", "a⟐→w b◇→w x y w << (a ? 1 : b ? 2) ")
         err += test("a, x, y, w << (a ? x : y)", "a⟐→w, x◇→w, y◇→w, w << (a ? x : y)")
         err += test("a, x, y, w >> (a ? x : y)", "a⟐→w, x←◇w, y←◇w, w >> (a ? x : y)")
@@ -568,30 +570,13 @@ final class Tr3Tests: XCTestCase {
         result += tr3.name + "(" + val + ") "
     }
 
-    /// setup new result string, call the action, print the appended result
-    func testAct(_ before: String, _ after: String, callTest: @escaping CallVoid) -> Int {
-        var err = 0
-        result = before + " ⟹ "
-        let expected = result + after
-        callTest()
-
-        if let error = ParStr.compare(expected, result) {
-            print (result + "🚫 mismatch \n\(error)")
-            err += 1
-        }
-        else {
-            print (result + "✓")
-        }
-        return err
-    }
-
 
     /// test `b >> a(2)` for `b!`
     func testEdgeVal0() { headline(#function)
         var err = 0
 
         // selectively set tuples by name, ignore the reset
-        let script = "x(10), y(20), c(0) << (x + y)"
+        let script = "x(10), y(20), z(30) c(0) << (x + y + z)"
         print("\n" + script)
 
         let root = Tr3("√")
@@ -603,7 +588,7 @@ final class Tr3Tests: XCTestCase {
 
             x.setAny(1, .activate)
             y.setAny(2, .activate)
-            print(c.script(compact: true))
+            print(c.script(compact: false))
 
             let result = root.scriptRoot(session: true)
             err = ParStr.testCompare("x (1), y (2), c (3) << (x + y)", result)
@@ -615,7 +600,7 @@ final class Tr3Tests: XCTestCase {
     }
 
     /// test `b >> a(2)` for `b!`
-    func testEdgeVal() { headline(#function)
+    func testEdgeVal1() { headline(#function)
         var err = 0
         // selectively set tuples by name, ignore the reset
         let script = "a(1) b >> a(2)"
@@ -854,10 +839,10 @@ final class Tr3Tests: XCTestCase {
             let result2 =  root.scriptRoot(session: false)
             let expect2 = """
 
-            a        { b(11)        { d(33)          e(44)          }
-                       c(22)        { d(55)          e(66)          }}
-            z @a ←@→a { b(11) ←@→a.b { d(33) ←@→a.b.d e(44) ←@→a.b.e }
-                       c(22) ←@→a.c { d(55) ←@→a.c.d e(66) ←@→a.c.e }}
+            a        { b(11)       { d(33)         e(44)         }
+                       c(22)       { d(55)         e(66)         }}
+            z@a ←@→a { b(11)←@→a.b { d(33)←@→a.b.d e(44)←@→a.b.e }
+                       c(22)←@→a.c { d(55)←@→a.c.d e(66)←@→a.c.e }}
             """
             err += ParStr.testCompare(expect2, result2)
 
@@ -917,7 +902,7 @@ final class Tr3Tests: XCTestCase {
            let w = root.findPath("w") {
 
             // 0, 0, 0 --------------------------------------------------
-            let t0 = Tr3Exprs(nameFloats: [("x", 0), ("y", 0), ("z", 0)])
+            let t0 = Tr3Exprs(w, nameFloats: [("x", 0), ("y", 0), ("z", 0)])
             w.setAny(t0, .activate)
             let result0 = root.scriptRoot(session: true)
             let expect0 = """
@@ -929,7 +914,7 @@ final class Tr3Tests: XCTestCase {
             err += ParStr.testCompare(expect0, result0)
 
             // 10, 11, 12 --------------------------------------------------
-            let t1 = Tr3Exprs(nameFloats: [("x", 10), ("y", 11), ("z", 12)])
+            let t1 = Tr3Exprs(w, nameFloats: [("x", 10), ("y", 11), ("z", 12)])
             w.setAny(t1, .activate)
             let result1 = root.scriptRoot(session: true)
             let expect1 = """
@@ -941,7 +926,7 @@ final class Tr3Tests: XCTestCase {
             err += ParStr.testCompare(expect1, result1)
 
             // 20, 21, 22 --------------------------------------------------
-            let t2 = Tr3Exprs(nameFloats: [("x", 20), ("y", 21), ("z", 22)])
+            let t2 = Tr3Exprs(w, nameFloats: [("x", 20), ("y", 21), ("z", 22)])
             w.setAny(t2, .activate)
             let result2 = root.scriptRoot(session: true)
             let expect2 = """
@@ -953,7 +938,7 @@ final class Tr3Tests: XCTestCase {
             err += ParStr.testCompare(expect2, result2)
 
             // 10, 21, 33 --------------------------------------------------
-            let t3 = Tr3Exprs(nameFloats: [("x", 10), ("y", 21), ("z", 33)])
+            let t3 = Tr3Exprs(w, nameFloats: [("x", 10), ("y", 21), ("z", 33)])
             w.setAny(t3, .activate)
             let result3 = root.scriptRoot(session: true)
             let expect3 = """
@@ -1090,6 +1075,49 @@ final class Tr3Tests: XCTestCase {
         XCTAssertEqual(err, 0)
     }
 
+    // MARK: - ternary
+
+    /// setup new result string, call the action, print the appended result
+    func testAct(_ before: String, _ after: String, callTest: @escaping CallVoid) -> Int {
+        var err = 0
+        result = before + " ⟹ "
+        let expected = result + after
+        callTest()
+
+        if let error = ParStr.compare(expected, result) {
+            print (result + "🚫 mismatch \n\(error)")
+            err += 1
+        }
+        else {
+            print (result + "✓")
+        }
+        return err
+    }
+
+    func testTernary0() { headline(#function)
+        var err  = 0
+        let script = "a b c << (a ? b)"
+        print("\n" + script)
+
+        let root = Tr3("√")
+        if tr3Parse.parseScript(root, script),
+           let a = root.findPath("a"),
+           let b = root.findPath("b") {
+
+            let result1 =  root.scriptRoot(session: true)
+            err += ParStr.testCompare("a⟐→c b◇→c c << (a ? b)", result1, echo: true)
+
+            a.setAny(10, .activate)
+            b.setAny(20, .activate)
+            let result2 =  root.scriptRoot(session: true)
+            err += ParStr.testCompare("a(10)⟐→c b(20)⟐→c c(20)<<(a ? b)", result2, echo: true)
+        }
+        else {
+            err += 1
+        }
+        ///// XCTAssertEqual(err, 0)
+    }
+
     func testTernary1() { headline(#function)
         var err  = 0
         let script = "a b c w(0) << (a ? 1 : b ? 2 : c ? 3)"
@@ -1111,7 +1139,6 @@ final class Tr3Tests: XCTestCase {
             err += testAct("b !",  "w(2.0) ") { b.activate() }
             err += testAct("b(0)", "w(2.0)")  { b.setAny(0, .activate) }
             err += testAct("c !",  "w(3.0) ") { c.activate() }
-
             err += ParStr.testCompare("a(0)⟐→w b(0)⟐→w c⟐→w w(3)<<(a ? 1 : b ? 2 : c ? 3)",
                                       root.scriptRoot(session: true), echo: true)
         }
@@ -1186,18 +1213,17 @@ final class Tr3Tests: XCTestCase {
         XCTAssertEqual(err, 0)
     }
 
-    func testEdges() { headline(#function)
+    //MARK: - Scripts
+
+    func testD3Script() { headline(#function)
         var err = 0
         let root = Tr3("√")
-        //let script = "x.xx y.yy a.b c: a { d << (x ? x.xx | y ? y.yy) } e: c f: e g: f"
-        //let script = "x.xx y.yy a.b c: a e: c f: e g: f ˚b << (x ? x.xx | y ? y.yy) "
-        //let script = "x.xx y.yy a { b << (x ? x.xx | y ? y.yy) } c: a, e: c, f: e, g: f "
-        let script = "a.b.c(1) d { e(2) <> a.b.c } f: d"
+        let script = "a.b.c(1) d { e(2) <> a.b.c } f@d"
 
         if tr3Parse.parseScript(root, script, whitespace: "\n\t ") {
 
             let pretty = root.script(compact: true)
-            print(pretty)
+            err += ParStr.testCompare(pretty, "√ { a.b.c(1) d.e(2) <> a.b.c f.e(2) <> a.b.c }" )
 
             let d3Script = root.makeD3Script()
             print(d3Script)
@@ -1274,7 +1300,8 @@ final class Tr3Tests: XCTestCase {
         ("testParseRelativePaths", testParseRelativePaths),
         ("testParseRelativePaths", testParseRelativePaths),
 
-        ("testEdgeVal", testEdgeVal),
+        ("testEdgeVal0", testEdgeVal0),
+        ("testEdgeVal1", testEdgeVal1),
         ("testEdgeVal2", testEdgeVal2),
         ("testEdgeVal3a", testEdgeVal3a),
         ("testEdgeVal3b", testEdgeVal3b),
@@ -1290,10 +1317,9 @@ final class Tr3Tests: XCTestCase {
         ("testTernary1", testTernary1),
         ("testTernary2", testTernary2),
         ("testTernary3", testTernary3),
-        ("testEdges", testEdges),
 
+        ("testD3Script", testD3Script),
         ("testBodySkeleton", testBodySkeleton),
-
         ("testMidi", testMidi),
         ("testDeepMenu", testDeepMenu),
         ("testDeepMuse", testDeepMuse),
