@@ -79,7 +79,7 @@ extension Tr3 {
         if count < 1 {
             return self
         }
-        else if let parent = parent {
+        else if let parent {
             return parent.getDotParent(count-1)
         }
         else {
@@ -126,7 +126,7 @@ extension Tr3 {
         }
         // still no match, so maybe search parents
         if findFlags.contains(.parents) {
-            if let parent = parent {
+            if let parent {
                 return parent.findAnchor(path, findFlags)
             }
             else if prefix == "" {
@@ -172,7 +172,7 @@ extension Tr3 {
         }
 
         var found = [Tr3]()
-        if let pathrefs = pathrefs {
+        if let pathrefs {
             for pathref in pathrefs {
                 found.append(contentsOf:  getWild(tr3: pathref))
             }

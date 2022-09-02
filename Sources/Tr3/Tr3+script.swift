@@ -120,8 +120,7 @@ extension Tr3 {
     }
 
     func scriptTypeEdges(_ edges: [Tr3Edge], _ session: Bool) -> String {
-
-        if edges.isEmpty { return  "" }
+        
         guard let firstEdge = edges.first else { return "" }
         var script = firstEdge.scriptEdgeFlag(padSpace: true)
         if edges.count > 1 { script += "(" }

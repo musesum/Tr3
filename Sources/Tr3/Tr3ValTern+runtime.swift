@@ -135,8 +135,8 @@ extension Tr3ValTern {
                 _ act:     Tr3Act,
                 _ visitor: Visitor) {
 
-        guard let prevTr3 = prevTr3 else { print("🚫 prevTr3 = nil"); return }
-        guard let nextTr3 = nextTr3 else { print("🚫 nextTr3 = nil"); return }
+        guard let prevTr3 else { print("🚫 prevTr3 = nil"); return }
+        guard let nextTr3 else { print("🚫 nextTr3 = nil"); return }
         // a in `w <-(a ? x : y)`
         // a in `w <-(a == b ? x : y)`  when a == b
         if testCondition(prevTr3, act) {
@@ -164,14 +164,18 @@ extension Tr3ValTern {
                    _ act:     Tr3Act,
                    _ visitor: Visitor) {
 
-        // preserve event.val for multiple successors
-        // as event.val is always a src, it is never changed.
         // DebugPrint("dst:%s src:%s \n&src.val:%p \n&event.val:%p\n\n", dst.name.c_str(), src.name.c_str(), src.val, event.val)
 
-        if left.passthrough { left.val = right.val }
-        else                { left.val?.setVal(right.val!) }
-
-        if act == .activate { left.activate(visitor) }
+        var isOk = true // test if setVal conditionals passed
+        if left.passthrough {
+            left.val = right.val
+        }
+        else {
+            isOk = left.val?.setVal(right.val!) != nil
+        }
+        if act == .activate, isOk {
+            left.activate(visitor)
+        }
     }
 
 }

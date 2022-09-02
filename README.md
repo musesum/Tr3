@@ -106,7 +106,7 @@ Tr3 automatically remaps scalar ranges, given the nodes `b` & `c`
 ```c 
 b (0…1)        // range 0 to 1, defaults to 0
 c (0…127 = 1)  // range 0 to 127, with initial value of 1
-b <> c          // synchronize b and c and auto-remap values
+b <> c         // synchronize b and c and auto-remap values
 ```
 When the value of `b` is changed to `0.5` it activates `c` and remaps its value to `63`;
 When the value of `c` is changed to `31`, it activates  `b` and remapts its value to `0.25`
@@ -119,7 +119,7 @@ model (x -1…1, y -1…1, z -1…1) // auto rescale
 ### Nodes may pass through values
 ```c
 a (0…1) >> b  // may pass along value to b
-b >> c         // has no value, will forward a to c
+b >> c        // has no value, will forward a to c
 c (0…10)      // gets a's value via b, remaps ranges
 ```
 ### Graph's inputs and ouputs may contain values
@@ -383,13 +383,9 @@ Imagine wearing a motion capture suit that you have record every movement and th
 - Create a functional mirror `twin: body ←@→ body`
 - Inspired by a Kinect/OpenNI experiment, shown [here](https://www.youtube.com/watch?v=aFO6j6tvdk8)
 
-### SpaceCraft 
+### Vehicles and Simulators 
 
-In 2004, NASA put on a conference called [Virtual Iron Bird](https://www.nasa.gov/vision/earth/technologies/Virtual_Iron_Bird_jb.html) to encourage modeling of Spacecraft. One question was how to manage the dataflow between sensors and actuators. 
-
-### Smart Cities
-
-- Data flow through digital twin of BIM and GIS 
+In 2004, NASA put on a conference called [Virtual Iron Bird](https://www.nasa.gov/vision/earth/technologies/Virtual_Iron_Bird_jb.html) to encourage modeling of Spacecraft. One question was how to manage the dataflow between sensors and actuators. How does one simulate a vehicle? Or synchonize co-pilot controls? 
 
 ### Ledgers
 

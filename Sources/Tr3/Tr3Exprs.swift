@@ -94,7 +94,7 @@ public class Tr3Exprs: Tr3Val {
     // MARK: - Set
     public override func setVal(_ any: Any?, _ opts: Tr3SetOptions? = nil) -> Bool {
 
-        if let any = any {
+        if let any {
             switch any {
                 case let v as Float:    return setFloat(v)
                 case let v as CGFloat:  return setFloat(Float(v))

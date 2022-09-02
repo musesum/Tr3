@@ -118,9 +118,8 @@ extension Tr3 {
         var results = [Tr3]()
 
         for foundi in found {
-            // is adding or appending with a direct ancestor
-            if let parent = parent,
-                foundi.willMerge(with: parent) {
+            // is adding or appending with a direct ancestor?
+            if let parent, foundi.willMerge(with: parent) {
                 // b.c in `a { b { c {c1 c2} d } b.c@c3 }`
                 for child in children {
                     foundi.mergeDuplicate(child)
@@ -423,7 +422,7 @@ extension Tr3 {
 
     func bindDefaults() {
         func bindVal(_ val: Tr3Val?) {
-            guard let val = val else { return }
+            guard let val else { return }
             switch val {
             case let t as Tr3Exprs:  t.setDefaults()
             case let s as Tr3ValScalar: s.setDefault()

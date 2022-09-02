@@ -54,7 +54,7 @@ extension Tr3Exprs {
     }
     func addName(_ name: String?) {
 
-        guard let name = name else { return }
+        guard let name else { return }
         let expr = Tr3Expr(name: name)
         exprs.append(expr)
         opSet.insert(.name)

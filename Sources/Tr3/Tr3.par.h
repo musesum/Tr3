@@ -1,16 +1,16 @@
 tr3 ~ left right* {
-
+    
     left ~ (path | name)
     right ~ (value | child | many | copyat | array | edges | embed | comment)+
-
+    
     child ~ "{" comment* tr3+ "}"
     many ~ "." "{" tr3+ "}"
     array ~ "[" thru "]"
     copyat ~ "@" (path | name) ("," (path | name))*
-
+    
     value ~ scalar | exprs
     value1 ~ scalar1 | exprs
-
+    
     scalar ~ "(" scalar1 ")"
     scalars ~ "(" scalar1 ("," scalar1)* ")"
     scalar1 ~ (thru | modu | data | num) {
@@ -20,16 +20,16 @@ tr3 ~ left right* {
         data ~ "*"
     }
     exprs ~ "(" expr+ ("," expr+)* ")" {
-        expr ~ (exprOp | name | scalars | scalar1 | quote) m
-        exprOp ~ '^(<=|>=|==|<|>|\*|\/|\:|in|\,)|(\+)[ ]|(\-)[ ]'
+        expr ~ (exprOp | name | scalars | scalar1 | quote)
+        exprOp ~ '^(<=|>=|==|<|>|\*|\/|\:|in|\,)|(\+)|(\-)[ ]'
     }
     edges ~ edgeOp (edgePar | exprs | edgeItem) comment* {
-
+        
         edgeOp ~ '^([<←][<!@⟐⟡◇→>]+|[!@⟐⟡◇→>]+[>→])'
         edgePar ~ "(" edgeItem+ ")" edges?
         edgeItem ~ (edgeVal | ternary) comment*
         edgeVal ~ (path | name) (edges+ | value)?
-
+        
         ternary ~ "(" tern ")" | tern {
             tern ~ ternIf ternThen ternElse? ternRadio?
             ternIf ~ (path | name) ternCompare?

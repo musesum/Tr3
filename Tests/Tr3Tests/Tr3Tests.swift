@@ -855,7 +855,6 @@ final class Tr3Tests: XCTestCase {
                     w (x 0, y 0, z 0)
                     """)
 
-
         err += test("""
                     a {b c}.{ d(x == 10, y 0, z 0) e(x 0, y == 21, z 0) }
                     """,
@@ -882,8 +881,7 @@ final class Tr3Tests: XCTestCase {
         let root = Tr3("√")
 
         if tr3Parse.parseScript(root, script),
-           let w = root.findPath("w"),
-           let b = root.findPath("a.b.d"){
+           let w = root.findPath("w") {
 
             _ = root.scriptRoot(session: true)
             // 0, 0, 0 --------------------------------------------------
