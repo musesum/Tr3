@@ -20,8 +20,8 @@ tr3 ~ left right* {
         data ~ "*"
     }
     exprs ~ "(" expr+ ("," expr+)* ")" {
-        expr ~ (exprOp | name | scalars | scalar1 | quote)
-        exprOp ~ '^(<=|>=|==|<|>|\*|\/|\+[ ]|\-[ ]|in)'
+        expr ~ (exprOp | name | scalars | scalar1 | quote) m
+        exprOp ~ '^(<=|>=|==|<|>|\*|\/|\:|in|\,)|(\+)[ ]|(\-)[ ]'
     }
     edges ~ edgeOp (edgePar | exprs | edgeItem) comment* {
 

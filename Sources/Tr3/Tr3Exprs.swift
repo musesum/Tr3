@@ -18,7 +18,15 @@ public class Tr3Exprs: Tr3Val {
     /// `t(x/2, y/2) << u(x 1, y 2)` ⟹ `t(x 0.5, y 1.0)` // after u fires
     public var exprs = ContiguousArray<Tr3Expr>()
 
-    override init(_ tr3: Tr3) {
+    /// set of all ops in exprs
+    var opSet = Set<Tr3ExprOp>()
+
+    /// return _0, _1, ... for anonymous values
+    var anonKey: String {
+        String(format: "_%i", nameAny.keys.count)
+    }
+
+    override init(_ tr3: Tr3? = nil) {
         super.init(tr3)
     }
     override init(with tr3Val: Tr3Val) {
@@ -31,25 +39,24 @@ public class Tr3Exprs: Tr3Val {
                 nameAny[name] = val
             }
             for expr in v.exprs {
-                exprs.append(expr.copy())
+                exprs.append(Tr3Expr(from: expr))
             }
+            opSet = v.opSet
         }
     }
-    init(_ tr3: Tr3, point: CGPoint) {
+    init(_ tr3: Tr3? = nil, point: CGPoint) {
         super.init(tr3)
-        valFlags.insert([.names, .num])
-        let x = Tr3ValScalar(tr3, num: Float(point.x))
-        let y = Tr3ValScalar(tr3, num: Float(point.y))
-        nameAny = ["x": x, "y": y]
+        addPoint(point)
     }
-    init(_ tr3: Tr3, nameFloats: [(String, Float)]) {
+    init(_ tr3: Tr3? = nil, nameFloats: [(String, Float)]) {
         super.init(tr3) 
-        valFlags.insert([.names, .num]) 
-        nameAny = [:]
+        opSet = Set<Tr3ExprOp>([.name,.num])
 
-        for (name, val) in nameFloats {
-            let scalar = Tr3ValScalar(tr3, num: val)
-            nameAny[name] = scalar
+        for (name, num) in nameFloats {
+            if exprs.count > 0 {
+                addOpStr(",")
+            }
+           addNameNum(name, num)
         }
     }
     override func copy() -> Tr3Exprs {
@@ -76,7 +83,7 @@ public class Tr3Exprs: Tr3Val {
                 case let v as Tr3ValScalar: floats.append(Float(v.num))
                 case let v as CGFloat: floats.append(Float(v))
                 case let v as Float: floats.append(v)
-                default: print("*** skipping expression value \(value)")
+                default: floats.append(0)
             }
         }
         if floats.isEmpty {
@@ -85,20 +92,21 @@ public class Tr3Exprs: Tr3Val {
         return floats
     }
     // MARK: - Set
-    public override func setVal(_ any: Any?, _ opts: Tr3SetOptions? = nil) {
+    public override func setVal(_ any: Any?, _ opts: Tr3SetOptions? = nil) -> Bool {
 
         if let any = any {
             switch any {
-                case let v as Float:    setFloat(v)
-                case let v as CGFloat:  setFloat(Float(v))
-                case let v as Double:   setFloat(Float(v))
-                case let v as CGPoint:  setPoint(v)
-                case let v as Tr3Exprs: setExprs(to: self, fr: v)
-                case let (n,v) as (String,Float): setNamed(n, v)
-                case let (n,v) as (String,CGFloat): setNamed(n, Float(v))
+                case let v as Float:    return setFloat(v)
+                case let v as CGFloat:  return setFloat(Float(v))
+                case let v as Double:   return setFloat(Float(v))
+                case let v as CGPoint:  return setPoint(v)
+                case let v as Tr3Exprs: return setExprs(from: v)
+                case let (n,v) as (String,Float): return setNamed(n, v)
+                case let (n,v) as (String,CGFloat): return setNamed(n, Float(v))
                 default: print("🚫 mismatched setVal(\(any))")
             }
         }
+        return false
     }
     func setDefaults() {
         if nameAny.count > 0 {
@@ -109,5 +117,13 @@ public class Tr3Exprs: Tr3Val {
             }
         }
     }
-
+    func setNamed(_ name: String, _ value: Float) -> Bool {
+        if let scalar = nameAny[name] as? Tr3ValScalar {
+            scalar.num = value
+        } else {
+            nameAny[name] = Tr3ValScalar(tr3, num: value)
+        }
+        addFlag(.num)
+        return true
+    }
 }

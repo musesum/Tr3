@@ -13,7 +13,7 @@ public class Tr3ValData: Tr3Val {
     var size = 0
     var filename = ""
 
-    override init(_ tr3: Tr3) {
+    override init(_ tr3: Tr3?) {
         super.init(tr3)
     }
     init(with: Tr3ValData) {

@@ -7,383 +7,269 @@
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            uuid = "23ECE306-752F-4B1C-ABFC-881600481763"
+            uuid = "A5E90E78-1361-4A8D-9BDC-B15AF01819D7"
             shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "Tests/Tr3Tests/Tr3Tests.swift"
+            filePath = "Sources/Tr3/Tr3Exprs+script.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "26"
-            endingLineNumber = "26"
-            landmarkName = "test(_:_:)"
+            startingLineNumber = "54"
+            endingLineNumber = "54"
+            landmarkName = "scriptExprs(session:)"
             landmarkType = "7">
+            <Locations>
+               <Location
+                  uuid = "A5E90E78-1361-4A8D-9BDC-B15AF01819D7 - d2932cb0b176cffa"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "Tr3.Tr3Exprs.scriptExprs(session: Swift.Bool) -&gt; Swift.String"
+                  moduleName = "Tr3Tests"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/warren/Dev/Tr3/Tr3/Sources/Tr3/Tr3Exprs+script.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "54"
+                  endingLineNumber = "54"
+                  offsetFromSymbolStart = "736">
+               </Location>
+               <Location
+                  uuid = "A5E90E78-1361-4A8D-9BDC-B15AF01819D7 - d2932cb0b176cffa"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "Tr3.Tr3Exprs.scriptExprs(session: Swift.Bool) -&gt; Swift.String"
+                  moduleName = "Tr3Tests"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/warren/Dev/Tr3/Tr3/Sources/Tr3/Tr3Exprs+script.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "54"
+                  endingLineNumber = "54"
+                  offsetFromSymbolStart = "404">
+               </Location>
+            </Locations>
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            uuid = "19CB1BC2-E535-4373-AA46-E7684172EA89"
+            uuid = "1CE2E639-BE01-4E98-B37C-AB401ED1BEEA"
             shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "Sources/Tr3/Tr3EdgeDefs+Script.swift"
+            filePath = "Sources/Tr3/Tr3Exprs+script.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "21"
-            endingLineNumber = "21"
-            landmarkName = "scriptVal(parens:session:expand:)"
+            startingLineNumber = "65"
+            endingLineNumber = "65"
+            landmarkName = "scriptExprs(session:)"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            uuid = "7F67880C-9A3F-4CC1-A325-474702AF338E"
-            shouldBeEnabled = "Yes"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "Sources/Tr3/Tr3EdgeDef+connect.swift"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "179"
-            endingLineNumber = "179"
-            landmarkName = "connectEdges(_:)"
-            landmarkType = "7">
-            <Locations>
-               <Location
-                  uuid = "7F67880C-9A3F-4CC1-A325-474702AF338E - bc9b87fad733452a"
-                  shouldBeEnabled = "Yes"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "Tr3.Tr3EdgeDef.connectEdges(Tr3.Tr3) -&gt; ()"
-                  moduleName = "Tr3Tests"
-                  usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/warren/Dev/Tr3/Tr3/Sources/Tr3/Tr3EdgeDef+connect.swift"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "180"
-                  endingLineNumber = "180"
-                  offsetFromSymbolStart = "152">
-               </Location>
-               <Location
-                  uuid = "7F67880C-9A3F-4CC1-A325-474702AF338E - bc9b87fad73346cb"
-                  shouldBeEnabled = "Yes"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "Tr3.Tr3EdgeDef.connectEdges(Tr3.Tr3) -&gt; ()"
-                  moduleName = "Tr3Tests"
-                  usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/warren/Dev/Tr3/Tr3/Sources/Tr3/Tr3EdgeDef+connect.swift"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "179"
-                  endingLineNumber = "179"
-                  offsetFromSymbolStart = "152">
-               </Location>
-            </Locations>
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            uuid = "986D1460-3964-4E05-AB8A-AB974E4E1C07"
+            uuid = "984210A4-786D-4F7D-929B-C09FF64C8504"
             shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "Sources/Tr3/Tr3EdgeDefs.swift"
+            filePath = "Sources/Tr3/Tr3Exprs+set.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "106"
-            endingLineNumber = "106"
-            landmarkName = "addEdgeDef(_:)"
-            landmarkType = "7">
-            <Locations>
-               <Location
-                  uuid = "986D1460-3964-4E05-AB8A-AB974E4E1C07 - dacdcd809916be4c"
-                  shouldBeEnabled = "No"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "Tr3.Tr3EdgeDefs.addEdgeDef(Swift.Optional&lt;Swift.String&gt;) -&gt; ()"
-                  moduleName = "Tr3Tests"
-                  usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/warren/Dev/Tr3/Tr3/Sources/Tr3/Tr3EdgeDefs.swift"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "106"
-                  endingLineNumber = "106"
-                  offsetFromSymbolStart = "76">
-               </Location>
-               <Location
-                  uuid = "986D1460-3964-4E05-AB8A-AB974E4E1C07 - dacdcd809916be4c"
-                  shouldBeEnabled = "No"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "Tr3.Tr3EdgeDefs.addEdgeDef(Swift.Optional&lt;Swift.String&gt;) -&gt; ()"
-                  moduleName = "Tr3Tests"
-                  usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/warren/Dev/Tr3/Tr3/Sources/Tr3/Tr3EdgeDefs.swift"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "106"
-                  endingLineNumber = "106"
-                  offsetFromSymbolStart = "112">
-               </Location>
-            </Locations>
+            startingLineNumber = "118"
+            endingLineNumber = "118"
+            landmarkName = "exprLiteral()"
+            landmarkType = "9">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            uuid = "6DEA9EBF-50E2-461E-AFBE-1B9C66FFEB18"
+            uuid = "CFFC11A3-7DAD-4F40-9475-959B4B12CDB8"
             shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "Sources/Tr3/Tr3Parse.swift"
+            filePath = "Sources/Tr3/Tr3+script.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "322"
-            endingLineNumber = "322"
-            landmarkName = "parseEdge(_:_:_:_:)"
-            landmarkType = "7">
-            <Locations>
-               <Location
-                  uuid = "6DEA9EBF-50E2-461E-AFBE-1B9C66FFEB18 - e09284d90afa2c26"
-                  shouldBeEnabled = "No"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "Tr3.Tr3Parse.parseEdge(_: Tr3.Tr3, _: Swift.String, parItem: Par.ParItem, _: Swift.Int) -&gt; Tr3.Tr3"
-                  moduleName = "Tr3Tests"
-                  usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/warren/Dev/Tr3/Tr3/Sources/Tr3/Tr3Parse.swift"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "343"
-                  endingLineNumber = "343"
-                  offsetFromSymbolStart = "628">
-               </Location>
-               <Location
-                  uuid = "6DEA9EBF-50E2-461E-AFBE-1B9C66FFEB18 - e09284d90afa2c26"
-                  shouldBeEnabled = "No"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "Tr3.Tr3Parse.parseEdge(_: Tr3.Tr3, _: Swift.String, parItem: Par.ParItem, _: Swift.Int) -&gt; Tr3.Tr3"
-                  moduleName = "Tr3Tests"
-                  usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/warren/Dev/Tr3/Tr3/Sources/Tr3/Tr3Parse.swift"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "343"
-                  endingLineNumber = "343"
-                  offsetFromSymbolStart = "460">
-               </Location>
-            </Locations>
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            uuid = "F1DB8776-3EE6-4D33-BB4D-8594BEA54635"
-            shouldBeEnabled = "Yes"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "Tests/Tr3Tests/Tr3Tests.swift"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "410"
-            endingLineNumber = "410"
-            landmarkName = "testParseTernarys()"
+            startingLineNumber = "198"
+            endingLineNumber = "198"
+            landmarkName = "scriptRoot(session:)"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            uuid = "2732643D-B078-4581-85C9-24D755F5B620"
-            shouldBeEnabled = "Yes"
+            uuid = "9C722B83-1A82-4148-B701-5867CA89708A"
+            shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "Tests/Tr3Tests/Tr3Tests.swift"
+            filePath = "Sources/Tr3/Tr3Exprs+set.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "1113"
-            endingLineNumber = "1113"
-            landmarkName = "testTernary0()"
-            landmarkType = "7">
+            startingLineNumber = "125"
+            endingLineNumber = "125"
+            landmarkName = "endParameter()"
+            landmarkType = "9">
             <Locations>
                <Location
-                  uuid = "2732643D-B078-4581-85C9-24D755F5B620 - 2bb7f560234038b7"
+                  uuid = "9C722B83-1A82-4148-B701-5867CA89708A - 9e6d24aa2b68c5f8"
                   shouldBeEnabled = "Yes"
                   ignoreCount = "0"
                   continueAfterRunningActions = "No"
-                  symbolName = "Tr3Tests.Tr3Tests.testTernary0() -&gt; ()"
+                  symbolName = "endParameter() -&gt; ()"
                   moduleName = "Tr3Tests"
                   usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/warren/Dev/Tr3/Tr3/Tests/Tr3Tests/Tr3Tests.swift"
+                  urlString = "file:///Users/warren/Dev/Tr3/Tr3/Sources/Tr3/Tr3Exprs+set.swift"
                   startingColumnNumber = "9223372036854775807"
                   endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "1113"
-                  endingLineNumber = "1113"
-                  offsetFromSymbolStart = "1208">
+                  startingLineNumber = "122"
+                  endingLineNumber = "122"
+                  offsetFromSymbolStart = "120">
                </Location>
                <Location
-                  uuid = "2732643D-B078-4581-85C9-24D755F5B620 - 2bb7f560234038b7"
+                  uuid = "9C722B83-1A82-4148-B701-5867CA89708A - 9e6d24aa2b68c5f8"
                   shouldBeEnabled = "Yes"
                   ignoreCount = "0"
                   continueAfterRunningActions = "No"
-                  symbolName = "Tr3Tests.Tr3Tests.testTernary0() -&gt; ()"
+                  symbolName = "endParameter() -&gt; ()"
                   moduleName = "Tr3Tests"
                   usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/warren/Dev/Tr3/Tr3/Tests/Tr3Tests/Tr3Tests.swift"
+                  urlString = "file:///Users/warren/Dev/Tr3/Tr3/Sources/Tr3/Tr3Exprs+set.swift"
                   startingColumnNumber = "9223372036854775807"
                   endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "1113"
-                  endingLineNumber = "1113"
-                  offsetFromSymbolStart = "1240">
-               </Location>
-            </Locations>
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            uuid = "3E487252-F0FD-4165-A664-BDAF30E39A5D"
-            shouldBeEnabled = "Yes"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "Tests/Tr3Tests/Tr3Tests.swift"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "1234"
-            endingLineNumber = "1234"
-            landmarkName = "testD3Script()"
-            landmarkType = "7">
-            <Locations>
-               <Location
-                  uuid = "3E487252-F0FD-4165-A664-BDAF30E39A5D - 5e1eb88c49098eff"
-                  shouldBeEnabled = "Yes"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "Tr3Tests.Tr3Tests.testD3Script() -&gt; ()"
-                  moduleName = "Tr3Tests"
-                  usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/warren/Dev/Tr3/Tr3/Tests/Tr3Tests/Tr3Tests.swift"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "1234"
-                  endingLineNumber = "1234"
-                  offsetFromSymbolStart = "1016">
+                  startingLineNumber = "122"
+                  endingLineNumber = "122"
+                  offsetFromSymbolStart = "188">
                </Location>
                <Location
-                  uuid = "3E487252-F0FD-4165-A664-BDAF30E39A5D - 5e1eb88c49098eff"
+                  uuid = "9C722B83-1A82-4148-B701-5867CA89708A - 9e6d24aa2b68c5f8"
                   shouldBeEnabled = "Yes"
                   ignoreCount = "0"
                   continueAfterRunningActions = "No"
-                  symbolName = "Tr3Tests.Tr3Tests.testD3Script() -&gt; ()"
+                  symbolName = "endParameter() -&gt; ()"
                   moduleName = "Tr3Tests"
                   usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/warren/Dev/Tr3/Tr3/Tests/Tr3Tests/Tr3Tests.swift"
+                  urlString = "file:///Users/warren/Dev/Tr3/Tr3/Sources/Tr3/Tr3Exprs+set.swift"
                   startingColumnNumber = "9223372036854775807"
                   endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "1234"
-                  endingLineNumber = "1234"
-                  offsetFromSymbolStart = "1080">
-               </Location>
-            </Locations>
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            uuid = "53C695FE-7394-4234-B09A-A3B9152E61E6"
-            shouldBeEnabled = "Yes"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "Sources/Tr3/Tr3Parse.swift"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "188"
-            endingLineNumber = "188"
-            landmarkName = "parseNextExpr(_:_:_:)"
-            landmarkType = "7">
-            <Locations>
-               <Location
-                  uuid = "53C695FE-7394-4234-B09A-A3B9152E61E6 - 86bb7018417c25c5"
-                  shouldBeEnabled = "Yes"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "Tr3.Tr3Parse.parseNextExpr(Tr3.Tr3Exprs, Par.ParItem, Swift.String) -&gt; ()"
-                  moduleName = "Tr3Tests"
-                  usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/warren/Dev/Tr3/Tr3/Sources/Tr3/Tr3Parse.swift"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "189"
-                  endingLineNumber = "189"
-                  offsetFromSymbolStart = "196">
-               </Location>
-               <Location
-                  uuid = "53C695FE-7394-4234-B09A-A3B9152E61E6 - 86bb7018417c25e6"
-                  shouldBeEnabled = "Yes"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "Tr3.Tr3Parse.parseNextExpr(Tr3.Tr3Exprs, Par.ParItem, Swift.String) -&gt; ()"
-                  moduleName = "Tr3Tests"
-                  usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/warren/Dev/Tr3/Tr3/Sources/Tr3/Tr3Parse.swift"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "188"
-                  endingLineNumber = "188"
-                  offsetFromSymbolStart = "180">
-               </Location>
-            </Locations>
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            uuid = "7D18986B-7012-4883-B0C0-D2C92B99F93B"
-            shouldBeEnabled = "Yes"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "Sources/Tr3/Tr3+merge.swift"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "378"
-            endingLineNumber = "378"
-            landmarkName = "bindTernaries()"
-            landmarkType = "7">
-            <Locations>
-               <Location
-                  uuid = "7D18986B-7012-4883-B0C0-D2C92B99F93B - 6237b78ca2501152"
-                  shouldBeEnabled = "Yes"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "Tr3.Tr3.bindTernaries() -&gt; ()"
-                  moduleName = "Tr3Tests"
-                  usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/warren/Dev/Tr3/Tr3/Sources/Tr3/Tr3+merge.swift"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "378"
-                  endingLineNumber = "378"
+                  startingLineNumber = "122"
+                  endingLineNumber = "122"
                   offsetFromSymbolStart = "240">
                </Location>
+            </Locations>
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "43002209-C806-4019-92B5-CA198E49F871"
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "Tests/Tr3Tests/Tr3Tests.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "914"
+            endingLineNumber = "914"
+            landmarkName = "testFilter()"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "5809F716-E64C-411A-A556-E4236ECC795A"
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "Sources/Tr3/Tr3Exprs+set.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "80"
+            endingLineNumber = "80"
+            landmarkName = "setExprs(from:)"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "8FEDF77B-6A11-4801-AB96-5B18A3283409"
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "Tests/Tr3Tests/Tr3Tests.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "925"
+            endingLineNumber = "925"
+            landmarkName = "testFilter()"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "7EE9A744-8216-49DF-881F-D62297F5E6EE"
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "Sources/Tr3/Tr3+runtime.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "49"
+            endingLineNumber = "49"
+            landmarkName = "setAny(_:_:_:)"
+            landmarkType = "7">
+            <Locations>
                <Location
-                  uuid = "7D18986B-7012-4883-B0C0-D2C92B99F93B - 6237b78ca2501152"
+                  uuid = "7EE9A744-8216-49DF-881F-D62297F5E6EE - 46a2f99e2adfd7c4"
                   shouldBeEnabled = "Yes"
                   ignoreCount = "0"
                   continueAfterRunningActions = "No"
-                  symbolName = "Tr3.Tr3.bindTernaries() -&gt; ()"
+                  symbolName = "Tr3.Tr3.setAny(Any, Tr3.Tr3SetOptions, Par.Visitor) -&gt; ()"
                   moduleName = "Tr3Tests"
                   usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/warren/Dev/Tr3/Tr3/Sources/Tr3/Tr3+merge.swift"
+                  urlString = "file:///Users/warren/Dev/Tr3/Tr3/Sources/Tr3/Tr3+runtime.swift"
                   startingColumnNumber = "9223372036854775807"
                   endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "378"
-                  endingLineNumber = "378"
-                  offsetFromSymbolStart = "276">
+                  startingLineNumber = "49"
+                  endingLineNumber = "49"
+                  offsetFromSymbolStart = "764">
+               </Location>
+               <Location
+                  uuid = "7EE9A744-8216-49DF-881F-D62297F5E6EE - 46a2f99e2adfd7c4"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "Tr3.Tr3.setAny(Any, Tr3.Tr3SetOptions, Par.Visitor) -&gt; ()"
+                  moduleName = "Tr3Tests"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/warren/Dev/Tr3/Tr3/Sources/Tr3/Tr3+runtime.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "49"
+                  endingLineNumber = "49"
+                  offsetFromSymbolStart = "776">
+               </Location>
+               <Location
+                  uuid = "7EE9A744-8216-49DF-881F-D62297F5E6EE - 46a2f99e2adfd7c4"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "Tr3.Tr3.setAny(Any, Tr3.Tr3SetOptions, Par.Visitor) -&gt; ()"
+                  moduleName = "Tr3Tests"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/warren/Dev/Tr3/Tr3/Sources/Tr3/Tr3+runtime.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "49"
+                  endingLineNumber = "49"
+                  offsetFromSymbolStart = "612">
                </Location>
             </Locations>
          </BreakpointContent>
@@ -391,16 +277,760 @@
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            uuid = "B2FE30E5-7D12-49C5-ABF0-54C2FCB38B51"
+            uuid = "28CE4F37-256A-4C92-A3F5-42F0B0534E89"
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "Sources/Tr3/Tr3Exprs+set.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "63"
+            endingLineNumber = "63"
+            landmarkName = "setExprs(from:)"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "F5E7AFD5-590A-4E18-B942-00A4A7DCE28B"
             shouldBeEnabled = "Yes"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "Sources/Tr3/Tr3Exprs+add.swift"
+            filePath = "Tests/Tr3Tests/Tr3Tests.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "60"
-            endingLineNumber = "60"
-            landmarkName = "addName(_:)"
+            startingLineNumber = "888"
+            endingLineNumber = "888"
+            landmarkName = "testFilter()"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "64DFC412-2A2F-4CE6-A94D-7ED3A7F9D090"
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "Tests/Tr3Tests/Tr3Tests.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "1082"
+            endingLineNumber = "1082"
+            landmarkName = "testExpr4()"
+            landmarkType = "7">
+            <Locations>
+               <Location
+                  uuid = "64DFC412-2A2F-4CE6-A94D-7ED3A7F9D090 - 1ec85b33c1f099ed"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "Tr3Tests.Tr3Tests.testExpr4() -&gt; ()"
+                  moduleName = "Tr3Tests"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/warren/Dev/Tr3/Tr3/Tests/Tr3Tests/Tr3Tests.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "1072"
+                  endingLineNumber = "1072"
+                  offsetFromSymbolStart = "1072">
+               </Location>
+               <Location
+                  uuid = "64DFC412-2A2F-4CE6-A94D-7ED3A7F9D090 - 1ec85b33c1f099ed"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "Tr3Tests.Tr3Tests.testExpr4() -&gt; ()"
+                  moduleName = "Tr3Tests"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/warren/Dev/Tr3/Tr3/Tests/Tr3Tests/Tr3Tests.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "1072"
+                  endingLineNumber = "1072"
+                  offsetFromSymbolStart = "1080">
+               </Location>
+               <Location
+                  uuid = "64DFC412-2A2F-4CE6-A94D-7ED3A7F9D090 - 1ec85b33c1f0971b"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "Tr3Tests.Tr3Tests.testExpr4() -&gt; ()"
+                  moduleName = "Tr3Tests"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/warren/Dev/Tr3/Tr3/Tests/Tr3Tests/Tr3Tests.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "1082"
+                  endingLineNumber = "1082"
+                  offsetFromSymbolStart = "1556">
+               </Location>
+               <Location
+                  uuid = "64DFC412-2A2F-4CE6-A94D-7ED3A7F9D090 - 1ec85b33c1f0971b"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "Tr3Tests.Tr3Tests.testExpr4() -&gt; ()"
+                  moduleName = "Tr3Tests"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/warren/Dev/Tr3/Tr3/Tests/Tr3Tests/Tr3Tests.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "1082"
+                  endingLineNumber = "1082"
+                  offsetFromSymbolStart = "1540">
+               </Location>
+               <Location
+                  uuid = "64DFC412-2A2F-4CE6-A94D-7ED3A7F9D090 - 1ec85b33c1f0971b"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "Tr3Tests.Tr3Tests.testExpr4() -&gt; ()"
+                  moduleName = "Tr3Tests"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/warren/Dev/Tr3/Tr3/Tests/Tr3Tests/Tr3Tests.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "1082"
+                  endingLineNumber = "1082"
+                  offsetFromSymbolStart = "1496">
+               </Location>
+            </Locations>
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "92AD9BF9-E66D-4882-831A-6D42DEB06AE9"
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "Tests/Tr3Tests/Tr3Tests.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "1087"
+            endingLineNumber = "1087"
+            landmarkName = "testExpr4()"
+            landmarkType = "7">
+            <Locations>
+               <Location
+                  uuid = "92AD9BF9-E66D-4882-831A-6D42DEB06AE9 - 1ec85b33c1f096c4"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "Tr3Tests.Tr3Tests.testExpr4() -&gt; ()"
+                  moduleName = "Tr3Tests"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/warren/Dev/Tr3/Tr3/Tests/Tr3Tests/Tr3Tests.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "1081"
+                  endingLineNumber = "1081"
+                  offsetFromSymbolStart = "1456">
+               </Location>
+               <Location
+                  uuid = "92AD9BF9-E66D-4882-831A-6D42DEB06AE9 - 1ec85b33c1f097fe"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "Tr3Tests.Tr3Tests.testExpr4() -&gt; ()"
+                  moduleName = "Tr3Tests"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/warren/Dev/Tr3/Tr3/Tests/Tr3Tests/Tr3Tests.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "1087"
+                  endingLineNumber = "1087"
+                  offsetFromSymbolStart = "1748">
+               </Location>
+               <Location
+                  uuid = "92AD9BF9-E66D-4882-831A-6D42DEB06AE9 - 1ec85b33c1f097fe"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "Tr3Tests.Tr3Tests.testExpr4() -&gt; ()"
+                  moduleName = "Tr3Tests"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/warren/Dev/Tr3/Tr3/Tests/Tr3Tests/Tr3Tests.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "1087"
+                  endingLineNumber = "1087"
+                  offsetFromSymbolStart = "1732">
+               </Location>
+               <Location
+                  uuid = "92AD9BF9-E66D-4882-831A-6D42DEB06AE9 - 1ec85b33c1f097fe"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "Tr3Tests.Tr3Tests.testExpr4() -&gt; ()"
+                  moduleName = "Tr3Tests"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/warren/Dev/Tr3/Tr3/Tests/Tr3Tests/Tr3Tests.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "1087"
+                  endingLineNumber = "1087"
+                  offsetFromSymbolStart = "1740">
+               </Location>
+            </Locations>
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "91BEEEC1-9E28-46F1-B353-4980ED26DA75"
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "Sources/Tr3/Tr3Exprs+set.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "29"
+            endingLineNumber = "29"
+            landmarkName = "setPoint(_:)"
+            landmarkType = "7">
+            <Locations>
+               <Location
+                  uuid = "91BEEEC1-9E28-46F1-B353-4980ED26DA75 - 6e0865ad3549946c"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "Tr3.Tr3Exprs.setPoint(__C.CGPoint) -&gt; ()"
+                  moduleName = "Tr3Tests"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/warren/Dev/Tr3/Tr3/Sources/Tr3/Tr3Exprs+set.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "27"
+                  endingLineNumber = "27"
+                  offsetFromSymbolStart = "284">
+               </Location>
+               <Location
+                  uuid = "91BEEEC1-9E28-46F1-B353-4980ED26DA75 - 6e0865ad3549946c"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "Tr3.Tr3Exprs.setPoint(__C.CGPoint) -&gt; ()"
+                  moduleName = "Tr3Tests"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/warren/Dev/Tr3/Tr3/Sources/Tr3/Tr3Exprs+set.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "27"
+                  endingLineNumber = "27"
+                  offsetFromSymbolStart = "268">
+               </Location>
+            </Locations>
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "8A92EF94-ACE3-4316-8A9C-427FB09F5EA3"
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "Tests/Tr3Tests/Tr3Tests.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "1085"
+            endingLineNumber = "1085"
+            landmarkName = "testExpr4()"
+            landmarkType = "7">
+            <Locations>
+               <Location
+                  uuid = "8A92EF94-ACE3-4316-8A9C-427FB09F5EA3 - 1ec85b33c1f09686"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "Tr3Tests.Tr3Tests.testExpr4() -&gt; ()"
+                  moduleName = "Tr3Tests"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/warren/Dev/Tr3/Tr3/Tests/Tr3Tests/Tr3Tests.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "1079"
+                  endingLineNumber = "1079"
+                  offsetFromSymbolStart = "1368">
+               </Location>
+               <Location
+                  uuid = "8A92EF94-ACE3-4316-8A9C-427FB09F5EA3 - 1ec85b33c1f097b8"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "Tr3Tests.Tr3Tests.testExpr4() -&gt; ()"
+                  moduleName = "Tr3Tests"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/warren/Dev/Tr3/Tr3/Tests/Tr3Tests/Tr3Tests.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "1085"
+                  endingLineNumber = "1085"
+                  offsetFromSymbolStart = "1660">
+               </Location>
+               <Location
+                  uuid = "8A92EF94-ACE3-4316-8A9C-427FB09F5EA3 - 1ec85b33c1f097b8"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "Tr3Tests.Tr3Tests.testExpr4() -&gt; ()"
+                  moduleName = "Tr3Tests"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/warren/Dev/Tr3/Tr3/Tests/Tr3Tests/Tr3Tests.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "1085"
+                  endingLineNumber = "1085"
+                  offsetFromSymbolStart = "1644">
+               </Location>
+               <Location
+                  uuid = "8A92EF94-ACE3-4316-8A9C-427FB09F5EA3 - 1ec85b33c1f097b8"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "Tr3Tests.Tr3Tests.testExpr4() -&gt; ()"
+                  moduleName = "Tr3Tests"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/warren/Dev/Tr3/Tr3/Tests/Tr3Tests/Tr3Tests.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "1085"
+                  endingLineNumber = "1085"
+                  offsetFromSymbolStart = "1636">
+               </Location>
+            </Locations>
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "A1247DC6-0295-4F09-8A47-948093E2E8A1"
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "Sources/Tr3/Tr3Parse.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "206"
+            endingLineNumber = "206"
+            landmarkName = "finishExpr()"
+            landmarkType = "9">
+            <Locations>
+               <Location
+                  uuid = "A1247DC6-0295-4F09-8A47-948093E2E8A1 - 6af4f56589bf32fc"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "finishExpr() -&gt; ()"
+                  moduleName = "Tr3Tests"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/warren/Dev/Tr3/Tr3/Sources/Tr3/Tr3Parse.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "206"
+                  endingLineNumber = "206"
+                  offsetFromSymbolStart = "580">
+               </Location>
+               <Location
+                  uuid = "A1247DC6-0295-4F09-8A47-948093E2E8A1 - 6af4f56589bf32fc"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "finishExpr() -&gt; ()"
+                  moduleName = "Tr3Tests"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/warren/Dev/Tr3/Tr3/Sources/Tr3/Tr3Parse.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "206"
+                  endingLineNumber = "206"
+                  offsetFromSymbolStart = "464">
+               </Location>
+            </Locations>
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "B9364F1D-E4DB-4398-98AA-965553A648AA"
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "Sources/Tr3/Tr3Exprs+script.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "85"
+            endingLineNumber = "85"
+            landmarkName = "scriptExprs(session:)"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "87755821-2BE7-4C23-8E54-D771F3B517EA"
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "Sources/Tr3/Tr3Exprs+script.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "94"
+            endingLineNumber = "94"
+            landmarkName = "scriptExpr()"
+            landmarkType = "9">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "0A7F745C-F3C8-46AE-B7D8-8E6AEC7D12D2"
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "Sources/Tr3/Tr3Exprs+script.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "80"
+            endingLineNumber = "80"
+            landmarkName = "scriptExprs(session:)"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "566B1E45-248C-474A-8D78-DC332DFFAE30"
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "Sources/Tr3/Tr3Exprs+set.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "140"
+            endingLineNumber = "140"
+            landmarkName = "setSetters()"
+            landmarkType = "9">
+            <Locations>
+               <Location
+                  uuid = "566B1E45-248C-474A-8D78-DC332DFFAE30 - 9ed2dc9cd7df06c9"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "setSetters() -&gt; ()"
+                  moduleName = "Tr3Tests"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/warren/Dev/Tr3/Tr3/Sources/Tr3/Tr3Exprs+set.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "141"
+                  endingLineNumber = "141"
+                  offsetFromSymbolStart = "812">
+               </Location>
+               <Location
+                  uuid = "566B1E45-248C-474A-8D78-DC332DFFAE30 - 9ed2dc9cd7df06a6"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "setSetters() -&gt; ()"
+                  moduleName = "Tr3Tests"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/warren/Dev/Tr3/Tr3/Sources/Tr3/Tr3Exprs+set.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "140"
+                  endingLineNumber = "140"
+                  offsetFromSymbolStart = "684">
+               </Location>
+            </Locations>
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "7C49DDA4-BBFB-4D46-995B-9B8E1913E253"
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "Sources/Tr3/Tr3Exprs+set.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "143"
+            endingLineNumber = "143"
+            landmarkName = "setSetters()"
+            landmarkType = "9">
+            <Locations>
+               <Location
+                  uuid = "7C49DDA4-BBFB-4D46-995B-9B8E1913E253 - 9ed2dc9cd7df060b"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "setSetters() -&gt; ()"
+                  moduleName = "Tr3Tests"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/warren/Dev/Tr3/Tr3/Sources/Tr3/Tr3Exprs+set.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "143"
+                  endingLineNumber = "143"
+                  offsetFromSymbolStart = "1024">
+               </Location>
+               <Location
+                  uuid = "7C49DDA4-BBFB-4D46-995B-9B8E1913E253 - 9ed2dc9cd7df060b"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "setSetters() -&gt; ()"
+                  moduleName = "Tr3Tests"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/warren/Dev/Tr3/Tr3/Sources/Tr3/Tr3Exprs+set.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "143"
+                  endingLineNumber = "143"
+                  offsetFromSymbolStart = "812">
+               </Location>
+            </Locations>
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "17B66680-FD6A-48E1-BE31-DAA4D71C4F3A"
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "Sources/Tr3/Tr3Exprs+set.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "147"
+            endingLineNumber = "147"
+            landmarkName = "setSetters()"
+            landmarkType = "9">
+            <Locations>
+               <Location
+                  uuid = "17B66680-FD6A-48E1-BE31-DAA4D71C4F3A - 9ed2dc9cd7df078f"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "setSetters() -&gt; ()"
+                  moduleName = "Tr3Tests"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/warren/Dev/Tr3/Tr3/Sources/Tr3/Tr3Exprs+set.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "147"
+                  endingLineNumber = "147"
+                  offsetFromSymbolStart = "1236">
+               </Location>
+               <Location
+                  uuid = "17B66680-FD6A-48E1-BE31-DAA4D71C4F3A - 9ed2dc9cd7df078f"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "setSetters() -&gt; ()"
+                  moduleName = "Tr3Tests"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/warren/Dev/Tr3/Tr3/Sources/Tr3/Tr3Exprs+set.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "147"
+                  endingLineNumber = "147"
+                  offsetFromSymbolStart = "1056">
+               </Location>
+            </Locations>
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "C5FAC9D4-79EE-40C0-8382-A349ED0220FD"
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "Sources/Tr3/Tr3Exprs+set.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "153"
+            endingLineNumber = "153"
+            landmarkName = "setSetters()"
+            landmarkType = "9">
+            <Locations>
+               <Location
+                  uuid = "C5FAC9D4-79EE-40C0-8382-A349ED0220FD - 9ed2dc9cd7df0755"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "setSetters() -&gt; ()"
+                  moduleName = "Tr3Tests"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/warren/Dev/Tr3/Tr3/Sources/Tr3/Tr3Exprs+set.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "153"
+                  endingLineNumber = "153"
+                  offsetFromSymbolStart = "1652">
+               </Location>
+               <Location
+                  uuid = "C5FAC9D4-79EE-40C0-8382-A349ED0220FD - 9ed2dc9cd7df0755"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "setSetters() -&gt; ()"
+                  moduleName = "Tr3Tests"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/warren/Dev/Tr3/Tr3/Sources/Tr3/Tr3Exprs+set.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "153"
+                  endingLineNumber = "153"
+                  offsetFromSymbolStart = "1576">
+               </Location>
+            </Locations>
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "2B940913-993F-4A48-BE8E-663C28440EA4"
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "Tests/Tr3Tests/Tr3Tests.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "1078"
+            endingLineNumber = "1078"
+            landmarkName = "testExpr4()"
+            landmarkType = "7">
+            <Locations>
+               <Location
+                  uuid = "2B940913-993F-4A48-BE8E-663C28440EA4 - 1ec85b33c1f096a7"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "Tr3Tests.Tr3Tests.testExpr4() -&gt; ()"
+                  moduleName = "Tr3Tests"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/warren/Dev/Tr3/Tr3/Tests/Tr3Tests/Tr3Tests.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "1078"
+                  endingLineNumber = "1078"
+                  offsetFromSymbolStart = "1348">
+               </Location>
+               <Location
+                  uuid = "2B940913-993F-4A48-BE8E-663C28440EA4 - 1ec85b33c1f096a7"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "Tr3Tests.Tr3Tests.testExpr4() -&gt; ()"
+                  moduleName = "Tr3Tests"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/warren/Dev/Tr3/Tr3/Tests/Tr3Tests/Tr3Tests.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "1078"
+                  endingLineNumber = "1078"
+                  offsetFromSymbolStart = "1344">
+               </Location>
+               <Location
+                  uuid = "2B940913-993F-4A48-BE8E-663C28440EA4 - 1ec85b33c1f096a7"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "Tr3Tests.Tr3Tests.testExpr4() -&gt; ()"
+                  moduleName = "Tr3Tests"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/warren/Dev/Tr3/Tr3/Tests/Tr3Tests/Tr3Tests.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "1078"
+                  endingLineNumber = "1078"
+                  offsetFromSymbolStart = "1212">
+               </Location>
+            </Locations>
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "6122C600-5B61-4E60-9335-F321F524AEA4"
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "Sources/Tr3/Tr3Expr+eval.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "32"
+            endingLineNumber = "32"
+            landmarkName = "evaluate(_:_:_:)"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "517D6EFD-5C10-4477-BCD3-D62370A9EAD0"
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "Sources/Tr3/Tr3ValPath.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "40"
+            endingLineNumber = "40"
+            landmarkName = "setVal(_:_:)"
+            landmarkType = "7">
+            <Locations>
+               <Location
+                  uuid = "517D6EFD-5C10-4477-BCD3-D62370A9EAD0 - 5a033fd05f49187e"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "Tr3.Tr3ValPath.getVal() -&gt; Any"
+                  moduleName = "Tr3Tests"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/warren/Dev/Tr3/Tr3/Sources/Tr3/Tr3ValPath.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "41"
+                  endingLineNumber = "41"
+                  offsetFromSymbolStart = "28">
+               </Location>
+               <Location
+                  uuid = "517D6EFD-5C10-4477-BCD3-D62370A9EAD0 - 124e1ac57555d791"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "Tr3.Tr3ValPath.setVal(Swift.Optional&lt;Any&gt;, Swift.Optional&lt;Tr3.Tr3SetOptions&gt;) -&gt; Swift.Bool"
+                  moduleName = "Tr3Tests"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/warren/Dev/Tr3/Tr3/Sources/Tr3/Tr3ValPath.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "40"
+                  endingLineNumber = "40"
+                  offsetFromSymbolStart = "48">
+               </Location>
+            </Locations>
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "E25EE219-786E-459E-9E7C-733D0349E826"
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "Sources/Tr3/Tr3+runtime.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "75"
+            endingLineNumber = "75"
+            landmarkName = "setAny(_:_:_:)"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>

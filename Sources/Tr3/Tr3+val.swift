@@ -11,7 +11,7 @@ extension Tr3 {
 
     public func StringVal() -> String? {
         if let exprs = val as? Tr3Exprs,
-                  let str = exprs.exprs.first?.rvalue as? String {
+                  let str = exprs.exprs.first?.val as? String {
             // anonymous String inside expression
             // example `color ("pipe.color.metal")`
             return str
@@ -108,8 +108,10 @@ extension Tr3 {
     public func getName(in set: Set<String>) -> String? {
         if let exprs = val as? Tr3Exprs {
             for expr in exprs.exprs {
-                if set.contains(expr.name) {
-                    return expr.name
+                if (expr.op == .name || expr.op == .path),
+                    let name = expr.val as? String,
+                    set.contains(name) {
+                    return name
                 }
             }
         }
@@ -128,7 +130,9 @@ extension Tr3 {
         if let exprs = val as? Tr3Exprs {
             var matchCount = 0
             for expr in exprs.exprs {
-                if inNames(expr.name) {
+                if (expr.op == .name || expr.op == .path),
+                   let name = expr.val as? String,
+                   inNames(name) {
                     matchCount += 1
                 }
             }

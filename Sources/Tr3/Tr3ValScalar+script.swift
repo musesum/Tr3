@@ -13,12 +13,15 @@ extension Tr3ValScalar {
         return String(num)
     }
 
-    override func scriptVal(parens: Bool,
+    override func scriptVal(parens: Bool = false,
                             session: Bool,
-                            expand: Bool) -> String  {
+                            expand: Bool = true) -> String  {
         if session {
-            let numStr = String(format: "%g", num)
-            return parens ? "(\(numStr))" : numStr
+            if valFlags.contains(.num) {
+                let numStr = String(format: "%g", num)
+                return parens ? "(\(numStr))" : numStr
+            }
+            return ""
         }
         else {
             var script = parens ? "(" : ""
@@ -27,7 +30,10 @@ extension Tr3ValScalar {
             if valFlags.contains(.thru) { script += "…" /* option+`;` */}
             if valFlags.contains(.modu) { script += "%" }
             if valFlags.contains(.max)  { script += String(format: "%g", max) }
-            if valFlags.intersection([.dflt,.num]) != [] {
+            if valFlags.contains(.dflt) {
+                if valFlags.contains([.min,.max]) { script += " = " }
+                script += String(format: "%g", dflt)
+            } else if valFlags.contains(.num) {
                 if valFlags.contains([.min,.max]) { script += " = " }
                 script += String(format: "%g", num)
             }

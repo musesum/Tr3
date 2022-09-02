@@ -5,59 +5,52 @@ import Foundation
 
 extension Tr3Expr {
 
-    func eval(frScalar: Tr3ValScalar) -> Tr3ValScalar? {
-        if rvalue is Tr3ValScalar {
-            if exprOperator == .none {
+    func evaluate(_ toVal: Any?,
+                  _ frVal: Any?,
+                  _ opNow: Tr3ExprOp) -> Any? {
 
-                return frScalar
-
-            } else if let result = evalScalars(from: frScalar)  {
-
-                return result
-
-            } else {
-
-                print("unknown Tr3Expr rvalue: \(rvalue ?? "nil")")
-                return nil
-            }
-        } else {
-            addExprScalar(frScalar)
-            return frScalar
+        if opNow == .none {
+            return frVal
         }
-    }
-    func evalIsIn(from: Tr3ValScalar) -> Tr3ValScalar? {
-        guard let rvalue = rvalue as? Tr3ValScalar else { return nil }
-        var notZeroNum: Float { return rvalue.num != 0 ? rvalue.num : 1 }
 
-        switch exprOperator {
-            case .In:
+        if let rval = ((toVal as? Tr3ValScalar)?.num ?? (toVal as? Float)),
+           let lval = ((frVal as? Tr3ValScalar)?.num ?? (frVal as? Float)) {
 
-                if from.inRange(of: rvalue.num) {
-                    rvalue.num = from.num
-                    return rvalue
+            if opNow.isConditional() {
+                switch opNow {
+                    case .EQ: return lval == rval ? frVal : nil
+                    case .LE: return lval <= rval ? frVal : nil
+                    case .GE: return lval >= rval ? frVal : nil
+                    case .LT: return lval <  rval ? frVal : nil
+                    case .GT: return lval >  rval ? frVal : nil
+
+                    case .In:
+                        var isIn = false
+                        if let val = toVal as? Tr3ValScalar {
+                            isIn = val.inRange(from: lval)
+                        }
+                        return isIn ? frVal : nil
+                    default : break
                 }
-            default: break
+            } else if opNow.isOperation() {
+
+                switch opNow {
+                    case .Add: return lval + rval
+                    case .Sub: return lval - rval
+                    case .Muy: return lval * rval
+                    case .Div: return lval / (rval == 0 ? 1 : rval)
+                    case .Mod: return fmodf(lval, rval == 0 ? 1 : rval)
+                    case .assign: return frVal
+                    default  : break
+                }
+            } else {
+                return frVal
+            }
+        } else if toVal is String , frVal is String {
+            //TODO: make String,Tr3ValScalar, Num as generic for isConditional, above
+            return frVal
         }
         return nil
     }
-    func evalScalars(from lval: Tr3ValScalar) -> Tr3ValScalar? {
-        guard let rval = rvalue as? Tr3ValScalar else { return nil }
-        var notZeroNum: Float { return rval.num != 0 ? rval.num : 1 }
 
-        switch exprOperator {
-            case .In: return evalIsIn(from: lval)
-            case .EQ: return lval.num == rval.num ? lval : nil
-            case .LE: return lval.num <= rval.num ? lval : nil
-            case .GE: return lval.num >= rval.num ? lval : nil
-            case .LT: return lval.num <  rval.num ? lval : nil
-            case .GT: return lval.num >  rval.num ? lval : nil
-            case .Add: return Tr3ValScalar(rval.tr3, num: lval.num + rval.num)
-            case .Sub: return Tr3ValScalar(rval.tr3, num: lval.num - rval.num)
-            case .Muy: return Tr3ValScalar(rval.tr3, num: lval.num * rval.num)
-            case .Div: return Tr3ValScalar(rval.tr3, num: lval.num / notZeroNum)
-            case .Mod: return Tr3ValScalar(rval.tr3, num: fmodf(lval.num, notZeroNum))
-            case .Now: return Tr3ValScalar(rval.tr3, num: rval.num)
-            default: return lval
-        }
-    }
 }

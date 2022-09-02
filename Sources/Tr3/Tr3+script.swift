@@ -33,6 +33,25 @@ extension Tr3 {
     }
     public func script(compact: Bool) -> String {
 
+        var script = name
+        script.spacePlus(val?.scriptVal())
+
+        if compact {
+            switch children.count {
+                    case 0: script.spacePlus(comments.getComments(.child))
+                    case 1: scriptAddOnlyChild()
+                    default: scriptAddChildren()
+            }
+        } else { // not pretty
+            switch children.count {
+                case 0: script.spacePlus(comments.getComments(.child))
+                default: scriptAddChildren()
+            }
+        }
+        script.spacePlus(edgeDefs.scriptVal())
+        script.spacePlus(comments.getComments(.edges))
+        return script
+
         func scriptAddChildren() {
             script.spacePlus("{")
             script.spacePlus(comments.getComments(.child))
@@ -54,26 +73,6 @@ extension Tr3 {
                 script += child.script(compact: compact)
             }
         }
-
-        // begin --------------------------------------------
-        var script = name
-        script.spacePlus(val?.scriptVal())
-
-        if compact {
-            switch children.count {
-                    case 0: script.spacePlus(comments.getComments(.child))
-                    case 1: scriptAddOnlyChild()
-                    default: scriptAddChildren()
-            }
-        } else { // not pretty
-            switch children.count {
-                case 0: script.spacePlus(comments.getComments(.child))
-                default: scriptAddChildren()
-            }
-        }
-        script.spacePlus(edgeDefs.scriptVal())
-        script.spacePlus(comments.getComments(.edges))
-        return script
     }
 
 

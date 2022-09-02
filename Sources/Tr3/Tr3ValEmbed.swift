@@ -23,10 +23,14 @@ public class Tr3ValEmbed: Tr3Val {
         return embed
     }
 
-    public override func setVal(_ any: Any?, _ options: Tr3SetOptions? = nil) {
+    public override func setVal(_ any: Any?,
+                                _ options: Tr3SetOptions? = nil) -> Bool {
+        
         if let v = any as? Tr3ValEmbed {
             embed = v.embed
+            return true
         }
+        return false
     }
 }
 

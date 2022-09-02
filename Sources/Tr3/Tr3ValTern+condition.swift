@@ -24,11 +24,11 @@ extension Tr3ValTern {
             }
         }
         else if pathTr3s.count > 0,
-            let rightVal = compareRight?.tr3.val {
+            let rightVal = compareRight?.tr3?.val {
 
             for pathTr3 in pathTr3s {
                 if let pathVal = pathTr3.val {
-                    if bothMatchFlags(pathVal, rightVal, [.num, .quote])  {
+                    if bothMatchFlags(pathVal, rightVal, [.num])  {
 
                         switch compareOp {
                         case "==": return pathVal == rightVal
@@ -37,15 +37,6 @@ extension Tr3ValTern {
                         case "<=": return pathVal <= rightVal
                         case "<":  return pathVal <  rightVal
                         case "!=": return pathVal != rightVal
-                        default: break
-                        }
-                    }
-                        // expressions only test for equivalence
-                    else if bothMatchFlags(pathVal, rightVal, [.exprs]) {
-
-                        switch compareOp {
-                        case "==": return pathVal == rightVal 
-                        case "!=": return pathVal != rightVal 
                         default: break
                         }
                     }

@@ -20,7 +20,7 @@ extension Tr3ValTern {
             if let valPath = val as? Tr3ValPath {
                 for pathTr3 in  valPath.pathTr3s  {
                     for pathEdge in pathTr3.tr3Edges.values {
-                        if pathEdge.rightTr3 == tr3 ?? nil {
+                        if pathEdge.rightTr3 == tr3 {
                             pathEdge.active = active
                         }
                     }
@@ -44,7 +44,7 @@ extension Tr3ValTern {
                 tern.recalc(prevTr3, nextTr3, act, visitor)
             }
             else if act != .sneak {
-                tr3.setEdgeVal(val, visitor)
+                tr3?.setEdgeVal(val, visitor)
             }
         }
         func neitherPathVal(_ val: Tr3Val?) {

@@ -22,7 +22,7 @@ class Tr3PathVals {
             else if let exprs = pathVal[path] as? Tr3Exprs,
                     let scalar = val as? Tr3ValScalar {
 
-                exprs.addScalar(scalar)
+                exprs.addDeepScalar(scalar)
 
             } else {
                 pathVal[path] = val

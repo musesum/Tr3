@@ -35,7 +35,7 @@ tr3 ~ left right* {
     }
     exprs ~ "(" expr+ ("," expr+)* ")" {
         expr ~ (exprOp | name | scalars | scalar1 | quote)
-        exprOp ~ '^(<=|>=|==|<|>|\*|\/|\:|in)|(\+)[ ]|(\-)[ ]'
+        exprOp ~ '^(<=|>=|==|<|>|\*|\/|\:|in|\,)|(\+)|(\-)[ ]'
     }
     edges ~ edgeOp (edgePar | exprs | edgeItem) comment* {
 

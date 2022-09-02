@@ -89,11 +89,12 @@ final class Tr3Tests: XCTestCase {
 
     func testParseShort() { headline(#function)
         var err = 0
+        err += test("a(\"b\")")
         err += test("a.b c@a", "a { b } c@a { b }")
         err += test("b(x / 2) a << b(x / 2)")
-//        err += test("a << (a * 1)")
+        err += test("a b << a(* 10)")
         err += test("a (x 1, y 2)")
-         err += test("m (1, 2, 3), n >> m(4, 5, 6)")
+        err += test("m (1, 2, 3), n >> m(4, 5, 6)")
         
         err += test("a { b c } a.*{ d }",
                     "a { b { d } c { d } }")
@@ -447,7 +448,6 @@ final class Tr3Tests: XCTestCase {
                             e { f { i j } g { i j } } } } a.b˚f << (f.i == f.j ? 1 : 0)
                     """)
 
-
         err += test("a {b c}.{d e}.{f g}.{i j} a.b˚f << (f.i ? f.j : 0) ",
                     """
                     a { b { d { f << (f.i ? f.j : 0 ) { i⟐→a.b.d.f j>>a.b.d.f } g { i j } }
@@ -571,33 +571,7 @@ final class Tr3Tests: XCTestCase {
     }
 
 
-    /// test `b >> a(2)` for `b!`
-    func testEdgeVal0() { headline(#function)
-        var err = 0
 
-        // selectively set tuples by name, ignore the reset
-        let script = "x(10), y(20), z(30) c(0) << (x + y + z)"
-        print("\n" + script)
-
-        let root = Tr3("√")
-
-        if tr3Parse.parseScript(root, script, tracePar: true),
-           let x = root.findPath("x"),
-           let y = root.findPath("y"),
-           let c = root.findPath("c") {
-
-            x.setAny(1, .activate)
-            y.setAny(2, .activate)
-            print(c.script(compact: false))
-
-            let result = root.scriptRoot(session: true)
-            err = ParStr.testCompare("x (1), y (2), c (3) << (x + y)", result)
-        }
-        else {
-            err = 1
-        }
-        //??? XCTAssertEqual(err, 0)
-    }
 
     /// test `b >> a(2)` for `b!`
     func testEdgeVal1() { headline(#function)
@@ -693,7 +667,7 @@ final class Tr3Tests: XCTestCase {
     func testEdgeVal4() { headline(#function)
         var err = 0
         // selectively set tuples by name, ignore the reset
-        let script = "a {b c}.{f g} z >> a.b.f(1) >> a˚g(2)"
+        let script = "a {b c}.{f g} z >> (a.b.f(1) a˚g(2))"
         print("\n" + script)
 
         let root = Tr3("√")
@@ -704,7 +678,12 @@ final class Tr3Tests: XCTestCase {
 
             z.activate()
             let result =  root.scriptRoot(session: false)
-            err += ParStr.testCompare("a { b { f(1) g(2) } c { f g(2) } } z >> (a.b.f(1), a.b.g(2), a.c.g(2))", result)
+            err += ParStr.testCompare(
+            """
+            a { b { f(1) g(2) }
+                c { f    g(2) } }
+            z >> (a.b.f(1), a.b.g(2), a.c.g(2))
+            """, result)
         }
         else {
             err += 1
@@ -712,11 +691,11 @@ final class Tr3Tests: XCTestCase {
         XCTAssertEqual(err, 0)
     }
 
-    /// test `z @ _b,_c
+    /// test `z @ b,c
     func testCopyAt() { headline(#function)
         var err = 0
-        err += test("a { _b.bb _c.cc z @ _b,_c }",
-                    "a { _b { bb } _c { cc } z @ _b, _c { bb cc } }")
+        err += test("a { b.bb c.cc z @ b,c }",
+                    "a { b { bb } c { cc } z @ b,c { bb cc } }")
         XCTAssertEqual(err, 0)
     }
 
@@ -895,42 +874,47 @@ final class Tr3Tests: XCTestCase {
                     """)
 
         // selectively set tuples by name, ignore the reset
-        let script = "a {b c}.{ d(x == 10, y 0, z 0) e(x 0, y == 21, z 0) } w(x 0, y 0, z 0) <> a˚."
+        let script = """
+        a {b c}.{ d(x == 10, y 0, z 0)
+                  e(x 0, y == 21, z 0) }
+                  w(x 0, y 0, z 0) <> a˚."
+        """
         let root = Tr3("√")
 
         if tr3Parse.parseScript(root, script),
-           let w = root.findPath("w") {
+           let w = root.findPath("w"),
+           let b = root.findPath("a.b.d"){
 
+            _ = root.scriptRoot(session: true)
             // 0, 0, 0 --------------------------------------------------
-            let t0 = Tr3Exprs(w, nameFloats: [("x", 0), ("y", 0), ("z", 0)])
+            let t0 = Tr3Exprs(nameFloats: [("x", 0), ("y", 0), ("z", 0)])
             w.setAny(t0, .activate)
             let result0 = root.scriptRoot(session: true)
             let expect0 = """
-
-            a { b { d (x 0, y 0, z 0) e (x 0, y 0, z 0) }
-                c { d (x 0, y 0, z 0) e (x 0, y 0, z 0) } }
+            a { b { d (x  , y 0, z 0) e (x 0, y, z 0) }
+                c { d (x  , y 0, z 0) e (x 0, y, z 0) } }
                     w (x 0, y 0, z 0) <> (a.b.d, a.b.e, a.c.d, a.c.e)
             """
             err += ParStr.testCompare(expect0, result0)
 
             // 10, 11, 12 --------------------------------------------------
-            let t1 = Tr3Exprs(w, nameFloats: [("x", 10), ("y", 11), ("z", 12)])
+            let t1 = Tr3Exprs(nameFloats: [("x", 10), ("y", 11), ("z", 12)])
             w.setAny(t1, .activate)
             let result1 = root.scriptRoot(session: true)
             let expect1 = """
-
-            a { b { d (x 10, y 11, z 12) e (x 0, y 0, z 0) }
-                c { d (x 10, y 11, z 12) e (x 0, y 0, z 0) } }
+            a { b { d (x 10, y 11, z 12) e (x 0, y, z 0) }
+                c { d (x 10, y 11, z 12) e (x 0, y, z 0) } }
                     w (x 10, y 11, z 12) <> (a.b.d, a.b.e, a.c.d, a.c.e)
             """
             err += ParStr.testCompare(expect1, result1)
 
             // 20, 21, 22 --------------------------------------------------
-            let t2 = Tr3Exprs(w, nameFloats: [("x", 20), ("y", 21), ("z", 22)])
+            let t2 = Tr3Exprs(nameFloats: [("x", 20), ("y", 21), ("z", 22)])
+
             w.setAny(t2, .activate)
+
             let result2 = root.scriptRoot(session: true)
             let expect2 = """
-
             a { b { d (x 10, y 11, z 12) e (x 20, y 21, z 22) }
                 c { d (x 10, y 11, z 12) e (x 20, y 21, z 22) } }
                     w (x 20, y 21, z 22) <> (a.b.d, a.b.e, a.c.d, a.c.e)
@@ -938,11 +922,10 @@ final class Tr3Tests: XCTestCase {
             err += ParStr.testCompare(expect2, result2)
 
             // 10, 21, 33 --------------------------------------------------
-            let t3 = Tr3Exprs(w, nameFloats: [("x", 10), ("y", 21), ("z", 33)])
+            let t3 = Tr3Exprs(nameFloats: [("x", 10), ("y", 21), ("z", 33)])
             w.setAny(t3, .activate)
             let result3 = root.scriptRoot(session: true)
             let expect3 = """
-
             a { b { d (x 10, y 21, z 33) e (x 10, y 21, z 33) }
                 c { d (x 10, y 21, z 33) e (x 10, y 21, z 33) } }
                     w (x 10, y 21, z 33) <> (a.b.d, a.b.e, a.c.d, a.c.e)
@@ -955,8 +938,62 @@ final class Tr3Tests: XCTestCase {
         XCTAssertEqual(err, 0)
     }
 
+
+    /// test `a(x,y) << b, b(x 0, y 0)
+    func testExpr0() { headline(#function)
+
+        var err = 0
+        // selectively set tuples by name, ignore the reset
+        let script = "a(x, y) << b, b(x 0, y 0)"
+        print("\n" + script)
+
+        let root = Tr3("√")
+
+        if tr3Parse.parseScript(root, script),
+           let b = root.findPath("b") {
+
+            b.setAny(CGPoint(x: 1, y: 2), .activate)
+            let result0 = root.scriptRoot(session: true)
+            let expect0 = "a(x 1, y 2) << b, b(x 1, y 2)"
+            err = ParStr.testCompare(expect0, result0, echo: true)
+
+            let result1 = root.scriptRoot(session: false)
+            let expect1 = "a(x, y) << b, b(x 1, y 2)"
+            err = ParStr.testCompare(expect1, result1, echo: true)
+        }
+        else {
+            err += 1
+        }
+        XCTAssertEqual(err, 0)
+    }
+
+
     /// test `a(x 0) << c, b(y 0) << c, c(x 0, y 0)`
     func testExpr1() { headline(#function)
+
+        var err = 0
+        // selectively set tuples by name, ignore the reset
+        let script = "a(x 0) << c,  c(x 0, y 0)"
+        print("\n" + script)
+
+        let root = Tr3("√")
+
+        if tr3Parse.parseScript(root, script),
+           let c = root.findPath("c") {
+
+            c.setAny(CGPoint(x: 1, y: 2), .activate)
+            let result = root.scriptRoot(session: true)
+            let expect = "a(x 1) << c, c(x 1, y 2)"
+            err = ParStr.testCompare(expect, result, echo: true)
+        }
+        else {
+            err += 1
+        }
+        XCTAssertEqual(err, 0)
+    }
+
+    /// test `a(x 0) << c, b(y 0) << c, c(x 0, y 0)`
+    func testExpr2() { headline(#function)
 
         var err = 0
         // selectively set tuples by name, ignore the reset
@@ -979,7 +1016,7 @@ final class Tr3Tests: XCTestCase {
         XCTAssertEqual(err, 0)
     }
 
-    func testExpr2() { headline(#function)
+    func testExpr3() { headline(#function)
         Par.trace = true
         Par.trace2 = false
         var err = 0
@@ -1004,7 +1041,7 @@ final class Tr3Tests: XCTestCase {
             err += ParStr.testCompare(expect0, result0, echo: true)
 
             let result1 = root.scriptRoot(session: false)
-            let expect1 = "a(x 0…2, y 0…2, z 99), b(x 0…2, y 0…2) << a"
+            let expect1 = "a(x 0…2 = 1, y 0…2 = 1, z 99), b(x 0…2 = 1, y 0…2 = 1) << a"
             err += ParStr.testCompare(expect1, result1, echo: true)
         }
         else {
@@ -1016,7 +1053,7 @@ final class Tr3Tests: XCTestCase {
         Par.trace2 = false
     }
 
-    func testExpr3() { headline(#function)
+    func testExpr4() { headline(#function)
         Par.trace = true
         Par.trace2 = false
         var err = 0
@@ -1028,16 +1065,21 @@ final class Tr3Tests: XCTestCase {
         if tr3Parse.parseScript(root, script),
            let a = root.findPath("a") {
 
-            let result0 = root.scriptRoot(session: false)
-            let expect0 = "a (x in 2…4, y in 3…5) >>b b (x 1…2, y 2…3)"
+            let result0 = root.scriptRoot(session: true)
+            let expect0 = "a (x, y) >> b b(x, y)"
             err += ParStr.testCompare(expect0, result0, echo: true)
 
-            let p1 = CGPoint(x: 3, y: 4)
-            a.setAny(p1, .activate)
+            a.setAny(CGPoint(x: 1, y: 4), .activate)
 
             let result1 = root.scriptRoot(session: true)
-            let expect1 = "a(x 3, y 4) >>b b (x 1.5, y 2.5)"
+            let expect1 = "a(x, y) >> b  b(x, y)"
             err += ParStr.testCompare(expect1, result1, echo: true)
+
+            a.setAny(CGPoint(x: 3, y: 4), .activate)
+
+            let result2 = root.scriptRoot(session: true)
+            let expect2 = "a(x 3, y 4) >> b  b(x 1.5, y 2.5)"
+            err += ParStr.testCompare(expect2, result2, echo: true)
 
         } else {
             err += 1
@@ -1045,6 +1087,54 @@ final class Tr3Tests: XCTestCase {
         XCTAssertEqual(err, 0)
         Par.trace = false
         Par.trace2 = false
+    }
+    /// test `b(sum: x + y + z) << a`
+    func testExpr5() { headline(#function)
+        var err = 0
+
+        // selectively set tuples by name, ignore the reset
+        let script = "a(x 10, y 20, z 30), b(sum: x + y + z) << a, c(x + y + z) << a"
+        print("\n" + script)
+
+        let root = Tr3("√")
+
+        if tr3Parse.parseScript(root, script, tracePar: false),
+           let a = root.findPath("a") {
+
+            let t0 = Tr3Exprs(nameFloats: [("x", 1), ("y", 2), ("z", 3)])
+            a.setAny(t0, .activate)
+
+            let result = root.scriptRoot(session: true)
+            err = ParStr.testCompare("a(x 1, y 2, z 3), b(sum 6) << a, c(x 6) << a", result)
+        }
+        else {
+            err = 1
+        }
+        XCTAssertEqual(err, 0)
+    }
+    /// test `b(sum: x + y + z) << a`
+    func testExpr6() { headline(#function)
+        var err = 0
+
+        // selectively set tuples by name, ignore the reset
+        let script = "a(x 10, y 20, z 30), b(x < 1, y, z) << a, c(x > 0, y, z) << a"
+        print("\n" + script)
+
+        let root = Tr3("√")
+
+        if tr3Parse.parseScript(root, script, tracePar: false),
+           let a = root.findPath("a") {
+
+            let t0 = Tr3Exprs(nameFloats: [("x", 1), ("y", 2), ("z", 3)])
+            a.setAny(t0, .activate)
+
+            let result = root.scriptRoot(session: true)
+            err = ParStr.testCompare("a (x 1, y 2, z 3), b (x, y, z) << a, c (x 1, y 2, z 3) << a", result)
+        }
+        else {
+            err = 1
+        }
+        XCTAssertEqual(err, 0)
     }
 
     func testPassthrough() { headline(#function)
@@ -1300,7 +1390,6 @@ final class Tr3Tests: XCTestCase {
         ("testParseRelativePaths", testParseRelativePaths),
         ("testParseRelativePaths", testParseRelativePaths),
 
-        ("testEdgeVal0", testEdgeVal0),
         ("testEdgeVal1", testEdgeVal1),
         ("testEdgeVal2", testEdgeVal2),
         ("testEdgeVal3a", testEdgeVal3a),
@@ -1313,6 +1402,9 @@ final class Tr3Tests: XCTestCase {
         ("testExpr1", testExpr1),
         ("testExpr2", testExpr2),
         ("testExpr3", testExpr3),
+        ("testExpr4", testExpr4),
+        ("testExpr5", testExpr5),
+
         ("testPassthrough", testPassthrough),
         ("testTernary1", testTernary1),
         ("testTernary2", testTernary2),

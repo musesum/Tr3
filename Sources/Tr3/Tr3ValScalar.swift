@@ -14,15 +14,11 @@ public class Tr3ValScalar: Tr3Val {
     public var max  = Float(1) // maximum value, inclusive for thru
     public var dflt = Float(0) // default value
 
-    override init(_ tr3: Tr3) {
+    override init(_ tr3: Tr3? = nil) {
         super.init(tr3)
     }
-    init(_ tr3: Tr3, with str: String) {
-        super.init(tr3)
-        let val = Float(str) ?? Float.nan
-        addNum(val)
-    }
-    init(_ tr3: Tr3, num: Float) {
+
+    init(_ tr3: Tr3? = nil, num: Float) {
         super.init(tr3)
         valFlags = .num
         self.min = fmin(num, 0.0)
@@ -43,7 +39,7 @@ public class Tr3ValScalar: Tr3Val {
         return newTr3ValScalar
     }
 
-    func addNum(_ n: Float) {
+    func parseNum(_ n: Float) {
 
         if valFlags.contains(.thru) {
             if valFlags.contains(.max) {
@@ -104,17 +100,17 @@ public class Tr3ValScalar: Tr3Val {
     public static func <  (lhs: Tr3ValScalar, rhs: Tr3ValScalar) -> Bool { return lhs.num <  rhs.num }
     public static func != (lhs: Tr3ValScalar, rhs: Tr3ValScalar) -> Bool { return lhs.num != rhs.num }
 
-    public func inRange(of test: Float) -> Bool {
+    public func inRange(from: Float) -> Bool {
 
-        if valFlags.contains(.modu), test > max { return false }
-        if valFlags.contains(.min),  test < min { return false }
-        if valFlags.contains(.max),  test > max { return false }
+        if valFlags.contains(.modu), from > max { return false }
+        if valFlags.contains(.min),  from < min { return false }
+        if valFlags.contains(.max),  from > max { return false }
         return true
     }
 
 
     public override func setVal(_ val: Any?,
-                                _ options: Tr3SetOptions? = nil) {
+                                _ options: Tr3SetOptions? = nil) -> Bool {
 
         if let val = val {
             switch val {
@@ -126,7 +122,8 @@ public class Tr3ValScalar: Tr3Val {
                 default: print("🚫 setVal unknown type for: from")
             }
         }
-
+        return true
+        
         func setFromScalar(_ v: Tr3ValScalar) {
 
             if   valFlags.contains(.thru),
@@ -137,6 +134,7 @@ public class Tr3ValScalar: Tr3Val {
                 let toRange = toMax -   min
                 let frRange = frMax - v.min
                 num = (v.num - v.min) * (toRange / frRange) + min
+                valFlags.insert(.num)
             }
             else if valFlags.contains(.modu) {
 
@@ -145,15 +143,19 @@ public class Tr3ValScalar: Tr3Val {
                 num = fmodf(v.num, max)
             }
             else {
-                num = v.num
-                setInRange()
+                setNumWithFlag(v.num)
             }
         }
-        func setFromFloat(_ v: Int)      { num = Float(v) ; setInRange() }
-        func setFromFloat(_ v: Double)   { num = Float(v) ; setInRange() }
-        func setFromFloat(_ v: CGFloat)  { num = Float(v) ; setInRange() }
-        func setFromFloat(_ v: Float)    { num = v        ; setInRange() }
-
+        func setFromFloat(_ v: Int)      { setNumWithFlag(Float(v)) }
+        func setFromFloat(_ v: Double)   { setNumWithFlag(Float(v)) }
+        func setFromFloat(_ v: CGFloat)  { setNumWithFlag(Float(v)) }
+        func setFromFloat(_ v: Float)    { setNumWithFlag(v       ) }
+        
+        func setNumWithFlag(_ n: Float) {
+            num = n
+            valFlags.insert(.num)
+            setInRange()
+        }
         func setInRange() {
 
             if valFlags.contains(.modu) { num = fmodf(num, max) }

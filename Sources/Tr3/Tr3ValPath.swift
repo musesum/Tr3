@@ -11,11 +11,11 @@ public class Tr3ValPath: Tr3Val {
     @objc  var path = ""
     var pathTr3s = [Tr3]()
 
-    override init(_ tr3: Tr3) {
+    override init(_ tr3: Tr3?) {
         super.init(tr3)
     }
 
-    init(_ tr3: Tr3, with path: String) {
+    init(_ tr3: Tr3? = nil, with path: String) {
         super.init(tr3)
         self.path = path
     }
@@ -34,8 +34,10 @@ public class Tr3ValPath: Tr3Val {
     }
 
 
-    public override func setVal(_ any: Any?, _ options: Tr3SetOptions? = nil) {
+    public override func setVal(_ any: Any?,
+                                _ options: Tr3SetOptions? = nil) -> Bool {
          //TODO: is ever used during runtime?
+        return true
     }
     public override func getVal() -> Any {
         return path

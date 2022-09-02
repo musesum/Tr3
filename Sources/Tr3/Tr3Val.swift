@@ -19,7 +19,7 @@ protocol Tr3ValProtocal {
 public class Tr3Val: Comparable {
 
     var id = Visitor.nextId()
-    var tr3: Tr3  // tr3 that declared and contains this value
+    var tr3: Tr3?  // tr3 that declared and contains this value
     var valFlags = Tr3ValFlags(rawValue: 0) // which combination of the following?
 
     public static func == (lhs: Tr3Val, rhs: Tr3Val) -> Bool {
@@ -29,7 +29,7 @@ public class Tr3Val: Comparable {
         return lhs.id < rhs.id
     }
 
-    init(_ tr3: Tr3) {
+    init(_ tr3: Tr3?) {
         self.tr3 = tr3
     }
     init(with tr3Val: Tr3Val) {
@@ -47,9 +47,14 @@ public class Tr3Val: Comparable {
     func addFlag(_ flag_: Tr3ValFlags) {
         valFlags.insert(flag_)
     }
-    public func setVal(_ from: Any?, _ option: Tr3SetOptions? = nil) {
+    
+    public func setVal(_ from: Any?,
+                       _ option: Tr3SetOptions? = nil) -> Bool {
+
         assertionFailure("🚫 setVal needs override")
+        return false
     }
+    
     public func getVal() -> Any {
         assertionFailure("🚫 getVal needs override")
     }

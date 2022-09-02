@@ -55,7 +55,7 @@ public class Tr3Parse {
     ///  - Parameters:
     ///      - tr3:     current Tr3
     ///      - prior:   prior keyword
-    ///      - parItem: node in parse graph
+    ///      - par: node in parse graph
     ///      - level:   Level depth
     ///
     ///
@@ -65,37 +65,37 @@ public class Tr3Parse {
     ///
     func parseLeft(_ tr3: Tr3,
                    _ prior: String,
-                   _ parItem: ParItem,
+                   _ par: ParItem,
                    _ level: Int) -> Tr3 {
 
         switch prior {
 
             case "edges", "ternIf", "ternThen", "ternElse", "ternRadio", "ternCompare":
 
-                tr3.edgeDefs.lastEdgeDef().addPath(parItem)
+                tr3.edgeDefs.lastEdgeDef().addPath(par)
 
             case "copyat":
 
-                let _ = tr3.addChild(parItem, .copyat)
+                let _ = tr3.addChild(par, .copyat)
 
             case "expr":
                 if let edgeDef = tr3.edgeDefs.edgeDefs.last,
                    let edgePath = edgeDef.pathVals.pathVal.keys.last,
                    let edgeVal = edgeDef.pathVals.pathVal[edgePath] as? Tr3Exprs {
 
-                    parseNextExpr(edgeVal, parItem, prior)
+                    parseNextExpr(tr3, edgeVal, par, prior)
                 }
                 else if let tr3Val = tr3.val as? Tr3Exprs {
 
-                    parseNextExpr(tr3Val, parItem, prior)
+                    parseNextExpr(tr3, tr3Val, par, prior)
                 }
 
             default:
-                let pattern = parItem.node?.pattern
+                let pattern = par.node?.pattern
                 switch pattern {
-                    case "comment": tr3.comments.addComment(tr3, parItem, prior)
-                    case "name": return tr3.addChild(parItem, .name)
-                    case "path": return tr3.addChild(parItem, .path)
+                    case "comment": tr3.comments.addComment(tr3, par, prior)
+                    case "name": return tr3.addChild(par, .name)
+                    case "path": return tr3.addChild(par, .path)
                     default: break
                 }
         }
@@ -106,11 +106,11 @@ public class Tr3Parse {
     ///
     func parseComment(_ tr3: Tr3,
                       _ prior: String,
-                      _ parItem: ParItem,
+                      _ par: ParItem,
                       _ level: Int) -> Tr3 {
 
-        if parItem.node?.pattern == "comment" {
-            tr3.comments.addComment(tr3, parItem, prior)
+        if par.node?.pattern == "comment" {
+            tr3.comments.addComment(tr3, par, prior)
         }
         return tr3
     }
@@ -122,57 +122,55 @@ public class Tr3Parse {
     ///
     func parseDeepVal(_ tr3: Tr3,
                       _ val: Tr3Val?,
-                      _ parItem: ParItem)  {
+                      _ par: ParItem)  {
 
-        let pattern = parItem.node?.pattern ?? ""
+        let pattern = par.node?.pattern ?? ""
 
         switch val {
-            case let val as Tr3ValScalar: parseDeepScalar(val, parItem)
-            case let val as Tr3Exprs:     parseNextExpr(val, parItem, pattern)
-            case let val as Tr3ValTern:   parseTernary(tr3, val, parItem, pattern)
+            case let val as Tr3ValScalar: parseDeepScalar(val, par)
+            case let val as Tr3Exprs:     parseNextExpr(tr3, val, par, pattern)
+            case let val as Tr3ValTern:   parseTernary(tr3, val, par, pattern)
             default: break
         }
     }
 
-    ///
     /// parse Ternary
     ///
     func parseTernary(_ tr3: Tr3,
                       _ val: Tr3ValTern,
-                      _ parItem: ParItem,
+                      _ par: ParItem,
                       _ pattern: String)  {
         switch pattern {
 
             case "scalar1":
                 let scalar = Tr3ValScalar(tr3)
                 val.deepAddVal(scalar)
-                parseDeepScalar(scalar, parItem)
+                parseDeepScalar(scalar, par)
 
             case "data":  val.deepAddVal(Tr3ValData(tr3))
             case "exprs": val.deepAddVal(Tr3Exprs(tr3))
-            default: parseDeepVal(tr3, val.getVal(), parItem) // decorate deepest non tern value
+            default: parseDeepVal(tr3, val.getVal(), par) // decorate deepest non tern value
         }
     }
-    ///
-    /// decorate current value with attributes
+
+    /// decorate current scalar with min, …, max, num, = dflt
     ///
     func parseDeepScalar(_ scalar: Tr3ValScalar,
-                         _ parItem: ParItem)  {
+                         _ par: ParItem)  {
 
-        let pattern = parItem.node?.pattern ?? ""
+        let pattern = par.node?.pattern ?? ""
 
         switch pattern {
             case "thru": scalar.addFlag(.thru)
             case "modu": scalar.addFlag(.modu)
-            case "num":  scalar.addNum(parItem.getFirstFloat())
+            case "num":  scalar.parseNum(par.getFirstFloat())
             default:     break
         }
-        for nextPar in parItem.nextPars {
+        for nextPar in par.nextPars {
             parseDeepScalar(scalar, nextPar)
         }
     }
 
-    ///
     /// parse next expression
     ///
     ///     exprs ~ "(" expr+ ("," expr+)* ")" {
@@ -180,41 +178,82 @@ public class Tr3Parse {
     ///         exprOp ~ '^(<=|>=|==|<|>|\*|\/|\+[ ]|\-[ ]|in)'
     ///     }
     ///
-    func parseNextExpr(_ exprs: Tr3Exprs,
-                       _ parItem: ParItem,
+    func parseNextExpr(_ tr3: Tr3,
+                       _ exprs: Tr3Exprs,
+                       _ par: ParItem,
                        _ prior: String) {
 
-        if prior == "expr" {
-            exprs.addExpr()
-        }
+        var hasOp = false
+        var hasIn = false
+        var scalar: Tr3ValScalar?
+        var name: String?
 
-        for nextPar in parItem.nextPars {
-
-            func addDeepScalar() {
-                let scalar = exprs.addScalar()
-                for deepPar in nextPar.nextPars {
-                    parseDeepScalar(scalar, deepPar)
-                }
-            }
-            func addExprOp() {
-                exprs.addOpStr(nextPar.value)
-            }
-            func nextNextVal() -> String? {
-                if let str = nextPar.nextPars.first?.value {
-                    return str
-                } else {
-                    print("🚫 \(#function) unexpected value for \(pattern)")
-                }
-                return nil
-            }
+        for nextPar in par.nextPars {
             let pattern = nextPar.node?.pattern
             switch pattern {
-                case ""        : exprs.addOpStr(nextPar.value)
-                case "name"    : exprs.addName(nextNextVal())
-                case "quote"   : exprs.addQuote(nextNextVal())
-                case "scalar1" : addDeepScalar()
+                case ""        : addExprOp(nextPar)
+                case "name"    : addName(nextPar)
+                case "quote"   : addQuote(nextPar)
+                case "scalar1" : addDeepScalar(nextPar)
                 default        : break
             }
+        }
+        finishExpr()
+        func finishExpr() {
+            if hasIn, let name, let scalar {
+                hasIn = false
+                let copy = scalar.copy()
+                exprs.nameAny[name] = copy
+            }
+        }
+        func addDeepScalar(_ nextPar: ParItem) {
+            scalar = Tr3ValScalar(tr3)
+            guard let scalar else { return }
+
+            if hasOp {
+                /// `c` in `a(b < c)` so don't add nameAny["c"]
+                exprs.addScalar(scalar)
+            } else {
+                /// `b` in `a(b < c)` so add a nameAny["c"]
+                exprs.addDeepScalar(scalar)
+            }
+            for deepPar in nextPar.nextPars {
+                parseDeepScalar(scalar, deepPar)
+            }
+        }
+        func addName(_ nextPar: ParItem)  {
+            name = nextNextVal(nextPar)
+            exprs.addName(name)
+        }
+        func addQuote(_ nextPar: ParItem)  {
+            exprs.addQuote(nextNextVal(nextPar))
+        }
+
+        func addExprOp(_ nextPar: ParItem)  {
+
+            let val = nextPar.value
+            exprs.addOpStr(val)
+            switch val {
+                case ",":
+                    finishExpr()
+                    hasOp = false
+
+                case "in":
+
+                    hasOp = true
+                    hasIn = true
+
+                default:
+                    hasOp = true
+            }
+        }
+        func nextNextVal(_ nextPar: ParItem) -> String? {
+            if let str = nextPar.nextPars.first?.value {
+                return str
+            } else {
+                print("🚫 \(#function) unexpected value for \(nextPar.node?.pattern.description ?? "")")
+            }
+            return nil
         }
     }
 
@@ -222,7 +261,7 @@ public class Tr3Parse {
     ///
     func parseExprs(_ tr3: Tr3,
                     _ prior: String,
-                    _ parItem: ParItem,
+                    _ par: ParItem,
                     _ level: Int) -> Tr3 {
         switch prior {
             case "many",
@@ -232,12 +271,12 @@ public class Tr3Parse {
                 
             case "edges":
 
-                tr3.edgeDefs.addEdgeExprs(tr3)
+                tr3.edgeDefs.parseEdgeExprs(tr3)
 
             default: print("🚫 unknown prior: \(prior)")
         }
-        let pattern = parItem.node?.pattern ?? ""
-        let nextTr3 = parseNext(tr3, pattern, parItem, level+1)
+        let pattern = par.node?.pattern ?? ""
+        let nextTr3 = parseNext(tr3, pattern, par, level+1)
         return nextTr3
     }
 
@@ -248,19 +287,19 @@ public class Tr3Parse {
     ///
     func parseValue(_ tr3: Tr3,
                     _ prior: String,
-                    _ parItem: ParItem,
+                    _ par: ParItem,
                     _ level: Int) -> Tr3 {
 
-        let pattern = parItem.node?.pattern ?? ""
+        let pattern = par.node?.pattern ?? ""
 
         if let edgeDef = tr3.edgeDefs.edgeDefs.last {
 
-            return parseEdgeDef(tr3, edgeDef, parItem, level)
+            return parseEdgeDef(tr3, edgeDef, par, level)
 
         } else if tr3.val == nil {
             // nil in `a*_`
             switch pattern {
-                case "embed"    : tr3.val = Tr3ValEmbed(tr3, str: parItem.getFirstValue())
+                case "embed"    : tr3.val = Tr3ValEmbed(tr3, str: par.getFirstValue())
                 case "scalar1"  : tr3.val = Tr3ValScalar(tr3)
                 case "data"     : tr3.val = Tr3ValData(tr3)
                 case "exprs"    : tr3.val = Tr3Exprs(tr3)
@@ -268,29 +307,32 @@ public class Tr3Parse {
             }
         } else {
             // x y in `a(x y)`
-            parseDeepVal(tr3, tr3.val, parItem)
+            parseDeepVal(tr3, tr3.val, par)
             // keep prior while decorating Tr3.val
             return tr3
         }
-        return parseNext(tr3, pattern, parItem, level+1)
+        return parseNext(tr3, pattern, par, level+1)
     }
 
     func parseEdgeDef(_ tr3: Tr3,
                       _ edgeDef: Tr3EdgeDef,
-                      _ parItem: ParItem,
+                      _ par: ParItem,
                       _ level: Int) -> Tr3 {
-        let pattern = parItem.node?.pattern ?? ""
+
+        let pattern = par.node?.pattern ?? ""
         // 9 in `a(8) <- (b ? 9)`
         if let path = edgeDef.pathVals.pathVal.keys.last {
 
             if let lastVal = edgeDef.pathVals.pathVal[path], lastVal != nil {
-                parseDeepVal(tr3, lastVal, parItem)
+                parseDeepVal(tr3, lastVal, par)
                 return tr3
 
             } else  {
-                func addVal(_ val: Tr3Val) { edgeDef.pathVals.add(path: path, val: val) }
+                func addVal(_ val: Tr3Val) {
+                    edgeDef.pathVals.add(path: path, val: val)
+                }
                 switch pattern {
-                    case "embed"   : addVal(Tr3ValEmbed(tr3, str: parItem.getFirstValue()))
+                    case "embed"   : addVal(Tr3ValEmbed(tr3, str: par.getFirstValue()))
                     case "scalar1" : addVal(Tr3ValScalar(tr3))
                     case "data"    : addVal(Tr3ValData(tr3))
                     case "exprs"   : addVal(Tr3Exprs(tr3))
@@ -301,9 +343,9 @@ public class Tr3Parse {
 
         } else if let ternVal = edgeDef.ternVal {
 
-            parseDeepVal(tr3, ternVal, parItem)
+            parseDeepVal(tr3, ternVal, par)
         }
-        return parseNext(tr3, pattern, parItem, level+1)
+        return parseNext(tr3, pattern, par, level+1)
     }
     // MARK: - Tree Graph
 
@@ -311,26 +353,22 @@ public class Tr3Parse {
     ///
     func parseEdge(_ tr3: Tr3,
                    _ prior: String,
-                   _ parItem: ParItem,
+                   _ par: ParItem,
                    _ level: Int) -> Tr3 {
 
-        if let pattern = parItem.node?.pattern {
+        if let pattern = par.node?.pattern {
 
             switch pattern {
-                case "edgeOp":
-                    let firstVal = parItem.getFirstValue()
-                    tr3.edgeDefs.addEdgeDef(firstVal)
-                case "edges":
-                    let firstVal = parItem.getFirstValue()
-                    tr3.edgeDefs.addEdgeDef(firstVal)//??? break
+                case "edgeOp"      : tr3.edgeDefs.addEdgeDef(par.getFirstValue())
+                case "edges"       : tr3.edgeDefs.addEdgeDef( par.getFirstValue())
                 case "ternIf"      : tr3.edgeDefs.addEdgeTernary(Tr3ValTern(tr3, level))
                 case "ternThen"    : Tr3ValTern.setTernState(.Then,  level)
                 case "ternElse"    : Tr3ValTern.setTernState(.Else,  level)
                 case "ternRadio"   : Tr3ValTern.setTernState(.Radio, level)
-                case "ternCompare" : Tr3ValTern.setCompare(parItem.getFirstValue())
+                case "ternCompare" : Tr3ValTern.setCompare(par.getFirstValue())
                 default            : break
             }
-            return parseNext(tr3, pattern, parItem, level+1)
+            return parseNext(tr3, pattern, par, level+1)
         }
         return tr3
     }
@@ -339,22 +377,22 @@ public class Tr3Parse {
     ///
     func parseTree(_ tr3: Tr3,
                    _ prior: String,
-                   _ parItem: ParItem,
+                   _ par: ParItem,
                    _ level: Int) -> Tr3 {
 
-        let pattern = parItem.node?.pattern ?? ""
+        let pattern = par.node?.pattern ?? ""
 
         switch pattern {
-            case "name"     : return tr3.addChild(parItem, .name)
-            case "path"     : return tr3.addChild(parItem, .path)
-            case "comment"  : tr3.comments.addComment(tr3, parItem, prior)
+            case "name"     : return tr3.addChild(par, .name)
+            case "path"     : return tr3.addChild(par, .path)
+            case "comment"  : tr3.comments.addComment(tr3, par, prior)
             default         : break
         }
 
         let parentTr3 = pattern == "many" ? tr3.makeMany() : tr3
         var nextTr3 = parentTr3
 
-        for nextPar in parItem.nextPars {
+        for nextPar in par.nextPars {
 
             switch  nextPar.node?.pattern  {
 
@@ -380,10 +418,10 @@ public class Tr3Parse {
    ///
     func parseNext(_ tr3: Tr3,
                    _ prior: String,
-                   _ parItem: ParItem,
+                   _ par: ParItem,
                    _ level: Int) -> Tr3 {
 
-        for nextPar in parItem.nextPars {
+        for nextPar in par.nextPars {
             let _ = self.dipatchParse(tr3, prior, nextPar, level+1)
         }
         return tr3
@@ -398,21 +436,21 @@ public class Tr3Parse {
     ///
     func dipatchParse(_ tr3: Tr3,
                        _ prior: String,
-                       _ parItem: ParItem,
+                       _ par: ParItem,
                        _ level: Int) -> Tr3 {
 
-        // log(tr3, parItem, level)  // log progress through parse, here
+        // log(tr3, par, level)  // log progress through parse, here
 
-        if  let pattern = parItem.node?.pattern,
+        if  let pattern = par.node?.pattern,
             let tr3Parse = tr3Keywords[pattern] {
 
-            return tr3Parse(tr3, prior, parItem, level+1)
+            return tr3Parse(tr3, prior, par, level+1)
         }
-        // `^( < | <= | > | >= | == | *[ ] | \[ ] | +[ ] | -[ ] | \% )`
-        else if let value = parItem.value,
+        // `^( < | <= | > | >= | == | *[ ] | \[ ] | +[ ] | -[ ] | \% | ,)`
+        else if let value = par.value,
                 let tr3Parse = tr3Keywords[value] {
             
-            return tr3Parse(tr3, prior, parItem, level+1)
+            return tr3Parse(tr3, prior, par, level+1)
         }
         return tr3
     }
@@ -437,13 +475,13 @@ public class Tr3Parse {
         let parStr = ParStr(script)
         parStr.whitespace = whitespace
     
-        if let parItem = rootParNode.findMatch(parStr, 0).parLast {
+        if let par = rootParNode.findMatch(parStr, 0).parLast {
 
             if printGraph {
                 rootParNode.printGraph(Visitor(0))
             }
             // reduce to keywords in tr3Keywords and print
-            let reduce1 = parItem.reduceStart(tr3Keywords)
+            let reduce1 = par.reduceStart(tr3Keywords)
             let _ = dipatchParse(root, "", reduce1, 0)
             root.bindRoot()
            

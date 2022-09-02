@@ -7,71 +7,60 @@ import Par
 
 extension Tr3Exprs {
 
-    func addExpr() {
-        let expr = Tr3Expr()
-        exprs.append(expr)
-        valFlags.insert(.exprs)
-    }
-    func addPath(_ parItem: ParItem) {
-        if let name = parItem.nextPars.first?.value {
-            addName(name)
-        }
-    }
     func addScalar(_ scalar: Tr3ValScalar) {
-        if let expr = exprs.last {
-            if expr.rvalue != nil {
-                let expr = Tr3Expr()
-                exprs.append(expr)
-                expr.addExprScalar(scalar)
-            } else {
-                expr.addExprScalar(scalar)
-            }
-            if let lastName = nameAny.keys.last,
-               expr.exprOperator == .none {
-                nameAny[lastName] = scalar
-            }
-        }
+        let expr = Tr3Expr(scalar: scalar)
+        exprs.append(expr)
+        opSet.insert(.scalar)
     }
-    func addScalar(_ num: Float? = nil ) -> Tr3ValScalar {
-        var scalar: Tr3ValScalar
-        if let num = num {
-            scalar = Tr3ValScalar(self.tr3, num: num)
+    func addDeepScalar(_ scalar: Tr3ValScalar) {
+        let expr = Tr3Expr(scalar: scalar)
+        exprs.append(expr)
+        nameAny[nameAny.keys.last ?? anonKey] = scalar
+        opSet.insert(.scalar)
+    }
+    func addNameNum(_ name: String, _ num: Float) {
+        addName(name)
+        addDeepScalar(Tr3ValScalar(tr3, num: num))
+    }
+    func injectNameNum(_ name: String, _ num: Float) {
+        if let val = nameAny[name] as? Tr3ValScalar {
+            val.num = num
         } else {
-            scalar = Tr3ValScalar(self.tr3)
+            nameAny[name] = Tr3ValScalar(tr3, num: num)
         }
-        addScalar(scalar)
-        return scalar
+        opSet.insert(.name)
+        opSet.insert(.scalar)
+    }
+
+    func addPoint(_ p: CGPoint) {
+        opSet = Set<Tr3ExprOp>([.name,.num])
+        injectNameNum("x", Float(p.x))
+        addOpStr(",")
+        injectNameNum("y", Float(p.y))
     }
     func addOpStr(_ opStr: String?) {
         if let opStr = opStr?.without(trailing: " ")  {
-            exprs.last?.addOpStr(opStr)
+            let expr = Tr3Expr(op: opStr)
+            exprs.append(expr)
         }
     }
     func addQuote(_ quote: String?) {
         if let quote = quote?.without(trailing: " ")  {
-            exprs.last?.addQuote(quote)
-            if let name = nameAny.keys.last {
-                nameAny[name] = quote
-            }
+            let expr = Tr3Expr(quote: quote)
+            exprs.append(expr)
+            nameAny[nameAny.keys.last ?? anonKey] = quote
+            opSet.insert(.quote)
         }
     }
     func addName(_ name: String?) {
+
         guard let name = name else { return }
+        let expr = Tr3Expr(name: name)
+        exprs.append(expr)
+        opSet.insert(.name)
+
         if !nameAny.keys.contains(name) {
-            nameAny[name] = Tr3ValScalar(self.tr3) //placeholder
-            valFlags.insert([.names])
-        }
-        if let expr = exprs.last {
-            expr.addExprName(name)
-            valFlags.insert([.exprs])
-        }
-    }
-    func addNum(_ num: Float) {
-        if let name = nameAny.keys.last,
-           let scalar = nameAny[name] as? Tr3ValScalar {
-            scalar.addNum(num)
-        } else {
-            _ = addScalar(num)
+            nameAny[name] = ""
         }
     }
    

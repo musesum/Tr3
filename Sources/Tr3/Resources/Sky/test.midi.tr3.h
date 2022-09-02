@@ -90,8 +90,8 @@ midi { // musical instrument device interface
                 soundControl10 (num == 79, val, chan, time)
             }
             _undefined {
-                undefined_3       (num == 3       , val, chan, time)
-                undefined_9       (num == 9       , val, chan, time)
+                undefined_3       (num == 3      , val, chan, time)
+                undefined_9       (num == 9      , val, chan, time)
                 undefined_14_31   (num in 14…31  , val, chan, time)
                 undefined_85_90   (num in 85…90  , val, chan, time)
                 undefined_102_119 (num in 102…119, val, chan, time)
