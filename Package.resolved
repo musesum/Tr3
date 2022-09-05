@@ -1,25 +1,32 @@
 {
-  "object": {
-    "pins": [
-      {
-        "package": "Par",
-        "repositoryURL": "https://github.com/musesum/Par.git",
-        "state": {
-          "branch": null,
-          "revision": "78187ee7259bcde4362ddf981b23117832d60a36",
-          "version": "0.2.14"
-        }
-      },
-      {
-        "package": "swift-collections",
-        "repositoryURL": "https://github.com/apple/swift-collections",
-        "state": {
-          "branch": null,
-          "revision": "48254824bb4248676bf7ce56014ff57b142b77eb",
-          "version": "1.0.2"
-        }
+  "pins" : [
+    {
+      "identity" : "musky",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/musesum/MuSky.git",
+      "state" : {
+        "revision" : "acca3dcc93523ef37dd6aafb578ddb7a194d64af",
+        "version" : "0.0.3"
       }
-    ]
-  },
-  "version": 1
+    },
+    {
+      "identity" : "par",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/musesum/Par.git",
+      "state" : {
+        "revision" : "71141072e17c33491f854fe98cf4b748f0419bd7",
+        "version" : "0.2.31"
+      }
+    },
+    {
+      "identity" : "swift-collections",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/apple/swift-collections.git",
+      "state" : {
+        "revision" : "f504716c27d2e5d4144fa4794b12129301d17729",
+        "version" : "1.0.3"
+      }
+    }
+  ],
+  "version" : 2
 }

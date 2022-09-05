@@ -11,7 +11,7 @@ import Par
 public class Tr3Edge: Hashable {
 
     var id = Visitor.nextId()
-    var key = "" // created with makeKey()
+    var edgeKey = "" // created with makeKey()
 
     var edgeFlags = Tr3EdgeFlags()
     var active = true
@@ -22,11 +22,11 @@ public class Tr3Edge: Hashable {
     public static var LineageDepth = 99 //?? was 2 useful for debugging
 
     public func hash(into hasher: inout Hasher) {
-        hasher.combine(key)
+        hasher.combine(edgeKey)
     }
 
     public static func == (lhs: Tr3Edge, rhs: Tr3Edge) -> Bool {
-        return lhs.key == rhs.key
+        return lhs.edgeKey == rhs.edgeKey
     }
 
     convenience init(with: Tr3Edge) { // was operator = in c++ version
@@ -51,8 +51,8 @@ public class Tr3Edge: Hashable {
     func makeKey() {
         let lhs = "\(leftTr3.id)"
         let rhs = "\(rightTr3.id)"
-        let arrow = scriptEdgeFlag(padSpace: false)
-        key = lhs + arrow + rhs
+        let arrow = edgeFlags.script(active: false)
+        edgeKey = lhs + arrow + rhs
     }
     
 }

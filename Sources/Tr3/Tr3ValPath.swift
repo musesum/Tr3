@@ -66,7 +66,6 @@ extension Tr3ValPath {
                             expand: Bool = false) -> String  {
         if expand {
             var script = Tr3.scriptTr3s(pathTr3s)
-            if script.first == " " { script.removeFirst() }
             if script.first != "(" {
                 script = "(\(script))"
             }

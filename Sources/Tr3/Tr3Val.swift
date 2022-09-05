@@ -32,9 +32,9 @@ public class Tr3Val: Comparable {
     init(_ tr3: Tr3?) {
         self.tr3 = tr3
     }
-    init(with tr3Val: Tr3Val) {
-        tr3 = tr3Val.tr3
-        valFlags = tr3Val.valFlags
+    init(with: Tr3Val) {
+        self.tr3 = with.tr3
+        self.valFlags = with.valFlags
     }
     func parse(string: String) -> Bool {
         print("Tr3Val parsing:" + string)

@@ -21,13 +21,20 @@ extension String {
     }
 
     /// transform `" one  two   three  "` => `"one two three"`
-    public func reduceSpaces() -> String {
+    public func removeLines() -> String {
         var result = ""
         var prevChar = Character("\0")
         for char in self {
             if char == " ", prevChar == " " { continue }
-            result.append(char)
-            prevChar = char
+            if char.isNewline {
+                if prevChar == " " { continue }
+                result.append(" ")
+                prevChar = " "
+                continue
+            } else {
+                result.append(char)
+                prevChar = char
+            }
         }
         if result.last == " " {
             result.removeLast()
@@ -39,12 +46,14 @@ extension String {
         var result = ""
         var prevChar = Character("\n")
         for char in self {
-            if (prevChar.isNewline || prevChar.isWhitespace) &&
-                (char.isNewline || char.isWhitespace) {
+            if prevChar.isNewline, char.isNewline {
                 continue
+            } else if char == " " {
+                result.append(char)
+            } else {
+                prevChar = char
+                result.append(char)
             }
-            result.append(char)
-            prevChar = char
         }
         return result
     }

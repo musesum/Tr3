@@ -16,7 +16,7 @@ extension Tr3Edge {
         let leftToRight = fromTr3 == leftTr3
         let destTr3 = leftToRight ? rightTr3 : leftTr3
 
-        if edgeFlags.contains(.ternary) {
+        if edgeFlags.contains(.ternIf) {
 
             if leftToRight, let ternVal = rightTr3.findEdgeTern(self) {
 

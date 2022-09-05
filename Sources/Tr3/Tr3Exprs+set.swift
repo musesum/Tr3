@@ -5,7 +5,7 @@
 
 import Foundation
 
-extension Tr3Exprs {
+extension Tr3Exprs { // + set
 
     func setFloat(_ v: Float) -> Bool {
         if let n = nameAny["val"] as? Tr3ValScalar {

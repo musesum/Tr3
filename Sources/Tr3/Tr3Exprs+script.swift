@@ -118,9 +118,7 @@ extension Tr3Exprs {
                             session: Bool = false,
                             expand: Bool = false) -> String  {
         var script = ""
-
         script = scriptExprs(session: session)
-
         return script.isEmpty ? "" : parens ? "(\(script))" : script
     }
 }

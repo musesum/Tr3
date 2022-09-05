@@ -360,11 +360,11 @@ public class Tr3Parse {
 
             switch pattern {
                 case "edgeOp"      : tr3.edgeDefs.addEdgeDef(par.getFirstValue())
-                case "edges"       : tr3.edgeDefs.addEdgeDef( par.getFirstValue())
+                case "edges"       : tr3.edgeDefs.addEdgeDef(par.getFirstValue())
                 case "ternIf"      : tr3.edgeDefs.addEdgeTernary(Tr3ValTern(tr3, level))
-                case "ternThen"    : Tr3ValTern.setTernState(.Then,  level)
-                case "ternElse"    : Tr3ValTern.setTernState(.Else,  level)
-                case "ternRadio"   : Tr3ValTern.setTernState(.Radio, level)
+                case "ternThen"    : Tr3ValTern.setTernState(.thenVal,  level)
+                case "ternElse"    : Tr3ValTern.setTernState(.elseVal,  level)
+                case "ternRadio"   : Tr3ValTern.setTernState(.radioVal, level)
                 case "ternCompare" : Tr3ValTern.setCompare(par.getFirstValue())
                 default            : break
             }

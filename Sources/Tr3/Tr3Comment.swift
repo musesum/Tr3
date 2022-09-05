@@ -86,7 +86,7 @@ public class Tr3Comments {
                 if comment.type == getType {
                     switch comment.text.prefix(1) {
                         case ",": result += ","
-                        default: result.spacePlus(comment.text)
+                        default: result.spacePlus(comment.text.without(trailing: "\n"))
                     }
                 }
             }

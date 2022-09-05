@@ -48,8 +48,8 @@ extension Tr3ValData {
         return scriptVal()
     }
     override func scriptVal(parens: Bool = true,
-                   session: Bool = false,
-                   expand: Bool = true) -> String {
+                            session: Bool = false,
+                            expand: Bool = true) -> String {
         return "[data]"
     }
 

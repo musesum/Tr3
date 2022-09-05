@@ -13,9 +13,9 @@ extension Tr3ValTern {
     }
 
     override func scriptVal(parens: Bool = true,
-                   session: Bool = false,
-                   expand: Bool = false) -> String  {
-
+                            session: Bool = false,
+                            expand: Bool = false) -> String  {
+        
         var script = parens ? "(" : ""
         if expand {
             script += Tr3.scriptTr3s(pathTr3s)
@@ -39,7 +39,7 @@ extension Tr3ValTern {
             script.spacePlus(radioNext.scriptVal(parens: false))
         }
         script += parens ? ")" : ""
-        return script.with(trailing: " ")
+        return script //??? script.with(trailing: " ")
     }
 }
 extension Tr3ValTern {

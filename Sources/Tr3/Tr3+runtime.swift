@@ -92,7 +92,7 @@ extension Tr3 {
 
     func findEdgeTern(_ edge: Tr3Edge) -> Tr3ValTern? {
         for edgeDef in edgeDefs.edgeDefs {
-            if edgeDef.edges.contains(where: { $0.key == edge.key }) {
+            if edgeDef.edges.keys.contains(edge.edgeKey) {
                 return edgeDef.ternVal
             }
         }

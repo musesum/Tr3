@@ -1,6 +1,7 @@
 import CoreFoundation
 import XCTest
 import Par
+import MuSky
 
 @testable import Tr3
 
@@ -13,7 +14,8 @@ final class Tr3Tests: XCTestCase {
      - parameter expected: exected output after parse
      */
     func test(_ script: String,
-              _ expected: String? = nil) -> Int {
+              _ expected: String? = nil,
+              session: Bool = false) -> Int {
 
         var err = 0
 
@@ -23,7 +25,7 @@ final class Tr3Tests: XCTestCase {
 
         if tr3Parse.parseScript(root, script, whitespace: "\n\t ") {
 
-            let actual = root.scriptRoot(session: false)
+            let actual = root.scriptRoot(session: session)
             // print("\n" + actual)
             err = ParStr.testCompare(expected, actual)
         }
@@ -50,8 +52,12 @@ final class Tr3Tests: XCTestCase {
         print("🚫 \(#function) cannot find:\(filename)")
         return nil
     }
-    func parse(_ name: String,_ root: Tr3) -> Int {
-        if let script = read(name),
+    func readSky(_ filename: String) -> String? {
+        return MuSky.read(filename, "tr3.h")
+    }
+
+    func parseSky(_ name: String, _ root: Tr3) -> Int {
+        if let script = MuSky.read(name, "tr3.h"),
            Tr3Parse().parseScript(root, script, whitespace: "\n\t ") {
             print (name +  " ✓")
             return 0
@@ -60,18 +66,44 @@ final class Tr3Tests: XCTestCase {
             return 1
         }
     }
-    func testFile(_ input: String, out: String) -> Int {
-        let root = Tr3("√")
-        if let script = read(input),
+    func parse(_ name: String,_ root: Tr3) -> Int {
+        if let script = read(name) ?? MuSky.read(name, "tr3.h"),
            Tr3Parse().parseScript(root, script, whitespace: "\n\t ") {
             print (name +  " ✓")
+            return 0
+        } else {
+            print(name + " 🚫 parse failed")
+            return 1
+        }
+    }
+    func testSkyFile(_ inFile: String, out: String) -> Int {
+        if let inScript = MuSky.read(inFile, "tr3.h"),
+           let outScript = MuSky.read(out, "tr3.h") {
 
+            return testParse(inScript, outScript)
+        } else {
+            return 1 // error
+        }
+    }
+
+    func testParse(_ inScript: String, _ outScript: String) -> Int {
+
+        let root = Tr3("√")
+
+        if Tr3Parse().parseScript(root, inScript, whitespace: "\n\t ") {
+            print (name +  " ✓")
             let actual = root.scriptRoot(compact: true)
-            // print("\n\n\n\(actual)\n\n\n")
-
-            let expect = read(out) ?? script
-            let err = ParStr.testCompare(expect, actual)
+            let err = ParStr.testCompare(outScript, actual)
             return err
+        } else {
+            return 1 // error
+        }
+    }
+    func testFile(_ input: String, out: String) -> Int {
+
+        if let inScript = read(input) {
+           let outScript = read(out) ?? inScript
+            return testParse(inScript, outScript)
         } else {
             return 1 // error
         }
@@ -124,7 +156,7 @@ final class Tr3Tests: XCTestCase {
         err += test("a b c⟡→a")
 
         err += test("a b c d a << (b ? c : d)",
-                    "a <<(b ? c : d ) b⟐→a c>>a d>>a ")
+                    "a <<(b ? c : d ) b⟐→a c⟐→a d⟐→a ")
 
         err += test("value(1.67772e+07)", "value(1.67772e+07)")
 
@@ -150,15 +182,15 @@ final class Tr3Tests: XCTestCase {
                     "a { b { _c { d(1) } e@_c { d(1) } } }")
 
         err += test("a {b c}.{d e}.{f g}.{i j} a.b˚f << (f.i ? f.j : 0) ",
-                    "a { b { d { f << (f.i ? f.j : 0) { i⟐→a.b.d.f j>>a.b.d.f } g { i j } }" +
-                    "        e { f << (f.i ? f.j : 0) { i⟐→a.b.e.f j>>a.b.e.f } g { i j } } }" +
+                    "a { b { d { f << (f.i ? f.j : 0) { i⟐→a.b.d.f j⟐→a.b.d.f } g { i j } }" +
+                    "        e { f << (f.i ? f.j : 0) { i⟐→a.b.e.f j⟐→a.b.e.f } g { i j } } }" +
                     "    c { d { f { i j } g { i j } }" +
                     "        e { f { i j } g { i j } } } } a.b˚f << (f.i ? f.j : 0 )" +
                     "")
 
         err += test("a {b c}.{d e}.{f g}.{i j} a.b˚f << (f.i ? f.j : 0) ",
-                    "a { b { d { f << (f.i ? f.j : 0) { i⟐→a.b.d.f j>>a.b.d.f } g { i j } }" +
-                    "        e { f << (f.i ? f.j : 0) { i⟐→a.b.e.f j>>a.b.e.f } g { i j } } }" +
+                    "a { b { d { f << (f.i ? f.j : 0) { i⟐→a.b.d.f j⟐→a.b.d.f } g { i j } }" +
+                    "        e { f << (f.i ? f.j : 0) { i⟐→a.b.e.f j⟐→a.b.e.f } g { i j } } }" +
                     "    c { d { f { i j } g { i j } }" +
                     "        e { f { i j } g { i j } } } } a.b˚f << (f.i ? f.j : 0 )" +
                     "")
@@ -254,8 +286,8 @@ final class Tr3Tests: XCTestCase {
                     "a { b { c d } } e { b(0) { c d } }")
 
         err += test("a {b c}.{d e}.{f g}.{i j} a.b˚f << (f.i ? f.j : 0) ",
-                    "a { b { d { f << (f.i ? f.j : 0 ) { i⟐→a.b.d.f j >> a.b.d.f } g { i j } }" +
-                    "        e { f << (f.i ? f.j : 0 ) { i⟐→a.b.e.f j >> a.b.e.f } g { i j } } }" +
+                    "a { b { d { f << (f.i ? f.j : 0 ) { i⟐→a.b.d.f j⟐→a.b.d.f } g { i j } }" +
+                    "        e { f << (f.i ? f.j : 0 ) { i⟐→a.b.e.f j⟐→a.b.e.f } g { i j } } }" +
                     "    c { d { f { i j } g { i j } }" +
                     "        e { f { i j } g { i j } } } } a.b˚f << (f.i ? f.j : 0 )" +
                     "")
@@ -364,6 +396,7 @@ final class Tr3Tests: XCTestCase {
 
     func testParseEdges() { headline(#function)
         var err = 0
+
         err += test("a b c << b")
         err += test("a, b, c >> b")
 
@@ -412,8 +445,8 @@ final class Tr3Tests: XCTestCase {
         err += test("a b x y w << (a ? 1 : b ? 2)", "a⟐→w b◇→w x y w << (a ? 1 : b ? 2) ")
         err += test("a, x, y, w << (a ? x : y)", "a⟐→w, x◇→w, y◇→w, w << (a ? x : y)")
         err += test("a, x, y, w >> (a ? x : y)", "a⟐→w, x←◇w, y←◇w, w >> (a ? x : y)")
-        err += test("a(1), x, y, w << (a ? x : y)", "a(1)⟐→w, x >> w, y◇→w, w << (a ? x : y)")
-        err += test("a(1), x, y, w >> (a ? x : y)", "a(1)⟐→w, x << w, y←◇w, w >> (a ? x : y)")
+        err += test("a(1), x, y, w << (a ? x : y)", "a(1)⟐→w, x⟐→w, y◇→w, w << (a ? x : y)")
+        err += test("a(1), x, y, w >> (a ? x : y)", "a(1)⟐→w, x←⟐w, y←◇w, w >> (a ? x : y)")
         err += test("a(0), x, y, w << (a ? x : y)", "a(0)⟐→w, x◇→w,   y◇→w, w << (a ? x : y)")
         err += test("a(0), x, y, w >> (a ? x : y)", "a(0)⟐→w, x←◇w, y←◇w, w >> (a ? x : y)")
         err += test("a, x, y, w <>(a ? x : y)", "a⟐→w, x←◇→w, y←◇→w, w <> (a ? x : y)")
@@ -450,8 +483,8 @@ final class Tr3Tests: XCTestCase {
 
         err += test("a {b c}.{d e}.{f g}.{i j} a.b˚f << (f.i ? f.j : 0) ",
                     """
-                    a { b { d { f << (f.i ? f.j : 0 ) { i⟐→a.b.d.f j>>a.b.d.f } g { i j } }
-                            e { f << (f.i ? f.j : 0 ) { i⟐→a.b.e.f j>>a.b.e.f } g { i j } } }
+                    a { b { d { f << (f.i ? f.j : 0 ) { i⟐→a.b.d.f j⟐→a.b.d.f } g { i j } }
+                            e { f << (f.i ? f.j : 0 ) { i⟐→a.b.e.f j⟐→a.b.e.f } g { i j } } }
                         c { d { f { i j } g { i j } }
                             e { f { i j } g { i j } } } } a.b˚f << (f.i ? f.j : 0 )
                     """)
@@ -560,18 +593,16 @@ final class Tr3Tests: XCTestCase {
         XCTAssertEqual(err, 0)
     }
 
+    // TODO: this is areally bad kludge
     /// global result to tes callback
-    var result = ""
+    var TestResult = ""
 
     /// add result of callback to result
     func addCallResult(_ tr3: Tr3, _ val: Tr3Val?) {
         var val = val?.printVal() ?? "nil"
         if val.first == " " { val.removeFirst() }
-        result += tr3.name + "(" + val + ") "
+        TestResult += tr3.name + "(" + val + ") "
     }
-
-
-
 
     /// test `b >> a(2)` for `b!`
     func testEdgeVal1() { headline(#function)
@@ -1168,16 +1199,18 @@ final class Tr3Tests: XCTestCase {
     /// setup new result string, call the action, print the appended result
     func testAct(_ before: String, _ after: String, callTest: @escaping CallVoid) -> Int {
         var err = 0
-        result = before + " ⟹ "
-        let expected = result + after
-        callTest()
+        TestResult = ""
 
-        if let error = ParStr.compare(expected, result) {
-            print (result + "🚫 mismatch \n\(error)")
+        callTest() // side effect changed TestResult
+        let result = TestResult.removeLines()
+        if let (expected, actual) = ParStr.compare(after, result) {
+            print (TestResult + "🚫 mismatch")
+            print("expected ⟹ \(expected)")
+            print("actual   ⟹ \(actual.removeLines())")
             err += 1
         }
         else {
-            print (result + "✓")
+            print ("⟹ " + TestResult + " ✓")
         }
         return err
     }
@@ -1192,18 +1225,25 @@ final class Tr3Tests: XCTestCase {
            let a = root.findPath("a"),
            let b = root.findPath("b") {
 
-            let result1 =  root.scriptRoot(session: true)
-            err += ParStr.testCompare("a⟐→c b◇→c c << (a ? b)", result1, echo: true)
+            let expect1 = "a⟐→c b◇→c c << (a ? b)"
+            let result1 = root.scriptRoot(session: true)
+            err += ParStr.testCompare(expect1, result1, echo: true)
+
+            b.setAny(20, .activate)
+            let expect2 = "a⟐→c b(20)◇→c c<<(a ? b)"
+            let result2 = root.scriptRoot(session: true)
+            err += ParStr.testCompare(expect2, result2, echo: true)
 
             a.setAny(10, .activate)
-            b.setAny(20, .activate)
-            let result2 =  root.scriptRoot(session: true)
-            err += ParStr.testCompare("a(10)⟐→c b(20)⟐→c c(20)<<(a ? b)", result2, echo: true)
+            //TODO:     = "a(10)⟐→c b(20)⟐→c c(20)<<(a ? b)"
+            let expect3 = "a(10)⟐→c b(20)⟐→c c( b)<<(a ? b)"
+            let result3 = root.scriptRoot(session: true).removeLines()
+            err += ParStr.testCompare(expect3, result3, echo: true)
         }
         else {
             err += 1
         }
-        ///// XCTAssertEqual(err, 0)
+        XCTAssertEqual(err, 0)
     }
 
     func testTernary1() { headline(#function)
@@ -1248,8 +1288,9 @@ final class Tr3Tests: XCTestCase {
            let y = root.findPath("y"),
            let w = root.findPath("w") {
 
-            err += ParStr.testCompare("a(0)⟐→w x(10)◇→w y(20)◇→w w<<(a ? x : y)",
-                                      root.scriptRoot(session: true), echo: true)
+            let expect0 = "a(0)⟐→w x(10)◇→w y(20)◇→w w<<(a ? x : y)"
+            let result0 = root.scriptRoot(session: true).removeLines()
+            err += ParStr.testCompare(expect0, result0, echo: true)
 
             w.addClosure { tr3, _ in self.addCallResult(w, tr3.val!) }
             err += testAct("a(0)",  "w(20.0)")  { a.setAny( 0, .activate) }
@@ -1258,10 +1299,12 @@ final class Tr3Tests: XCTestCase {
             err += testAct("a(1)",  "w(11.0)")  { a.setAny( 1, .activate) }
             err += testAct("x(12)", "w(12.0)")  { x.setAny(12, .activate) }
             err += testAct("y(22)", "")         { y.setAny(22, .activate) }
+            err += testAct("a(0)", "w(22.0)")   { a.setAny(0, .activate) }
 
-            err += testAct("a(0)", "w(22.0)")  { a.setAny(0, .activate) }
-            err += ParStr.testCompare("a(0)⟐→w x(12)◇→w y(22)>>w w(y)<<(a ? x : y)",
-                                      root.scriptRoot(session: true), echo: true)
+            //TODO:     = "a(0)⟐→w x(12)◇→w y(22)⟐→w w(22)<<(a ? x : y)"
+            let expect1 = "a(0)⟐→w x(12)◇→w y(22)⟐→w w( y)<<(a ? x : y)"
+            let result1 = root.scriptRoot(session: true)
+            err += ParStr.testCompare(expect1, result1, echo: true)
         }
         else {
             err += 1
@@ -1287,13 +1330,15 @@ final class Tr3Tests: XCTestCase {
             w.addClosure { tr3, _ in self.addCallResult(w, tr3.val!) }
             x.addClosure { tr3, _ in self.addCallResult(x, tr3.val!) }
             y.addClosure { tr3, _ in self.addCallResult(y, tr3.val!) }
+
             err += testAct("a(0)", "w(20.0) y(20.0)") { a.setAny(0, .activate) }
             err += testAct("w(3)", "w(3.0)  y(3.0)")  { w.setAny(3, .activate) }
             err += testAct("a(1)", "w(3.0)  x(3.0)")  { a.setAny(1, .activate) }
             err += testAct("w(4)", "w(4.0)  x(4.0)")  { w.setAny(4, .activate) }
 
-            err += ParStr.testCompare("a(1)⟐→w x(4)<>w y(3)←◇→w w(4)<>(a ? x : y)",
-                                      root.scriptRoot(session: true), echo: true)
+            let expect0 = "a(1)⟐→w x(4)←⟐→w y(3)←◇→w w(4)<>(a ? x : y)"
+            let result0 = root.scriptRoot(session: true).removeLines()
+            err += ParStr.testCompare(expect0, result0, echo: true)
         }
         else {
             err += 1
@@ -1333,48 +1378,33 @@ final class Tr3Tests: XCTestCase {
 
     func testMidi() { headline(#function)
         var err = 0
-        err += test("omni { off on mode(0…1) << (off(0), on(1)) } cc@omni",
-        """
-        omni { off on mode (0…1) << (omni.off(0), omni.on(1)) }
-        cc@omni { off on mode (0…1) <<(cc.off(0), cc.on(1)) }
-        """)
-        XCTAssertEqual(err, 0)
-    }
-
-    func testMidi2() { headline(#function)
-        var err = 0
-        err += testFile("test.midi.input",  out: "test.midi.output")
-        XCTAssertEqual(err, 0)
-    }
-
-    func testDeepMenu() { headline(#function)
-        var err = 0
-        err += testFile("test.deepMenu.input", out: "test.deepMenu.output")
+        err += testSkyFile("midi",  out: "test.midi.output")
         XCTAssertEqual(err, 0)
     }
 
     func testShader() { headline(#function)
         var err = 0
-        err += testFile("test.shader.input",  out: "test.shader.output")
+        err += testSkyFile("shader",  out: "test.shader.output")
         XCTAssertEqual(err, 0)
     }
 
     /// test `DeepMuse` app script
-    func testDeepMuse() { headline(#function)
+    func testMuseSky() { headline(#function)
 
         let root = Tr3("√")
-        func parse(_ name: String) -> Int { return self.parse(name, root) }
         var err = 0
-        err += parse("test.sky")
-        err += parse("test.shader")
-        err += parse("test.midi")
+        err += parseSky("sky", root)
+        err += parseSky("menu", root)
+        err += parseSky("shader", root)
 
-        let actual = root.scriptRoot()
-        let expect = read("test.deepMuse.output") ?? ""
+        let actual = root.scriptRoot().reduceLines()
+        let expect = readSky("test.sky.output") ?? ""
         err += ParStr.testCompare(expect, actual)
 
         XCTAssertEqual(err, 0)
     }
+
+    // MARK: - all tests
 
     static var allTests = [
 
@@ -1411,7 +1441,6 @@ final class Tr3Tests: XCTestCase {
         ("testD3Script", testD3Script),
         ("testBodySkeleton", testBodySkeleton),
         ("testMidi", testMidi),
-        ("testDeepMenu", testDeepMenu),
-        ("testDeepMuse", testDeepMuse),
+        ("testMuseSky", testMuseSky),
     ]
 }

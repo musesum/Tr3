@@ -103,7 +103,7 @@ public class Tr3EdgeDefs {
     }
 
     public func addEdgeDef(_ edgeOp: String?) {
-        if let edgeOp = edgeOp {
+        if let edgeOp {
             let edgeFlags = Tr3EdgeFlags(with: edgeOp)
             let edgeDef = Tr3EdgeDef(flags: edgeFlags)
             edgeDefs.append(edgeDef)

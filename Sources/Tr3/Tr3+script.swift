@@ -38,9 +38,9 @@ extension Tr3 {
 
         if compact {
             switch children.count {
-                    case 0: script.spacePlus(comments.getComments(.child))
-                    case 1: scriptAddOnlyChild()
-                    default: scriptAddChildren()
+                case 0: script.spacePlus(comments.getComments(.child))
+                case 1: scriptAddOnlyChild()
+                default: scriptAddChildren()
             }
         } else { // not pretty
             switch children.count {
@@ -48,20 +48,24 @@ extension Tr3 {
                 default: scriptAddChildren()
             }
         }
-        script.spacePlus(edgeDefs.scriptVal())
-        script.spacePlus(comments.getComments(.edges))
+        script += edgeDefs.scriptVal()
+        script += comments.getComments(.edges)
         return script
 
         func scriptAddChildren() {
             script.spacePlus("{")
             script.spacePlus(comments.getComments(.child))
-            if (script.last != "\n") && (script.last != ",") {
-                script.spacePlus("\n")
+            if (script.last != "\n"),
+               (script.last != ",") {
+
+                script += "\n"
             }
             for child in children {
                 script.spacePlus(child.script(compact: compact))
-                if (script.last != "\n") && (script.last != ",") {
-                    script.spacePlus("\n")
+                if (script.last != "\n"),
+                   (script.last != ",") {
+
+                    script += "\n"
                 }
             }
             script.spacePlus("}\n")
@@ -74,7 +78,6 @@ extension Tr3 {
             }
         }
     }
-
 
     func getCopiedFrom() -> String {
         var result = ""
@@ -122,7 +125,7 @@ extension Tr3 {
     func scriptTypeEdges(_ edges: [Tr3Edge], _ session: Bool) -> String {
         
         guard let firstEdge = edges.first else { return "" }
-        var script = firstEdge.scriptEdgeFlag(padSpace: true)
+        var script = firstEdge.edgeFlags.script(active: firstEdge.active)
         if edges.count > 1 { script += "(" }
         var delim = ""
         for edge in edges  {
@@ -147,7 +150,6 @@ extension Tr3 {
             var leftEdges = [Tr3Edge]()
             for edge in tr3Edges.values {
                 if edge.leftTr3 == self {
-
                     leftEdges.append(edge)
                 }
             }
@@ -194,7 +196,8 @@ extension Tr3 {
     public func scriptRoot(session: Bool = false) -> String {
         var script = ""
         for child in children {
-            script.spacePlus(child.scriptTr3(session: session))
+            let childScript = child.scriptTr3(session: session)
+            script.spacePlus(childScript)
         }
         return script
     }
@@ -208,13 +211,14 @@ extension Tr3 {
 
         var script = name
         script.spacePlus(getCopiedFrom())
-        let scriptVal = val?.scriptVal(session: session, expand: true)
-        script.spacePlus(scriptVal)
-        script.spacePlus(scriptEdgeDefs(session))
+        let scriptVal = val?.scriptVal(session: session, expand: true) ?? ""
+        script += scriptVal
+        script += scriptEdgeDefs(session)
         if children.isEmpty {
             let comments = comments.getComments(.child)
             script.spacePlus(comments)
-            if scriptVal != nil, comments.isEmpty {
+            if scriptVal.count > 0,
+                comments.count == 0 {
                 script += "\n"
             }
         }

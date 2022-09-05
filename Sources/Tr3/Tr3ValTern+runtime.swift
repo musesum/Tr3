@@ -49,7 +49,7 @@ extension Tr3ValTern {
         }
         func neitherPathVal(_ val: Tr3Val?) {
             forTernPathVal(val) { tern in
-                tern.changeState(.Neither, prevTr3, nextTr3, act, visitor)
+                tern.changeState(.noVal, prevTr3, nextTr3, act, visitor)
             }
         }
 
@@ -58,21 +58,21 @@ extension Tr3ValTern {
         ternState = state
         switch ternState {
 
-        case .Then:
+        case .thenVal:
             // b1, b2, b3 in `x <- (a ? (b1 ? b2 : b3) : c)`
             setTernEdges(thenVal, active: true)
             setTernEdges(elseVal, active: false)
             recalcPathVal(thenVal)
             neitherPathVal(elseVal)
 
-        case .Else:
+        case .elseVal:
             // c1, c2, c3 in `x <- (a ? b : (c1 ? c2 : c3))`
             setTernEdges(thenVal, active: false)
             setTernEdges(elseVal, active: true)
             neitherPathVal(thenVal)
             recalcPathVal(elseVal)
 
-        case .Neither:
+        case .noVal:
 
             setTernEdges(thenVal, active: false)
             setTernEdges(elseVal, active: false)
@@ -92,7 +92,7 @@ extension Tr3ValTern {
 
         for radioTr3 in pathTr3s {
             if let tern = radioTr3.val as? Tr3ValTern {
-                tern.changeState(.Neither, prevTr3, nextTr3, .sneak, visitor)
+                tern.changeState(.noVal, prevTr3, nextTr3, .sneak, visitor)
             }
             if let thenPath = thenVal as? Tr3ValPath {
                 for thenTr3 in thenPath.pathTr3s {
@@ -143,18 +143,18 @@ extension Tr3ValTern {
 
             radioPrev?.changeRadioPrev(prevTr3, nextTr3, visitor)
             radioNext?.changeRadioNext(prevTr3, nextTr3, visitor)
-            changeState(.Then, prevTr3, nextTr3, act, visitor)
+            changeState(.thenVal, prevTr3, nextTr3, act, visitor)
         }
             // during bindTerns, deactivate edges when there is no value or comparison
         else if act == .sneak {
             // deactive both Then, Else edges
             radioPrev?.changeRadioPrev(prevTr3, nextTr3, visitor)
             radioNext?.changeRadioNext(prevTr3, nextTr3, visitor)
-            changeState(.Neither, prevTr3, nextTr3, act, visitor) // a ?? b fails comparison
+            changeState(.noVal, prevTr3, nextTr3, act, visitor) // a ?? b fails comparison
         }
             // when a != b in `w <-(a == b ? x : y)`
         else {
-            changeState(.Else, prevTr3, nextTr3, act, visitor) // a ?? b fails comparison
+            changeState(.elseVal, prevTr3, nextTr3, act, visitor) // a ?? b fails comparison
         }
     }
 

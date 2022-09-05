@@ -8,14 +8,6 @@ import Foundation
 
 extension Tr3Edge {
     
-    public func scriptEdgeFlag(padSpace: Bool) -> String {
-        var script = Tr3EdgeDef.scriptEdgeFlag(edgeFlags, active)
-        if padSpace, script.count > 0 {
-            script += " "
-        }
-        return script
-    }
-
     func scriptEdgeVal(_ tr3: Tr3, session: Bool = false) -> String {
 
         var script = ""
@@ -26,7 +18,7 @@ extension Tr3Edge {
         else if rightTr3 == tr3 {
             script += leftTr3.scriptLineage(Tr3Edge.LineageDepth)
         }
-        script += defVal?.scriptVal(session: session).with(trailing: " ") ?? ""
+        script += defVal?.scriptVal(session: session) ?? ""
         return script
     }
 
