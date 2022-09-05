@@ -5,8 +5,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/musesum/MuSky.git",
       "state" : {
-        "revision" : "acca3dcc93523ef37dd6aafb578ddb7a194d64af",
-        "version" : "0.0.3"
+        "revision" : "490c852477bf0be6e8be3d94d82237ed0a9f1b36",
+        "version" : "0.0.4"
       }
     },
     {
