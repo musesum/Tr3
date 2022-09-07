@@ -1258,8 +1258,9 @@ final class Tr3Tests: XCTestCase {
            let c = root.findPath("c"),
            let w = root.findPath("w") {
 
-            err += ParStr.testCompare("a⟐→w b◇→w c◇→w w(0)<<(a ? 1 : b ? 2 : c ? 3)",
-                                      root.scriptRoot(session: true), echo: true)
+            let expect0 = "a⟐→w b◇→w c◇→w w(0)<<(a ? 1 : b ? 2 : c ? 3)"
+            let result0 = root.scriptRoot(session: true)
+            err += ParStr.testCompare(expect0, result0, echo: true)
 
             w.addClosure { tr3, _ in self.addCallResult(w, tr3.val!) }
             err += testAct("a !",  "w(1.0) ") { a.activate() }
@@ -1267,8 +1268,10 @@ final class Tr3Tests: XCTestCase {
             err += testAct("b !",  "w(2.0) ") { b.activate() }
             err += testAct("b(0)", "w(2.0)")  { b.setAny(0, .activate) }
             err += testAct("c !",  "w(3.0) ") { c.activate() }
-            err += ParStr.testCompare("a(0)⟐→w b(0)⟐→w c⟐→w w(3)<<(a ? 1 : b ? 2 : c ? 3)",
-                                      root.scriptRoot(session: true), echo: true)
+
+            let expect1 = "a(0)⟐→w b(0)⟐→w c⟐→w w(3)<<(a ? 1 : b ? 2 : c ? 3)"
+            let result1 = root.scriptRoot(session: true)
+            err += ParStr.testCompare(expect1, result1, echo: true)
         }
         else {
             err += 1

@@ -39,7 +39,7 @@ extension Tr3ValTern {
             script.spacePlus(radioNext.scriptVal(parens: false))
         }
         script += parens ? ")" : ""
-        return script //??? script.with(trailing: " ")
+        return script
     }
 }
 extension Tr3ValTern {
