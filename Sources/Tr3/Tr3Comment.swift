@@ -69,13 +69,6 @@ public class Tr3Comments {
     }
 
     public func getEdgesDelim() -> String {
-//        if have(type: .edges) {
-//            for comment in comments {
-//                if comment.type == .edges {
-//                    return comment.text.first == "," ? ", " : " "
-//                }
-//            }
-//        }
         return ", "
     }
     
