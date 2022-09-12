@@ -420,13 +420,13 @@ extension Tr3 {
         }
     }
 
-    func bindDefaults() {
+    public func bindDefaults() {
         func bindVal(_ val: Tr3Val?) {
             guard let val else { return }
             switch val {
-            case let t as Tr3Exprs:  t.setDefaults()
-            case let s as Tr3ValScalar: s.setDefault()
-            default: break
+                case let t as Tr3Exprs:  t.setDefaults()
+                case let s as Tr3ValScalar: s.setDefault()
+                default: break
             }
         }
         bindVal(val)
