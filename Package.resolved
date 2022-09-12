@@ -3,7 +3,7 @@
     {
       "identity" : "musky",
       "kind" : "remoteSourceControl",
-      "location" : "https://github.com/musesum/MuSky.git",
+      "location" : "https://github.com/musesum/MuSkyTr3.git",
       "state" : {
         "revision" : "490c852477bf0be6e8be3d94d82237ed0a9f1b36",
         "version" : "0.0.4"
