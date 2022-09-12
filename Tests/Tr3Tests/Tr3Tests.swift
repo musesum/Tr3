@@ -1,7 +1,7 @@
 import CoreFoundation
 import XCTest
 import Par
-import MuSky
+import MuSkyTr3
 
 @testable import Tr3
 
@@ -53,11 +53,11 @@ final class Tr3Tests: XCTestCase {
         return nil
     }
     func readSky(_ filename: String) -> String? {
-        return MuSky.read(filename, "tr3.h")
+        return MuSkyTr3.read(filename, "tr3.h")
     }
 
     func parseSky(_ name: String, _ root: Tr3) -> Int {
-        if let script = MuSky.read(name, "tr3.h"),
+        if let script = MuSkyTr3.read(name, "tr3.h"),
            Tr3Parse().parseScript(root, script, whitespace: "\n\t ") {
             print (name +  " ✓")
             return 0
@@ -67,7 +67,7 @@ final class Tr3Tests: XCTestCase {
         }
     }
     func parse(_ name: String,_ root: Tr3) -> Int {
-        if let script = read(name) ?? MuSky.read(name, "tr3.h"),
+        if let script = read(name) ?? MuSkyTr3.read(name, "tr3.h"),
            Tr3Parse().parseScript(root, script, whitespace: "\n\t ") {
             print (name +  " ✓")
             return 0
@@ -77,8 +77,8 @@ final class Tr3Tests: XCTestCase {
         }
     }
     func testSkyFile(_ inFile: String, out: String) -> Int {
-        if let inScript = MuSky.read(inFile, "tr3.h"),
-           let outScript = MuSky.read(out, "tr3.h") {
+        if let inScript = MuSkyTr3.read(inFile, "tr3.h"),
+           let outScript = MuSkyTr3.read(out, "tr3.h") {
 
             return testParse(inScript, outScript)
         } else {

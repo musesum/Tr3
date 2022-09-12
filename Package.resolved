@@ -1,12 +1,12 @@
 {
   "pins" : [
     {
-      "identity" : "musky",
+      "identity" : "muskytr3",
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/musesum/MuSkyTr3.git",
       "state" : {
-        "revision" : "490c852477bf0be6e8be3d94d82237ed0a9f1b36",
-        "version" : "0.0.4"
+        "revision" : "2e47c4ac3c67b22698cb8c30271eb509028cb392",
+        "version" : "0.3.1"
       }
     },
     {
