@@ -10,12 +10,14 @@ protocol Tr3ValScriptProtocol {
     func printVal() -> String
     func scriptVal(parens: Bool, session: Bool, expand: Bool) -> String
 }
+
 protocol Tr3ValProtocal {
 
     func copy() -> Tr3Val
     func setVal(_ from: Any?, _ option: Tr3SetOptions?)
     func getVal() -> Any
 }
+
 public class Tr3Val: Comparable {
 
     var id = Visitor.nextId()
