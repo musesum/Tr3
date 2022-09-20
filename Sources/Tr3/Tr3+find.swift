@@ -275,4 +275,19 @@ extension Tr3 {
         }
         return nil
     }
+    public func bindPath(_ path: String,
+                         _ showError: Bool = true,
+                         _ closure: Tr3Visitor? = nil) -> Tr3 {
+
+        if let tr3 = findPath(path) {
+            if let closure {
+                tr3.addClosure(closure)
+            }
+            return tr3
+
+        } else if showError {
+            print("🚫 could not find \'\(name)\'")
+        }
+        return Tr3()
+    }
 }
