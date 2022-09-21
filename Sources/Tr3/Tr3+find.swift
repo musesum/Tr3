@@ -286,7 +286,7 @@ extension Tr3 {
             return tr3
 
         } else if showError {
-            print("🚫 could not find \'\(name)\'")
+            print("🚫 could not find \'\(path)\'")
         }
         return Tr3()
     }
