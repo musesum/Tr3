@@ -48,7 +48,7 @@ public class Tr3Exprs: Tr3Val {
         super.init(tr3)
         addPoint(point)
     }
-    init(_ tr3: Tr3? = nil, nameFloats: [(String, Float)]) {
+    public init(_ tr3: Tr3? = nil, nameFloats: [(String, Float)]) {
         super.init(tr3) 
         opSet = Set<Tr3ExprOp>([.name,.num])
 
