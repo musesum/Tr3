@@ -967,7 +967,6 @@ final class Tr3Tests: XCTestCase {
         XCTAssertEqual(err, 0)
     }
 
-
     /// test `a(x,y) << b, b(x 0, y 0)
     func testExpr0() { headline(#function)
 
@@ -995,7 +994,6 @@ final class Tr3Tests: XCTestCase {
         }
         XCTAssertEqual(err, 0)
     }
-
 
     /// test `a(x 0) << c, b(y 0) << c, c(x 0, y 0)`
     func testExpr1() { headline(#function)
@@ -1045,6 +1043,7 @@ final class Tr3Tests: XCTestCase {
         XCTAssertEqual(err, 0)
     }
 
+    /// test `a(x 0…2, y 0…2, z 99), b (x 0…2, y 0…2) << a`
     func testExpr3() { headline(#function)
         Par.trace = true
         Par.trace2 = false
@@ -1082,6 +1081,7 @@ final class Tr3Tests: XCTestCase {
         Par.trace2 = false
     }
 
+    /// test `a(x in 2…4, y in 3…5) >> b b(x 1…2, y 2…3)`
     func testExpr4() { headline(#function)
         Par.trace = true
         Par.trace2 = false
@@ -1117,6 +1117,7 @@ final class Tr3Tests: XCTestCase {
         Par.trace = false
         Par.trace2 = false
     }
+
     /// test `b(sum: x + y + z) << a`
     func testExpr5() { headline(#function)
         var err = 0
@@ -1141,6 +1142,7 @@ final class Tr3Tests: XCTestCase {
         }
         XCTAssertEqual(err, 0)
     }
+
     /// test `b(sum: x + y + z) << a`
     func testExpr6() { headline(#function)
         var err = 0
@@ -1166,6 +1168,7 @@ final class Tr3Tests: XCTestCase {
         XCTAssertEqual(err, 0)
     }
 
+    /// test `a(0…1)<<b, b<<c, c(0…10)<<a`
     func testPassthrough() { headline(#function)
         var err = 0
         let script = "a(0…1)<<b, b<<c, c(0…10)<<a"
