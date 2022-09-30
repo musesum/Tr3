@@ -75,7 +75,7 @@ extension Tr3Exprs { // + set
 
                     if !exprLiteral() { return false }
 
-                case .EQ, .LE, .GE, .LT, .GT, .In, .Add, .Sub, .Muy, .Div, .Mod:
+                case .EQ, .LE, .GE, .LT, .GT, .In, .add, .sub, .muy, .divi, .div, .mod:
 
                     opNow = expr.op
 

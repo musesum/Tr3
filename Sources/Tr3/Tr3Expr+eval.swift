@@ -35,13 +35,14 @@ extension Tr3Expr {
             } else if opNow.isOperation() {
 
                 switch opNow {
-                    case .Add: return lval + rval
-                    case .Sub: return lval - rval
-                    case .Muy: return lval * rval
-                    case .Div: return lval / (rval == 0 ? 1 : rval)
-                    case .Mod: return fmodf(lval, rval == 0 ? 1 : rval)
+                    case .add   : return lval + rval
+                    case .sub   : return lval - rval
+                    case .muy   : return lval * rval
+                    case .divi  : return floor(lval / (rval == 0 ? 1 : rval))
+                    case .div   : return lval / (rval == 0 ? 1 : rval)
+                    case .mod   : return fmodf(lval, rval == 0 ? 1 : rval)
                     case .assign: return frVal
-                    default  : break
+                    default     : break
                 }
             } else {
                 return frVal

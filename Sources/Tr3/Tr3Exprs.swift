@@ -13,7 +13,7 @@ import Par
 public class Tr3Exprs: Tr3Val {
 
     /// `t(x 1, y 2)` ⟹ `["x": 1, "y": 2]`
-    var nameAny: OrderedDictionary<String,Any> = [:]
+    public var nameAny: OrderedDictionary<String,Any> = [:]
 
     /// `t(x/2, y/2) << u(x 1, y 2)` ⟹ `t(x 0.5, y 1.0)` // after u fires
     public var exprs = ContiguousArray<Tr3Expr>()

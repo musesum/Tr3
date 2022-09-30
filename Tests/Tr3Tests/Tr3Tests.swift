@@ -1167,6 +1167,64 @@ final class Tr3Tests: XCTestCase {
         }
         XCTAssertEqual(err, 0)
     }
+    //MARK: - Midi
+
+    /// test `grid(x: num _/ 12, y: num % 12) << note, note(num: 0…127 = 50)`
+    func testMidiGrid() { headline(#function)
+        var err = 0
+        /// `_/` symbol is akin to python-style floor of division
+        /// instead of the `//` symbol, which is used for comment
+        let script = "grid(x: num _/ 12, y: num % 12) << note, note(num 0…127 = 50)"
+        print("\n" + script)
+
+        let root = Tr3("√")
+        if tr3Parse.parseScript(root, script, tracePar: false),
+           let note = root.findPath("note") {
+
+            let num = Tr3Exprs(nameFloats: [("num", 50)])
+            note.setAny(num, .activate)
+
+            let result = root.scriptRoot(session: true)
+            err = ParStr.testCompare(
+                "grid(x 4, y 2)<<note, note(num 50)", result)
+        }
+        else {
+            err = 1
+        }
+        XCTAssertEqual(err, 0)
+    }
+    /// test `grid(num > 20, chan == 1 x: num _/ 12, y: num % 12) << note, note(num: 0…127 = 50, chan 1)`
+    func testMidiFilter() { headline(#function)
+        var err = 0
+
+        /// `_/` symbol is akin to python-style floor of division
+        /// instead of the `//` symbol, which is used for comment
+        let script = """
+        grid(num > 20, chan == 1, x: num _/ 12, y: num % 12) << note,
+        note(num 0…127 = 50, chan 2)
+        """
+        print("\n" + script)
+
+        let root = Tr3("√")
+
+        if tr3Parse.parseScript(root, script, tracePar: false),
+           let note = root.findPath("note") {
+
+            let t0 = Tr3Exprs(nameFloats: [("num", 50), ("chan", 0)])
+            note.setAny(t0, .activate)
+            let result0 = root.scriptRoot(session: true)
+            err = ParStr.testCompare( "grid(num, chan, x, y)<<note, note(num 50, chan 0)", result0)
+
+            let t1 = Tr3Exprs(nameFloats: [("num", 50), ("chan", 1)])
+            note.setAny(t1, .activate)
+            let result1 = root.scriptRoot(session: true)
+            err = ParStr.testCompare( "grid(num 50, chan 1, x 4, y 2)<<note, note(num 50, chan 1)", result1)
+        }
+        else {
+            err = 1
+        }
+        XCTAssertEqual(err, 0)
+    }
 
     /// test `a(0…1)<<b, b<<c, c(0…10)<<a`
     func testPassthrough() { headline(#function)

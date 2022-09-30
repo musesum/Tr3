@@ -16,27 +16,27 @@ enum Tr3ExprOp: String {
     case scalar = "scalar"
     case num    = "num"
 
-    case EQ  = "=="
-    case LE  = "<="
-    case GE  = ">="
-    case LT  = "<"
-    case GT  = ">"
-    case In  = "in"
+    case EQ     = "=="
+    case LE     = "<="
+    case GE     = ">="
+    case LT     = "<"
+    case GT     = ">"
+    case In     = "in"
 
-    case Add = "+"
-    case Sub = "-"
-    case Muy = "*"
-    case Div = "/"
-    case Mod = "%"
-
+    case add    = "+"
+    case sub    = "-"
+    case muy    = "*"
+    case div    = "/"
+    case divi   = "_/" // pythonic floor of div, while avoiding comment // symbol
+    case mod    = "%"
     case assign = ":"  // assign value
-    case comma = ","
+    case comma  = ","
 
     init(_ op: String) { self = Tr3ExprOp(rawValue: op) ?? .none }
     static let pathNames: Set<Tr3ExprOp> = [.path, .name]
     static let literals: Set<Tr3ExprOp> = [.path, .name, .quote, .scalar, .num]
     static let conditionals: Set<Tr3ExprOp> = [.EQ, .LE, .GE, .LT, .GT, .In]
-    static let operations: Set<Tr3ExprOp> = [.Add,.Sub,.Muy,.Div,.Mod, .assign]
+    static let operations: Set<Tr3ExprOp> = [.add,.sub,.muy,.divi,.div,.mod,.assign]
 
     func hasConditionals(_ test: Set<Tr3ExprOp> ) -> Bool {
         return !test.isDisjoint(with: Tr3ExprOp.conditionals)

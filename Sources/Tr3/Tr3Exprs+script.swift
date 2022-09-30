@@ -81,7 +81,7 @@ extension Tr3Exprs {
                         scriptExpr()
                         literals = true
 
-                    case .EQ, .LE, .GE, .LT, .GT, .In, .Add, .Sub, .Muy, .Div, .Mod:
+                    case .EQ, .LE, .GE, .LT, .GT, .In, .add, .sub, .muy, .divi, .div, .mod:
                         hasOp = true
 
                     case .assign:
