@@ -44,6 +44,7 @@ final class Tr3Tests: XCTestCase {
         //let titled = title.titleCase()
         print("━━━━━━━━━━━ \(title) ━━━━━━━━━━━")
     }
+
     func read(_ filename: String) -> String? {
         let url = Bundle.module.url(forResource: filename, withExtension: "tr3.h")
         if let path = url?.path {
@@ -76,6 +77,7 @@ final class Tr3Tests: XCTestCase {
             return 1
         }
     }
+
     func testSkyFile(_ inFile: String, out: String) -> Int {
         if let inScript = MuSkyTr3.read(inFile, "tr3.h"),
            let outScript = MuSkyTr3.read(out, "tr3.h") {
@@ -85,7 +87,6 @@ final class Tr3Tests: XCTestCase {
             return 1 // error
         }
     }
-
     func testParse(_ inScript: String, _ outScript: String) -> Int {
 
         let root = Tr3("√")
@@ -967,6 +968,8 @@ final class Tr3Tests: XCTestCase {
         XCTAssertEqual(err, 0)
     }
 
+    //MARK: - Expressions
+
     /// test `a(x,y) << b, b(x 0, y 0)
     func testExpr0() { headline(#function)
 
@@ -1167,6 +1170,7 @@ final class Tr3Tests: XCTestCase {
         }
         XCTAssertEqual(err, 0)
     }
+
     //MARK: - Midi
 
     /// test `grid(x: num _/ 12, y: num % 12) << note, note(num: 0…127 = 50)`
