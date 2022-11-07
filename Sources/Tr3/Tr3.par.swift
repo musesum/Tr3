@@ -28,10 +28,12 @@ tr3 ~ left right* {
     scalar ~ "(" scalar1 ")"
     scalars ~ "(" scalar1 ("," scalar1)* ")"
     scalar1 ~ (thru | modu | data | num) {
-        thru ~ num ("..." | "…") num ("=" num)?
-        modu ~ "%" num ("=" num)?
+        thru ~ num ("..." | "…") num dflt? now?
+        modu ~ "%" num dflt? now?
         index ~ "[" (name | num) "]"
         data ~ "*"
+        dflt ~ "=" num
+        now ~ ":" num
     }
     exprs ~ "(" expr+ ("," expr+)* ")" {
         expr ~ (exprOp | name | scalars | scalar1 | quote)

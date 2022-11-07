@@ -8,8 +8,8 @@ extension Tr3Exprs {
         if nameAny.count == 2,
            let x = nameAny["x"] as? Tr3ValScalar,
            let y = nameAny["y"] as? Tr3ValScalar {
-            let xNum = Double(x.num)
-            let yNum = Double(y.num)
+            let xNum = Double(x.now)
+            let yNum = Double(y.now)
             return CGPoint(x: xNum, y: yNum)
         }
         return nil
@@ -18,19 +18,19 @@ extension Tr3Exprs {
         if nameAny.count == 4,
            let x = nameAny["x"] as? Tr3ValScalar,
            let y = nameAny["y"] as? Tr3ValScalar {
-            let xNum = Double(x.num)
-            let yNum = Double(y.num)
+            let xNum = Double(x.now)
+            let yNum = Double(y.now)
 
             if let w = nameAny["w"] as? Tr3ValScalar,
                let h = nameAny["h"] as? Tr3ValScalar {
-                let wNum = Double(w.num)
-                let hNum = Double(h.num)
+                let wNum = Double(w.now)
+                let hNum = Double(h.now)
                 return CGRect(x: xNum, y: yNum, width: wNum, height: hNum)
             }
             else  if let w = nameAny["width"] as? Tr3ValScalar,
                      let h = nameAny["height"] as? Tr3ValScalar {
-                let wNum = Double(w.num)
-                let hNum = Double(h.num)
+                let wNum = Double(w.now)
+                let hNum = Double(h.now)
                 return CGRect(x: xNum, y: yNum, width: wNum, height: hNum)
             }
         }
@@ -40,7 +40,7 @@ extension Tr3Exprs {
         var floats = [Float]()
         for value in nameAny.values {
             switch value {
-                case let v as Tr3ValScalar: floats.append(Float(v.num))
+                case let v as Tr3ValScalar: floats.append(Float(v.now))
                 case let v as CGFloat: floats.append(Float(v))
                 case let v as Float: floats.append(v)
                 default: return nil

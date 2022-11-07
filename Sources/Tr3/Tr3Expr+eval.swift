@@ -13,8 +13,8 @@ extension Tr3Expr {
             return frVal
         }
 
-        if let rval = ((toVal as? Tr3ValScalar)?.num ?? (toVal as? Float)),
-           let lval = ((frVal as? Tr3ValScalar)?.num ?? (frVal as? Float)) {
+        if let rval = ((toVal as? Tr3ValScalar)?.now ?? (toVal as? Float)),
+           let lval = ((frVal as? Tr3ValScalar)?.now ?? (frVal as? Float)) {
 
             if opNow.isConditional() {
                 switch opNow {

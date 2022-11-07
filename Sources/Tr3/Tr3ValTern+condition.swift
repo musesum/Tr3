@@ -17,7 +17,7 @@ extension Tr3ValTern {
             if let pathTr3 = pathTr3s.last {
 
                 if let scalarVal = pathTr3.val as? Tr3ValScalar {
-                    return scalarVal.num > 0
+                    return scalarVal.now > 0
                 }
                 if act == .sneak { return false }
                 return pathTr3.id == prevTr3.id
@@ -28,14 +28,14 @@ extension Tr3ValTern {
 
             for pathTr3 in pathTr3s {
                 if let pathVal = pathTr3.val {
-                    if bothMatchFlags(pathVal, rightVal, [.num])  {
+                    if bothMatchFlags(pathVal, rightVal, [.now])  {
 
                         switch compareOp {
                         case "==": return pathVal == rightVal
                         case ">=": return pathVal >= rightVal
-                        case ">":  return pathVal >  rightVal
+                        case ">" : return pathVal >  rightVal
                         case "<=": return pathVal <= rightVal
-                        case "<":  return pathVal <  rightVal
+                        case "<" : return pathVal <  rightVal
                         case "!=": return pathVal != rightVal
                         default: break
                         }

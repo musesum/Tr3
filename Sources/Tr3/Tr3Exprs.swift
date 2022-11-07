@@ -80,7 +80,7 @@ public class Tr3Exprs: Tr3Val {
 
         for value in nameAny.values {
             switch value {
-                case let v as Tr3ValScalar: floats.append(Float(v.num))
+                case let v as Tr3ValScalar: floats.append(Float(v.now))
                 case let v as CGFloat: floats.append(Float(v))
                 case let v as Float: floats.append(v)
                 default: floats.append(0)
@@ -119,11 +119,11 @@ public class Tr3Exprs: Tr3Val {
     }
     func setNamed(_ name: String, _ value: Float) -> Bool {
         if let scalar = nameAny[name] as? Tr3ValScalar {
-            scalar.num = value
+            scalar.now = value
         } else {
             nameAny[name] = Tr3ValScalar(tr3, num: value)
         }
-        addFlag(.num)
+        addFlag(.now)
         return true
     }
 }

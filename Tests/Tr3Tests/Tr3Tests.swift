@@ -1072,7 +1072,7 @@ final class Tr3Tests: XCTestCase {
             err += ParStr.testCompare(expect0, result0, echo: true)
 
             let result1 = root.scriptRoot(session: false)
-            let expect1 = "a(x 0…2 = 1, y 0…2 = 1, z 99), b(x 0…2 = 1, y 0…2 = 1) << a"
+            let expect1 = "a(x 0…2:1, y 0…2:1, z 99), b(x 0…2:1, y 0…2:1) << a"
             err += ParStr.testCompare(expect1, result1, echo: true)
         }
         else {

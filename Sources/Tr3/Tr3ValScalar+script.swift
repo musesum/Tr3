@@ -10,15 +10,15 @@ import Foundation
 extension Tr3ValScalar {
 
     override func printVal() -> String {
-        return String(num)
+        return String(now)
     }
 
     override func scriptVal(parens: Bool = false,
                             session: Bool,
                             expand: Bool = true) -> String  {
         if session {
-            if valFlags.contains(.num) {
-                let numStr = String(format: "%g", num)
+            if valFlags.contains(.now) {
+                let numStr = String(format: "%g", now)
                 return parens ? "(\(numStr))" : numStr
             }
             return ""
@@ -31,11 +31,11 @@ extension Tr3ValScalar {
             if valFlags.contains(.modu) { script += "%" }
             if valFlags.contains(.max)  { script += String(format: "%g", max) }
             if valFlags.contains(.dflt) {
-                if valFlags.contains([.min,.max]) { script += " = " }
+                if valFlags.contains([.min,.max]) { script += "=" }
                 script += String(format: "%g", dflt)
-            } else if valFlags.contains(.num) {
-                if valFlags.contains([.min,.max]) { script += " = " }
-                script += String(format: "%g", num)
+            } else if valFlags.contains(.now) {
+                if valFlags.contains([.min,.max]) { script += ":" }
+                script += String(format: "%g", now)
             }
             script += parens ? ")" : ""
             return script

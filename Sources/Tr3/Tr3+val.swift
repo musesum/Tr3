@@ -21,20 +21,20 @@ extension Tr3 {
 
     public func BoolVal() -> Bool {
         if let v = val as? Tr3ValScalar {
-            return v.num > 0
+            return v.now > 0
         }
         return false
     }
 
     public func FloatVal() -> Float? {
         if let v = val as? Tr3ValScalar {
-            return v.num
+            return v.now
         }
         else if let exprs = val as? Tr3Exprs {
-            if let f = (exprs.nameAny["v"] as? Tr3ValScalar)?.num {
+            if let f = (exprs.nameAny["v"] as? Tr3ValScalar)?.now {
                 return f
             } else if let scalar = exprs.nameAny.values.last as? Tr3ValScalar  {
-                return scalar.num
+                return scalar.now
             }
         }
         return nil
@@ -59,8 +59,8 @@ extension Tr3 {
     public func CGPointVal() -> CGPoint? {
 
         if let exprs = val as? Tr3Exprs {
-            if let x = (exprs.nameAny["x"] as? Tr3ValScalar)?.num,
-               let y = (exprs.nameAny["y"] as? Tr3ValScalar)?.num {
+            if let x = (exprs.nameAny["x"] as? Tr3ValScalar)?.now,
+               let y = (exprs.nameAny["y"] as? Tr3ValScalar)?.now {
 
                 return CGPoint(x: CGFloat(x), y: CGFloat(y))
             }
@@ -70,8 +70,8 @@ extension Tr3 {
     
     public func CGSizeVal() -> CGSize? {
         if let v = val as? Tr3Exprs {
-            if let w = (v.nameAny["w"] as? Tr3ValScalar)?.num,
-               let h = (v.nameAny["h"] as? Tr3ValScalar)?.num {
+            if let w = (v.nameAny["w"] as? Tr3ValScalar)?.now,
+               let h = (v.nameAny["h"] as? Tr3ValScalar)?.now {
 
                 return CGSize(width: CGFloat(w), height: CGFloat(h))
             }
@@ -83,10 +83,10 @@ extension Tr3 {
         if let v = val as? Tr3Exprs {
             let ns = v.nameAny
             if ns.count >= 4,
-               let x = (ns["x"] as? Tr3ValScalar)?.num,
-               let y = (ns["y"] as? Tr3ValScalar)?.num,
-               let w = (ns["w"] as? Tr3ValScalar)?.num,
-               let h = (ns["h"] as? Tr3ValScalar)?.num {
+               let x = (ns["x"] as? Tr3ValScalar)?.now,
+               let y = (ns["y"] as? Tr3ValScalar)?.now,
+               let w = (ns["w"] as? Tr3ValScalar)?.now,
+               let h = (ns["h"] as? Tr3ValScalar)?.now {
                 let rect = CGRect(x: CGFloat(x),
                                   y: CGFloat(y),
                                   width: CGFloat(w),

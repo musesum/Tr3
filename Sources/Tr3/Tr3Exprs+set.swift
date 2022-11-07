@@ -10,7 +10,7 @@ extension Tr3Exprs { // + set
     func setFloat(_ v: Float) -> Bool {
         if let n = nameAny["val"] as? Tr3ValScalar {
             _ = n.setVal(v)
-            n.addFlag(.num)
+            n.addFlag(.now)
         }
         else {
             nameAny["val"] = Tr3ValScalar(tr3, num: v) //TODO: remove this kludge for DeepMenu

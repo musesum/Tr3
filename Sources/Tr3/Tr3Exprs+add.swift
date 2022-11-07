@@ -24,7 +24,7 @@ extension Tr3Exprs {
     }
     func injectNameNum(_ name: String, _ num: Float) {
         if let val = nameAny[name] as? Tr3ValScalar {
-            val.num = num
+            val.now = num
         } else {
             nameAny[name] = Tr3ValScalar(tr3, num: num)
         }

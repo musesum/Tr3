@@ -163,7 +163,9 @@ public class Tr3Parse {
         switch pattern {
             case "thru": scalar.addFlag(.thru)
             case "modu": scalar.addFlag(.modu)
-            case "num":  scalar.parseNum(par.getFirstFloat())
+            case "num" : scalar.parseNum(par.getFirstFloat())
+            case "dflt": scalar.parseNum(par.getFirstFloat()) //???
+            case "now" : scalar.parseNum(par.getFirstFloat()) //???
             default:     break
         }
         for nextPar in par.nextPars {
