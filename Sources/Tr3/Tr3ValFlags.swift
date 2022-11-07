@@ -20,6 +20,7 @@ public struct Tr3ValFlags: OptionSet {
     public static let max  = Tr3ValFlags(rawValue: 1 <<  4) // 1 in 0…1, max of range
     public static let dflt = Tr3ValFlags(rawValue: 1 <<  5) // = n default value
     public static let now  = Tr3ValFlags(rawValue: 1 <<  6) // current value
+    public static let lit  = Tr3ValFlags(rawValue: 1 <<  7) // literal value
 
     public let rawValue: Int
     public init(rawValue: Int) { self.rawValue = rawValue }
@@ -33,6 +34,7 @@ extension Tr3ValFlags: CustomStringConvertible {
         (.max , "max" ),
         (.dflt, "dflt"),
         (.now , "now" ),
+        (.lit , "lit" ),
     ]
 
     public var description: String {

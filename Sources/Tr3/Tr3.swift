@@ -1,6 +1,4 @@
-//
 //  Tr3.swift
-//  Par
 //
 //  Created by warren on 3/7/19.
 //  Copyright © 2019 DeepMuse
@@ -33,9 +31,9 @@ public class Tr3: Hashable {
     public var type = Tr3Type.unknown
     var copied = [Tr3]()
 
-    public func hash(into hasher: inout Hasher) {  hasher.combine(id)  }
+    public func hash(into hasher: inout Hasher) { hasher.combine(id) }
 
-    public static func == (lhs: Tr3, rhs: Tr3) -> Bool { return lhs.id == rhs.id  }
+    public static func == (lhs: Tr3, rhs: Tr3) -> Bool { return lhs.id == rhs.id }
 
     public convenience init(_ name_: String, _ type_: Tr3Type = .name) {
         self.init()

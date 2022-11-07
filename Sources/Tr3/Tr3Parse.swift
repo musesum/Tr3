@@ -37,7 +37,7 @@ public class Tr3Parse {
 
             dispatchFunc(parseValue, from: ["data",
                                             "scalar1",
-                                            "thru", "modu", "num",
+                                            "thru", "modu", "dflt", "now", "num",
                                             "quote", "embed", "expr"])
 
             dispatchFunc(parseEdge, from: ["edges", "edgeOp",
@@ -164,8 +164,8 @@ public class Tr3Parse {
             case "thru": scalar.addFlag(.thru)
             case "modu": scalar.addFlag(.modu)
             case "num" : scalar.parseNum(par.getFirstFloat())
-            case "dflt": scalar.parseNum(par.getFirstFloat()) //???
-            case "now" : scalar.parseNum(par.getFirstFloat()) //???
+            case "dflt": scalar.parseDflt(par.getFirstFloat())
+            case "now" : scalar.parseNow(par.getFirstFloat())
             default:     break
         }
         for nextPar in par.nextPars {

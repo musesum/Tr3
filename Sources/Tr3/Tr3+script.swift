@@ -183,7 +183,7 @@ extension Tr3 {
                 // { a, b}
                 script = "{ " + comment.with(trailing: " ")
             } else {
-                script = "{ " + comment //??? .with(trailing: "\n")
+                script = "{ " + comment
             }
 
             for child in children {

@@ -17,7 +17,9 @@ extension Tr3ValScalar {
                             session: Bool,
                             expand: Bool = true) -> String  {
         if session {
-            if valFlags.contains(.now) {
+            if valFlags.contains(.now) ||
+                valFlags.contains(.lit) {
+
                 let numStr = String(format: "%g", now)
                 return parens ? "(\(numStr))" : numStr
             }
@@ -30,13 +32,10 @@ extension Tr3ValScalar {
             if valFlags.contains(.thru) { script += "…" /* option+`;` */}
             if valFlags.contains(.modu) { script += "%" }
             if valFlags.contains(.max)  { script += String(format: "%g", max) }
-            if valFlags.contains(.dflt) {
-                if valFlags.contains([.min,.max]) { script += "=" }
-                script += String(format: "%g", dflt)
-            } else if valFlags.contains(.now) {
-                if valFlags.contains([.min,.max]) { script += ":" }
-                script += String(format: "%g", now)
-            }
+            if valFlags.contains(.dflt) { script += String(format: "=%g", dflt) }
+            if valFlags.contains(.now)  { script += String(format: ":%g", now) }
+            else if valFlags.contains(.lit) { script += String(format: " %g", now) }
+
             script += parens ? ")" : ""
             return script
         }

@@ -19,7 +19,7 @@ public class Tr3Edge: Hashable {
     var rightTr3: Tr3
     var defVal: Tr3Val?
 
-    public static var LineageDepth = 99 //?? was 2 useful for debugging
+    public static var LineageDepth = 99 
 
     public func hash(into hasher: inout Hasher) {
         hasher.combine(edgeKey)

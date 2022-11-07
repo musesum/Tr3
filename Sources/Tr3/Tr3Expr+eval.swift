@@ -11,23 +11,23 @@ extension Tr3Expr {
 
         if opNow == .none {
             return frVal
-        }
+        } 
 
-        if let rval = ((toVal as? Tr3ValScalar)?.now ?? (toVal as? Float)),
-           let lval = ((frVal as? Tr3ValScalar)?.now ?? (frVal as? Float)) {
+        if let toNow = ((toVal as? Tr3ValScalar)?.now ?? (toVal as? Float)),
+           let frNow = ((frVal as? Tr3ValScalar)?.now ?? (frVal as? Float)) {
 
             if opNow.isConditional() {
                 switch opNow {
-                    case .EQ: return lval == rval ? frVal : nil
-                    case .LE: return lval <= rval ? frVal : nil
-                    case .GE: return lval >= rval ? frVal : nil
-                    case .LT: return lval <  rval ? frVal : nil
-                    case .GT: return lval >  rval ? frVal : nil
+                    case .EQ: return frNow == toNow ? frVal : nil
+                    case .LE: return frNow <= toNow ? frVal : nil
+                    case .GE: return frNow >= toNow ? frVal : nil
+                    case .LT: return frNow <  toNow ? frVal : nil
+                    case .GT: return frNow >  toNow ? frVal : nil
 
                     case .In:
                         var isIn = false
                         if let val = toVal as? Tr3ValScalar {
-                            isIn = val.inRange(from: lval)
+                            isIn = val.inRange(from: frNow)
                         }
                         return isIn ? frVal : nil
                     default : break
@@ -35,12 +35,12 @@ extension Tr3Expr {
             } else if opNow.isOperation() {
 
                 switch opNow {
-                    case .add   : return lval + rval
-                    case .sub   : return lval - rval
-                    case .muy   : return lval * rval
-                    case .divi  : return floor(lval / (rval == 0 ? 1 : rval))
-                    case .div   : return lval / (rval == 0 ? 1 : rval)
-                    case .mod   : return fmodf(lval, rval == 0 ? 1 : rval)
+                    case .add   : return frNow + toNow
+                    case .sub   : return frNow - toNow
+                    case .muy   : return frNow * toNow
+                    case .divi  : return floor(frNow / (toNow == 0 ? 1 : toNow))
+                    case .div   : return frNow / (toNow == 0 ? 1 : toNow)
+                    case .mod   : return fmodf(frNow, toNow == 0 ? 1 : toNow)
                     case .assign: return frVal
                     default     : break
                 }

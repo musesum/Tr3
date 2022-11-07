@@ -120,8 +120,21 @@ final class Tr3Tests: XCTestCase {
         }
     }
 
+    func testSession() { headline(#function)
+        var err = 0
+        err += test("a(1)", session: false)
+        err += test("a(1)", session: true)
+        XCTAssertEqual(err, 0)
+    }
+
     func testParseShort() { headline(#function)
         var err = 0
+
+        err += test("a(0…1=0:1)")
+        err += test("b(0…1)")
+        err += test("c(0…1:1)")
+        err += test("a(1) b >> a(2)")
+
         err += test("a(\"b\")")
         err += test("a.b c@a", "a { b } c@a { b }")
         err += test("b(x / 2) a << b(x / 2)")
@@ -764,7 +777,7 @@ final class Tr3Tests: XCTestCase {
             acd.setAny(50, .activate)
             ace.setAny(50, .activate)
 
-            let result1 =  root.scriptRoot(session: false)
+            let result1 =  root.scriptRoot(session: true)
             let expect1 = """
 
             a       { b(10)       { d(30)         e(40)         }
@@ -781,7 +794,7 @@ final class Tr3Tests: XCTestCase {
             zcd.setAny(55, .activate)
             zce.setAny(66, .activate)
 
-            let result2 =  root.scriptRoot(session: false)
+            let result2 =  root.scriptRoot(session: true)
             let expect2 = """
 
              a      { b(10)       { d(30)         e(40)         }
@@ -815,7 +828,7 @@ final class Tr3Tests: XCTestCase {
            let acd = ac.findPath("d"),
            let ace = ac.findPath("e"),
 
-            let z = root.findPath("z"),
+           let z = root.findPath("z"),
            let zb = z.findPath("b"),
            let zc = z.findPath("c"),
            let zbd = zb.findPath("d"),
@@ -830,7 +843,7 @@ final class Tr3Tests: XCTestCase {
             acd.setAny(50, .activate)
             ace.setAny(60, .activate)
 
-            let result1 =  root.scriptRoot(session: false)
+            let result1 =  root.scriptRoot(session: true)
             let expect1 = """
 
             a {        b(10)        { d(30)          e(40)          }
@@ -847,7 +860,7 @@ final class Tr3Tests: XCTestCase {
             zcd.setAny(55, .activate)
             zce.setAny(66, .activate)
 
-            let result2 =  root.scriptRoot(session: false)
+            let result2 =  root.scriptRoot(session: true)
             let expect2 = """
 
             a        { b(11)       { d(33)         e(44)         }
@@ -989,7 +1002,7 @@ final class Tr3Tests: XCTestCase {
             err = ParStr.testCompare(expect0, result0, echo: true)
 
             let result1 = root.scriptRoot(session: false)
-            let expect1 = "a(x, y) << b, b(x 1, y 2)"
+            let expect1 = "a(x, y) << b, b(x:1, y:2)"
             err = ParStr.testCompare(expect1, result1, echo: true)
         }
         else {
@@ -1072,7 +1085,7 @@ final class Tr3Tests: XCTestCase {
             err += ParStr.testCompare(expect0, result0, echo: true)
 
             let result1 = root.scriptRoot(session: false)
-            let expect1 = "a(x 0…2:1, y 0…2:1, z 99), b(x 0…2:1, y 0…2:1) << a"
+            let expect1 = "a(x 0…2:1, y 0…2:1, z: 99), b(x 0…2:1, y 0…2:1) << a"
             err += ParStr.testCompare(expect1, result1, echo: true)
         }
         else {
@@ -1178,7 +1191,7 @@ final class Tr3Tests: XCTestCase {
         var err = 0
         /// `_/` symbol is akin to python-style floor of division
         /// instead of the `//` symbol, which is used for comment
-        let script = "grid(x: num _/ 12, y: num % 12) << note, note(num 0…127 = 50)"
+        let script = "grid(x: num _/ 12, y: num % 12) << note, note(num 0…127=50)"
         print("\n" + script)
 
         let root = Tr3("√")
@@ -1189,8 +1202,7 @@ final class Tr3Tests: XCTestCase {
             note.setAny(num, .activate)
 
             let result = root.scriptRoot(session: true)
-            err = ParStr.testCompare(
-                "grid(x 4, y 2)<<note, note(num 50)", result)
+            err = ParStr.testCompare("grid(x 4, y 2) << note, note(num 50)", result)
         }
         else {
             err = 1
@@ -1205,7 +1217,7 @@ final class Tr3Tests: XCTestCase {
         /// instead of the `//` symbol, which is used for comment
         let script = """
         grid(num > 20, chan == 1, x: num _/ 12, y: num % 12) << note,
-        note(num 0…127 = 50, chan 2)
+        note(num 0…127=50, chan 2)
         """
         print("\n" + script)
 

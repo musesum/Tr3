@@ -424,8 +424,8 @@ extension Tr3 {
         func bindVal(_ val: Tr3Val?) {
             guard let val else { return }
             switch val {
-                case let t as Tr3Exprs:  t.setDefaults()
-                case let s as Tr3ValScalar: s.setDefault()
+                case let t as Tr3Exprs:  t.setNows()
+                case let s as Tr3ValScalar: s.setNow()
                 default: break
             }
         }

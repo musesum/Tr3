@@ -44,8 +44,6 @@ public class Tr3ValScalar: Tr3Val {
 
         if valFlags.contains(.thru) {
             if valFlags.contains(.max) {
-                valFlags.insert(.dflt)
-                dflt = n
                 now = n
             } else if valFlags.contains(.min) {
                 valFlags.insert(.max)
@@ -56,32 +54,40 @@ public class Tr3ValScalar: Tr3Val {
             }
         } else if valFlags.contains(.modu) {
             if valFlags.contains(.max) {
-                valFlags.insert(.dflt)
-                dflt = n
                 now = n
             } else {
                 valFlags.insert(.max)
                 max = n
             }
         } else {
+            valFlags.insert(.lit)
+            now = n
+        }
+    }
+    func parseDflt(_ n: Float) {
+        if !n.isNaN {
+            valFlags.insert(.dflt)
+            dflt = n
+            now = n
+        }
+    }
+    func parseNow(_ n: Float) {
+        if !n.isNaN {
             valFlags.insert(.now)
             now = n
         }
     }
-    
-    func setDefault() {
-        if valFlags.contains(.modu) {
-            now = 0
-        }
-        if valFlags.contains(.dflt) {
+    func setNow() { // was setDefault
+        if valFlags.contains(.now) {
+            // do nothing
+        } else if valFlags.contains(.dflt) {
             now = dflt
         } else if valFlags.contains(.min), now < min {
             now = min
         } else if valFlags.contains(.max), now > max {
-           now = max
-        } else if valFlags.intersection([.now, .min, .max, .dflt]) == [] {
-            valFlags.insert([.now, .dflt])
-            dflt = now
+            now = max
+        } else if valFlags.contains(.modu) {
+            now = 0
         }
     }
    
@@ -160,7 +166,7 @@ public class Tr3ValScalar: Tr3Val {
         
         func setNumWithFlag(_ n: Float) {
             now = n
-            valFlags.insert(.now)
+            valFlags.insert(.now) //???
             setInRange()
         }
         func setInRange() {

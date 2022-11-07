@@ -108,11 +108,11 @@ public class Tr3Exprs: Tr3Val {
         }
         return false
     }
-    func setDefaults() {
+    func setNows() { // was setDefaults
         if nameAny.count > 0 {
             for value in nameAny.values {
                 if let scalar = value as? Tr3ValScalar {
-                    scalar.setDefault()
+                    scalar.setNow()
                 }
             }
         }
