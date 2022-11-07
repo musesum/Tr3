@@ -180,9 +180,10 @@ extension Tr3 {
         if children.count > 0 {
             let comment = comments.getComments(.child)
             if comment == "," {
+                // { a, b}
                 script = "{ " + comment.with(trailing: " ")
             } else {
-                script = "{ " + comment + "\n"
+                script = "{ " + comment //??? .with(trailing: "\n")
             }
 
             for child in children {

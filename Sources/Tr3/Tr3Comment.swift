@@ -8,6 +8,18 @@
 import Foundation
 import Par
 
+//??? todo add to Par?
+//extension String {
+//    /// remove trailing char set in String
+//    /// often used to insure a single trailing space, instead of two.
+//    public func remove(trailing: String) -> String {
+//        var trim = self
+//        while let last = trim.last, trailing.contains(last) {
+//            trim.removeLast()
+//        }
+//        return trim
+//    }
+//}
 public enum Tr3CommentType { case unknown, child, edges }
 
 public class Tr3Comment {
@@ -71,7 +83,7 @@ public class Tr3Comments {
     public func getEdgesDelim() -> String {
         return ", "
     }
-    
+
     public func getComments(_ getType: Tr3CommentType) -> String {
         var result = ""
         if have(type: getType) {
@@ -79,7 +91,7 @@ public class Tr3Comments {
                 if comment.type == getType {
                     switch comment.text.prefix(1) {
                         case ",": result += ","
-                        default: result.spacePlus(comment.text.without(trailing: "\n"))
+                        default: result.spacePlus(comment.text)
                     }
                 }
             }

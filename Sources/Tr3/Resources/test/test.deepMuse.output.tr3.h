@@ -3,7 +3,7 @@ sky { // visual music program
     main { // main controls
 
         frame (0) // frame counter
-        fps (1…60 = 60) // frames per second
+        fps (1…60=60) // frames per second
         run (1) // currently running
     }
     pipeline { // default metal pipeline at atartup
@@ -17,7 +17,7 @@ sky { // visual music program
 
         pal0 ("roygbik") // palette 0: (r)ed (o)range (y)ellow …
         pal1 ("wKZ") // palette 1: (w)hite blac(K) fractali(Z)e
-        xfade (0…1 = 0.5)
+        xfade (0…1=0.5)
     }
     input { // phone and tablet pencil input
 
@@ -29,7 +29,7 @@ sky { // visual music program
 
             on (0…1)
         }
-        radius (1…92 = 9) // finger silhouette
+        radius (1…92=9) // finger silhouette
         tilt (0…1) // use tilt
         force (0…0.5) >> sky.draw.brush.size // pen pressure
     }
@@ -42,9 +42,9 @@ sky { // visual music program
         brush { // type of brush and range
 
             type ("dot") // draw a circle
-            size (1…64 = 10) // range of radius
-            press (0…1 = 1) // pressure changes size
-            index (1…255 = 127) // index in 256 color palette
+            size (1…64=10) // range of radius
+            press (0…1=1) // pressure changes size
+            index (1…255=127) // index in 256 color palette
                                 // <<(osc.tuio.z osc.manos˚z) // redirect from OSC
         }
         line { // place holder for line drawing
@@ -57,38 +57,38 @@ sky { // visual music program
 shader {
     model {
         cell {
-            fade (0…1 = 0.5) {
-                on (0…1 = 0) >> (shader.model.cell.fade.on(0) , shader.model.cell.ave.on(0) , shader.model.cell.melt.on(0) , shader.model.cell.tunl.on(0) , shader.model.cell.slide.on(0) , shader.model.cell.fred.on(0) , shader.model.cell.zha.on(0) )<< shader.model.cell.fade
+            fade (0…1=0.5) {
+                on (0…1=0) >> (shader.model.cell.fade.on(0) , shader.model.cell.ave.on(0) , shader.model.cell.melt.on(0) , shader.model.cell.tunl.on(0) , shader.model.cell.slide.on(0) , shader.model.cell.fred.on(0) , shader.model.cell.zha.on(0) )<< shader.model.cell.fade
             }
-            ave (0…1 = 0.5) {
-                on (0…1 = 1) >> (shader.model.cell.fade.on(0) , shader.model.cell.ave.on(0) , shader.model.cell.melt.on(0) , shader.model.cell.tunl.on(0) , shader.model.cell.slide.on(0) , shader.model.cell.fred.on(0) , shader.model.cell.zha.on(0) )<< shader.model.cell.ave
+            ave (0…1=0.5) {
+                on (0…1=1) >> (shader.model.cell.fade.on(0) , shader.model.cell.ave.on(0) , shader.model.cell.melt.on(0) , shader.model.cell.tunl.on(0) , shader.model.cell.slide.on(0) , shader.model.cell.fred.on(0) , shader.model.cell.zha.on(0) )<< shader.model.cell.ave
             }
-            melt (0…1 = 0.5) {
-                on (0…1 = 0) >> (shader.model.cell.fade.on(0) , shader.model.cell.ave.on(0) , shader.model.cell.melt.on(0) , shader.model.cell.tunl.on(0) , shader.model.cell.slide.on(0) , shader.model.cell.fred.on(0) , shader.model.cell.zha.on(0) )<< shader.model.cell.melt
+            melt (0…1=0.5) {
+                on (0…1=0) >> (shader.model.cell.fade.on(0) , shader.model.cell.ave.on(0) , shader.model.cell.melt.on(0) , shader.model.cell.tunl.on(0) , shader.model.cell.slide.on(0) , shader.model.cell.fred.on(0) , shader.model.cell.zha.on(0) )<< shader.model.cell.melt
             }
-            tunl (0…5 = 1) {
-                on (0…1 = 0) >> (shader.model.cell.fade.on(0) , shader.model.cell.ave.on(0) , shader.model.cell.melt.on(0) , shader.model.cell.tunl.on(0) , shader.model.cell.slide.on(0) , shader.model.cell.fred.on(0) , shader.model.cell.zha.on(0) )<< shader.model.cell.tunl
+            tunl (0…5=1) {
+                on (0…1=0) >> (shader.model.cell.fade.on(0) , shader.model.cell.ave.on(0) , shader.model.cell.melt.on(0) , shader.model.cell.tunl.on(0) , shader.model.cell.slide.on(0) , shader.model.cell.fred.on(0) , shader.model.cell.zha.on(0) )<< shader.model.cell.tunl
             }
-            slide (0…7 = 3) {
-                on (0…1 = 0) >> (shader.model.cell.fade.on(0) , shader.model.cell.ave.on(0) , shader.model.cell.melt.on(0) , shader.model.cell.tunl.on(0) , shader.model.cell.slide.on(0) , shader.model.cell.fred.on(0) , shader.model.cell.zha.on(0) )<< shader.model.cell.slide
+            slide (0…7=3) {
+                on (0…1=0) >> (shader.model.cell.fade.on(0) , shader.model.cell.ave.on(0) , shader.model.cell.melt.on(0) , shader.model.cell.tunl.on(0) , shader.model.cell.slide.on(0) , shader.model.cell.fred.on(0) , shader.model.cell.zha.on(0) )<< shader.model.cell.slide
             }
-            fred (0…4 = 4) {
-                on (0…1 = 0) >> (shader.model.cell.fade.on(0) , shader.model.cell.ave.on(0) , shader.model.cell.melt.on(0) , shader.model.cell.tunl.on(0) , shader.model.cell.slide.on(0) , shader.model.cell.fred.on(0) , shader.model.cell.zha.on(0) )<< shader.model.cell.fred
+            fred (0…4=4) {
+                on (0…1=0) >> (shader.model.cell.fade.on(0) , shader.model.cell.ave.on(0) , shader.model.cell.melt.on(0) , shader.model.cell.tunl.on(0) , shader.model.cell.slide.on(0) , shader.model.cell.fred.on(0) , shader.model.cell.zha.on(0) )<< shader.model.cell.fred
             }
-            zha (0…6 = 2) {
-                on (0…1 = 0) >> (shader.model.cell.fade.on(0) , shader.model.cell.ave.on(0) , shader.model.cell.melt.on(0) , shader.model.cell.tunl.on(0) , shader.model.cell.slide.on(0) , shader.model.cell.fred.on(0) , shader.model.cell.zha.on(0) )<< shader.model.cell.zha
-                bits (2…4 = 3)
+            zha (0…6=2) {
+                on (0…1=0) >> (shader.model.cell.fade.on(0) , shader.model.cell.ave.on(0) , shader.model.cell.melt.on(0) , shader.model.cell.tunl.on(0) , shader.model.cell.slide.on(0) , shader.model.cell.fred.on(0) , shader.model.cell.zha.on(0) )<< shader.model.cell.zha
+                bits (2…4=3)
                 loops (11)
             }
         }
         pipe {
-            draw (x 0…1 = 0.5, y 0…1 = 0.5)
+            draw (x 0…1=0.5, y 0…1=0.5)
             record (0)
             camera (0) {
                 flip (0)
             }
             camix (0)
-            color (0…1 = 0.1) // bitplane
+            color (0…1=0.1) // bitplane
             render {
                 frame (x 0, y 0, w 1080, h 1920)
                 repeat (x, y)
@@ -126,7 +126,7 @@ midi { // musical instrument device interface
         }
         controller (num 0…127, val 0…127, chan 1…32, port 1…16, time 0)
         afterTouch (num 0…127, val 0…127, chan 1…32, port 1…16, time 0)
-        pitchBend (val 0…16384 = 8192, chan 1…32, port 1…16, time 0)
+        pitchBend (val 0…16384=8192, chan 1…32, port 1…16, time 0)
         programChange (num 0…255, chan 1…32, port 1…16, time 0) //1, 632, 255
     }
     output @ input {
@@ -137,7 +137,7 @@ midi { // musical instrument device interface
         }
         controller (num 0…127, val 0…127, chan 1…32, port 1…16, time 0)
         afterTouch (num 0…127, val 0…127, chan 1…32, port 1…16, time 0)
-        pitchBend (val 0…16384 = 8192, chan 1…32, port 1…16, time 0)
+        pitchBend (val 0…16384=8192, chan 1…32, port 1…16, time 0)
         programChange (num 0…255, chan 1…32, port 1…16, time 0) //1, 632, 255
     }
     cc {
