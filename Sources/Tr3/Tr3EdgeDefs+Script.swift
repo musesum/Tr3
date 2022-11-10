@@ -7,18 +7,20 @@
 
 import Foundation
 
-extension Tr3EdgeDefs: Tr3ValScriptProtocol {
+extension Tr3EdgeDefs {
 
     func printVal() -> String {
-        return scriptVal(session: true)
+        return scriptVal([.now])
     }
 
-    func scriptVal(parens: Bool = true,
-                   session: Bool = false,
-                   expand: Bool = false) -> String {
+    func scriptVal(_ scriptFlags: Tr3ScriptFlags) -> String {
+
         var script = ""
+
         for edgeDef in edgeDefs {
-            let val = edgeDef.scriptVal(parens: parens, session: session, expand: expand)
+
+            let val = edgeDef.scriptVal(scriptFlags)
+
             script += val
         }
         return script

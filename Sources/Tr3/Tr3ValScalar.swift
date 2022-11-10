@@ -179,4 +179,35 @@ public class Tr3ValScalar: Tr3Val {
     public override func getVal() -> Any {
         return now
     }
+
+    public override func printVal() -> String {
+        return String(now)
+    }
+
+    public override func scriptVal(_ scriptFlags: Tr3ScriptFlags) -> String {
+
+        if scriptFlags.contains(.now) {
+            if valFlags.contains(.now) ||
+                valFlags.contains(.lit) {
+
+                let numStr = String(format: "%g", now)
+                return scriptFlags.contains(.parens) ? "(\(numStr))" : numStr
+            }
+            return ""
+        }
+        else {
+            var script = scriptFlags.contains(.parens) ? "(" : ""
+            if valFlags.rawValue == 0   { return "" }
+            if valFlags.contains(.min)  { script += String(format: "%g", min) }
+            if valFlags.contains(.thru) { script += "…" /* option+`;` */}
+            if valFlags.contains(.modu) { script += "%" }
+            if valFlags.contains(.max)  { script += String(format: "%g", max) }
+            if valFlags.contains(.dflt) { script += String(format: "=%g", dflt) }
+            if valFlags.contains(.now)  { script += String(format: ":%g", now) }
+            else if valFlags.contains(.lit) { script += String(format: " %g", now) }
+
+            script += scriptFlags.contains(.parens) ? ")" : ""
+            return script
+        }
+    }
 }

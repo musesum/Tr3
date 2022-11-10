@@ -40,7 +40,6 @@ extension Tr3 {
         return nil
     }
 
-
     public func IntVal() -> Int? {
         if let num = FloatVal() { return Int(num) }
         return nil

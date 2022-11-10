@@ -9,15 +9,7 @@ import Par
 
 extension Tr3Exprs {
 
-    override func printVal() -> String {
-        var script = "("
-        for num in nameAny.values {
-            script.spacePlus("\(num)")
-        }
-        return script.with(trailing: ")")
-    }
-
-    private func scriptNames(session: Bool) -> String {
+    private func scriptNames(_ scriptFlags: Tr3ScriptFlags) -> String {
         var script = ""
         var delim = ""
         for (name,val) in nameAny {
@@ -30,7 +22,7 @@ extension Tr3Exprs {
             switch val {
                 case let v as Tr3ValScalar:
 
-                    script.spacePlus(v.scriptVal(session: session))
+                    script.spacePlus(v.scriptVal(scriptFlags))
 
                 case let v as String:
 
@@ -42,9 +34,9 @@ extension Tr3Exprs {
         return script
     }
 
-    private func scriptExprs(session: Bool) -> String {
+    public func scriptExprs(_ scriptFlags: Tr3ScriptFlags) -> String {
         var script = ""
-        if session {
+        if scriptFlags.contains(.now)  {
 
             var lastNamePath = ""
             var assigned = false
@@ -91,7 +83,7 @@ extension Tr3Exprs {
                 }
 
                 func scriptExpr() {
-                    let s = expr.script(session: session)
+                    let s = expr.script([.now])
                     script.spacePlus(s)
                 }
                 /// kludge to accomadate `a(x, y) << b, b(x 0, y 0) -- see testExpr0()
@@ -99,7 +91,9 @@ extension Tr3Exprs {
                     if !literals {
                         if lastNamePath.count > 0,
                            let val = nameAny[lastNamePath] as? Tr3Val {
-                            let s = val.scriptVal(parens: false, session: session)
+                            var scriptFlags2 = scriptFlags
+                            scriptFlags2.remove(.parens)
+                            let s = val.scriptVal(scriptFlags2)
                             script.spacePlus(s)
                             lastNamePath = ""
                         }
@@ -108,17 +102,9 @@ extension Tr3Exprs {
             }
         } else {
             for expr in exprs {
-                script.spacePlus(expr.script(session: session))
+                script.spacePlus(expr.script(scriptFlags))
             }
         }
         return script
-    }
-
-    override func scriptVal(parens: Bool = true,
-                            session: Bool = false,
-                            expand: Bool = false) -> String  {
-        var script = ""
-        script = scriptExprs(session: session)
-        return script.isEmpty ? "" : parens ? "(\(script))" : script
     }
 }

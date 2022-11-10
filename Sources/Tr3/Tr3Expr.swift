@@ -18,19 +18,22 @@ public class Tr3Expr {
     init(from   : Tr3Expr)      { op = from.op ; val = from.val }
     init(scalar : Tr3ValScalar) { op = .scalar ; val = scalar }
 
-    func script(session: Bool) -> String {
+    func script(_ scriptFlags: Tr3ScriptFlags) -> String {
         
         switch op {
             case .name: return val as? String ?? "??"
             case .quote: return "\"\(val as? String ?? "??")\""
             case .scalar:
                 if let v = val as? Tr3ValScalar {
-                    return v.scriptVal(parens: false, session: session, expand: true)
+                    var scriptFlags2 = scriptFlags
+                    scriptFlags2.remove(.parens)
+                    scriptFlags2.insert(.expand)
+                    return v.scriptVal(scriptFlags2)
                 }
             case .comma: return op.rawValue
             default : break
         }
-        return session ? "" : op.rawValue
+        return scriptFlags.contains(.now) ? "" : op.rawValue
         
     }
 

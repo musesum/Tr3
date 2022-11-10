@@ -8,7 +8,7 @@ import Foundation
 
 extension Tr3Edge {
     
-    func scriptEdgeVal(_ tr3: Tr3, session: Bool = false) -> String {
+    func scriptEdgeVal(_ tr3: Tr3, _ scriptFlags: Tr3ScriptFlags) -> String {
 
         var script = ""
 
@@ -18,7 +18,7 @@ extension Tr3Edge {
         else if rightTr3 == tr3 {
             script += leftTr3.scriptLineage(Tr3Edge.LineageDepth)
         }
-        script += defVal?.scriptVal(session: session) ?? ""
+        script += defVal?.scriptVal(scriptFlags) ?? ""
         return script
     }
 

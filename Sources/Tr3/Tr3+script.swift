@@ -7,11 +7,11 @@
 
 import Foundation
 
+
 extension Tr3 {
-
-
+    
     /** Is this Tr3 elegible to shorten with a dot?
-
+     
      shorten `a { z }` to `a.z`,
      but not `a(1) { z }` to a(1).z,
      and not `a<<b { z }` to a<<b.z,
@@ -23,20 +23,12 @@ extension Tr3 {
         return false 
     }
 
-
-    public func scriptRoot(compact: Bool) -> String {
-        var script = ""
-        for child in children {
-            script += child.script(compact: compact)
-        }
-        return script
-    }
-    public func script(compact: Bool) -> String {
-
+    public func script(_ scriptFlags: Tr3ScriptFlags) -> String {
+        
         var script = name
         script.spacePlus(val?.scriptVal())
-
-        if compact {
+        
+        if scriptFlags.contains(.compact) {
             switch children.count {
                 case 0: script.spacePlus(comments.getComments(.child))
                 case 1: scriptAddOnlyChild()
@@ -48,23 +40,23 @@ extension Tr3 {
                 default: scriptAddChildren()
             }
         }
-        script += edgeDefs.scriptVal()
+        script += edgeDefs.scriptVal(scriptFlags)
         script += comments.getComments(.edges)
         return script
-
+        
         func scriptAddChildren() {
             script.spacePlus("{")
             script.spacePlus(comments.getComments(.child))
             if (script.last != "\n"),
                (script.last != ",") {
-
+                
                 script += "\n"
             }
             for child in children {
-                script.spacePlus(child.script(compact: compact))
+                script.spacePlus(child.script(scriptFlags))
                 if (script.last != "\n"),
                    (script.last != ",") {
-
+                    
                     script += "\n"
                 }
             }
@@ -74,11 +66,11 @@ extension Tr3 {
         func scriptAddOnlyChild() {
             script += "."
             for child in children {
-                script += child.script(compact: compact)
+                script += child.script(scriptFlags)
             }
         }
     }
-
+    
     func getCopiedFrom() -> String {
         var result = ""
         var delim = "@"
@@ -91,27 +83,27 @@ extension Tr3 {
         }
         return result
     }
-
-    private func scriptEdgeDefs(_ session: Bool) -> String {
+    
+    private func scriptEdgeDefs(_ scriptFlags: Tr3ScriptFlags) -> String {
         var script = ""
-        if let edgesScript = scriptTr3Edges(session) {
+        if let edgesScript = scriptTr3Edges(scriptFlags) {
             script = edgesScript
             if tr3Edges.count == 1 {
                 script += comments.getComments(.edges)
             }
         }
         else if edgeDefs.edgeDefs.count > 0 {
-            script += edgeDefs.scriptVal(session: session)
+            script += edgeDefs.scriptVal(scriptFlags)
             script += comments.getComments(.edges)
         }
         return script
     }
-
+    
     private func scriptPathRefs(_ edge: Tr3Edge) -> String {
         if let pathrefs = edge.rightTr3.pathrefs, pathrefs.count > 0  {
             var script = pathrefs.count > 1 ? "(" : ""
             var delim = ""
-
+            
             for pathref in pathrefs {
                 script += delim + pathref.scriptLineage(2)
                 delim = comments.getEdgesDelim()
@@ -121,32 +113,32 @@ extension Tr3 {
         }
         return ""
     }
+    
+    func scriptTypeEdges(_ edges: [Tr3Edge], _ scriptEdgeFlags: Tr3ScriptFlags) -> String {
 
-    func scriptTypeEdges(_ edges: [Tr3Edge], _ session: Bool) -> String {
-        
         guard let firstEdge = edges.first else { return "" }
         var script = firstEdge.edgeFlags.script(active: firstEdge.active)
         if edges.count > 1 { script += "(" }
         var delim = ""
         for edge in edges  {
-        
+            
             let pathScript = scriptPathRefs(edge)
             if pathScript.count > 0 {
                 script += delim + pathScript
             }
             else {
-                script += delim + edge.scriptEdgeVal(self, session: session)
+                script += delim + edge.scriptEdgeVal(self, scriptEdgeFlags)
                 delim = comments.getEdgesDelim()
             }
         }
         if edges.count > 1 { script += ")" }
         return script
     }
-
-    private func scriptTr3Edges(_ session: Bool) -> String? {
-
+    
+    private func scriptTr3Edges(_ scriptFlags: Tr3ScriptFlags) -> String? {
+        
         if tr3Edges.count > 0 {
-
+            
             var leftEdges = [Tr3Edge]()
             for edge in tr3Edges.values {
                 if edge.leftTr3 == self {
@@ -154,28 +146,28 @@ extension Tr3 {
                 }
             }
             if leftEdges.count > 0 {
-
+                
                 leftEdges.sort { $0.id < $1.id }
                 var result = ""
                 var edgeFlags = Tr3EdgeFlags()
                 var leftTypeEdges = [Tr3Edge]()
                 for edge in leftEdges {
                     if edge.edgeFlags != edgeFlags {
-
+                        
                         edgeFlags = edge.edgeFlags
-                        result += scriptTypeEdges(leftTypeEdges, session)
+                        result += scriptTypeEdges(leftTypeEdges, scriptFlags)
                         leftTypeEdges.removeAll()
                     }
                     leftTypeEdges.append(edge)
                 }
-                result += scriptTypeEdges(leftTypeEdges, session)
+                result += scriptTypeEdges(leftTypeEdges, scriptFlags)
                 return result
             }
         }
         return nil
     }
-
-    func scriptChildren(_ session: Bool) -> String {
+    
+    func scriptChildren(_ scriptFlags: Tr3ScriptFlags) -> String {
         var script = ""
         if children.count > 0 {
             let comment = comments.getComments(.child)
@@ -185,53 +177,61 @@ extension Tr3 {
             } else {
                 script = "{ " + comment
             }
-
+            
             for child in children {
-                script.spacePlus(child.scriptTr3(session: session))
+                script.spacePlus(child.scriptTr3(scriptFlags))
             }
             script.spacePlus("}\n")
         }
         return script
     }
-
-    public func scriptRoot(session: Bool = false) -> String {
+    public func scriptCompactRoot(_ scriptFlags: Tr3ScriptFlags) -> String {
+     var script = ""
+     for child in children {
+         script += child.script(scriptFlags)
+     }
+     return script
+ }
+    public func scriptRoot(_ scriptFlags: Tr3ScriptFlags = []) -> String { 
         var script = ""
         for child in children {
-            let childScript = child.scriptTr3(session: session)
+            let childScript = child.scriptTr3(scriptFlags)
             script.spacePlus(childScript)
         }
         return script
     }
-
+    
     /** create a parse ready String
-
+     
      - Parameters
-        - session: show instance for session instead of full declaration
+     - session: show instance for session instead of full declaration
      */
-    public func scriptTr3(session: Bool = false) -> String {
-
+    public func scriptTr3(_ scriptFlags: Tr3ScriptFlags) -> String {
+        
         var script = name
         script.spacePlus(getCopiedFrom())
-        let scriptVal = val?.scriptVal(session: session, expand: true) ?? ""
+
+        let scriptVal = val?.scriptVal(scriptFlags) ?? ""
         script += scriptVal
-        script += scriptEdgeDefs(session)
+        script += scriptEdgeDefs(scriptFlags)
+
         if children.isEmpty {
             let comments = comments.getComments(.child)
             script.spacePlus(comments)
             if scriptVal.count > 0,
-                comments.count == 0 {
+               comments.count == 0 {
                 script += "\n"
             }
         }
         else {
-            script.spacePlus(scriptChildren(session))
+            script.spacePlus(scriptChildren(scriptFlags))
         }
         return script
     }
-
-
+    
+    
     static func scriptTr3s(_ tr3s: [Tr3]) -> String {
-
+        
         if tr3s.isEmpty { return "" }
         var script = tr3s.count > 1 ? "(" : ""
         for tr3 in tr3s {
@@ -240,15 +240,15 @@ extension Tr3 {
         script += tr3s.count > 1 ? ")" : ""
         return script
     }
-
+    
     /// create "a.b.c" from c in `a{b{c}}`, but not √.b.c from b
     public func scriptLineage(_ level: Int = 999) -> String {
         if let parent = parent, parent.name != "√", level > 0  {
-             return parent.scriptLineage(level-1) + "." + name
+            return parent.scriptLineage(level-1) + "." + name
         }
         else {
             return name
         }
     }
-
+    
 }

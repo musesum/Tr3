@@ -32,17 +32,12 @@ public class Tr3ValEmbed: Tr3Val {
         }
         return false
     }
-}
 
-extension Tr3ValEmbed {
-
-    override func printVal() -> String {
+    public override func printVal() -> String {
         return embed
     }
-    override func scriptVal(parens: Bool = true,
-                            session: Bool = false,
-                            expand: Bool = false) -> String  {
-        
+    
+    public override func scriptVal(_ scriptFlags: Tr3ScriptFlags = [.parens]) -> String {
         return " {{\n" + embed +  "}}\n"
     }
 

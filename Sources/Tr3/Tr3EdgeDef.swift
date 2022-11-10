@@ -61,4 +61,30 @@ public class Tr3EdgeDef {
         return lhs.pathVals == rhs.pathVals
     }
 
+    public func printVal() -> String {
+        return scriptVal([.parens,.now,.expand])
+    }
+    
+    public func scriptVal(_ scriptFlags: Tr3ScriptFlags) -> String{
+        
+        var script = edgeFlags.script()
+        
+        if let tern = ternVal {
+            script.spacePlus(tern.scriptVal(scriptFlags))
+        }
+        else {
+            if pathVals.pathVal.count > 1 { script += "(" }
+            for (path,val) in pathVals.pathVal {
+                script += path
+                var scriptFlags2: Tr3ScriptFlags = [.parens]
+                if scriptFlags.contains(.expand) {
+                    scriptFlags2.insert(.expand)
+                }
+                script += val?.scriptVal(scriptFlags2) ?? ""
+            }
+            if pathVals.pathVal.count > 1 { script += ")" }
+        }
+        return script
+    }
+    
 }

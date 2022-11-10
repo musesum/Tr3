@@ -41,15 +41,11 @@ public class Tr3ValData: Tr3Val {
         }
         return true
     }
-}
-extension Tr3ValData {
 
-    override func printVal() -> String {
+    public override func printVal() -> String {
         return scriptVal()
     }
-    override func scriptVal(parens: Bool = true,
-                            session: Bool = false,
-                            expand: Bool = true) -> String {
+    public override func scriptVal(_ scriptFlags: Tr3ScriptFlags = [.parens,.expand]) -> String {
         return "[data]"
     }
 

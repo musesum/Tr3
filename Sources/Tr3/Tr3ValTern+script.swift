@@ -8,48 +8,12 @@ import Foundation
 
 extension Tr3ValTern {
 
-   override func printVal() -> String {
-        return "??"
-    }
-
-    override func scriptVal(parens: Bool = true,
-                            session: Bool = false,
-                            expand: Bool = false) -> String  {
-        
-        var script = parens ? "(" : ""
-        if expand {
-            script += Tr3.scriptTr3s(pathTr3s)
-            script.spacePlus(compareOp)
-            script.spacePlus(Tr3.scriptTr3s(compareRight?.pathTr3s ?? []))
-        } else {
-            script += path
-            script.spacePlus(compareOp)
-            script.spacePlus(compareRight?.path)
-        }
-        if let thenVal = thenVal {
-            script.spacePlus("?")
-            script.spacePlus(thenVal.scriptVal(parens: false))
-        }
-        if let elseVal = elseVal {
-            script.spacePlus(":")
-            script.spacePlus(elseVal.scriptVal(parens: false))
-        }
-        if let radioNext = radioNext {
-            script.spacePlus("|")
-            script.spacePlus(radioNext.scriptVal(parens: false))
-        }
-        script += parens ? ")" : ""
-        return script
-    }
-}
-extension Tr3ValTern {
-
     func scriptRadioPrev(start: Bool = false) -> String {
+
         var script = radioPrev?.scriptRadioPrev() ?? "("
         if start {
             script += "* "
-        }
-        else {
+        } else {
             let lineage = pathTr3s.first?.scriptLineage(1) ?? " ??"
             script += "\(lineage):\(id) "
         }

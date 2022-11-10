@@ -20,13 +20,8 @@ sky { // visual music program
         xfade (0…1=0.5)
     }
     input { // phone and tablet pencil input
-
-
         azimuth (x -0.2…0.2, y -0.2…0.2) // pen tilt
-
         accel (x -0.3…0.3, y -0.3…0.3, z -0.3…0.3) { // accelerometer
-
-
             on (0…1)
         }
         radius (1…92=9) // finger silhouette

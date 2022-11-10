@@ -39,14 +39,12 @@ public class Tr3ValPath: Tr3Val {
          //TODO: is ever used during runtime?
         return true
     }
+    
     public override func getVal() -> Any {
         return path
     }
 
-}
-extension Tr3ValPath {
-    
-    override func printVal() -> String {
+    public override func printVal() -> String {
 
         if pathTr3s.isEmpty {
             return path
@@ -61,10 +59,9 @@ extension Tr3ValPath {
             else                  { return script }
         }
     }
-    override func scriptVal(parens: Bool = true,
-                            session: Bool = false,
-                            expand: Bool = false) -> String  {
-        if expand {
+    public override func scriptVal(_ scriptFlags: Tr3ScriptFlags = [.parens]) -> String {
+        
+        if scriptFlags.contains(.expand) {
             var script = Tr3.scriptTr3s(pathTr3s)
             if script.first != "(" {
                 script = "(\(script))"

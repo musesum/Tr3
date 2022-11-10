@@ -49,14 +49,14 @@ public class Tr3Exprs: Tr3Val {
         addPoint(point)
     }
     public init(_ tr3: Tr3? = nil, nameFloats: [(String, Float)]) {
-        super.init(tr3) 
+        super.init(tr3)
         opSet = Set<Tr3ExprOp>([.name,.num])
 
         for (name, num) in nameFloats {
             if exprs.count > 0 {
                 addOpStr(",")
             }
-           addNameNum(name, num)
+            addNameNum(name, num)
         }
     }
     override func copy() -> Tr3Exprs {
@@ -126,4 +126,19 @@ public class Tr3Exprs: Tr3Val {
         addFlag(.now)
         return true
     }
+
+    public override func printVal() -> String {
+        var script = "("
+        for num in nameAny.values {
+            script.spacePlus("\(num)")
+        }
+        return script.with(trailing: ")")
+    }
+    public override func scriptVal(_ scriptFlags: Tr3ScriptFlags = [.parens]) -> String {
+
+        var script = ""
+        script = scriptExprs(scriptFlags)
+        return script.isEmpty ? "" : scriptFlags.contains(.parens) ? "(\(script))" : script
+    }
+
 }

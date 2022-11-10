@@ -6,10 +6,10 @@ import Foundation
 import CoreGraphics
 import Par
 
-protocol Tr3ValScriptProtocol {
-    func printVal() -> String
-    func scriptVal(parens: Bool, session: Bool, expand: Bool) -> String
-}
+//protocol Tr3ValScriptProtocol {
+//    func printVal() -> String
+//    func scriptVal(_ scriptFlags: Tr3ScriptFlags) -> String
+//}
 
 protocol Tr3ValProtocal {
 
@@ -18,7 +18,7 @@ protocol Tr3ValProtocal {
     func getVal() -> Any
 }
 
-public class Tr3Val: Comparable {
+open class Tr3Val: Comparable {
 
     var id = Visitor.nextId()
     var tr3: Tr3?  // tr3 that declared and contains this value
@@ -60,17 +60,13 @@ public class Tr3Val: Comparable {
     public func getVal() -> Any {
         assertionFailure("🚫 getVal needs override")
     }
-}
 
-extension Tr3Val: Tr3ValScriptProtocol {
     // print current state "2" in `a:(0…9=2)`
-    @objc dynamic func printVal() -> String {
+    public func printVal() -> String {
         return ""
     }
-    // print internal connections "a╌>w", "b╌>w", "c╌>w" in  `w<-(a ? 1 : b ? 2 : c ? 3)`
-    @objc dynamic func scriptVal(parens: Bool = true,
-                                 session: Bool = false,
-                                 expand: Bool = false) -> String {
-        return " "
-    }
+   // print internal connections "a╌>w", "b╌>w", "c╌>w" in  `w<-(a ? 1 : b ? 2 : c ? 3)`
+  public func scriptVal(_ scriptFlags: Tr3ScriptFlags = [.parens]) -> String {
+       return " "
+   }
 }
