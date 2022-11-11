@@ -28,14 +28,15 @@ public struct Tr3ScriptFlags: OptionSet {
 extension Tr3ScriptFlags: CustomStringConvertible {
 
     static public var debugDescriptions: [(Self, String)] = [
-        (.def,     "def"),
-        (.now,     "now"),
-        (.edge,    "edge"),
-        (.compact, "compact"),
-        (.parens,  "parens"),
-        (.expand,  "expand"),
-        (.comment, "comment"),
-        (.comment, "comment"),
+        (.def     , "def"     ),
+        (.now     , "now"     ),
+        (.edge    , "edge"    ),
+        (.compact , "compact" ),
+        (.parens  , "parens"  ),
+        (.expand  , "expand"  ),
+        (.comment , "comment" ),
+        (.delta   , "delta"   ),
+        (.copyAt  , "copyAt"  ),
     ]
 
     public var description: String {
