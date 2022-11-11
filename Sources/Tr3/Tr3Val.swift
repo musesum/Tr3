@@ -69,4 +69,8 @@ open class Tr3Val: Comparable {
   public func scriptVal(_ scriptFlags: Tr3ScriptFlags = [.parens]) -> String {
        return " "
    }
+
+    public func hasDelta() -> Bool {
+        return false
+    }
 }

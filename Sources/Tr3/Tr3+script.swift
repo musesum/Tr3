@@ -20,7 +20,7 @@ extension Tr3 {
         if val != nil, edgeDefs.edgeDefs.count > 0 {
             return true
         }
-        return false 
+        return false
     }
 
     public func script(_ scriptFlags: Tr3ScriptFlags) -> String {
@@ -30,23 +30,23 @@ extension Tr3 {
         
         if scriptFlags.contains(.compact) {
             switch children.count {
-                case 0: script.spacePlus(comments.getComments(.child))
+                case 0: script.spacePlus(comments.getComments(.child, scriptFlags))
                 case 1: scriptAddOnlyChild()
                 default: scriptAddChildren()
             }
         } else { // not pretty
             switch children.count {
-                case 0: script.spacePlus(comments.getComments(.child))
+                case 0: script.spacePlus(comments.getComments(.child, scriptFlags))
                 default: scriptAddChildren()
             }
         }
         script += edgeDefs.scriptVal(scriptFlags)
-        script += comments.getComments(.edges)
+        script += comments.getComments(.edges, scriptFlags)
         return script
         
         func scriptAddChildren() {
             script.spacePlus("{")
-            script.spacePlus(comments.getComments(.child))
+            script.spacePlus(comments.getComments(.child, scriptFlags))
             if (script.last != "\n"),
                (script.last != ",") {
                 
@@ -89,12 +89,12 @@ extension Tr3 {
         if let edgesScript = scriptTr3Edges(scriptFlags) {
             script = edgesScript
             if tr3Edges.count == 1 {
-                script += comments.getComments(.edges)
+                script += comments.getComments(.edges, scriptFlags)
             }
         }
         else if edgeDefs.edgeDefs.count > 0 {
             script += edgeDefs.scriptVal(scriptFlags)
-            script += comments.getComments(.edges)
+            script += comments.getComments(.edges, scriptFlags)
         }
         return script
     }
@@ -166,11 +166,12 @@ extension Tr3 {
         }
         return nil
     }
-    
+
+
     func scriptChildren(_ scriptFlags: Tr3ScriptFlags) -> String {
         var script = ""
-        if children.count > 0 {
-            let comment = comments.getComments(.child)
+        if showChildren(scriptFlags) {
+            let comment = comments.getComments(.child, scriptFlags)
             if comment == "," {
                 // { a, b}
                 script = "{ " + comment.with(trailing: " ")
@@ -185,38 +186,75 @@ extension Tr3 {
         }
         return script
     }
+
+    func showChildren(_ scriptFlags: Tr3ScriptFlags) -> Bool {
+        if scriptFlags.contains(.delta) {
+            if changes == 0 { return false }
+            for child in children {
+                if child.changes > 0 { return true }
+            }
+            return false
+        }
+        return children.count > 0
+    }
     public func scriptCompactRoot(_ scriptFlags: Tr3ScriptFlags) -> String {
-     var script = ""
-     for child in children {
-         script += child.script(scriptFlags)
-     }
-     return script
- }
-    public func scriptRoot(_ scriptFlags: Tr3ScriptFlags = []) -> String { 
         var script = ""
         for child in children {
-            let childScript = child.scriptTr3(scriptFlags)
-            script.spacePlus(childScript)
+            script += child.script(scriptFlags)
         }
         return script
     }
-    
-    /** create a parse ready String
-     
-     - Parameters
-     - session: show instance for session instead of full declaration
-     */
-    public func scriptTr3(_ scriptFlags: Tr3ScriptFlags) -> String {
-        
-        var script = name
-        script.spacePlus(getCopiedFrom())
 
+    /// Populate tree hierarchy of total changes made to each subtree.
+    /// When using Tr3ScriptFlag .delta, no changes to subtree are printed out
+    func countDeltas() -> UInt {
+        if let val, val.hasDelta() {
+            changes += 1
+        }
+        for child in children {
+            changes += child.countDeltas()
+        }
+        return changes
+    }
+    public func scriptRoot(_ scriptFlags: Tr3ScriptFlags = []) -> String {
+        var script = ""
+        if scriptFlags.contains(.delta) {
+            countDeltas()
+            for child in children {
+                if child.changes > 0 {
+                    let childScript = child.scriptTr3(scriptFlags)
+                    script.spacePlus(childScript)
+                }
+            }
+        } else {
+
+            for child in children {
+                let childScript = child.scriptTr3(scriptFlags)
+                script.spacePlus(childScript)
+            }
+        }
+
+        return script
+    }
+    
+    /// create a parse ready String
+    ///
+    public func scriptTr3(_ scriptFlags: Tr3ScriptFlags) -> String {
+
+        if scriptFlags.contains(.delta) && changes == 0 { return "" }
+
+        var script = name
+        if scriptFlags.contains(.copyAt) {
+            script.spacePlus(getCopiedFrom())
+        }
         let scriptVal = val?.scriptVal(scriptFlags) ?? ""
         script += scriptVal
-        script += scriptEdgeDefs(scriptFlags)
-
+        if scriptFlags.contains(.edge) {
+            script += scriptEdgeDefs(scriptFlags)
+        }
         if children.isEmpty {
-            let comments = comments.getComments(.child)
+            
+            let comments = comments.getComments(.child, scriptFlags)
             script.spacePlus(comments)
             if scriptVal.count > 0,
                comments.count == 0 {

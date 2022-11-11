@@ -140,5 +140,12 @@ public class Tr3Exprs: Tr3Val {
         script = scriptExprs(scriptFlags)
         return script.isEmpty ? "" : scriptFlags.contains(.parens) ? "(\(script))" : script
     }
-
+   override public func hasDelta() -> Bool {
+        for val in nameAny.values {
+            if let val = val as? Tr3Val, val.hasDelta() {
+                return true
+            }
+        }
+        return false
+    }
 }

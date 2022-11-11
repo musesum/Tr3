@@ -18,6 +18,8 @@ public class Tr3: Hashable {
     public var children = [Tr3]()   // expanded tr3 from  wheres˚tr3
     public var comments = Tr3Comments()
 
+    var changes: UInt = 0           // temporary variable counting changes to descendants
+
     var pathrefs: [Tr3]?            // b in `a.b <-> c` for `a{b{c}} a.b <-> c
     var passthrough = false         // does not have its own Tr3Val, so pass through events
     

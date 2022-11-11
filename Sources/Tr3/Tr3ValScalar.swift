@@ -186,6 +186,9 @@ public class Tr3ValScalar: Tr3Val {
 
     public override func scriptVal(_ scriptFlags: Tr3ScriptFlags) -> String {
 
+        if scriptFlags.contains(.delta) && !hasDelta() {
+            return ""
+        }
         if scriptFlags.contains(.now) {
             if valFlags.contains(.now) ||
                 valFlags.contains(.lit) {
@@ -209,5 +212,16 @@ public class Tr3ValScalar: Tr3Val {
             script += scriptFlags.contains(.parens) ? ")" : ""
             return script
         }
+    }
+
+    override public func hasDelta() -> Bool {
+        if valFlags.contains(.now) {
+            if valFlags.contains(.dflt) {
+                if now != dflt { return true }
+            } else {
+                return true
+            }
+        }
+        return false
     }
 }

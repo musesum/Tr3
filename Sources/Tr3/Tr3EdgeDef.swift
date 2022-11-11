@@ -76,11 +76,7 @@ public class Tr3EdgeDef {
             if pathVals.pathVal.count > 1 { script += "(" }
             for (path,val) in pathVals.pathVal {
                 script += path
-                var scriptFlags2: Tr3ScriptFlags = [.parens]
-                if scriptFlags.contains(.expand) {
-                    scriptFlags2.insert(.expand)
-                }
-                script += val?.scriptVal(scriptFlags2) ?? ""
+                script += val?.scriptVal(scriptFlags) ?? ""
             }
             if pathVals.pathVal.count > 1 { script += ")" }
         }
