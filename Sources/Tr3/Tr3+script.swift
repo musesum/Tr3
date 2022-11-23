@@ -114,7 +114,8 @@ extension Tr3 {
         return ""
     }
     
-    func scriptTypeEdges(_ edges: [Tr3Edge], _ scriptEdgeFlags: Tr3ScriptFlags) -> String {
+    func scriptTypeEdges(_ edges: [Tr3Edge],
+                         _ scriptEdgeFlags: Tr3ScriptFlags) -> String {
 
         guard let firstEdge = edges.first else { return "" }
         var script = firstEdge.edgeFlags.script(active: firstEdge.active)
@@ -167,10 +168,25 @@ extension Tr3 {
         return nil
     }
 
-
     func scriptChildren(_ scriptFlags: Tr3ScriptFlags) -> String {
-        var script = ""
-        if showChildren(scriptFlags) {
+
+        let showKids = showChildren(scriptFlags)
+        switch showKids.count {
+
+            case 0: return ""
+            case 1:
+                if scriptFlags.contains(.compact) {
+                    return scriptCompactChild()
+                } else {
+                    return scriptManyChildren()
+                }
+            default: return scriptManyChildren()
+        }
+        func scriptCompactChild() -> String {
+            return "." + (showKids.first?.scriptTr3(scriptFlags) ?? "") + "\n"
+        }
+        func scriptManyChildren() -> String {
+            var script = ""
             let comment = comments.getComments(.child, scriptFlags)
             if comment == "," {
                 // { a, b}
@@ -178,24 +194,28 @@ extension Tr3 {
             } else {
                 script = "{ " + comment
             }
-            
+
             for child in children {
                 script.spacePlus(child.scriptTr3(scriptFlags))
             }
             script.spacePlus("}\n")
+            return script
         }
-        return script
     }
 
-    func showChildren(_ scriptFlags: Tr3ScriptFlags) -> Bool {
+    func showChildren(_ scriptFlags: Tr3ScriptFlags) -> [Tr3] {
         if scriptFlags.contains(.delta) {
-            if changes == 0 { return false }
+            if changes == 0 { return [] }
+            var result = [Tr3]()
             for child in children {
-                if child.changes > 0 { return true }
+                if child.changes > 0 {
+                    result.append(child)
+                }
             }
-            return false
+            return result
+        } else {
+            return children
         }
-        return children.count > 0
     }
     public func scriptCompactRoot(_ scriptFlags: Tr3ScriptFlags) -> String {
         var script = ""

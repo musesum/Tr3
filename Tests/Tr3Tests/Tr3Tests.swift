@@ -721,7 +721,36 @@ final class Tr3Tests: XCTestCase {
     }
 
     /// test `z >> a.b.f(1) >> a˚g(2)`
-    func testEdgeVal4() { headline(#function)
+    func testEdgeVal4a() { headline(#function)
+        var err = 0
+        // selectively set tuples by name, ignore the reset
+        let script = "a {b c}.{f g} z >> a˚g(2)"
+        print("\n" + script)
+
+        let root = Tr3("√")
+
+        if tr3Parse.parseScript(root, script),
+           //let a =  root.findPath("a"),
+           let z =  root.findPath("z") {
+
+            z.activate()
+
+            let result1 =  root.scriptRoot([.parens, .def, .edge])
+            err += ParStr.testCompare(
+            """
+            a { b { f g(2) }
+                c { f g(2) } }
+            z >> (a.b.g(2), a.c.g(2))
+            """, result1)
+        }
+        else {
+            err += 1
+        }
+        XCTAssertEqual(err, 0)
+    }
+
+    /// test `z >> a.b.f(1) >> a˚g(2)`
+    func testEdgeVal4b() { headline(#function)
         var err = 0
         // selectively set tuples by name, ignore the reset
         let script = "a {b c}.{f g} z >> (a.b.f(1) a˚g(2))"
@@ -734,13 +763,14 @@ final class Tr3Tests: XCTestCase {
            let z =  root.findPath("z") {
 
             z.activate()
-            let result =  root.scriptRoot([.parens, .def, .edge])
+
+            let result1 =  root.scriptRoot([.parens, .def, .edge])
             err += ParStr.testCompare(
             """
             a { b { f(1) g(2) }
                 c { f    g(2) } }
             z >> (a.b.f(1), a.b.g(2), a.c.g(2))
-            """, result)
+            """, result1)
         }
         else {
             err += 1
@@ -786,8 +816,8 @@ final class Tr3Tests: XCTestCase {
             let result01 =  root.scriptRoot([.parens, .now, .delta, .compact])
             let expect01 = """
 
-            a  { b(10) }
-            z  { b(10) }
+            a.b(10)
+            z.b(10)
             """
             err += ParStr.testCompare(expect01, result01)
 
@@ -1530,7 +1560,7 @@ final class Tr3Tests: XCTestCase {
         ("testEdgeVal2", testEdgeVal2),
         ("testEdgeVal3a", testEdgeVal3a),
         ("testEdgeVal3b", testEdgeVal3b),
-        ("testEdgeVal4", testEdgeVal4),
+        ("testEdgeVal4b", testEdgeVal4b),
 
         ("testCopyAt", testCopyAt),
         ("testCopyAtR1", testCopyAtR1),
