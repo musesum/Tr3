@@ -26,7 +26,7 @@ public class Tr3ValScalar: Tr3Val {
         self.max = fmax(num, 1.0)
         self.now = num
     }
-   
+
     init (with scalar: Tr3ValScalar) {
         super.init(scalar.tr3)
         valFlags = scalar.valFlags // use default values
@@ -90,7 +90,7 @@ public class Tr3ValScalar: Tr3Val {
             now = 0
         }
     }
-   
+
     static func |= (lhs: Tr3ValScalar, rhs: Tr3ValScalar) {
         
         let mergeFlags = lhs.valFlags.rawValue |  rhs.valFlags.rawValue
@@ -166,7 +166,7 @@ public class Tr3ValScalar: Tr3Val {
         
         func setNumWithFlag(_ n: Float) {
             now = n
-            valFlags.insert(.now) //???
+            valFlags.insert(.now) //??
             setInRange()
         }
         func setInRange() {
@@ -189,31 +189,35 @@ public class Tr3ValScalar: Tr3Val {
         if scriptFlags.contains(.delta) && !hasDelta() {
             return ""
         }
-        if scriptFlags.contains(.now) {
-            if valFlags.contains(.now) ||
-                valFlags.contains(.lit) {
-
-                let numStr = String(format: "%g", now)
-                return scriptFlags.contains(.parens) ? "(\(numStr))" : numStr
-            }
-            return ""
-        }
-        else {
-            var script = scriptFlags.contains(.parens) ? "(" : ""
-            if valFlags.rawValue == 0   { return "" }
+        var script = scriptFlags.contains(.parens) ? "(" : ""
+        if valFlags.rawValue == 0   { return "" }
+        if scriptFlags.contains(.def) {
             if valFlags.contains(.min)  { script += String(format: "%g", min) }
             if valFlags.contains(.thru) { script += "…" /* option+`;` */}
             if valFlags.contains(.modu) { script += "%" }
             if valFlags.contains(.max)  { script += String(format: "%g", max) }
             if valFlags.contains(.dflt) { script += String(format: "=%g", dflt) }
-            if valFlags.contains(.now)  { script += String(format: ":%g", now) }
-            else if valFlags.contains(.lit) { script += String(format: " %g", now) }
-
-            script += scriptFlags.contains(.parens) ? ")" : ""
-            return script
+            if valFlags.contains(.lit) { script += String(format: "%g", now) }
+            if scriptFlags.contains(.now) {
+                if valFlags.hasDef() {
+                    /// `:2` in `0…3=1:2`
+                    script += String(format: ":%g", now)
+                } else if valFlags.contains(.lit) {
+                    /// `2` in `a(2)`
+                    /// skip
+                } else {
+                    script += String(format: "%g", now)
+                }
+            }
+        } else if scriptFlags.contains(.now), valFlags.contains(.now) {
+            script += String(format: "%g", now)
+        } else if valFlags.contains(.lit) {
+            script += String(format: "%g", now)
         }
+        script += scriptFlags.contains(.parens) ? ")" : ""
+        return script
     }
-
+    
     override public func hasDelta() -> Bool {
         if valFlags.contains(.now) {
             if valFlags.contains(.dflt) {

@@ -25,7 +25,7 @@ public class Tr3Expr {
             case .quote: return "\"\(val as? String ?? "??")\""
             case .scalar:
                 if let v = val as? Tr3ValScalar {
-                    var scriptFlags2 = scriptFlags //??? yes
+                    var scriptFlags2 = scriptFlags
                     scriptFlags2.remove(.parens)
                     scriptFlags2.insert(.expand)
                     return v.scriptVal(scriptFlags2)

@@ -26,7 +26,7 @@ extension Tr3 {
     public func script(_ scriptFlags: Tr3ScriptFlags) -> String {
         
         var script = name
-        script.spacePlus(val?.scriptVal())
+        script.spacePlus(val?.scriptVal(scriptFlags))
         
         if scriptFlags.contains(.compact) {
             switch children.count {
@@ -219,7 +219,7 @@ extension Tr3 {
     public func scriptRoot(_ scriptFlags: Tr3ScriptFlags = []) -> String {
         var script = ""
         if scriptFlags.contains(.delta) {
-            countDeltas()
+            changes = countDeltas()
             for child in children {
                 if child.changes > 0 {
                     let childScript = child.scriptTr3(scriptFlags)

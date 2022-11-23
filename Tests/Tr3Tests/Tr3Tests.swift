@@ -15,7 +15,7 @@ final class Tr3Tests: XCTestCase {
      */
     func test(_ script: String,
               _ expected: String? = nil,
-              _ scriptFlags: Tr3ScriptFlags = [.parens, .edge, .comment, .copyAt]) -> Int {
+              _ scriptFlags: Tr3ScriptFlags = [.parens, .edge, .comment, .copyAt, .def]) -> Int {
 
         var err = 0
 
@@ -94,7 +94,7 @@ final class Tr3Tests: XCTestCase {
 
         if Tr3Parse().parseScript(root, inScript, whitespace: "\n\t ") {
             print (name +  " ✓")
-            let actual = root.scriptCompactRoot([.parens, .compact, .edge, .comment])
+            let actual = root.scriptCompactRoot([.parens, .def, .compact, .edge, .comment])
             let err = ParStr.testCompare(outScript, actual)
             return err
         } else {
@@ -124,7 +124,7 @@ final class Tr3Tests: XCTestCase {
     func testSession() { headline(#function)
         var err = 0
         err += test("a(1)")
-        err += test("a(1)", nil, [.parens, .now])
+        err += test("a(1)", nil, [.parens, .def, .now])
         XCTAssertEqual(err, 0)
     }
 
@@ -137,11 +137,13 @@ final class Tr3Tests: XCTestCase {
     func testParseShort() { headline(#function)
         var err = 0
 
-        err += test("a(1) b >> a(2)")
+        err += test("a b c a << (b ? c : 0)",
+                    "a <<(b ? c : 0) b⟐→a c⟐→a",
+                    [.parens, .def, .now, .edge])
 
-        err += test("a(0…1=0:1)")
+        err += test("a(0…1=0:1)", nil, [.parens, .def, .now])
         err += test("b(0…1)")
-        err += test("c(0…1:1)")
+        err += test("c(0…1:1)", nil, [.parens, .now, .def])
         err += test("a(1) b >> a(2)")
 
         err += test("a(\"b\")")
@@ -296,6 +298,7 @@ final class Tr3Tests: XCTestCase {
 
     func testParsePathCopy() { headline(#function)
         var err = 0
+        
         err += test("a.b.c { b { d } }",
                     "a { b { c { b { d } } } }")
 
@@ -313,7 +316,7 @@ final class Tr3Tests: XCTestCase {
                     "        e { f << (f.i ? f.j : 0 ) { i⟐→a.b.e.f j⟐→a.b.e.f } g { i j } } }" +
                     "    c { d { f { i j } g { i j } }" +
                     "        e { f { i j } g { i j } } } } a.b˚f << (f.i ? f.j : 0 )" +
-                    "")
+                    "", [.parens, .edge, .comment, .copyAt, .def, .now])
 
         XCTAssertEqual(err, 0)
     }
@@ -1023,11 +1026,11 @@ final class Tr3Tests: XCTestCase {
 
             b.setAny(CGPoint(x: 1, y: 2), .activate)
             let result0 = root.scriptRoot([.parens, .now, .edge, .comment])
-            let expect0 = "a(x 1, y 2) << b, b(x 1, y 2)"
+            let expect0 = "a(x:1, y:2) << b, b(x:1, y:2)"
             err = ParStr.testCompare(expect0, result0, echo: true)
 
             let result1 = root.scriptRoot([.parens, .def, .edge, .comment])
-            let expect1 = "a(x, y) << b, b(x:1, y:2)"
+            let expect1 = "a(x, y) << b, b(x 1, y 2)"
             err = ParStr.testCompare(expect1, result1, echo: true)
         }
         else {
@@ -1110,7 +1113,7 @@ final class Tr3Tests: XCTestCase {
             err += ParStr.testCompare(expect0, result0, echo: true)
 
             let result1 = root.scriptRoot([.parens, .def, .edge, .comment])
-            let expect1 = "a(x 0…2:1, y 0…2:1, z: 99), b(x 0…2:1, y 0…2:1) << a"
+            let expect1 = "a(x 0…2, y 0…2, z 99), b(x 0…2, y 0…2) << a"
             err += ParStr.testCompare(expect1, result1, echo: true)
         }
         else {
@@ -1460,7 +1463,7 @@ final class Tr3Tests: XCTestCase {
 
         if tr3Parse.parseScript(root, script, whitespace: "\n\t ") {
 
-            let pretty = root.script(.compact)
+            let pretty = root.script([.compact, .parens])
             err += ParStr.testCompare(pretty, "√ { a.b.c(1) d.e(2) <> a.b.c f.e(2) <> a.b.c }" )
 
             let d3Script = root.makeD3Script()

@@ -192,19 +192,19 @@ public class Tr3ValTern: Tr3ValPath {
         } else {
             script += path
             script.spacePlus(compareOp)
-            script.spacePlus(compareRight?.path)
+            script.spacePlus(compareRight?.path) 
         }
         if let thenVal = thenVal {
             script.spacePlus("?")
-            script.spacePlus(thenVal.scriptVal([]))
+            script.spacePlus(thenVal.scriptVal([.def, .now]))
         }
         if let elseVal = elseVal {
             script.spacePlus(":")
-            script.spacePlus(elseVal.scriptVal([]))
+            script.spacePlus(elseVal.scriptVal([.def,.now]))
         }
         if let radioNext = radioNext {
             script.spacePlus("|")
-            script.spacePlus(radioNext.scriptVal([]))
+            script.spacePlus(radioNext.scriptVal([.def,.now]))
         }
         script += scriptFlags.contains(.parens) ? ")" : ""
         return script

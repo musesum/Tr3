@@ -22,6 +22,12 @@ public struct Tr3ValFlags: OptionSet {
     public static let now  = Tr3ValFlags(rawValue: 1 <<  6) // current value
     public static let lit  = Tr3ValFlags(rawValue: 1 <<  7) // literal value
 
+    func hasDef() -> Bool {
+        let defset: Tr3ValFlags = [.thru, .modu, .min, .max, .dflt]
+        return (self.rawValue & defset.rawValue) > 0
+    }
+
+
     public let rawValue: Int
     public init(rawValue: Int) { self.rawValue = rawValue }
 }

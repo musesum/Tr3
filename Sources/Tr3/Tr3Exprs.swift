@@ -134,7 +134,7 @@ public class Tr3Exprs: Tr3Val {
         }
         return script.with(trailing: ")")
     }
-    public override func scriptVal(_ scriptFlags: Tr3ScriptFlags = [.parens]) -> String {
+    public override func scriptVal(_ scriptFlags: Tr3ScriptFlags) -> String {
 
         var script = ""
         script = scriptExprs(scriptFlags)

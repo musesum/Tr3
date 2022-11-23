@@ -92,7 +92,7 @@ extension Tr3Exprs {
                         if lastNamePath.count > 0,
                            let val = nameAny[lastNamePath] as? Tr3Val {
                             var scriptFlags2 = scriptFlags
-                            scriptFlags2.remove(.parens) //??? yes
+                            scriptFlags2.remove(.parens)
                             let s = val.scriptVal(scriptFlags2)
                             script.spacePlus(s)
                             lastNamePath = ""
