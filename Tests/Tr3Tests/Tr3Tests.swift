@@ -137,6 +137,8 @@ final class Tr3Tests: XCTestCase {
     func testParseShort() { headline(#function)
         var err = 0
 
+       err += test("cell.ave(1).on(2)", nil, [.parens, .now, .compact])
+
         err += test("a, b { // yo \n c }")
         err += test("a { b { // yo \n c } } ")
         err += test("a { b { /* yo */ c } } ")

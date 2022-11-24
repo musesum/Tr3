@@ -192,12 +192,12 @@ extension Tr3 {
                           ? "{ " + comment + "\n"
                           : "{\n")
 
-            var childScript = ""
-            for child in showKids {
-                childScript.spacePlus(child.scriptTr3(scriptFlags))
+            var kidScript = ""
+            for kid in showKids {
+                kidScript.spacePlus(kid.scriptTr3(scriptFlags))
             }
 
-            script.spacePlus(childScript)
+            script.spacePlus(kidScript)
             script.spacePlus("}\n")
             return script
         }
@@ -247,13 +247,11 @@ extension Tr3 {
                 }
             }
         } else {
-
             for child in children {
                 let childScript = child.scriptTr3(scriptFlags)
                 script.spacePlus(childScript)
             }
         }
-
         return script
     }
     
