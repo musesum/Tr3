@@ -228,7 +228,7 @@ extension Tr3 {
     /// Populate tree hierarchy of total changes made to each subtree.
     /// When using Tr3ScriptFlag .delta, no changes to subtree are printed out
     func countDeltas() -> UInt {
-        if let val, val.hasDelta() {
+        if let val, !val.valFlags.isTransient(), val.hasDelta() {
             changes += 1
         }
         for child in children {

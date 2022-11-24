@@ -123,7 +123,7 @@ public class Tr3Exprs: Tr3Val {
         } else {
             nameAny[name] = Tr3ValScalar(tr3, num: value)
         }
-        addFlag(.now)
+        addFlag(.now) //??? 
         return true
     }
 

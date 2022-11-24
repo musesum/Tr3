@@ -10,7 +10,18 @@ extension Tr3Expr {
                   _ opNow: Tr3ExprOp) -> Any? {
 
         if opNow == .none {
-            return frVal
+            if let toVal2 = toVal as? Tr3Val,
+               let frVal = frVal as? Tr3Val,
+               toVal2.valFlags.intersection([.lit,.now]).isEmpty {
+
+                /// strip `frVal` of `.now` and `.lit` if not in `toVal`//???
+                let frVal2 = frVal.copy()
+                frVal2.valFlags.remove(.now)
+                frVal2.valFlags.remove(.lit)
+                return frVal2
+            } else {
+                return frVal
+            }
         } 
 
         if let toNow = ((toVal as? Tr3ValScalar)?.now ?? (toVal as? Float)),

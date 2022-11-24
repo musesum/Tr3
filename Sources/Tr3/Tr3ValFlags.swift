@@ -27,6 +27,14 @@ public struct Tr3ValFlags: OptionSet {
         return (self.rawValue & defset.rawValue) > 0
     }
 
+    /// Some values like midi.note.on midi.note.off should not persist transient values.
+    /// So, when saving Tr3ScriptFlags.delta, ignore a transient node.
+    /// Otherwise, restoring from a .delta could activate stale values,
+    /// such as a stale midi.note.on
+    func isTransient() -> Bool {
+        let defset: Tr3ValFlags = [.now, .lit]
+        return (self.rawValue & defset.rawValue) == 0
+    }
 
     public let rawValue: Int
     public init(rawValue: Int) { self.rawValue = rawValue }
@@ -42,6 +50,7 @@ extension Tr3ValFlags: CustomStringConvertible {
         (.now , "now" ),
         (.lit , "lit" ),
     ]
+
 
     public var description: String {
         let result: [String] = Self.debugDescriptions.filter { contains($0.0) }.map { $0.1 }

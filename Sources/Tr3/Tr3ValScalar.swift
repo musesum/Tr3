@@ -73,7 +73,7 @@ public class Tr3ValScalar: Tr3Val {
     }
     func parseNow(_ n: Float) {
         if !n.isNaN {
-            valFlags.insert(.now)
+            valFlags.insert(.now) //??? 
             now = n
         }
     }
@@ -166,7 +166,7 @@ public class Tr3ValScalar: Tr3Val {
         
         func setNumWithFlag(_ n: Float) {
             now = n
-            valFlags.insert(.now) //??
+            valFlags.insert(.now) //???
             setInRange()
         }
         func setInRange() {
@@ -186,11 +186,16 @@ public class Tr3ValScalar: Tr3Val {
 
     public override func scriptVal(_ scriptFlags: Tr3ScriptFlags) -> String {
 
-        if scriptFlags.contains(.delta) && !hasDelta() {
-            return ""
+        if scriptFlags.contains(.delta) {
+            if !hasDelta() {
+                return ""
+            }
+            print("*** \(tr3?.name ?? "") [\(scriptFlags.description)].[\(valFlags.description)] : \(now)") //???
         }
+
         var script = scriptFlags.contains(.parens) ? "(" : ""
         if valFlags.rawValue == 0   { return "" }
+
         if scriptFlags.contains(.def) {
             if valFlags.contains(.min)  { script += String(format: "%g", min) }
             if valFlags.contains(.thru) { script += "…" /* option+`;` */}
