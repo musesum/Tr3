@@ -183,21 +183,21 @@ extension Tr3 {
             default: return scriptManyChildren()
         }
         func scriptCompactChild() -> String {
-            return "." + (showKids.first?.scriptTr3(scriptFlags) ?? "") + "\n"
+            return "." + (showKids.first?.scriptTr3(scriptFlags) ?? "")
         }
         func scriptManyChildren() -> String {
-            var script = ""
-            let comment = comments.getComments(.child, scriptFlags)
-            if comment == "," {
-                // { a, b}
-                script = "{ " + comment.with(trailing: " ")
-            } else {
-                script = "{ " + comment
+            let comment = comments.getComments(.child, scriptFlags).without(trailing: " \n")
+
+            var script = (comment.count > 0
+                          ? "{ " + comment + "\n"
+                          : "{\n")
+
+            var childScript = ""
+            for child in showKids {
+                childScript.spacePlus(child.scriptTr3(scriptFlags))
             }
 
-            for child in children {
-                script.spacePlus(child.scriptTr3(scriptFlags))
-            }
+            script.spacePlus(childScript)
             script.spacePlus("}\n")
             return script
         }
@@ -282,7 +282,12 @@ extension Tr3 {
             }
         }
         else {
-            script.spacePlus(scriptChildren(scriptFlags))
+            let childScript = scriptChildren(scriptFlags)
+            if childScript.first == "." {
+                script += childScript
+            } else {
+                script.spacePlus(childScript)
+            }
         }
         return script
     }

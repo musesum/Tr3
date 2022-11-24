@@ -137,6 +137,11 @@ final class Tr3Tests: XCTestCase {
     func testParseShort() { headline(#function)
         var err = 0
 
+        err += test("a, b { // yo \n c }")
+        err += test("a { b { // yo \n c } } ")
+        err += test("a { b { /* yo */ c } } ")
+        err += test("a { b { /** yo **/ c } } ")
+
         err += test("a b c a << (b ? c : 0)",
                     "a <<(b ? c : 0) b⟐→a c⟐→a",
                     [.parens, .def, .now, .edge])
@@ -264,9 +269,6 @@ final class Tr3Tests: XCTestCase {
     func testParseBasics() { headline(#function)
 
         var err = 0
-        err += test("a (\"yo\")")
-        err += test("a { b (\"bb\") }")
-        err += test("a { b (\"bb\") c (\"cc\") }")
 
         subhead("comment")
         err += test("a // yo", "a") //TODO: `a // yo`

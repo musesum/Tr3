@@ -72,7 +72,8 @@ public class Tr3Comments {
         return ", "
     }
 
-    public func getComments(_ getType: Tr3CommentType, _ scriptFlags: Tr3ScriptFlags) -> String {
+    public func getComments(_ getType: Tr3CommentType,
+                            _ scriptFlags: Tr3ScriptFlags) -> String {
         var result = ""
         if scriptFlags.contains(.comment), have(type: getType) {
             for comment in comments {
