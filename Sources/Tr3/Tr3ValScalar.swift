@@ -73,7 +73,7 @@ public class Tr3ValScalar: Tr3Val {
     }
     func parseNow(_ n: Float) {
         if !n.isNaN {
-            valFlags.insert(.now) //??? 
+            valFlags.insert(.now)
             now = n
         }
     }
@@ -166,7 +166,7 @@ public class Tr3ValScalar: Tr3Val {
         
         func setNumWithFlag(_ n: Float) {
             now = n
-            valFlags.insert(.now) //???
+            valFlags.insert(.now)
             setInRange()
         }
         func setInRange() {
