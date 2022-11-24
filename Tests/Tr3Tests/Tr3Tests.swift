@@ -137,12 +137,7 @@ final class Tr3Tests: XCTestCase {
     func testParseShort() { headline(#function)
         var err = 0
 
-       err += test("cell.ave(1).on(2)", nil, [.parens, .now, .compact])
-
-        err += test("a, b { // yo \n c }")
-        err += test("a { b { // yo \n c } } ")
-        err += test("a { b { /* yo */ c } } ")
-        err += test("a { b { /** yo **/ c } } ")
+        err += test("cell.one(1).two(2).three(3)", nil, [.parens, .now, .compact])
 
         err += test("a b c a << (b ? c : 0)",
                     "a <<(b ? c : 0) b⟐→a c⟐→a",
@@ -179,11 +174,6 @@ final class Tr3Tests: XCTestCase {
         err += test(
             /**/"a { b { c(1) } } z@a { b.c(2) }",
                 "a { b { c(1) } } z@a { b { c(2) } }")
-
-        err += test("a, b { // yo \n c }")
-        err += test("a { b { // yo \n c } } ")
-        err += test("a { b { /* yo */ c } } ")
-        err += test("a { b { /** yo **/ c } } ")
 
         err += test("a b c⟡→a")
 
@@ -277,6 +267,11 @@ final class Tr3Tests: XCTestCase {
         err += test("a { b } // yo", "a { b }")
         err += test("a { b // yo \n }")
         err += test("a { b { // yo \n c } }")
+
+        err += test("a, b { // yo \n c }")
+        err += test("a { b { // yo \n c } } ")
+        err += test("a { b { /* yo */ c } } ")
+        err += test("a { b { /** yo **/ c } } ")
         // error err += test("a b a // yo \n << b // oy\n", "a // yo \n << b // oy\n b")
 
         subhead("hierarchy")
