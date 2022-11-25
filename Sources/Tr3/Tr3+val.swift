@@ -103,20 +103,20 @@ extension Tr3 {
         }
         return nil
     }
-    /// convert Tr3Exprs contiguous array to dictionary
-    public func getName(in set: Set<String>) -> String? {
+    /// get first occurence name in Set of types (there should only be one)
+    public func getName(in types: Set<String>) -> String? {
         if let exprs = val as? Tr3Exprs {
             for expr in exprs.exprs {
                 if (expr.op == .name || expr.op == .path),
-                    let name = expr.val as? String,
-                    set.contains(name) {
+                   let name = expr.val as? String,
+                   types.contains(name) {
                     return name
                 }
             }
         }
         return nil
     }
-    /// convert Tr3Exprs contiguous array to dictionary
+    /// contains all the keyword names in `names`
     public func contains(names: [String]) -> Bool {
         func inNames(_ exprName: String) -> Bool {
             for name in names {
@@ -142,7 +142,7 @@ extension Tr3 {
         return false
     }
 
-    /// convert Tr3Exprs contiguous array to dictionary
+    /// get nameed value
     public func component(named: String) -> Any? {
         if let exprs = val as? Tr3Exprs {
             if let val = exprs.nameAny[named] {
@@ -155,7 +155,7 @@ extension Tr3 {
 
     /// convert Tr3Exprs contiguous array to dictionary
     public func components(named: [String]) -> [(String,Any?)] {
-        var result = [(String,Any?)] ()
+        var result = [(String, Any?)] ()
         for name in named {
             let val = (val as? Tr3Exprs)?.nameAny[name] ?? nil
             result.append((name,val))
