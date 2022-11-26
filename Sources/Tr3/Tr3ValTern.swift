@@ -200,11 +200,11 @@ public class Tr3ValTern: Tr3ValPath {
         }
         if let elseVal = elseVal {
             script.spacePlus(":")
-            script.spacePlus(elseVal.scriptVal([.def,.now]))
+            script.spacePlus(elseVal.scriptVal([.def, .now]))
         }
         if let radioNext = radioNext {
             script.spacePlus("|")
-            script.spacePlus(radioNext.scriptVal([.def,.now]))
+            script.spacePlus(radioNext.scriptVal([.def, .now]))
         }
         script += scriptFlags.contains(.parens) ? ")" : ""
         return script
