@@ -119,7 +119,7 @@ public class Tr3Exprs: Tr3Val {
     }
     func setNamed(_ name: String, _ value: Float) -> Bool {
         if let scalar = nameAny[name] as? Tr3ValScalar {
-            scalar.now = value
+            scalar.setVal(value) //??? 
         } else {
             nameAny[name] = Tr3ValScalar(tr3, num: value)
         }
