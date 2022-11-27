@@ -19,14 +19,14 @@ struct Tr3CacheItem {
 public class Tr3Cache {
 
     static var cache = [[Tr3CacheItem](), [Tr3CacheItem]()]
-    static var input = 0
-    static var output = 1
+    static var index = 0
+    static var outdex = 1
     static var flushing = false
 
     /// Tr3Cache double buffers input and output
     static func flipInputOut() {
-        input  ^= 1
-        output ^= 1
+        index  ^= 1
+        outdex ^= 1
     }
 
     public static func flush() {
@@ -35,7 +35,7 @@ public class Tr3Cache {
 
             flushing = true
             flipInputOut()
-            let cacheOut = cache[output]
+            let cacheOut = cache[outdex]
 
             for cache in cacheOut {
 
@@ -53,6 +53,6 @@ public class Tr3Cache {
     /// add an Tr3CacheItem to cache to be flushed during next frame update
     public static func add(_ tr3: Tr3, _ any: Any, _ opt: Tr3SetOptions, _ visitor: Visitor) {
         let cacheItem = Tr3CacheItem(tr3: tr3, any: any, opt: opt, visit: visitor)
-        cache[input].append(cacheItem)
+        cache[index].append(cacheItem)
     }
 }
