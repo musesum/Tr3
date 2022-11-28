@@ -152,10 +152,10 @@ public class Tr3: Hashable {
     }
 
     public func parseTime(_ time: Double) {
-        //???
+        //TODO: parse and print
     }
     public func parseHash(_ time: Double) {
-        //??? 
+        //TODO: parse and print
     }
     
 }

@@ -75,7 +75,7 @@ public class Tr3Exprs: Tr3Val {
         return []
     }
     /// used for metal shader in Sky
-    public func getValNums() -> [Double] { //??? getValFloats broken?
+    public func getValNums() -> [Double] { 
         var nums = [Double]()
         for value in nameAny.values {
             switch value {
