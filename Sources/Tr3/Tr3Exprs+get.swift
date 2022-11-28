@@ -36,16 +36,17 @@ extension Tr3Exprs {
         }
         return nil
     }
-    func getFloats() -> [Float]? {
-        var floats = [Float]()
+    func getNums() -> [Double]? {
+        var nums = [Double]()
         for value in nameAny.values {
             switch value {
-                case let v as Tr3ValScalar: floats.append(Float(v.now))
-                case let v as CGFloat: floats.append(Float(v))
-                case let v as Float: floats.append(v)
+                case let v as Tr3ValScalar  : nums.append(Double(v.now))
+                case let v as CGFloat       : nums.append(Double(v))
+                case let v as Float         : nums.append(Double(v))
+                case let v as Double        : nums.append(v)
                 default: return nil
             }
         }
-        return floats.isEmpty ? nil : floats
+        return nums.isEmpty ? nil : nums
     }
 }

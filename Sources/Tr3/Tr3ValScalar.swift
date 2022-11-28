@@ -5,21 +5,33 @@
 //  License: Apache 2.0 - see License file
 
 import QuartzCore
+import Foundation
 
+extension Formatter {
+    static let number = NumberFormatter()
+}
+extension FloatingPoint {
+    func digits(_ range: ClosedRange<Int>) -> String {
+        Formatter.number.roundingMode = NumberFormatter.RoundingMode.halfEven
+        Formatter.number.minimumFractionDigits = range.lowerBound
+        Formatter.number.maximumFractionDigits = range.upperBound
+        return Formatter.number.string(for:  self) ?? ""
+    }
+}
 public class Tr3ValScalar: Tr3Val {
 
     // default scalar value is (0…1 = 1)
 
-    public var min  = Float(0) // minimum value; 0 in 0…3
-    public var max  = Float(1) // maximum value; 3 in 0…3
-    public var dflt = Float(0) // default value; 1 in 0…3=1
-    public var now  = Float(0) // current value; 2 in 0…3=1:2
+    public var min  = Double(0) // minimum value; 0 in 0…3
+    public var max  = Double(1) // maximum value; 3 in 0…3
+    public var dflt = Double(0) // default value; 1 in 0…3=1
+    public var now  = Double(0) // current value; 2 in 0…3=1:2
 
     override init(_ tr3: Tr3? = nil) {
         super.init(tr3)
     }
 
-    init(_ tr3: Tr3? = nil, num: Float) {
+    init(_ tr3: Tr3? = nil, num: Double) {
         super.init(tr3)
         valFlags = .now
         self.min = fmin(num, 0.0)
@@ -40,7 +52,7 @@ public class Tr3ValScalar: Tr3Val {
         return newTr3ValScalar
     }
 
-    func parseNum(_ n: Float) {
+    func parseNum(_ n: Double) {
 
         if valFlags.contains(.thru) {
             if valFlags.contains(.max) {
@@ -64,14 +76,14 @@ public class Tr3ValScalar: Tr3Val {
             now = n
         }
     }
-    func parseDflt(_ n: Float) {
+    func parseDflt(_ n: Double) {
         if !n.isNaN {
             valFlags.insert(.dflt)
             dflt = n
             now = n
         }
     }
-    func parseNow(_ n: Float) {
+    func parseNow(_ n: Double) {
         if !n.isNaN {
             valFlags.insert(.now)
             now = n
@@ -113,7 +125,7 @@ public class Tr3ValScalar: Tr3Val {
     public static func != (lhs: Tr3ValScalar,
                            rhs: Tr3ValScalar) -> Bool { return lhs.now != rhs.now }
 
-    public func inRange(from: Float) -> Bool {
+    public func inRange(from: Double) -> Bool {
 
         if valFlags.contains(.modu), from > max { return false }
         if valFlags.contains(.min),  from < min { return false }
@@ -128,10 +140,11 @@ public class Tr3ValScalar: Tr3Val {
         if let val = val {
             switch val {
                 case let v as Tr3ValScalar : setFromScalar(v)
-                case let v as Float        : setFromFloat(v)
-                case let v as CGFloat      : setFromFloat(v)
-                case let v as Double       : setFromFloat(v)
-                case let v as Int          : setFromFloat(v)
+                case let v as Double       : setFromDouble(v)
+                case let v as Float        : setFromDouble(v)
+                case let v as CGFloat      : setFromDouble(v)
+                case let v as Double       : setFromDouble(v)
+                case let v as Int          : setFromDouble(v)
                 default: print("🚫 setVal unknown type for: from")
             }
         }
@@ -152,26 +165,26 @@ public class Tr3ValScalar: Tr3Val {
             else if valFlags.contains(.modu) {
 
                 min = 0
-                max = fmaxf(1, max)
-                now = fmodf(v.now, max)
+                max = Double.maximum(1, max)
+                now = fmod(v.now, max)
             }
             else {
                 setNumWithFlag(v.now)
             }
         }
-        func setFromFloat(_ v: Int)      { setNumWithFlag(Float(v)) }
-        func setFromFloat(_ v: Double)   { setNumWithFlag(Float(v)) }
-        func setFromFloat(_ v: CGFloat)  { setNumWithFlag(Float(v)) }
-        func setFromFloat(_ v: Float)    { setNumWithFlag(v       ) }
+        func setFromDouble(_ v: Int)      { setNumWithFlag(Double(v)) }
+        func setFromDouble(_ v: Double)   { setNumWithFlag(Double(v)) }
+        func setFromDouble(_ v: CGFloat)  { setNumWithFlag(Double(v)) }
+        func setFromDouble(_ v: Float)    { setNumWithFlag(Double(v)) }
         
-        func setNumWithFlag(_ n: Float) {
+        func setNumWithFlag(_ n: Double) {
             now = n
             valFlags.insert(.now)
             setInRange()
         }
         func setInRange() {
 
-            if valFlags.contains(.modu) { now = fmodf(now, max) }
+            if valFlags.contains(.modu) { now = fmod(now, max) }
             if valFlags.contains(.min), now < min { now = min }
             if valFlags.contains(.max), now > max { now = max }
         }
@@ -197,27 +210,27 @@ public class Tr3ValScalar: Tr3Val {
         if valFlags.rawValue == 0   { return "" }
 
         if scriptFlags.contains(.def) {
-            if valFlags.contains(.min)  { script += String(format: "%g", min) }
+            if valFlags.contains(.min)  { script += min.digits(0...6) }
             if valFlags.contains(.thru) { script += "…" /* option+`;` */}
             if valFlags.contains(.modu) { script += "%" }
-            if valFlags.contains(.max)  { script += String(format: "%g", max) }
-            if valFlags.contains(.dflt) { script += String(format: "=%g", dflt) }
-            if valFlags.contains(.lit) { script += String(format: "%g", now) }
+            if valFlags.contains(.max)  { script += max.digits(0...6) }
+            if valFlags.contains(.dflt) { script += "=" + dflt.digits(0...6) }
+            if valFlags.contains(.lit)  { script += now.digits(0...6) }
             if scriptFlags.contains(.now) {
                 if valFlags.hasDef() {
                     /// `:2` in `0…3=1:2`
-                    script += String(format: ":%g", now)
+                    script += ":" + now.digits(0...6)
                 } else if valFlags.contains(.lit) {
                     /// `2` in `a(2)`
                     /// skip
                 } else {
-                    script += String(format: "%g", now)
+                    script += now.digits(0...6)
                 }
             }
         } else if scriptFlags.contains(.now), valFlags.contains(.now) {
-            script += String(format: "%g", now)
+            script += now.digits(0...6)
         } else if valFlags.contains(.lit) {
-            script += String(format: "%g", now)
+            script += now.digits(0...6)
         }
         script += scriptFlags.contains(.parens) ? ")" : ""
         return script

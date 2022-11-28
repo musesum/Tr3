@@ -2,7 +2,9 @@
 //
 
 import Foundation
-
+extension Double {
+    
+}
 extension Tr3Expr {
 
     func evaluate(_ toVal: Any?,
@@ -13,8 +15,8 @@ extension Tr3Expr {
             return frVal
         }
 
-        if let toNow = ((toVal as? Tr3ValScalar)?.now ?? (toVal as? Float)),
-           let frNow = ((frVal as? Tr3ValScalar)?.now ?? (frVal as? Float)) {
+        if let toNow = ((toVal as? Tr3ValScalar)?.now ?? (toVal as? Double)),
+           let frNow = ((frVal as? Tr3ValScalar)?.now ?? (frVal as? Double)) {
 
             if opNow.isConditional() {
                 switch opNow {
@@ -40,7 +42,7 @@ extension Tr3Expr {
                     case .muy   : return frNow * toNow
                     case .divi  : return floor(frNow / (toNow == 0 ? 1 : toNow))
                     case .div   : return frNow / (toNow == 0 ? 1 : toNow)
-                    case .mod   : return fmodf(frNow, toNow == 0 ? 1 : toNow)
+                    case .mod   : return fmod(frNow, toNow == 0 ? 1 : toNow)
                     case .assign: return frVal
                     default     : break
                 }

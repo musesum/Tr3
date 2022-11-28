@@ -1,8 +1,10 @@
 tr3 ~ left right* {
 
     left ~ (path | name)
-    right ~ (value | child | many | copyat | array | edges | embed | comment)+
+    right ~ (hash | time | value | child | many | copyat | array | edges | embed | comment)+
 
+    hash ~ "#" num
+    time ~ "~" num
     child ~ "{" comment* tr3+ "}" | "." tr3+
     many ~ "." "{" tr3+ "}"
     array ~ "[" thru "]"

@@ -32,6 +32,8 @@ public class Tr3Parse {
             dispatchFunc(parseLeft, from: ["name", "path"])
 
             dispatchFunc(parseComment, from: ["comment"])
+            dispatchFunc(parseHash, from: ["hash"])
+            dispatchFunc(parseTime, from: ["time"])
 
             dispatchFunc(parseTree, from: ["child", "many", "copyat"])
 
@@ -102,6 +104,38 @@ public class Tr3Parse {
         return tr3
     }
 
+
+
+    /// Dispatched: Parse a hash value.
+    /// Usually at runtime for synchronizing values v
+    ///
+    func parseHash(_ tr3: Tr3,
+                   _ prior: String,
+                   _ par: ParItem,
+                   _ level: Int) -> Tr3 {
+
+        if par.node?.pattern == "hash" {
+            tr3.parseHash(par.getFirstDouble())
+        }
+        return tr3
+    }
+    /// Dispatched: Parse a time of change.
+    /// Usually at runtime for recording and playback values.
+    /// Or for menu tree to bookmark most rececently used. 
+    ///
+    func parseTime(_ tr3: Tr3,
+                   _ prior: String,
+                   _ par: ParItem,
+                   _ level: Int) -> Tr3 {
+
+        if par.node?.pattern == "time" {
+            tr3.parseHash(par.getFirstDouble())
+        }
+        return tr3
+    }
+
+
+
     /// Dispatched: Parse a comment or comma (which is a micro comment)
     ///
     func parseComment(_ tr3: Tr3,
@@ -163,9 +197,9 @@ public class Tr3Parse {
         switch pattern {
             case "thru": scalar.addFlag(.thru)
             case "modu": scalar.addFlag(.modu)
-            case "num" : scalar.parseNum(par.getFirstFloat())
-            case "dflt": scalar.parseDflt(par.getFirstFloat())
-            case "now" : scalar.parseNow(par.getFirstFloat())
+            case "num" : scalar.parseNum(par.getFirstDouble())
+            case "dflt": scalar.parseDflt(par.getFirstDouble())
+            case "now" : scalar.parseNow(par.getFirstDouble())
             default:     break
         }
         for nextPar in par.nextPars {

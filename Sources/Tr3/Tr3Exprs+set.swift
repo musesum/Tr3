@@ -7,7 +7,7 @@ import Foundation
 
 extension Tr3Exprs { // + set
 
-    func setFloat(_ v: Float) -> Bool {
+    func setDouble(_ v: Double) -> Bool {
         if let n = nameAny["val"] as? Tr3ValScalar {
             _ = n.setVal(v)
             n.addFlag(.now)
@@ -26,8 +26,8 @@ extension Tr3Exprs { // + set
         }
         let copy = copy()
         copy.tr3 = nil
-        copy.injectNameNum("x", Float(p.x))
-        copy.injectNameNum("y", Float(p.y))
+        copy.injectNameNum("x", Double(p.x))
+        copy.injectNameNum("y", Double(p.y))
         return setExprs(from: copy)
     }
 
@@ -143,7 +143,7 @@ extension Tr3Exprs { // + set
                             /// `x` in `a(x) << b`
                             nameAny[name] = val.copy()
                         }
-                    case let val as Float:
+                    case let val as Double:
 
                         nameAny[name] = Tr3ValScalar(num: val)
 

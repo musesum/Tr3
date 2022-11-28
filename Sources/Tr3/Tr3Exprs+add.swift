@@ -18,11 +18,11 @@ extension Tr3Exprs {
         nameAny[nameAny.keys.last ?? anonKey] = scalar
         opSet.insert(.scalar)
     }
-    func addNameNum(_ name: String, _ num: Float) {
+    func addNameNum(_ name: String, _ num: Double) {
         addName(name)
         addDeepScalar(Tr3ValScalar(tr3, num: num))
     }
-    func injectNameNum(_ name: String, _ num: Float) {
+    func injectNameNum(_ name: String, _ num: Double) {
         if let val = nameAny[name] as? Tr3ValScalar {
             val.now = num
         } else {
@@ -34,9 +34,9 @@ extension Tr3Exprs {
 
     func addPoint(_ p: CGPoint) {
         opSet = Set<Tr3ExprOp>([.name,.num])
-        injectNameNum("x", Float(p.x))
+        injectNameNum("x", Double(p.x))
         addOpStr(",")
-        injectNameNum("y", Float(p.y))
+        injectNameNum("y", Double(p.y))
     }
     func addOpStr(_ opStr: String?) {
         if let opStr = opStr?.without(trailing: " ")  {

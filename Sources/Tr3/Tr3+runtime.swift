@@ -62,11 +62,11 @@ extension Tr3 {
             passthrough = false
 
             switch any {
-            case let v as Int:               val = Tr3ValScalar(self, num: Float(v))
-            case let v as Float:             val = Tr3ValScalar(self, num: v)
-            case let v as CGFloat:           val = Tr3ValScalar(self, num: Float(v))
-            case let v as CGPoint:           val = Tr3Exprs(self, point: v)
-            case let v as [(String, Float)]: val = Tr3Exprs(self, nameFloats: v)
+            case let v as Int:                val = Tr3ValScalar(self, num: Double(v))
+            case let v as Double:             val = Tr3ValScalar(self, num: v)
+            case let v as CGFloat:            val = Tr3ValScalar(self, num: Double(v))
+            case let v as CGPoint:            val = Tr3Exprs(self, point: v)
+            case let v as [(String, Double)]: val = Tr3Exprs(self, nameNums: v)
             default: print("🚫 unknown val(\(any))")
             }
         }

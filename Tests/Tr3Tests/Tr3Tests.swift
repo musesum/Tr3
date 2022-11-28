@@ -180,7 +180,8 @@ final class Tr3Tests: XCTestCase {
         err += test("a b c d a << (b ? c : d)",
                     "a <<(b ? c : d ) b⟐→a c⟐→a d⟐→a ")
 
-        err += test("value(1.67772e+07)", "value(1.67772e+07)")
+        err += test("value(16777200)")
+        err += test("value(1.67772e+07)", "value(16777200)")
 
         err += test("a.b.c(0…1) z@a { b.c(0…1=1) }",
                     "a { b { c(0…1) } } z@a { b { c(0…1=1) } }")
@@ -987,7 +988,7 @@ final class Tr3Tests: XCTestCase {
 
             _ = root.scriptRoot([.parens, .now])
             // 0, 0, 0 --------------------------------------------------
-            let t0 = Tr3Exprs(nameFloats: [("x", 0), ("y", 0), ("z", 0)])
+            let t0 = Tr3Exprs(nameNums: [("x", 0), ("y", 0), ("z", 0)])
             w.setAny(t0, .activate)
             let result0 = root.scriptRoot([.parens, .now, .edge])
             let expect0 = """
@@ -998,7 +999,7 @@ final class Tr3Tests: XCTestCase {
             err += ParStr.testCompare(expect0, result0)
 
             // 10, 11, 12 --------------------------------------------------
-            let t1 = Tr3Exprs(nameFloats: [("x", 10), ("y", 11), ("z", 12)])
+            let t1 = Tr3Exprs(nameNums: [("x", 10), ("y", 11), ("z", 12)])
             w.setAny(t1, .activate)
             let result1 = root.scriptRoot([.parens, .now, .edge])
             let expect1 = """
@@ -1009,7 +1010,7 @@ final class Tr3Tests: XCTestCase {
             err += ParStr.testCompare(expect1, result1)
 
             // 20, 21, 22 --------------------------------------------------
-            let t2 = Tr3Exprs(nameFloats: [("x", 20), ("y", 21), ("z", 22)])
+            let t2 = Tr3Exprs(nameNums: [("x", 20), ("y", 21), ("z", 22)])
 
             w.setAny(t2, .activate)
 
@@ -1022,7 +1023,7 @@ final class Tr3Tests: XCTestCase {
             err += ParStr.testCompare(expect2, result2)
 
             // 10, 21, 33 --------------------------------------------------
-            let t3 = Tr3Exprs(nameFloats: [("x", 10), ("y", 21), ("z", 33)])
+            let t3 = Tr3Exprs(nameNums: [("x", 10), ("y", 21), ("z", 33)])
             w.setAny(t3, .activate)
             let result3 = root.scriptRoot([.parens, .now, .edge])
             let expect3 = """
@@ -1204,7 +1205,7 @@ final class Tr3Tests: XCTestCase {
         if tr3Parse.parseScript(root, script, tracePar: false),
            let a = root.findPath("a") {
 
-            let t0 = Tr3Exprs(nameFloats: [("x", 1), ("y", 2), ("z", 3)])
+            let t0 = Tr3Exprs(nameNums: [("x", 1), ("y", 2), ("z", 3)])
             a.setAny(t0, .activate)
 
             let result = root.scriptRoot([.parens, .now, .edge, .comment])
@@ -1229,7 +1230,7 @@ final class Tr3Tests: XCTestCase {
         if tr3Parse.parseScript(root, script, tracePar: false),
            let a = root.findPath("a") {
 
-            let t0 = Tr3Exprs(nameFloats: [("x", 1), ("y", 2), ("z", 3)])
+            let t0 = Tr3Exprs(nameNums: [("x", 1), ("y", 2), ("z", 3)])
             a.setAny(t0, .activate)
 
             let result = root.scriptRoot([.parens, .now, .edge, .comment])
@@ -1255,7 +1256,7 @@ final class Tr3Tests: XCTestCase {
         if tr3Parse.parseScript(root, script, tracePar: false),
            let note = root.findPath("note") {
 
-            let num = Tr3Exprs(nameFloats: [("num", 50)])
+            let num = Tr3Exprs(nameNums: [("num", 50)])
             note.setAny(num, .activate)
 
             let result = root.scriptRoot([.parens, .now, .edge, .comment])
@@ -1283,12 +1284,12 @@ final class Tr3Tests: XCTestCase {
         if tr3Parse.parseScript(root, script, tracePar: false),
            let note = root.findPath("note") {
 
-            let t0 = Tr3Exprs(nameFloats: [("num", 50), ("chan", 0)])
+            let t0 = Tr3Exprs(nameNums: [("num", 50), ("chan", 0)])
             note.setAny(t0, .activate)
             let result0 = root.scriptRoot([.parens, .now, .edge, .comment])
             err = ParStr.testCompare( "grid(num, chan, x, y)<<note, note(num 50, chan 0)", result0)
 
-            let t1 = Tr3Exprs(nameFloats: [("num", 50), ("chan", 1)])
+            let t1 = Tr3Exprs(nameNums: [("num", 50), ("chan", 1)])
             note.setAny(t1, .activate)
             let result1 = root.scriptRoot([.parens, .now, .edge, .comment])
             err = ParStr.testCompare( "grid(num 50, chan 1, x 4, y 2)<<note, note(num 50, chan 1)", result1)
@@ -1319,7 +1320,7 @@ final class Tr3Tests: XCTestCase {
                 c.setAny(5.0, .activate) }
             err += testAct("a(0.1)", "a(0.1) c(1.0) b(1.0) ") {
                 a.setAny(0.1, .activate) }
-            err += testAct("b(0.2)", "b(0.2) a(0.020000001) c(0.20000002)") {
+            err += testAct("b(0.2)", "b(0.2) a(0.020000000000000004) c(0.20000000000000004)") {
                 b.setAny(0.2, .activate) }
         }
         else {

@@ -26,7 +26,7 @@ extension Tr3 {
         return false
     }
 
-    public func FloatVal() -> Float? {
+    public func DoubleVal() -> Double? {
         if let v = val as? Tr3ValScalar {
             return v.now
         }
@@ -50,8 +50,8 @@ extension Tr3 {
         return nil
     }
     
-    public func DoubleVal() -> Double? {
-        if let f = FloatVal() { return Double(f) }
+    public func FloatVal() -> Float? {
+        if let f = DoubleVal() { return Float(f) }
         return nil
     }
 

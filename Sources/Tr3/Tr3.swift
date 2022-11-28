@@ -4,6 +4,7 @@
 //  Copyright © 2019 DeepMuse
 //  License: Apache 2.0 - see License file
 
+import Foundation
 import Par
 
 public class Tr3: Hashable {
@@ -18,10 +19,11 @@ public class Tr3: Hashable {
     public var children = [Tr3]()   // expanded tr3 from  wheres˚tr3
     public var comments = Tr3Comments()
 
-    var changes: UInt = 0           // temporary variable counting changes to descendants
+    var time = TimeInterval(0)  // UTC time of last change time
+    var changes: UInt = 0       // temporary count of changes to descendants
 
-    var pathrefs: [Tr3]?            // b in `a.b <-> c` for `a{b{c}} a.b <-> c
-    var passthrough = false         // does not have its own Tr3Val, so pass through events
+    var pathrefs: [Tr3]?        // b in `a.b <-> c` for `a{b{c}} a.b <-> c
+    var passthrough = false /// does not have its own Tr3Val, so pass through events
     
     public var val: Tr3Val? = nil
     var cacheVal: Any? = nil        // cached value is drained
@@ -147,6 +149,13 @@ public class Tr3: Hashable {
             return parent.getRoot()
         }
         return self
+    }
+
+    public func parseTime(_ time: Double) {
+        //???
+    }
+    public func parseHash(_ time: Double) {
+        //??? 
     }
     
 }
