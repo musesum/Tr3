@@ -1241,6 +1241,67 @@ final class Tr3Tests: XCTestCase {
         }
         XCTAssertEqual(err, 0)
     }
+    //MARK: - assign
+
+    /// test `a(x, y) b(v 0) >> a(x:v)
+    func testAssign0() { headline(#function)
+
+        var err = 0
+        // selectively set tuples by name, ignore the reset
+        let script = "a(x, y) b(v 0) >> a(x:v)"
+        print("\n" + script)
+
+        let root = Tr3("√")
+
+        if tr3Parse.parseScript(root, script),
+           let b = root.findPath("b") {
+
+            let result0 = root.scriptRoot([.parens, .def, .edge])
+            let expect0 = "a(x, y) b(v 0) >> a(x:v)"
+            err = ParStr.testCompare(expect0, result0, echo: true)
+
+            let t1 = Tr3Exprs(nameNums: [("v", 1)])
+            b.setAny(t1, .activate)
+            let result1 = root.scriptRoot([.parens, .now, .edge])
+            let expect1 = "a(x 1, y) b(v 1) >> a(x 1)"
+            err = ParStr.testCompare(expect1, result1, echo: true)
+        }
+        else {
+            err += 1
+        }
+        XCTAssertEqual(err, 0)
+    }
+
+    /// test `a(x, y) b(v 0) >> a(x: v/2, y: v*2)`
+    func testAssign1() { headline(#function)
+
+        var err = 0
+        // selectively set tuples by name, ignore the reset
+        let script = "a(x, y) b(v 0) >> a(x: v/2, y: v*2)"
+        print("\n" + script)
+
+        let root = Tr3("√")
+
+        if tr3Parse.parseScript(root, script),
+           let b = root.findPath("b") {
+
+            let result0 = root.scriptRoot([.parens, .def, .edge])
+            let expect0 = "a(x, y) b(v 0) >> a(x: v/2, y: v*2)"
+            err = ParStr.testCompare(expect0, result0, echo: true)
+
+            let t1 = Tr3Exprs(nameNums: [("v", 1)])
+            b.setAny(t1, .activate)
+            let result1 = root.scriptRoot([.parens, .now, .edge])
+            let expect1 = "a(x 0.5, y 2) b(v 1)>>a(x 0.5, y 2)"
+            err = ParStr.testCompare(expect1, result1, echo: true)
+        }
+        else {
+            err += 1
+        }
+        XCTAssertEqual(err, 0)
+    }
+
+
 
     //MARK: - Midi
 

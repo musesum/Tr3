@@ -11,7 +11,8 @@ extension Tr3Expr {
                   _ frVal: Any?,
                   _ opNow: Tr3ExprOp) -> Any? {
 
-        if opNow == .none {
+        if (opNow == .none ||
+            opNow == .assign) {
             return frVal
         }
 
@@ -43,7 +44,7 @@ extension Tr3Expr {
                     case .divi  : return floor(frNow / (toNow == 0 ? 1 : toNow))
                     case .div   : return frNow / (toNow == 0 ? 1 : toNow)
                     case .mod   : return fmod(frNow, toNow == 0 ? 1 : toNow)
-                    case .assign: return frVal
+                    case .assign: return frVal //TODO: never here
                     default     : break
                 }
             } else {

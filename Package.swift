@@ -11,7 +11,7 @@ let package = Package(
             targets: ["Tr3"]),
     ],
     dependencies: [
-        .package(url: "https://github.com/musesum/Par.git", from: "0.2.0"),
+        .package(url: "https://github.com/musesum/Par.git", from: "0.3.0"),
         .package(url: "https://github.com/musesum/MuSkyTr3.git", from: "0.3.0"),
         .package(url: "https://github.com/apple/swift-collections.git",
                  .upToNextMajor(from: "1.0.0") // or `.upToNextMinor

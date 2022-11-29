@@ -104,12 +104,13 @@ extension Tr3 {
     /// If the node has a value of its own, then remap
     /// its value and the range of the incoming value.
     ///
-    func setEdgeVal(_ fromVal: Tr3Val?, _ visitor: Visitor) {
+    func setEdgeVal(_ fromVal: Tr3Val?,
+                    _ visitor: Visitor) {
         
         if visitor.visited.contains(id) {
             return // already have visited left tr3
         }
-        if let fromVal = fromVal {
+        if let fromVal {
 
             if val == nil {
                 passthrough = true  // no defined value so pass though
@@ -117,7 +118,7 @@ extension Tr3 {
             if passthrough {
                 val = fromVal // hold passthrough value, for successors to rescale
             }
-            else if let val = val {
+            else if let val {
                 switch val {
 
                     case let v as Tr3Exprs:

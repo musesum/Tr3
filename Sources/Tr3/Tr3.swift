@@ -7,10 +7,24 @@
 import Foundation
 import Par
 
+extension String {
+
+    func strHash() -> UInt64 {
+        var result = UInt64 (5381)
+        let buf = [UInt8](self.utf8)
+        for b in buf {
+            result = 127 * (result & 0x00ffffffffffffff) + UInt64(b)
+        }
+        return result
+    }
+}
+
+
 public class Tr3: Hashable {
 
     public static var LogBindScript = false // debug while binding
     public static var LogMakeScript = false // debug while binding
+    public static var global = [UInt64: (Tr3,TimeInterval)]()
 
     public var id = Visitor.nextId()
 
@@ -20,6 +34,10 @@ public class Tr3: Hashable {
     public var comments = Tr3Comments()
 
     var time = TimeInterval(0)  // UTC time of last change time
+    public func updateTime() {
+        time = Date().timeIntervalSince1970
+    }
+
     var changes: UInt = 0       // temporary count of changes to descendants
 
     var pathrefs: [Tr3]?        // b in `a.b <-> c` for `a{b{c}} a.b <-> c
@@ -35,7 +53,16 @@ public class Tr3: Hashable {
     public var type = Tr3Type.unknown
     var copied = [Tr3]()
 
-    public func hash(into hasher: inout Hasher) { hasher.combine(id) }
+    lazy var hash: UInt64 = {
+        let hashed = parentPath(9999).strHash()
+        if time == 0 { updateTime()}
+        Tr3.global[hashed] = (self,time)
+        return hashed
+    }()
+
+    public func hash(into hasher: inout Hasher) {
+        hasher.combine(hash)
+    }
 
     public static func == (lhs: Tr3, rhs: Tr3) -> Bool { return lhs.id == rhs.id }
 
@@ -83,7 +110,7 @@ public class Tr3: Hashable {
     func attachDeep(_ tr3: Tr3, _ visitor: Visitor) {
         if visitor.newVisit(id) {
             if children.count == 0 {
-                tr3.parent = self
+                tr3.parent = self 
                 children.append(tr3)
             }
             else {
@@ -152,9 +179,11 @@ public class Tr3: Hashable {
     }
 
     public func parseTime(_ time: Double) {
-        //TODO: parse and print
+        self.time = time
+        //TODO: Tr3Dispatch.hash(hash,time)
     }
-    public func parseHash(_ time: Double) {
+    public func parseHash(_ hash: Double) {
+
         //TODO: parse and print
     }
     

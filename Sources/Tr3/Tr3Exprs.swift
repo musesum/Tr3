@@ -92,7 +92,8 @@ public class Tr3Exprs: Tr3Val {
         return nums
     }
     // MARK: - Set
-    public override func setVal(_ any: Any?, _ opts: Tr3SetOptions? = nil) -> Bool {
+    public override func setVal(_ any: Any?,
+                                _ opts: Tr3SetOptions? = nil) -> Bool {
 
         if let any {
             switch any {
@@ -100,7 +101,10 @@ public class Tr3Exprs: Tr3Val {
                 case let v as CGFloat:  return setDouble(Double(v))
                 case let v as Double:   return setDouble(Double(v))
                 case let v as CGPoint:  return setPoint(v)
-                case let v as Tr3Exprs: return setExprs(from: v)
+                case let v as Tr3Exprs:
+                    return (v.evalExprs() &&
+                            setExprs(frExprs: v))
+
                 case let (n,v) as (String,Float): return setNamed(n, Double(v))
                 case let (n,v) as (String,Double): return setNamed(n, Double(v))
                 case let (n,v) as (String,CGFloat): return setNamed(n, Double(v))

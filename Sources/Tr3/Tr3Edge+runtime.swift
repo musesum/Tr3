@@ -36,10 +36,30 @@ extension Tr3Edge {
             if   leftToRight && edgeFlags.contains(.output) ||
                 !leftToRight && edgeFlags.contains(.input) {
 
-                let val = defVal ?? fromTr3.val
+                let val = assignNameVals()
                 destTr3.setEdgeVal(val, visitor)
                 destTr3.activate(visitor)
             }
+        }
+
+        func assignNameVals() -> Tr3Val? {
+
+            if let defVal {
+
+                if let defExprs = defVal as? Tr3Exprs,
+                   let frExprs = fromTr3.val as? Tr3Exprs {
+
+                    for (name,val) in defExprs.nameAny {
+                        if (val as? String) == "" {
+                            if let frVal = frExprs.nameAny[name] {
+                                defExprs.nameAny[name] = frVal
+                            }
+                        }
+                    }
+                }
+                return defVal
+            }
+            return fromTr3.val
         }
     }
 }

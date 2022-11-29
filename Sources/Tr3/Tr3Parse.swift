@@ -129,7 +129,7 @@ public class Tr3Parse {
                    _ level: Int) -> Tr3 {
 
         if par.node?.pattern == "time" {
-            tr3.parseHash(par.getFirstDouble())
+            tr3.parseTime(par.getFirstDouble())
         }
         return tr3
     }
