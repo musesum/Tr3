@@ -28,8 +28,11 @@ extension Tr3Exprs { // + set
         copy.tr3 = nil
         copy.injectNameNum("x", Double(p.x))
         copy.injectNameNum("y", Double(p.y))
-        return setExprs(frExprs: copy)
+        return evalExprs(copy)
     }
+
+
+    public typealias ExprSetters = ContiguousArray<(String,Any?)>
 
     /// evaluate expression
     ///
@@ -52,8 +55,7 @@ extension Tr3Exprs { // + set
     ///
     ///  -note: failed conditional will abort all setters and should abort activate edges
     ///
-    public typealias ExprSetters = ContiguousArray<(String,Any?)>
-    func evalExprs() -> Bool {
+    func evalExprs(_ frExprs: Tr3Exprs? = nil) -> Bool {
 
         var mySetters = ExprSetters()
         var toVal: Any?
@@ -83,112 +85,7 @@ extension Tr3Exprs { // + set
 
                 case .comma:                    endParameter()
 
-                case .assign, .none:            break
-            }
-
-            /// match from and to parameters
-            func exprName() -> Bool {
-
-                if let name = expr.val as? String {
-
-                    if myName == nil {
-                        myName = name
-                        myVal = nameAny[name]
-                    }
-                    if let frVal = nameAny[name] {
-                        if opNow == .assign,
-                           (frVal as? String) == "",
-                           let val = tr3?.val as? Tr3ValScalar {
-                            toVal = val.now
-                        } else if opNow != .none {
-                            toVal = expr.evaluate(toVal ?? myVal, frVal, opNow)
-                            opNow = .none
-                            return toVal != nil
-                        } else {
-                            toVal = frVal
-                        }
-                    }
-                }
-                return true
-            }
-
-            /// evaluate numbers and strings, return false if should abort expression
-            func exprLiteral() -> Bool  {
-                let frVal = toVal ?? myVal
-                toVal = expr.evaluate(expr.val, frVal, opNow)
-                return toVal != nil
-            }
-        }
-        return true
-
-        /// reset current values after comma
-        func endParameter() {
-            if let myName, let toVal {
-                mySetters.append((myName,toVal))
-            }
-            // reset for next expr parameter
-            opNow = .none
-            myName = nil
-            toVal = nil
-        }
-    }
-    ///execute all deferrred setters
-    func setSetters(_ mySetters: ExprSetters) {
-        for (name,val) in mySetters {
-            switch val {
-                case let val as Tr3ValScalar:
-                    if let toVal = nameAny[name] as? Tr3Val {
-                        /// `x` in `a(x 1) << b`
-                        _ = toVal.setVal(val)
-                    } else {
-                        /// `x` in `a(x) << b`
-                        nameAny[name] = val.copy()
-                    }
-                case let val as Double:
-
-                    nameAny[name] = Tr3ValScalar(num: val)
-
-                case let val as String:
-                    if let toVal = nameAny[name]  as? Tr3Val {
-                        if !val.isEmpty {
-                            /// `x` in `a(x in 2…4) << b, `b(x 3)`
-                            _ = toVal.setVal(val)
-                        }
-                    }
-                default : break
-            }
-        }
-    }
-    func setExprs(frExprs: Tr3Exprs) -> Bool {
-
-        var mySetters = ExprSetters()
-        var toVal: Any?
-        var myVal: Any?
-        var myName: String?
-        var opNow = Tr3ExprOp.none
-
-        for i in 0...exprs.count {
-
-            if i==exprs.count {
-                endParameter()
-                setSetters(mySetters)
-                return true
-            }
-            let expr = exprs[i]
-
-            switch expr.op {
-
-                case .quote, .scalar, .num:     if !exprLiteral() { return false }
-
-                case    .EQ, .LE, .GE, .LT,
-                        .GT, .In, .add, .sub,
-                        .muy,.divi,.div,.mod:   opNow = expr.op
-
-                case .path, .name:              if !exprName() { return false }
-
-                case .comma:                    endParameter()
-
-                case .assign, .none:            break
+                case .none:            break
             }
 
             /// match from and to parameters
@@ -200,7 +97,8 @@ extension Tr3Exprs { // + set
                         myName = name
                         myVal = nameAny[name]
                     }
-                    if let frVal = frExprs.nameAny[name] {
+                    let nameAny = frExprs?.nameAny ?? nameAny
+                    if let frVal = nameAny[name] {
                         if opNow != .none {
                             toVal = expr.evaluate(toVal ?? myVal, frVal, opNow)
                             opNow = .none
@@ -231,6 +129,34 @@ extension Tr3Exprs { // + set
             opNow = .none
             myName = nil
             toVal = nil
+        }
+    }
+
+    ///execute all deferrred setters
+    func setSetters(_ mySetters: ExprSetters) {
+        for (name,val) in mySetters {
+            switch val {
+                case let val as Tr3ValScalar:
+                    if let toVal = nameAny[name] as? Tr3Val {
+                        /// `x` in `a(x 1) << b`
+                        _ = toVal.setVal(val)
+                    } else {
+                        /// `x` in `a(x) << b`
+                        nameAny[name] = val.copy()
+                    }
+                case let val as Double:
+
+                    nameAny[name] = Tr3ValScalar(num: val)
+
+                case let val as String:
+                    if let toVal = nameAny[name] as? Tr3Val {
+                        if !val.isEmpty {
+                            /// `x` in `a(x in 2…4) << b, `b(x 3)`
+                            _ = toVal.setVal(val)
+                        }
+                    }
+                default : break
+            }
         }
     }
 }

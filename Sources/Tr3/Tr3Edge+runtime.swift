@@ -13,7 +13,8 @@ extension Tr3Edge {
     func followEdge(_ fromTr3: Tr3,
                     _ visitor: Visitor) {
 
-        let leftToRight = fromTr3 == leftTr3
+        let leftToRight = fromTr3 == leftTr3 // a >> b
+        let rightToLeft = !leftToRight       // a << b
         let destTr3 = leftToRight ? rightTr3 : leftTr3
 
         if edgeFlags.contains(.ternIf) {
@@ -24,7 +25,7 @@ extension Tr3Edge {
                 rightTr3.activate(visitor)
                 //print("\(fromTr3.name)◇→\(destTr3?.name ?? "")")
             }
-            else if !leftToRight, let ternVal = leftTr3.findEdgeTern(self) {
+            else if rightToLeft, let ternVal = leftTr3.findEdgeTern(self) {
 
                 ternVal.recalc(rightTr3, leftTr3, .activate, visitor)
                 leftTr3.activate(visitor)
@@ -33,15 +34,23 @@ extension Tr3Edge {
         }
         else {
 
-            if   leftToRight && edgeFlags.contains(.output) ||
-                !leftToRight && edgeFlags.contains(.input) {
+            if  leftToRight && edgeFlags.contains(.output) ||
+                rightToLeft && edgeFlags.contains(.input) {
 
                 let val = assignNameVals()
-                destTr3.setEdgeVal(val, visitor)
-                destTr3.activate(visitor)
+                if  destTr3.setEdgeVal(val, visitor) {
+                    destTr3.activate(visitor)
+                } else {
+                    /// Did not meet conditionals, so stop.
+                    /// for example, when cc != 13 for
+                    /// `repeatX(cc == 13, val 0…127, chan, time)`
+                }
             }
         }
 
+        /// apply fromTr3 values to edge expressions
+        /// such as applyihg `b(v 1)` to `a(x:v),`
+        /// for `a(x,y), b(v 0) >> a(x:v)`
         func assignNameVals() -> Tr3Val? {
 
             if let defVal {

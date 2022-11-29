@@ -105,10 +105,10 @@ extension Tr3 {
     /// its value and the range of the incoming value.
     ///
     func setEdgeVal(_ fromVal: Tr3Val?,
-                    _ visitor: Visitor) {
+                    _ visitor: Visitor) -> Bool {
         
         if visitor.visited.contains(id) {
-            return // already have visited left tr3
+            return false // already have visited left tr3
         }
         if let fromVal {
 
@@ -124,26 +124,27 @@ extension Tr3 {
                     case let v as Tr3Exprs:
 
                         if let fr = fromVal as? Tr3Exprs {
-                            _ = v.setVal(fr)
+                            return v.setVal(fr)
                         }
                     case let v as Tr3ValScalar:
 
                         if let fr = fromVal as? Tr3ValScalar {
-                            _ = v.setVal(fr)
+                            return v.setVal(fr)
                         }
                         else if let frExprs = fromVal as? Tr3Exprs,
                                 let lastExpr = frExprs.nameAny.values.first,
                                 let fr = lastExpr as? Tr3ValScalar {
 
-                            _ = v.setVal(fr)
+                            return v.setVal(fr)
                         }
                     case let v as Tr3ValData:
                         if let fr = fromVal as? Tr3ValData {
-                            _ = v.setVal(fr)
+                           return v.setVal(fr)
                         }
                     default: break
                 }
             }
         }
+        return true
     }
 }
