@@ -18,15 +18,23 @@ extension String {
         return result
     }
 }
-
+/// Dictionary of all Tr3s in graph based on path based hash.
+/// This is useful for updating state of a tr3 node from duplicate
+/// graph with exactly the same namespace. Useful for saving and
+/// recalling state of a saved graph, or synchronizing between devices
+/// which have the same exact graph namespace.
+public class Tr3Dispatch {
+    public var dispatch = [UInt64: (Tr3,TimeInterval)]()
+}
 
 public class Tr3: Hashable {
 
     public static var LogBindScript = false // debug while binding
     public static var LogMakeScript = false // debug while binding
-    public static var global = [UInt64: (Tr3,TimeInterval)]()
+
 
     public var id = Visitor.nextId()
+    public var dispatch: Tr3Dispatch? // Global dispacth for each root
 
     public var name = ""
     public var parent: Tr3? = nil   // parent tr3
@@ -53,10 +61,9 @@ public class Tr3: Hashable {
     public var type = Tr3Type.unknown
     var copied = [Tr3]()
 
-    lazy var hash: UInt64 = {
+    public lazy var hash: UInt64 = {
         let hashed = parentPath(9999).strHash()
         if time == 0 { updateTime()}
-        Tr3.global[hashed] = (self,time)
         return hashed
     }()
 
@@ -76,8 +83,10 @@ public class Tr3: Hashable {
 
         self.init()
         self.parent = parent
+
         name = from.name
         type = from.type
+
         for fromChild in from.children {
             let newChild = Tr3(deepcopy: fromChild, parent: self)
             children.append(newChild)
@@ -185,6 +194,25 @@ public class Tr3: Hashable {
     public func parseHash(_ hash: Double) {
 
         //TODO: parse and print
+    }
+
+    /// all Tr3s from root share the same dispatch.
+    /// There are two main usescases:
+    ///    1) app saves .delta and restores .now values
+    ///    2) another devices wants to synchronize state
+    ///
+    public func bindDispatch(_ prior: Tr3? = nil) {
+
+        if let prior {
+            dispatch = prior.dispatch
+            dispatch?.dispatch[hash] = (self,time)
+        } else {
+            dispatch = Tr3Dispatch()
+            dispatch?.dispatch[hash] = (self, Date().timeIntervalSince1970)
+        }
+        for child in children {
+            child.bindDispatch(self)
+        }
     }
     
 }

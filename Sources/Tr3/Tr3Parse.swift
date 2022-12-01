@@ -471,9 +471,9 @@ public class Tr3Parse {
     ///     - parseEdge
     ///
     func dipatchParse(_ tr3: Tr3,
-                       _ prior: String,
-                       _ par: ParItem,
-                       _ level: Int) -> Tr3 {
+                      _ prior: String,
+                      _ par: ParItem,
+                      _ level: Int) -> Tr3 {
 
         // log(tr3, par, level)  // log progress through parse, here
 
@@ -525,4 +525,30 @@ public class Tr3Parse {
         }
         return false
     }
+
+    public func mergeScript(_ root: Tr3,
+                            _ script: String) -> Bool {
+
+        let rootNow = Tr3("√")
+        let success = parseScript(rootNow, script)
+        if success {
+            mergeNow(rootNow, with: root)
+        }
+        return success
+    }
+
+    func mergeNow(_ now: Tr3, with root: Tr3) {
+        let nowHash = now.hash
+        if let dispatch = root.dispatch?.dispatch,
+           let (tr3,_) = dispatch[nowHash],
+           let nowVal = now.val,
+           let tr3Val = tr3.val {
+
+            _ = tr3Val.setVal(nowVal)
+        }
+        for child in now.children {
+            mergeNow(child, with: root)
+        }
+    }
+
 }

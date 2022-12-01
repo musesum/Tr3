@@ -73,6 +73,7 @@ public class Tr3ValScalar: Tr3Val {
             }
         } else {
             valFlags.insert(.lit)
+            dflt = n
             now = n
         }
     }
@@ -90,9 +91,14 @@ public class Tr3ValScalar: Tr3Val {
         }
     }
     func setNow() { // was setDefault
-        if valFlags.contains(.now) {
-            // do nothing
-        } else if valFlags.contains(.dflt) {
+
+        if !valFlags.contains(.now) {
+             setDefault() //??? 
+        }
+    }
+    func setDefault() { // was setDefault
+
+        if valFlags.contains(.dflt) {
             now = dflt
         } else if valFlags.contains(.min), now < min {
             now = min
@@ -102,7 +108,6 @@ public class Tr3ValScalar: Tr3Val {
             now = 0
         }
     }
-
     static func |= (lhs: Tr3ValScalar, rhs: Tr3ValScalar) {
         
         let mergeFlags = lhs.valFlags.rawValue |  rhs.valFlags.rawValue
@@ -217,20 +222,20 @@ public class Tr3ValScalar: Tr3Val {
             if valFlags.contains(.dflt) { script += "=" + dflt.digits(0...6) }
             if valFlags.contains(.lit)  { script += now.digits(0...6) }
             if scriptFlags.contains(.now) {
-                if valFlags.hasDef() {
-                    /// `:2` in `0…3=1:2`
+                if valFlags.contains(.lit), now == dflt {
+                    /// skip as `dflt` will set `now` anyway
+                 } else {
                     script += ":" + now.digits(0...6)
-                } else if valFlags.contains(.lit) {
-                    /// `2` in `a(2)`
-                    /// skip
-                } else {
-                    script += now.digits(0...6)
                 }
             }
-        } else if scriptFlags.contains(.now), valFlags.contains(.now) {
-            script += now.digits(0...6)
+        } else if scriptFlags.contains(.now) {
+            if valFlags.contains(.lit), now == dflt {
+                script += now.digits(0...6)
+            } else {
+                script += ":" + now.digits(0...6)
+            }
         } else if valFlags.contains(.lit) {
-            script += now.digits(0...6)
+            script += now.digits(0...6) ///???
         }
         script += scriptFlags.contains(.parens) ? ")" : ""
         return script

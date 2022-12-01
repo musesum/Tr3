@@ -110,7 +110,7 @@ public class Tr3Exprs: Tr3Val {
         }
         return false
     }
-    func setNows() { // was setDefaults
+    func setNows() {
         if nameAny.count > 0 {
             for value in nameAny.values {
                 if let scalar = value as? Tr3ValScalar {
@@ -119,9 +119,18 @@ public class Tr3Exprs: Tr3Val {
             }
         }
     }
+    func setDefaults() { //??? 
+        if nameAny.count > 0 {
+            for value in nameAny.values {
+                if let scalar = value as? Tr3ValScalar {
+                    scalar.setDefault()
+                }
+            }
+        }
+    }
     func setNamed(_ name: String, _ value: Double) -> Bool {
         if let scalar = nameAny[name] as? Tr3ValScalar {
-            scalar.setVal(value) //??? 
+            _ = scalar.setVal(value)
         } else {
             nameAny[name] = Tr3ValScalar(tr3, num: value)
         }

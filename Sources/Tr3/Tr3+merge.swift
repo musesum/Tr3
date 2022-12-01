@@ -424,8 +424,8 @@ extension Tr3 {
         func bindVal(_ val: Tr3Val?) {
             guard let val else { return }
             switch val {
-                case let t as Tr3Exprs:  t.setNows()
-                case let s as Tr3ValScalar: s.setNow()
+                case let t as Tr3Exprs:  t.setDefaults()
+                case let s as Tr3ValScalar: s.setDefault()
                 default: break
             }
         }
@@ -437,7 +437,23 @@ extension Tr3 {
             child.bindDefaults()
         }
     }
-
+    public func bindNows() {
+        func bindVal(_ val: Tr3Val?) {
+            guard let val else { return }
+            switch val {
+                case let t as Tr3Exprs:  t.setNows()
+                case let s as Tr3ValScalar: s.setNow()
+                default: break
+            }
+        }
+        bindVal(val)
+        for edge in tr3Edges {
+            bindVal(edge.value.defVal)
+        }
+        for child in children {
+            child.bindNows()
+        }
+    }
     /// bind root of tree and its subtree graph
     public func bindRoot() {
 
@@ -445,11 +461,12 @@ extension Tr3 {
             Tr3.LogBindScript ? print(scriptTr3(.now) + " // \(num)")  :
             Tr3.LogMakeScript ? print(script(.def) + " // \(num)")  : nil
         }
-        bindTopDown()     ; log(1)
-        bindBottomUp()    ; log(2)
-        bindCopyatTypes() ; log(3)
-        bindEdges()       ; log(4)
-        bindTernaries()   ; log(5)
-        bindDefaults()
+        bindTopDown()      ; log(1)
+        bindBottomUp()     ; log(2)
+        bindCopyatTypes()  ; log(3)
+        bindEdges()        ; log(4)
+        bindTernaries()    ; log(5)
+        bindDispatch()     ; log(6)
+        bindNows()
     }
 }
