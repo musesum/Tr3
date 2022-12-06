@@ -43,7 +43,7 @@ extension Tr3Exprs {
             var literals = false
             var hasOp = false
             
-            for i in 0 ... exprs.count {
+            for i in 0...exprs.count {
                 if i == exprs.count {
                     /// finish `y` in `a(x,y)`
                     scriptPassthrough()

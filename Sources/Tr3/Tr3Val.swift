@@ -21,8 +21,9 @@ protocol Tr3ValProtocal {
 open class Tr3Val: Comparable {
 
     var id = Visitor.nextId()
-    var tr3: Tr3?  // tr3 that declared and contains this value
     var valFlags = Tr3ValFlags(rawValue: 0) // which combination of the following?
+
+    public var tr3: Tr3?  // tr3 that declared and contains this value
 
     public static func == (lhs: Tr3Val, rhs: Tr3Val) -> Bool {
         return lhs.valFlags == rhs.valFlags
