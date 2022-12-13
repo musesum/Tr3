@@ -7,17 +7,7 @@
 import Foundation
 import Par
 
-extension String {
 
-    public func strHash() -> Int {
-        var result = Int (5381)
-        let buf = [UInt8](self.utf8)
-        for b in buf {
-            result = 127 * (result & 0x00ffffffffffffff) + Int(b)
-        }
-        return result
-    }
-}
 /// Dictionary of all Tr3s in graph based on path based hash.
 /// This is useful for updating state of a tr3 node from duplicate
 /// graph with exactly the same namespace. Useful for saving and
