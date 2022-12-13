@@ -9,11 +9,11 @@ import Par
 
 extension String {
 
-    func strHash() -> UInt64 {
-        var result = UInt64 (5381)
+    public func strHash() -> Int {
+        var result = Int (5381)
         let buf = [UInt8](self.utf8)
         for b in buf {
-            result = 127 * (result & 0x00ffffffffffffff) + UInt64(b)
+            result = 127 * (result & 0x00ffffffffffffff) + Int(b)
         }
         return result
     }
@@ -24,7 +24,7 @@ extension String {
 /// recalling state of a saved graph, or synchronizing between devices
 /// which have the same exact graph namespace.
 public class Tr3Dispatch {
-    public var dispatch = [UInt64: (Tr3,TimeInterval)]()
+    public var dispatch = [Int: (Tr3,TimeInterval)]()
 }
 
 public class Tr3: Hashable {
@@ -32,9 +32,8 @@ public class Tr3: Hashable {
     public static var LogBindScript = false // debug while binding
     public static var LogMakeScript = false // debug while binding
 
-
     public var id = Visitor.nextId()
-    public var dispatch: Tr3Dispatch? // Global dispacth for each root
+    public var dispatch: Tr3Dispatch? // Global dispatch for each root
 
     public var name = ""
     public var parent: Tr3? = nil   // parent tr3
@@ -61,7 +60,7 @@ public class Tr3: Hashable {
     public var type = Tr3Type.unknown
     var copied = [Tr3]()
 
-    public lazy var hash: UInt64 = {
+    public lazy var hash: Int = {
         let hashed = parentPath(9999).strHash()
         if time == 0 { updateTime()}
         return hashed
