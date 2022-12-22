@@ -12,7 +12,7 @@ extension Tr3 {
     /// combine several expressions into one transaction and activate the callbacks only once
     public func setAnys(_ anys: [Any],
                         _ options: Tr3SetOptions,
-                        _ visitor: Visitor = Visitor(0)) {
+                        _ visitor: Visitor) {
 
         // defer activation until after setting value
         let noActivate = options.subtracting(.activate)
@@ -28,7 +28,7 @@ extension Tr3 {
     }
     public func setAny(_ any: Any,
                        _ options: Tr3SetOptions,
-                       _ visitor: Visitor = Visitor(0)) {
+                       _ visitor: Visitor) { 
 
         /// clean up scaffolding from parsing a Ternary,
         /// todo: scaffolding instead of overloading val
