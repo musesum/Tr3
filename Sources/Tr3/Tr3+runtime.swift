@@ -28,7 +28,7 @@ extension Tr3 {
     }
     public func setAny(_ any: Any,
                        _ options: Tr3SetOptions,
-                       _ visitor: Visitor) { 
+                       _ visitor: Visitor = Visitor(0)) { 
 
         /// clean up scaffolding from parsing a Ternary,
         /// todo: scaffolding instead of overloading val

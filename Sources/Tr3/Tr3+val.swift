@@ -40,13 +40,33 @@ extension Tr3 {
         return nil
     }
 
+    public func Normals() -> [Double] {
+        if let v = val as? Tr3ValScalar {
+            return [v.normalized()]
+        }
+        else if let exprs = val as? Tr3Exprs {
+            if let v = exprs.nameAny["v"] as? Tr3ValScalar {
+                return [v.normalized()]
+            } else  {
+                var ret = [Double()]
+                for value in exprs.nameAny.values {
+                    if let v = value as? Double {
+                        ret.append(v)
+                    }
+                }
+                return ret
+            }
+        }
+        return []
+    }
+
     public func IntVal() -> Int? {
-        if let num = FloatVal() { return Int(num) }
+        if let num = DoubleVal() { return Int(num) }
         return nil
     }
 
     public func CGFloatVal() -> CGFloat? {
-        if let f = FloatVal() { return CGFloat(f) }
+        if let f = DoubleVal() { return CGFloat(f) }
         return nil
     }
     

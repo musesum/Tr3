@@ -52,6 +52,16 @@ public class Tr3ValScalar: Tr3Val {
         return newTr3ValScalar
     }
 
+    public func normalized() -> Double {
+        if valFlags.contains([.min,.max]) {
+            let range = max - min
+            let ret = (now - min) / range
+            return ret
+        } else {
+            print("🚫 \(tr3?.name ?? ""): cannot normalize \(now)")
+            return now
+        }
+    }
     func parseNum(_ n: Double) {
 
         if valFlags.contains(.thru) {
@@ -144,18 +154,17 @@ public class Tr3ValScalar: Tr3Val {
 
         if let val = val {
             switch val {
-                case let v as Tr3ValScalar : setFromScalar(v)
-                case let v as Double       : setFromDouble(v)
-                case let v as Float        : setFromDouble(v)
-                case let v as CGFloat      : setFromDouble(v)
-                case let v as Double       : setFromDouble(v)
-                case let v as Int          : setFromDouble(v)
+                case let v as Tr3ValScalar : setFrom(v)
+                case let v as Double       : setNumWithFlag(v)
+                case let v as Float        : setNumWithFlag(Double(v))
+                case let v as CGFloat      : setNumWithFlag(Double(v))
+                case let v as Int          : setNumWithFlag(Double(v))
                 default: print("🚫 setVal unknown type for: from")
             }
         }
         return true
         
-        func setFromScalar(_ v: Tr3ValScalar) {
+        func setFrom(_ v: Tr3ValScalar) {
 
             if   valFlags.contains(.thru),
                  v.valFlags.contains(.thru) {
@@ -177,10 +186,6 @@ public class Tr3ValScalar: Tr3Val {
                 setNumWithFlag(v.now)
             }
         }
-        func setFromDouble(_ v: Int)      { setNumWithFlag(Double(v)) }
-        func setFromDouble(_ v: Double)   { setNumWithFlag(Double(v)) }
-        func setFromDouble(_ v: CGFloat)  { setNumWithFlag(Double(v)) }
-        func setFromDouble(_ v: Float)    { setNumWithFlag(Double(v)) }
         
         func setNumWithFlag(_ n: Double) {
             now = n
