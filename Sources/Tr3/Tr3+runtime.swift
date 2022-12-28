@@ -28,7 +28,7 @@ extension Tr3 {
     }
     public func setAny(_ any: Any,
                        _ options: Tr3SetOptions,
-                       _ visitor: Visitor = Visitor(0)) { 
+                       _ visitor: Visitor = Visitor(0)) {
 
         /// clean up scaffolding from parsing a Ternary,
         /// todo: scaffolding instead of overloading val
@@ -62,12 +62,12 @@ extension Tr3 {
             passthrough = false
 
             switch any {
-            case let v as Int:                val = Tr3ValScalar(self, num: Double(v))
-            case let v as Double:             val = Tr3ValScalar(self, num: v)
-            case let v as CGFloat:            val = Tr3ValScalar(self, num: Double(v))
-            case let v as CGPoint:            val = Tr3Exprs(self, point: v)
-            case let v as [(String, Double)]: val = Tr3Exprs(self, nameNums: v)
-            default: print("🚫 unknown val(\(any))")
+                case let v as Int:                val = Tr3ValScalar(self, num: Double(v))
+                case let v as Double:             val = Tr3ValScalar(self, num: v)
+                case let v as CGFloat:            val = Tr3ValScalar(self, num: Double(v))
+                case let v as CGPoint:            val = Tr3Exprs(self, point: v)
+                case let v as [(String, Double)]: val = Tr3Exprs(self, nameNums: v)
+                default: print("🚫 unknown val(\(any))")
             }
         }
         // maybe pass along my Tr3Val to other Tr3Nodes and closures
@@ -107,42 +107,40 @@ extension Tr3 {
     func setEdgeVal(_ fromVal: Tr3Val?,
                     _ visitor: Visitor) -> Bool {
         
-        if visitor.visited.contains(id) {
-            return false // already have visited left tr3
+        if visitor.wasHere(id) { return false }
+        guard let fromVal else { return true }
+
+        if val == nil {
+            passthrough = true  // no defined value so pass though
         }
-        if let fromVal {
+        if passthrough {
+            val = fromVal // hold passthrough value, for successors to rescale
+        }
+        else if let val {
+            switch val {
 
-            if val == nil {
-                passthrough = true  // no defined value so pass though
-            }
-            if passthrough {
-                val = fromVal // hold passthrough value, for successors to rescale
-            }
-            else if let val {
-                switch val {
+                case let v as Tr3Exprs:
 
-                    case let v as Tr3Exprs:
+                    if let fr = fromVal as? Tr3Exprs {
+                        return v.setVal(fr)
+                    }
+                case let v as Tr3ValScalar:
 
-                        if let fr = fromVal as? Tr3Exprs {
-                            return v.setVal(fr)
-                        }
-                    case let v as Tr3ValScalar:
+                    if let fr = fromVal as? Tr3ValScalar {
+                        return v.setVal(fr)
+                    }
+                    else if let frExprs = fromVal as? Tr3Exprs,
+                            let lastExpr = frExprs.nameAny.values.first,
+                            let fr = lastExpr as? Tr3ValScalar {
 
-                        if let fr = fromVal as? Tr3ValScalar {
-                            return v.setVal(fr)
-                        }
-                        else if let frExprs = fromVal as? Tr3Exprs,
-                                let lastExpr = frExprs.nameAny.values.first,
-                                let fr = lastExpr as? Tr3ValScalar {
-
-                            return v.setVal(fr)
-                        }
-                    case let v as Tr3ValData:
-                        if let fr = fromVal as? Tr3ValData {
-                           return v.setVal(fr)
-                        }
-                    default: break
-                }
+                        return v.setVal(fr)
+                    }
+                case let v as Tr3ValData:
+                    
+                    if let fr = fromVal as? Tr3ValData {
+                        return v.setVal(fr)
+                    }
+                default: break
             }
         }
         return true
