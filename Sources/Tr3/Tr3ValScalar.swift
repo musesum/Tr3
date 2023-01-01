@@ -240,7 +240,7 @@ public class Tr3ValScalar: Tr3Val {
                 script += ":" + now.digits(0...6)
             }
         } else if valFlags.contains(.lit) {
-            script += now.digits(0...6) ///???
+            script += now.digits(0...6)
         }
         script += scriptFlags.contains(.parens) ? ")" : ""
         return script
