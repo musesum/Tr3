@@ -103,7 +103,7 @@ public class Tr3ValScalar: Tr3Val {
     func setNow() { // was setDefault
 
         if !valFlags.contains(.now) {
-             setDefault() //??? 
+             setDefault() //??
         }
     }
     func setDefault() { // was setDefault
@@ -213,7 +213,7 @@ public class Tr3ValScalar: Tr3Val {
             if !hasDelta() {
                 return ""
             }
-            print("*** \(tr3?.name ?? "") [\(scriptFlags.description)].[\(valFlags.description)] : \(now)") //???
+            print("*** \(tr3?.name ?? "") [\(scriptFlags.description)].[\(valFlags.description)] : \(now)") //??
         }
 
         var script = scriptFlags.contains(.parens) ? "(" : ""

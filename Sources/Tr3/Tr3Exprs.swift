@@ -119,7 +119,7 @@ public class Tr3Exprs: Tr3Val {
             }
         }
     }
-    func setDefaults() { //??? 
+    func setDefaults() { //??
         if nameAny.count > 0 {
             for value in nameAny.values {
                 if let scalar = value as? Tr3ValScalar {
