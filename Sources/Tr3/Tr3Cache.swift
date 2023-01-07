@@ -2,8 +2,7 @@
 //  Tr3Cache.swift
 //  
 //  Created by warren on 7/17/19.
-//  Copyright © 2019 DeepMuse
-//  License: Apache 2.0 - see License file
+
 
 import Foundation
 import Par
@@ -16,6 +15,7 @@ struct Tr3CacheItem {
 }
 
 /// double buffer list of cache items
+//TODO: Use new DoubleBuffer generic
 public class Tr3Cache {
 
     static var cache = [[Tr3CacheItem](), [Tr3CacheItem]()]
