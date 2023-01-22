@@ -76,7 +76,7 @@ extension Tr3 {
         }
     }
 
-    public func activate(_ visitor: Visitor = Visitor(0)) {
+    public func activate(_ visitor: Visitor) {
 
         if visitor.newVisit(id) {
             for closure in closures {
@@ -84,7 +84,7 @@ extension Tr3 {
             }
             for tr3Edge in tr3Edges.values {
                 if tr3Edge.active {
-                    tr3Edge.followEdge(self, visitor)
+                    tr3Edge.followEdge(self, visitor.via(.model))
                 }
             }
         }
