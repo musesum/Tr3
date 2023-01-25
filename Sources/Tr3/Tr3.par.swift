@@ -15,10 +15,8 @@ public let Tr3Par =
 tr3 ≈ left right* {
 
     left ≈ (path | name)
-    right ≈ (hash | time | value | child | many | copyat | array | edges | embed | comment)+
+    right ≈ (value | child | many | copyat | array | edges | embed | comment)+
 
-    hash ≈ "#" num
-    time ≈ "~" num
     child ≈ "{" comment* tr3+ "}" | "." tr3+
     many ≈ "." "{" tr3+ "}"
     array ≈ "[" thru "]"
@@ -43,7 +41,7 @@ tr3 ≈ left right* {
     }
     edges ≈ edgeOp (edgePar | exprs | edgeItem) comment* {
 
-        edgeOp ≈ '^([<←][<!@⟐⟡◇→>]+|[!@⟐⟡◇→>]+[>→])'
+        edgeOp ≈ '^([<←][<!~@⟐⟡◇→>]+|[!~@⟐⟡◇→>]+[>→])'
         edgePar ≈ "(" edgeItem+ ")" edges?
         edgeItem ≈ (edgeVal | ternary) comment*
         edgeVal ≈ (path | name) (edges+ | value)?
@@ -57,6 +55,7 @@ tr3 ≈ left right* {
             ternRadio ≈ "|" ternary
         }
     }
+
     path ≈ '^(([A-Za-z_][A-Za-z0-9_]*)?[.º˚*]+[A-Za-z0-9_.º˚*]*)'
     name ≈ '^([A-Za-z_][A-Za-z0-9_]*)'
     quote ≈ '^\"([^\"]*)\"'
@@ -65,4 +64,5 @@ tr3 ≈ left right* {
     compare ≈ '^[<>!=][=]?'
     embed ≈ '^[{][{](?s)(.*?)[}][}]'
 }
+
 """#

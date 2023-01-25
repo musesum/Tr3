@@ -5,8 +5,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/musesum/MuSkyTr3.git",
       "state" : {
-        "revision" : "b8eeb0e41199d8c9a269d2981cfd65f081640989",
-        "version" : "0.3.10"
+        "revision" : "b89367d68a180988f54d47d10adcacf9cb93fa9d",
+        "version" : "0.3.230108"
       }
     },
     {
@@ -14,8 +14,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/musesum/Par.git",
       "state" : {
-        "revision" : "539f17842a60d55c223c996049fd24a0923d24ac",
-        "version" : "0.3.230103"
+        "revision" : "1f8b01bc5b5164cb11e3e0b2f66bb021f21ffce6",
+        "version" : "0.3.230122"
       }
     },
     {

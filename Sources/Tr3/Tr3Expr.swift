@@ -11,12 +11,12 @@ public class Tr3Expr {
     var op = Tr3ExprOp.none
     var val: Any?
     
-    init(op _op : String)       { op = Tr3ExprOp(_op) }
-    init(name   : String)       { op = .name   ; val = name }
-    init(path   : String)       { op = .path   ; val = path }
-    init(quote  : String)       { op = .quote  ; val = quote }
-    init(from   : Tr3Expr)      { op = from.op ; val = from.val }
-    init(scalar : Tr3ValScalar) { op = .scalar ; val = scalar }
+    init(op     : String)       { self.op = Tr3ExprOp(op) }
+    init(name   : String)       { self.op = .name   ; val = name }
+    init(path   : String)       { self.op = .path   ; val = path }
+    init(quote  : String)       { self.op = .quote  ; val = quote }
+    init(from   : Tr3Expr)      { self.op = from.op ; val = from.val }
+    init(scalar : Tr3ValScalar) { self.op = .scalar ; val = scalar }
 
     func script(_ scriptFlags: Tr3ScriptFlags) -> String {
         
@@ -33,7 +33,7 @@ public class Tr3Expr {
             case .comma: return op.rawValue
             default : break
         }
-        return scriptFlags.contains(.now) ? "" : op.rawValue
+        return scriptFlags.now ? "" : op.rawValue
         
     }
 

@@ -5,7 +5,7 @@
 //  License: Apache 2.0 - see License file
 
 import Foundation
-
+import Par // Visitor
 
 public class Tr3ValEmbed: Tr3Val {
 
@@ -24,6 +24,7 @@ public class Tr3ValEmbed: Tr3Val {
     }
 
     public override func setVal(_ any: Any?,
+                                _ visitor: Visitor,
                                 _ options: Tr3SetOptions? = nil) -> Bool {
         
         if let v = any as? Tr3ValEmbed {

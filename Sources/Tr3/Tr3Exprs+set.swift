@@ -4,12 +4,15 @@
 //
 
 import Foundation
+import Par
 
 extension Tr3Exprs { // + set
 
-    func setDouble(_ v: Double) -> Bool {
+    func setDouble(_ v: Double,
+                   _ visitor: Visitor) -> Bool {
+
         if let n = nameAny["val"] as? Tr3ValScalar {
-            _ = n.setVal(v)
+            _ = n.setVal(v, visitor)
             n.addFlag(.now)
         }
         else {
@@ -18,7 +21,9 @@ extension Tr3Exprs { // + set
         return true
     }
 
-    func setPoint(_ p: CGPoint) -> Bool {
+    func setPoint(_ p: CGPoint,
+                  _ visitor: Visitor) -> Bool {
+
         if exprs.isEmpty {
             // create a new expr list
             addPoint(p)
@@ -28,7 +33,7 @@ extension Tr3Exprs { // + set
         copy.tr3 = nil
         copy.injectNameNum("x", Double(p.x))
         copy.injectNameNum("y", Double(p.y))
-        return evalExprs(copy)
+        return evalExprs(copy, visitor)
     }
 
 
@@ -55,7 +60,8 @@ extension Tr3Exprs { // + set
     ///
     ///  -note: failed conditional will abort all setters and should abort activate edges
     ///
-    func evalExprs(_ frExprs: Tr3Exprs? = nil) -> Bool {
+    func evalExprs(_ frExprs: Tr3Exprs?,
+                   _ visitor: Visitor) -> Bool {
 
         var mySetters = ExprSetters()
         var toVal: Any?
@@ -67,7 +73,7 @@ extension Tr3Exprs { // + set
 
             if i==exprs.count {
                 endParameter()
-                setSetters(mySetters)
+                setSetters(mySetters, visitor)
                 return true
             }
             let expr = exprs[i]
@@ -133,13 +139,17 @@ extension Tr3Exprs { // + set
     }
 
     ///execute all deferrred setters
-    func setSetters(_ mySetters: ExprSetters) {
+    func setSetters(_ mySetters: ExprSetters,
+                    _ visitor: Visitor) {
+
+        if !visitor.newVisit(id) { return }
+        
         for (name,val) in mySetters {
             switch val {
                 case let val as Tr3ValScalar:
                     if let toVal = nameAny[name] as? Tr3Val {
                         /// `x` in `a(x 1) << b`
-                        _ = toVal.setVal(val)
+                        _ = toVal.setVal(val, visitor)
                     } else {
                         /// `x` in `a(x) << b`
                         nameAny[name] = val.copy()
@@ -152,7 +162,7 @@ extension Tr3Exprs { // + set
                     if let toVal = nameAny[name] as? Tr3Val {
                         if !val.isEmpty {
                             /// `x` in `a(x in 2…4) << b, `b(x 3)`
-                            _ = toVal.setVal(val)
+                            _ = toVal.setVal(val, visitor)
                         }
                     }
                 default : break

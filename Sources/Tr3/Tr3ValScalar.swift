@@ -6,26 +6,21 @@
 
 import QuartzCore
 import Foundation
+import Par // visitor
+import MuTime // NextFrame
 
-extension Formatter {
-    static let number = NumberFormatter()
-}
-public extension FloatingPoint {
-    func digits(_ range: ClosedRange<Int>) -> String {
-        Formatter.number.roundingMode = NumberFormatter.RoundingMode.halfEven
-        Formatter.number.minimumFractionDigits = range.lowerBound
-        Formatter.number.maximumFractionDigits = range.upperBound
-        return Formatter.number.string(for:  self) ?? ""
-    }
-}
 public class Tr3ValScalar: Tr3Val {
 
     // default scalar value is (0…1 = 1)
 
-    public var min  = Double(0) // minimum value; 0 in 0…3
-    public var max  = Double(1) // maximum value; 3 in 0…3
-    public var dflt = Double(0) // default value; 1 in 0…3=1
-    public var now  = Double(0) // current value; 2 in 0…3=1:2
+    public var now = Double(0) // current value; 2 in 0…3=1:2
+    var next = Double(0) // target value
+    var anim = TimeInterval.zero
+    var steps = TimeInterval.zero
+
+    var min  = Double(0) // minimum value; 0 in 0…3
+    var max  = Double(1) // maximum value; 3 in 0…3
+    var dflt = Double(0) // default value; 1 in 0…3=1
 
     override init(_ tr3: Tr3? = nil) {
         super.init(tr3)
@@ -47,10 +42,7 @@ public class Tr3ValScalar: Tr3Val {
         dflt = scalar.dflt
         now  = scalar.now
     }
-    override func copy() -> Tr3Val {
-        let newTr3ValScalar = Tr3ValScalar(with: self)
-        return newTr3ValScalar
-    }
+   
 
     public func normalized() -> Double {
         if valFlags.contains([.min,.max]) {
@@ -62,69 +54,35 @@ public class Tr3ValScalar: Tr3Val {
             return now
         }
     }
-    func parseNum(_ n: Double) {
+    public func range() -> ClosedRange<Double> {
+        return min...max
+    }
 
-        if valFlags.contains(.thru) {
-            if valFlags.contains(.max) {
-                now = n
-            } else if valFlags.contains(.min) {
-                valFlags.insert(.max)
-                max = n
-            } else {
-                valFlags.insert(.min)
-                min = n
-            }
-        } else if valFlags.contains(.modu) {
-            if valFlags.contains(.max) {
-                now = n
-            } else {
-                valFlags.insert(.max)
-                max = n
-            }
-        } else {
-            valFlags.insert(.lit)
-            dflt = n
-            now = n
-        }
-    }
-    func parseDflt(_ n: Double) {
-        if !n.isNaN {
-            valFlags.insert(.dflt)
-            dflt = n
-            now = n
-        }
-    }
-    func parseNow(_ n: Double) {
-        if !n.isNaN {
-            valFlags.insert(.now)
-            now = n
-        }
-    }
-    func setNow() { // was setDefault
+    func setNow() { // was setDefault //???
 
-        if !valFlags.contains(.now) {
-             setDefault() //??
+        if !valFlags.now {
+             setDefault()
         }
     }
+    func setAnim(_ val: Double) {
+        valFlags.insert(.anim)
+        anim = val
+    }
+
     func setDefault() { // was setDefault
 
-        if valFlags.contains(.dflt) {
-            now = dflt
-        } else if valFlags.contains(.min), now < min {
-            now = min
-        } else if valFlags.contains(.max), now > max {
-            now = max
-        } else if valFlags.contains(.modu) {
-            now = 0
-        }
+        if      valFlags.dflt           { now = dflt }
+        else if valFlags.min, now < min { now = min  }
+        else if valFlags.max, now > max { now = max  }
+        else if valFlags.modu           { now = 0    }
     }
     static func |= (lhs: Tr3ValScalar, rhs: Tr3ValScalar) {
         
         let mergeFlags = lhs.valFlags.rawValue |  rhs.valFlags.rawValue
         lhs.valFlags = Tr3ValFlags(rawValue: mergeFlags)
-        if rhs.valFlags.contains(.min) { lhs.min = rhs.min }
-        if rhs.valFlags.contains(.max) { lhs.max = rhs.max }
-        if rhs.valFlags.contains(.now) { lhs.now = rhs.now }
+        if rhs.valFlags.min { lhs.min = rhs.min }
+        if rhs.valFlags.max { lhs.max = rhs.max }
+        if rhs.valFlags.now { lhs.now = rhs.now }
     }
 
     public static func == (lhs: Tr3ValScalar,
@@ -142,15 +100,73 @@ public class Tr3ValScalar: Tr3Val {
 
     public func inRange(from: Double) -> Bool {
 
-        if valFlags.contains(.modu), from > max { return false }
-        if valFlags.contains(.min),  from < min { return false }
-        if valFlags.contains(.max),  from > max { return false }
+        if valFlags.modu, from > max { return false }
+        if valFlags.min , from < min { return false }
+        if valFlags.max , from > max { return false }
         return true
     }
 
+    public override func printVal() -> String {
+        return String(now)
+    }
+
+    public override func scriptVal(_ scriptFlags: Tr3ScriptFlags) -> String {
+
+        if scriptFlags.delta {
+            if !hasDelta() {
+                return ""
+            }
+            print("*** \(tr3?.name ?? "") [\(scriptFlags.description)].[\(valFlags.description)] : \(now)") //??
+        }
+
+        var script = scriptFlags.parens ? "(" : ""
+        if valFlags.rawValue == 0   { return "" }
+
+        if scriptFlags.def {
+            if valFlags.min  { script += min.digits(0...6) }
+            if valFlags.thru { script += "…" /* option+`;` */}
+            if valFlags.modu { script += "%" }
+            if valFlags.max  { script += max.digits(0...6) }
+            if valFlags.dflt { script += "=" + dflt.digits(0...6) }
+            if valFlags.lit  { script += now.digits(0...6) }
+            if scriptFlags.now {
+                if valFlags.lit, now == dflt {
+                    /// skip as `dflt` will set `now` anyway
+                 } else {
+                    script += ":" + now.digits(0...6)
+                }
+            }
+        } else if scriptFlags.now {
+            if valFlags.lit, now == dflt {
+                script += now.digits(0...6)
+            } else {
+                script += ":" + now.digits(0...6)
+            }
+        } else if valFlags.lit {
+            script += now.digits(0...6)
+        }
+        script += scriptFlags.parens ? ")" : ""
+        return script
+    }
+    
+    override public func hasDelta() -> Bool {
+        if valFlags.now {
+            if valFlags.dflt {
+                if now != dflt { return true }
+            } else {
+                return true
+            }
+        }
+        return false
+    }
+
+    // MARK: - set
 
     public override func setVal(_ val: Any?,
+                                _ visitor: Visitor,
                                 _ options: Tr3SetOptions? = nil) -> Bool {
+
+        if visitor.wasHere(tr3?.id ?? id) { return false }
 
         if let val = val {
             switch val {
@@ -161,99 +177,77 @@ public class Tr3ValScalar: Tr3Val {
                 case let v as Int          : setNumWithFlag(Double(v))
                 default: print("🚫 setVal unknown type for: from")
             }
+            animateNowToNext()
         }
+
         return true
-        
+
+        func animateNowToNext() {
+            if valFlags.anim {
+                steps = NextFrame.shared.fps * anim
+                NextFrame.shared.addFrameDelegate(self.id, self)
+            } else {
+                now = next
+            }
+        }
+
         func setFrom(_ v: Tr3ValScalar) {
 
-            if   valFlags.contains(.thru),
-                 v.valFlags.contains(.thru) {
+            if   valFlags.thru,
+                 v.valFlags.thru {
 
                 let toMax   = max
                 let frMax   = v.max
                 let toRange = toMax -   min
                 let frRange = frMax - v.min
-                now = (v.now - v.min) * (toRange / frRange) + min
+                next = (v.now - v.min) * (toRange / frRange) + min
                 valFlags.insert(.now)
             }
-            else if valFlags.contains(.modu) {
+            else if valFlags.modu {
 
                 min = 0
                 max = Double.maximum(1, max)
-                now = fmod(v.now, max)
+                next = fmod(v.now, max)
             }
             else {
                 setNumWithFlag(v.now)
             }
         }
-        
+
         func setNumWithFlag(_ n: Double) {
-            now = n
+            next = n
             valFlags.insert(.now)
             setInRange()
         }
+        
         func setInRange() {
 
-            if valFlags.contains(.modu) { now = fmod(now, max) }
-            if valFlags.contains(.min), now < min { now = min }
-            if valFlags.contains(.max), now > max { now = max }
+            if valFlags.modu { next = fmod(next, max) }
+            if valFlags.min , next < min { next = min }
+            if valFlags.max , next > max { next = max }
         }
     }
+
     public override func getVal() -> Any {
         return now
     }
 
-    public override func printVal() -> String {
-        return String(now)
+    public override func copy() -> Tr3Val {
+        let newTr3ValScalar = Tr3ValScalar(with: self)
+        return newTr3ValScalar
+    }
+}
+
+extension Tr3ValScalar: NextFrameDelegate {
+
+    public func nextFrame() -> Bool {
+        let delta = (next - now)
+        if delta == 0 { steps = 0 ; return false }
+        now += (steps <= 1 ? delta : delta / steps)
+        steps = Swift.max(0.0, steps - 1)
+        print("􁒖 \(tr3?.name ?? "??") \(now.digits(3...3)) ~> \(next.digits(3...3)) steps: \(steps.digits(0...1))")
+        tr3?.activate(Visitor(tr3?.id ?? self.id, from: .animate))
+        return steps > 0
     }
 
-    public override func scriptVal(_ scriptFlags: Tr3ScriptFlags) -> String {
-
-        if scriptFlags.contains(.delta) {
-            if !hasDelta() {
-                return ""
-            }
-            print("*** \(tr3?.name ?? "") [\(scriptFlags.description)].[\(valFlags.description)] : \(now)") //??
-        }
-
-        var script = scriptFlags.contains(.parens) ? "(" : ""
-        if valFlags.rawValue == 0   { return "" }
-
-        if scriptFlags.contains(.def) {
-            if valFlags.contains(.min)  { script += min.digits(0...6) }
-            if valFlags.contains(.thru) { script += "…" /* option+`;` */}
-            if valFlags.contains(.modu) { script += "%" }
-            if valFlags.contains(.max)  { script += max.digits(0...6) }
-            if valFlags.contains(.dflt) { script += "=" + dflt.digits(0...6) }
-            if valFlags.contains(.lit)  { script += now.digits(0...6) }
-            if scriptFlags.contains(.now) {
-                if valFlags.contains(.lit), now == dflt {
-                    /// skip as `dflt` will set `now` anyway
-                 } else {
-                    script += ":" + now.digits(0...6)
-                }
-            }
-        } else if scriptFlags.contains(.now) {
-            if valFlags.contains(.lit), now == dflt {
-                script += now.digits(0...6)
-            } else {
-                script += ":" + now.digits(0...6)
-            }
-        } else if valFlags.contains(.lit) {
-            script += now.digits(0...6)
-        }
-        script += scriptFlags.contains(.parens) ? ")" : ""
-        return script
-    }
-    
-    override public func hasDelta() -> Bool {
-        if valFlags.contains(.now) {
-            if valFlags.contains(.dflt) {
-                if now != dflt { return true }
-            } else {
-                return true
-            }
-        }
-        return false
-    }
 }

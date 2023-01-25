@@ -17,7 +17,23 @@ extension Tr3Edge {
         let rightToLeft = !leftToRight       // a << b
         let destTr3 = leftToRight ? rightTr3 : leftTr3
 
-        if edgeFlags.contains(.ternIf) {
+        if edgeFlags.animate {
+
+            if  (leftToRight && edgeFlags.output ||
+                 rightToLeft && edgeFlags.input) {
+
+                let destPath = destTr3.parentPath(9)
+                let fromPath = fromTr3.parentPath(9)
+                let fromVal  = "(\(fromTr3.val?.scriptVal(.now) ?? "??"))"
+
+                if leftToRight {
+                    print("􁒖\(fromPath)\(fromVal) ~> \(destPath)")
+                } else {
+                    print("􁒖\(destPath) <~ \(fromPath)\(fromVal)")
+                }
+                destTr3.setAnimation(fromTr3)
+            }
+        } else if edgeFlags.ternIf {
 
             if leftToRight, let ternVal = rightTr3.findEdgeTern(self) {
 
@@ -34,8 +50,8 @@ extension Tr3Edge {
         }
         else {
 
-            if  leftToRight && edgeFlags.contains(.output) ||
-                rightToLeft && edgeFlags.contains(.input) {
+            if  leftToRight && edgeFlags.output ||
+                rightToLeft && edgeFlags.input {
 
                 let val = assignNameVals()
                 if  destTr3.setEdgeVal(val, visitor) {

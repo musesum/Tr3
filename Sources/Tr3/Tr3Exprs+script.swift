@@ -36,7 +36,7 @@ extension Tr3Exprs {
     
     public func scriptExprs(_ scriptFlags: Tr3ScriptFlags) -> String {
         var script = ""
-        if scriptFlags.contains(.now)  {
+        if scriptFlags.now  {
             
             var lastNamePath = ""
             var assigned = false

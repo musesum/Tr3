@@ -117,7 +117,7 @@ extension Tr3 {
         else if prefix == "", let parent = parent {
             return parent.findPathTr3s(wildcard + suffix, deeperFlags)
         }
-        else if findFlags.contains(.children) {
+        else if findFlags.children {
             for child in children {
                 if child.name == prefix, child.type == .name {
                     return child.findPathTr3s(wildcard + suffix, deeperFlags)
@@ -125,7 +125,7 @@ extension Tr3 {
             }
         }
         // still no match, so maybe search parents
-        if findFlags.contains(.parents) {
+        if findFlags.parents {
             if let parent {
                 return parent.findAnchor(path, findFlags)
             }
@@ -141,7 +141,7 @@ extension Tr3 {
             return self }
         if name == prefix {
             return self }
-        if findFlags.contains(.children) {
+        if findFlags.children {
             for child in children {
                 if child.type == .remove { continue }
                 if child.type == .copyat { continue }
@@ -150,7 +150,7 @@ extension Tr3 {
             }
         }
         // still no match, so maybe search parents
-        if findFlags.contains(.parents),
+        if findFlags.parents,
             let parent = parent {
             return parent.findPrefixTr3(prefix, findFlags)
         }
@@ -217,7 +217,7 @@ extension Tr3 {
         // still no match, so maybe make a new tr3
         // make a.b, c.d in in `a.b { c.d }`
         // make e.f but not g.h in `e.f <- g.h`
-        if findFlags.contains(.makePath) {
+        if findFlags.makePath {
 
             if !prefix.isEmpty {
                 // cannot make b in `a˚b` or `a.*.b`

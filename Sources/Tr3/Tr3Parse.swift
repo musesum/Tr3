@@ -29,11 +29,9 @@ public class Tr3Parse {
             func dispatchFunc(_ fn: @escaping Tr3PriorParItem, from keywords: [String]) {
                 for keyword in keywords { tr3Keywords[keyword] = fn }
             }
-            dispatchFunc(parseLeft, from: ["name", "path"])
+            dispatchFunc(parseNamePath, from: ["name", "path"])
 
             dispatchFunc(parseComment, from: ["comment"])
-            dispatchFunc(parseHash, from: ["hash"])
-            dispatchFunc(parseTime, from: ["time"])
 
             dispatchFunc(parseTree, from: ["child", "many", "copyat"])
 
@@ -65,10 +63,10 @@ public class Tr3Parse {
     ///
     ///      a { b << (c ? d : e) } f.g(x y)
     ///
-    func parseLeft(_ tr3: Tr3,
-                   _ prior: String,
-                   _ par: ParItem,
-                   _ level: Int) -> Tr3 {
+    func parseNamePath(_ tr3: Tr3,
+                       _ prior: String,
+                       _ par: ParItem,
+                       _ level: Int) -> Tr3 {
 
         switch prior {
 
@@ -100,36 +98,6 @@ public class Tr3Parse {
                     case "path": return tr3.addChild(par, .path)
                     default: break
                 }
-        }
-        return tr3
-    }
-
-
-
-    /// Dispatched: Parse a hash value.
-    /// Usually at runtime for synchronizing values v
-    ///
-    func parseHash(_ tr3: Tr3,
-                   _ prior: String,
-                   _ par: ParItem,
-                   _ level: Int) -> Tr3 {
-
-        if par.node?.pattern == "hash" {
-            tr3.parseHash(par.getFirstDouble())
-        }
-        return tr3
-    }
-    /// Dispatched: Parse a time of change.
-    /// Usually at runtime for recording and playback values.
-    /// Or for menu tree to bookmark most rececently used. 
-    ///
-    func parseTime(_ tr3: Tr3,
-                   _ prior: String,
-                   _ par: ParItem,
-                   _ level: Int) -> Tr3 {
-
-        if par.node?.pattern == "time" {
-            tr3.parseTime(par.getFirstDouble())
         }
         return tr3
     }
@@ -466,7 +434,7 @@ public class Tr3Parse {
     ///  Dispatch tr3Parse closure based on `pattern`
     ///
     /// find corresponding tr3Parse dispatch to either
-    ///     - parseLeft
+    ///     - parseNamePath
     ///     - parseValue
     ///     - parseEdge
     ///
@@ -544,7 +512,7 @@ public class Tr3Parse {
            let nowVal = now.val,
            let tr3Val = tr3.val {
 
-            _ = tr3Val.setVal(nowVal)
+            _ = tr3Val.setVal(nowVal, Visitor(0))
         }
         for child in now.children {
             mergeNow(child, with: root)

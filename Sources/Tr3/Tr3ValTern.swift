@@ -184,8 +184,8 @@ public class Tr3ValTern: Tr3ValPath {
 
     public override func scriptVal(_ scriptFlags: Tr3ScriptFlags) -> String {
 
-        var script = scriptFlags.contains(.parens) ? "(" : ""
-        if scriptFlags.contains(.expand) {
+        var script = scriptFlags.parens ? "(" : ""
+        if scriptFlags.expand {
             script += Tr3.scriptTr3s(pathTr3s)
             script.spacePlus(compareOp)
             script.spacePlus(Tr3.scriptTr3s(compareRight?.pathTr3s ?? []))
@@ -206,7 +206,7 @@ public class Tr3ValTern: Tr3ValPath {
             script.spacePlus("|")
             script.spacePlus(radioNext.scriptVal([.def, .now]))
         }
-        script += scriptFlags.contains(.parens) ? ")" : ""
+        script += scriptFlags.parens ? ")" : ""
         return script
     }
 }

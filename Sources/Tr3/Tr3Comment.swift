@@ -75,7 +75,7 @@ public class Tr3Comments {
     public func getComments(_ getType: Tr3CommentType,
                             _ scriptFlags: Tr3ScriptFlags) -> String {
         var result = ""
-        if scriptFlags.contains(.comment), have(type: getType) {
+        if scriptFlags.comment, have(type: getType) {
             for comment in comments {
                 if comment.type == getType {
                     switch comment.text.prefix(1) {

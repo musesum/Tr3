@@ -28,7 +28,7 @@ extension Tr3 {
         var script = name
         script.spacePlus(val?.scriptVal(scriptFlags))
         
-        if scriptFlags.contains(.compact) {
+        if scriptFlags.compact {
             switch children.count {
                 case 0: script.spacePlus(comments.getComments(.child, scriptFlags))
                 case 1: scriptAddOnlyChild()
@@ -175,7 +175,7 @@ extension Tr3 {
 
             case 0: return ""
             case 1:
-                if scriptFlags.contains(.compact) {
+                if scriptFlags.compact {
                     return scriptCompactChild()
                 } else {
                     return scriptManyChildren()
@@ -204,7 +204,7 @@ extension Tr3 {
     }
 
     func showChildren(_ scriptFlags: Tr3ScriptFlags) -> [Tr3] {
-        if scriptFlags.contains(.delta) {
+        if scriptFlags.delta {
             if changes == 0 { return [] }
             var result = [Tr3]()
             for child in children {
@@ -238,7 +238,7 @@ extension Tr3 {
     }
     public func scriptRoot(_ scriptFlags: Tr3ScriptFlags = []) -> String {
         var script = ""
-        if scriptFlags.contains(.delta) {
+        if scriptFlags.delta {
             changes = countDeltas()
             for child in children {
                 if child.changes > 0 {
@@ -259,15 +259,15 @@ extension Tr3 {
     ///
     public func scriptTr3(_ scriptFlags: Tr3ScriptFlags) -> String {
 
-        if scriptFlags.contains(.delta) && changes == 0 { return "" }
+        if scriptFlags.delta && changes == 0 { return "" }
 
         var script = name
-        if scriptFlags.contains(.copyAt) {
+        if scriptFlags.copyAt {
             script.spacePlus(getCopiedFrom())
         }
         let scriptVal = val?.scriptVal(scriptFlags) ?? ""
         script += scriptVal
-        if scriptFlags.contains(.edge) {
+        if scriptFlags.edge {
             script += scriptEdgeDefs(scriptFlags)
         }
         if children.isEmpty {

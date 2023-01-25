@@ -92,52 +92,55 @@ public class Tr3Exprs: Tr3Val {
         return nums
     }
     // MARK: - Set
-    public override func setVal(_ any: Any?,
+    public override func setVal(_ any: Any?, //???
+                                _ visitor: Visitor,
                                 _ opts: Tr3SetOptions? = nil) -> Bool {
-
+        
         if let any {
             switch any {
-                case let v as Float:    return setDouble(Double(v))
-                case let v as CGFloat:  return setDouble(Double(v))
-                case let v as Double:   return setDouble(Double(v))
-                case let v as CGPoint:  return setPoint(v)
-                case let v as Tr3Exprs: _ = v.evalExprs(); return evalExprs(v)
-                case let (n,v) as (String,Float): return setNamed(n, Double(v))
-                case let (n,v) as (String,Double): return setNamed(n, Double(v))
-                case let (n,v) as (String,CGFloat): return setNamed(n, Double(v))
+                case let v as Float:    return setDouble(Double(v), visitor)
+                case let v as CGFloat:  return setDouble(Double(v), visitor)
+                case let v as Double:   return setDouble(Double(v), visitor)
+                case let v as CGPoint:  return setPoint(v, visitor)
+                case let v as Tr3Exprs: _ = v.evalExprs(nil,visitor); return evalExprs(v, visitor)
+                case let (n,v) as (String,Float):   return setNamed(n, Double(v), visitor)
+                case let (n,v) as (String,Double):  return setNamed(n, Double(v), visitor)
+                case let (n,v) as (String,CGFloat): return setNamed(n, Double(v), visitor)
                 default: print("🚫 mismatched setVal(\(any))")
             }
         }
         return false
     }
-    func setNows() {
-        if nameAny.count > 0 {
-            for value in nameAny.values {
-                if let scalar = value as? Tr3ValScalar {
-                    scalar.setNow()
+        func setNows() {
+            if nameAny.count > 0 {
+                for value in nameAny.values {
+                    if let scalar = value as? Tr3ValScalar {
+                        scalar.setNow()
+                    }
                 }
             }
         }
-    }
-    func setDefaults() { //??
-        if nameAny.count > 0 {
-            for value in nameAny.values {
-                if let scalar = value as? Tr3ValScalar {
-                    scalar.setDefault()
+        func setDefaults() { //??
+            if nameAny.count > 0 {
+                for value in nameAny.values {
+                    if let scalar = value as? Tr3ValScalar {
+                        scalar.setDefault()
+                    }
                 }
             }
         }
-    }
-    func setNamed(_ name: String, _ value: Double) -> Bool {
-        if let scalar = nameAny[name] as? Tr3ValScalar {
-            _ = scalar.setVal(value)
-        } else {
-            nameAny[name] = Tr3ValScalar(tr3, num: value)
-        }
-        addFlag(.now)
-        return true
-    }
+        func setNamed(_ name: String,
+                      _ value: Double,
+                      _ visitor: Visitor) -> Bool {
 
+            if let scalar = nameAny[name] as? Tr3ValScalar {
+                _ = scalar.setVal(value, visitor)
+            } else {
+                nameAny[name] = Tr3ValScalar(tr3, num: value)
+            }
+            addFlag(.now)
+            return true
+        }
     public override func printVal() -> String {
         var script = "("
         for num in nameAny.values {
@@ -149,7 +152,7 @@ public class Tr3Exprs: Tr3Val {
 
         var script = ""
         script = scriptExprs(scriptFlags)
-        return script.isEmpty ? "" : scriptFlags.contains(.parens) ? "(\(script))" : script
+        return script.isEmpty ? "" : scriptFlags.parens ? "(\(script))" : script
     }
    override public func hasDelta() -> Bool {
         for val in nameAny.values {

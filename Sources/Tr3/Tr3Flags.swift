@@ -14,6 +14,10 @@ public struct Tr3FindFlags: OptionSet {
 
     public let rawValue: Int
     public init(rawValue: Int) { self.rawValue = rawValue }
+
+    var parents  : Bool { contains(.parents )}
+    var children : Bool { contains(.children)}
+    var makePath : Bool { contains(.makePath)}
 }
 
 public struct Tr3SetOptions: OptionSet {
@@ -25,4 +29,10 @@ public struct Tr3SetOptions: OptionSet {
 
     public let rawValue: Int
     public init(rawValue: Int) { self.rawValue = rawValue }
+
+    var activate : Bool { contains(.activate)}
+    var sneak    : Bool { contains(.sneak   )}
+    var cache    : Bool { contains(.cache   )}
+    var changed  : Bool { contains(.changed )}
+
 }

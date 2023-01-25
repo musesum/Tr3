@@ -21,6 +21,7 @@ public struct Tr3ValFlags: OptionSet {
     public static let dflt = Tr3ValFlags(rawValue: 1 <<  5) // = n default value
     public static let now  = Tr3ValFlags(rawValue: 1 <<  6) // current value
     public static let lit  = Tr3ValFlags(rawValue: 1 <<  7) // literal value
+    public static let anim = Tr3ValFlags(rawValue: 1 <<  8) // animated
 
     func hasDef() -> Bool {
         let defset: Tr3ValFlags = [.thru, .modu, .min, .max, .dflt]
@@ -38,6 +39,15 @@ public struct Tr3ValFlags: OptionSet {
 
     public let rawValue: Int
     public init(rawValue: Int) { self.rawValue = rawValue }
+
+    var thru : Bool { contains(.thru) }
+    var modu : Bool { contains(.modu) }
+    var min  : Bool { contains(.min ) }
+    var max  : Bool { contains(.max ) }
+    var dflt : Bool { contains(.dflt) }
+    var now  : Bool { contains(.now ) }
+    var lit  : Bool { contains(.lit ) }
+    var anim : Bool { contains(.anim) }
 }
 extension Tr3ValFlags: CustomStringConvertible {
 
@@ -50,6 +60,7 @@ extension Tr3ValFlags: CustomStringConvertible {
         (.now , "now" ),
         (.lit , "lit" ),
     ]
+
 
 
     public var description: String {

@@ -4,6 +4,7 @@
 
 import Foundation
 import CoreGraphics
+import MuTime
 import Par
 
 //protocol Tr3ValScriptProtocol {
@@ -14,7 +15,7 @@ import Par
 protocol Tr3ValProtocal {
 
     func copy() -> Tr3Val
-    func setVal(_ from: Any?, _ option: Tr3SetOptions?)
+    func setVal(_ from: Any?, _ option: Tr3SetOptions?) -> Bool
     func getVal() -> Any
 }
 
@@ -44,22 +45,9 @@ open class Tr3Val: Comparable {
         return true
     }
 
-    func copy() -> Tr3Val {
-        return Tr3Val(with: self)
-    }
+
     func addFlag(_ flag_: Tr3ValFlags) {
         valFlags.insert(flag_)
-    }
-    
-    public func setVal(_ from: Any?,
-                       _ option: Tr3SetOptions? = nil) -> Bool {
-
-        assertionFailure("🚫 setVal needs override")
-        return false
-    }
-    
-    public func getVal() -> Any {
-        assertionFailure("🚫 getVal needs override")
     }
 
     // print current state "2" in `a:(0…9=2)`
@@ -74,4 +62,21 @@ open class Tr3Val: Comparable {
     public func hasDelta() -> Bool {
         return false
     }
+
+
+    func copy() -> Tr3Val {
+        return Tr3Val(with: self)
+    }
+    public func setVal(_ from: Any?,
+                       _ visitor: Visitor,
+                       _ option: Tr3SetOptions? = nil) -> Bool {
+
+        assertionFailure("🚫 setVal needs override")
+        return false
+    }
+
+    public func getVal() -> Any {
+        assertionFailure("🚫 getVal needs override")
+    }
+
 }

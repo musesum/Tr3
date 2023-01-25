@@ -421,14 +421,6 @@ extension Tr3 {
     }
 
     public func bindDefaults() {
-        func bindVal(_ val: Tr3Val?) {
-            guard let val else { return }
-            switch val {
-                case let t as Tr3Exprs:  t.setDefaults()
-                case let s as Tr3ValScalar: s.setDefault()
-                default: break
-            }
-        }
         bindVal(val)
         for edge in tr3Edges {
             bindVal(edge.value.defVal)
@@ -436,22 +428,32 @@ extension Tr3 {
         for child in children {
             child.bindDefaults()
         }
-    }
-    public func bindNows() {
         func bindVal(_ val: Tr3Val?) {
-            guard let val else { return }
-            switch val {
-                case let t as Tr3Exprs:  t.setNows()
-                case let s as Tr3ValScalar: s.setNow()
-                default: break
+            if let val {
+                switch val {
+                    case let t as Tr3Exprs:  t.setDefaults()
+                    case let s as Tr3ValScalar: s.setDefault()
+                    default: break
+                }
             }
         }
+    }
+    public func bindNows() {
         bindVal(val)
         for edge in tr3Edges {
             bindVal(edge.value.defVal)
         }
         for child in children {
             child.bindNows()
+        }
+        func bindVal(_ val: Tr3Val?) {
+            if let val {
+                switch val {
+                    case let t as Tr3Exprs:  t.setNows()
+                    case let s as Tr3ValScalar: s.setNow()
+                    default: break
+                }
+            }
         }
     }
     /// bind root of tree and its subtree graph

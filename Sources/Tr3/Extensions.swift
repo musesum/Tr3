@@ -1,9 +1,18 @@
-//
-//  File.swift
-//  
-//
 //  Created by warren on 3/25/21.
-//
+
+import Foundation
+
+extension Formatter {
+    static let number = NumberFormatter()
+}
+public extension FloatingPoint {
+    func digits(_ range: ClosedRange<Int>) -> String {
+        Formatter.number.roundingMode = NumberFormatter.RoundingMode.halfEven
+        Formatter.number.minimumFractionDigits = range.lowerBound
+        Formatter.number.maximumFractionDigits = range.upperBound
+        return Formatter.number.string(for:  self) ?? ""
+    }
+}
 
 
 extension String {

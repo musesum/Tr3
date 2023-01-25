@@ -20,9 +20,8 @@ public struct Tr3ScriptFlags: OptionSet {
     public static let expand  = Tr3ScriptFlags(rawValue: 1 <<  5) ///   32 expand edgeDef to full list edges
     public static let comment = Tr3ScriptFlags(rawValue: 1 <<  6) ///   64 commas (`,`) and `// comment`
     public static let delta   = Tr3ScriptFlags(rawValue: 1 <<  7) ///  128 only values where `.now != .dflt`
-    public static let copyAt  = Tr3ScriptFlags(rawValue: 1 <<  8) ///  256 `@ output` in `input @ output`
-    public static let hash    = Tr3ScriptFlags(rawValue: 1 <<  9) ///  512 `#987654321` in `a#987654321~1669619699.1234(x 0…3=1)`
-    public static let time    = Tr3ScriptFlags(rawValue: 1 << 10) /// 1024 `~1669619699.1234` in `a~1669619699.123456(x 0…3=1)`
+    public static let copyAt  = Tr3ScriptFlags(rawValue: 1 <<  8) ///  256 `@ output` in `input @ output
+                                                                  ///
     public init(rawValue: Int = 0) { self.rawValue = rawValue }
 }
 
@@ -45,5 +44,21 @@ extension Tr3ScriptFlags: CustomStringConvertible {
         let joined = result.joined(separator: ", ")
         return "\(joined)"
     }
+
+
+
+    var def     : Bool { contains(.def    ) }
+    var now     : Bool { contains(.now    ) }
+    var edge    : Bool { contains(.edge   ) }
+    var compact : Bool { contains(.compact) }
+    var parens  : Bool { contains(.parens ) }
+    var expand  : Bool { contains(.expand ) }
+    var comment : Bool { contains(.comment) }
+    var delta   : Bool { contains(.delta  ) }
+    var copyAt  : Bool { contains(.copyAt ) }
+
+
+
+
 }
 

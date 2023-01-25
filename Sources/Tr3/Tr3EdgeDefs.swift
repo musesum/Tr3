@@ -47,10 +47,10 @@ public class Tr3EdgeDefs {
         
         for mergeDef in merge.edgeDefs {
             if isUnique(mergeDef) {
-                if mergeDef.edgeFlags.contains(.solo) {
+                if mergeDef.edgeFlags.solo {
                     edgeDefs = merge.edgeDefs
                 }
-                else if edgeDefs.first?.edgeFlags.contains(.solo) ?? false {
+                else if edgeDefs.first?.edgeFlags.solo ?? false {
                     // keep solo from previous definition
                 }
                 else {

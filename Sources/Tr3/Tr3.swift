@@ -81,11 +81,16 @@ public class Tr3: Hashable {
             children.append(newChild)
         }
         passthrough = from.passthrough
-        val         = from.val?.copy() ?? nil
-        edgeDefs    = from.edgeDefs.copy()
-        comments    = from.comments
+        edgeDefs = from.edgeDefs.copy()
+        comments = from.comments
+        if let fromVal = from.val {
+            val = Tr3Val(with: fromVal)
+        }
     }
-    public convenience init(with val_: Tr3Val) { self.init() ; val = val_.copy() }
+    public convenience init(with: Tr3Val) {
+        self.init()
+        val = Tr3Val(with: with)
+    }
 
     public func makeTr3From(parItem: ParItem) -> Tr3 {
 
@@ -174,15 +179,6 @@ public class Tr3: Hashable {
             return parent.getRoot()
         }
         return self
-    }
-
-    public func parseTime(_ time: Double) {
-        self.time = time
-        //TODO: Tr3Dispatch.hash(hash,time)
-    }
-    public func parseHash(_ hash: Double) {
-
-        //TODO: parse and print
     }
 
     /// all Tr3s from root share the same dispatch.

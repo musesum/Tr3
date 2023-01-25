@@ -26,9 +26,9 @@ extension Tr3EdgeDef {
             }
         }
         // begin -----------------------------
-        if edgeFlags.contains(.exclude) {
+        if edgeFlags.exclude {
             excludeEdge()
-        } else if edgeFlags.contains(.copyat) {
+        } else if edgeFlags.copyat {
             addEdge()
             connectCopyr(leftTr3, rightTr3, tr3Val)
         } else {
@@ -109,7 +109,7 @@ extension Tr3EdgeDef {
         edge.edgeFlags.insert(.ternGo)
         
         pathTr3.tr3Edges[edge.edgeKey] = edge
-        if flipFlags.contains(.input) {
+        if flipFlags.input {
             ternTr3.tr3Edges[edge.edgeKey] = edge
         }
     }

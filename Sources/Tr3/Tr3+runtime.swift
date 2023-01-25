@@ -22,7 +22,7 @@ extension Tr3 {
             setAny(any, noActivate, visitor)
         }
         // do the deferred activations, if there was one
-        if options.contains(.activate) {
+        if options.activate {
             activate(visitor)
         }
     }
@@ -35,7 +35,7 @@ extension Tr3 {
         if val is Tr3ValPath {
             val = nil
         }
-        if options.contains(.cache) {
+        if options.cache {
             Tr3Cache.add(self, any, options, visitor)
         }
         // any is a Tr3Val
@@ -46,14 +46,14 @@ extension Tr3 {
                 val = fromVal
             } else if let val {
                 // set my val to fromVal, with rescaling
-                if val.setVal(fromVal) == false {
+                if val.setVal(fromVal, visitor) == false {
                     // condition failed, so avoid activatating edges, below
                     return
                 }
             }
         } else if let val {
             // any is not a Tr3Val, so pass onto my Tr3Val if it exists
-            if val.setVal(any, options) == false {
+            if val.setVal(any, visitor, options) == false {
                 // condition failed, so avoid activatating edges, below
                 return
             }
@@ -71,7 +71,7 @@ extension Tr3 {
             }
         }
         // maybe pass along my Tr3Val to other Tr3Nodes and closures
-        if options.contains(.activate) {
+        if options.activate {
             activate(visitor)
         }
     }
@@ -83,6 +83,7 @@ extension Tr3 {
                 closure(self, visitor)
             }
             for tr3Edge in tr3Edges.values {
+                
                 if tr3Edge.active {
                     tr3Edge.followEdge(self, visitor.via(.model))
                 }
@@ -122,23 +123,23 @@ extension Tr3 {
                 case let v as Tr3Exprs:
 
                     if let fr = fromVal as? Tr3Exprs {
-                        return v.setVal(fr)
+                        return v.setVal(fr, visitor)
                     }
                 case let v as Tr3ValScalar:
 
                     if let fr = fromVal as? Tr3ValScalar {
-                        return v.setVal(fr)
+                        return v.setVal(fr, visitor)
                     }
                     else if let frExprs = fromVal as? Tr3Exprs,
                             let lastExpr = frExprs.nameAny.values.first,
                             let fr = lastExpr as? Tr3ValScalar {
 
-                        return v.setVal(fr)
+                        return v.setVal(fr, visitor)
                     }
                 case let v as Tr3ValData:
                     
                     if let fr = fromVal as? Tr3ValData {
-                        return v.setVal(fr)
+                        return v.setVal(fr, visitor)
                     }
                 default: break
             }

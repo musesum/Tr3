@@ -171,7 +171,7 @@ extension Tr3ValTern {
             left.val = right.val
         }
         else {
-            isOk = left.val?.setVal(right.val!) != nil
+            isOk = left.val?.setVal(right.val!, visitor) != nil
         }
         if act == .activate, isOk {
             left.activate(visitor)

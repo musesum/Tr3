@@ -5,6 +5,7 @@
 //  License: Apache 2.0 - see License file
 
 import Foundation
+import Par // Visitor
 
 public class Tr3ValPath: Tr3Val {
 
@@ -25,24 +26,11 @@ public class Tr3ValPath: Tr3Val {
         // copy only path definition; not edges, which are relative to Tr3's position in hierarchy
         // pathTr3s  = with.pathTr3s
     }
-    override func copy() -> Tr3ValPath {
-        let newTr3ValPath = Tr3ValPath(with: self)
-        return newTr3ValPath
-    }
+
     public static func == (lhs: Tr3ValPath, rhs: Tr3ValPath) -> Bool {
         return lhs.path == rhs.path
     }
 
-
-    public override func setVal(_ any: Any?,
-                                _ options: Tr3SetOptions? = nil) -> Bool {
-         //TODO: is ever used during runtime?
-        return true
-    }
-    
-    public override func getVal() -> Any {
-        return path
-    }
 
     public override func printVal() -> String {
 
@@ -61,7 +49,7 @@ public class Tr3ValPath: Tr3Val {
     }
     public override func scriptVal(_ scriptFlags: Tr3ScriptFlags = [.parens]) -> String {
         
-        if scriptFlags.contains(.expand) {
+        if scriptFlags.expand {
             var script = Tr3.scriptTr3s(pathTr3s)
             if script.first != "(" {
                 script = "(\(script))"
@@ -71,4 +59,21 @@ public class Tr3ValPath: Tr3Val {
             return path
         }
     }
+
+    override func copy() -> Tr3ValPath {
+        let newTr3ValPath = Tr3ValPath(with: self)
+        return newTr3ValPath
+    }
+
+    public override func setVal(_ any: Any?,
+                                _ visitor: Visitor,
+                                _ options: Tr3SetOptions? = nil) -> Bool {
+        //TODO: is ever used during runtime?
+        return true
+    }
+
+    public override func getVal() -> Any {
+        return path
+    }
+
 }
