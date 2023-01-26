@@ -24,7 +24,6 @@ public struct Tr3SetOptions: OptionSet {
 
     public static let activate = Tr3SetOptions(rawValue: 1 << 0) // trigger event
     public static let sneak    = Tr3SetOptions(rawValue: 1 << 1) // quietly set value, no trigger
-    public static let cache    = Tr3SetOptions(rawValue: 1 << 2) // cache for next frame update
     public static let changed  = Tr3SetOptions(rawValue: 1 << 3) // bang only when changed
 
     public let rawValue: Int
@@ -32,7 +31,6 @@ public struct Tr3SetOptions: OptionSet {
 
     var activate : Bool { contains(.activate)}
     var sneak    : Bool { contains(.sneak   )}
-    var cache    : Bool { contains(.cache   )}
     var changed  : Bool { contains(.changed )}
 
 }

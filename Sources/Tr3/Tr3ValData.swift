@@ -11,15 +11,13 @@ public class Tr3ValData: Tr3Val {
 
     var data: UnsafeMutablePointer<UInt8>? = nil
     var size = 0
-    var filename = ""
 
-    override init(_ tr3: Tr3?) {
-        super.init(tr3)
+    override init(_ tr3: Tr3, _ name: String) {
+        super.init(tr3, name)
     }
     init(with: Tr3ValData) {
-        super.init(with.tr3)
+        super.init(with.tr3, with.name)
         size = with.size
-        filename = with.filename
         data = with.data //TODO: allocate new memory and copy}
     }
     override func copy() -> Tr3Val {

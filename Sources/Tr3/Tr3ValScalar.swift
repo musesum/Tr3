@@ -11,8 +11,8 @@ import MuTime // NextFrame
 
 public class Tr3ValScalar: Tr3Val {
 
-    // default scalar value is (0…1 = 1)
 
+    // default scalar value is (0…1 = 1)
     public var now = Double(0) // current value; 2 in 0…3=1:2
     var next = Double(0) // target value
     var anim = TimeInterval.zero
@@ -22,12 +22,13 @@ public class Tr3ValScalar: Tr3Val {
     var max  = Double(1) // maximum value; 3 in 0…3
     var dflt = Double(0) // default value; 1 in 0…3=1
 
-    override init(_ tr3: Tr3? = nil) {
-        super.init(tr3)
+    override init(_ tr3: Tr3, _ name: String) {
+        super.init(tr3, name)
+        self.name = name
     }
 
-    init(_ tr3: Tr3? = nil, num: Double) {
-        super.init(tr3)
+    init(_ tr3: Tr3, name: String, num: Double) {
+        super.init(tr3, name)
         valFlags = .now
         self.min = fmin(num, 0.0)
         self.max = fmax(num, 1.0)
@@ -35,14 +36,13 @@ public class Tr3ValScalar: Tr3Val {
     }
 
     init (with scalar: Tr3ValScalar) {
-        super.init(scalar.tr3)
+        super.init(scalar.tr3, scalar.name)
         valFlags = scalar.valFlags // use default values
         min  = scalar.min
         max  = scalar.max
         dflt = scalar.dflt
         now  = scalar.now
     }
-   
 
     public func normalized() -> Double {
         if valFlags.contains([.min,.max]) {
@@ -50,7 +50,7 @@ public class Tr3ValScalar: Tr3Val {
             let ret = (now - min) / range
             return ret
         } else {
-            print("🚫 \(tr3?.name ?? ""): cannot normalize \(now)")
+            print("🚫 \(tr3.name): cannot normalize \(now)")
             return now
         }
     }
@@ -58,7 +58,7 @@ public class Tr3ValScalar: Tr3Val {
         return min...max
     }
 
-    func setNow() { // was setDefault //???
+    func setNow() { // was setDefault //??
 
         if !valFlags.now {
              setDefault()
@@ -116,7 +116,7 @@ public class Tr3ValScalar: Tr3Val {
             if !hasDelta() {
                 return ""
             }
-            print("*** \(tr3?.name ?? "") [\(scriptFlags.description)].[\(valFlags.description)] : \(now)") //??
+            print("*** \(tr3.name) [\(scriptFlags.description)].[\(valFlags.description)] : \(now)") //??
         }
 
         var script = scriptFlags.parens ? "(" : ""
@@ -166,9 +166,9 @@ public class Tr3ValScalar: Tr3Val {
                                 _ visitor: Visitor,
                                 _ options: Tr3SetOptions? = nil) -> Bool {
 
-        if visitor.wasHere(tr3?.id ?? id) { return false }
+        //??? if visitor.wasHere(id) { return false }
 
-        if let val = val {
+        if let val {
             switch val {
                 case let v as Tr3ValScalar : setFrom(v)
                 case let v as Double       : setNumWithFlag(v)
@@ -184,6 +184,7 @@ public class Tr3ValScalar: Tr3Val {
 
         func animateNowToNext() {
             if valFlags.anim {
+                print("􁒖")
                 steps = NextFrame.shared.fps * anim
                 NextFrame.shared.addFrameDelegate(self.id, self)
             } else {
@@ -245,8 +246,8 @@ extension Tr3ValScalar: NextFrameDelegate {
         if delta == 0 { steps = 0 ; return false }
         now += (steps <= 1 ? delta : delta / steps)
         steps = Swift.max(0.0, steps - 1)
-        print("􁒖 \(tr3?.name ?? "??") \(now.digits(3...3)) ~> \(next.digits(3...3)) steps: \(steps.digits(0...1))")
-        tr3?.activate(Visitor(tr3?.id ?? self.id, from: .animate))
+        print("􀎶 \(tr3.name).\(name).\(id) \(now.digits(3...3)) ~> \(next.digits(3...3)) steps: \(steps.digits(0...1))")
+        tr3.activate(Visitor(tr3.id, from: .animate))
         return steps > 0
     }
 

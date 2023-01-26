@@ -26,8 +26,8 @@ public class Tr3Exprs: Tr3Val {
         String(format: "_%i", nameAny.keys.count)
     }
 
-    override init(_ tr3: Tr3? = nil) {
-        super.init(tr3)
+    override init(_ tr3: Tr3, _ name: String) {
+        super.init(tr3, name)
     }
     override init(with tr3Val: Tr3Val) {
         super.init(with: tr3Val)
@@ -44,12 +44,12 @@ public class Tr3Exprs: Tr3Val {
             opSet = v.opSet
         }
     }
-    init(_ tr3: Tr3? = nil, point: CGPoint) {
-        super.init(tr3)
+    init(_ tr3: Tr3, point: CGPoint) {
+        super.init(tr3, "point")
         addPoint(point)
     }
-    public init(_ tr3: Tr3? = nil, nameNums: [(String, Double)]) {
-        super.init(tr3)
+    public init(_ tr3: Tr3, nameNums: [(String, Double)]) {
+        super.init(tr3, "nameNums")
         opSet = Set<Tr3ExprOp>([.name,.num])
 
         for (name, num) in nameNums {
@@ -136,7 +136,7 @@ public class Tr3Exprs: Tr3Val {
             if let scalar = nameAny[name] as? Tr3ValScalar {
                 _ = scalar.setVal(value, visitor)
             } else {
-                nameAny[name] = Tr3ValScalar(tr3, num: value)
+                nameAny[name] = Tr3ValScalar(tr3, name: name, num: value)
             }
             addFlag(.now)
             return true

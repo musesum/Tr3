@@ -59,9 +59,8 @@ extension Tr3ValFlags: CustomStringConvertible {
         (.dflt, "dflt"),
         (.now , "now" ),
         (.lit , "lit" ),
+        (.anim, "anim"),
     ]
-
-
 
     public var description: String {
         let result: [String] = Self.debugDescriptions.filter { contains($0.0) }.map { $0.1 }

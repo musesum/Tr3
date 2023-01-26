@@ -145,12 +145,12 @@ public class Tr3Parse {
         switch pattern {
 
             case "scalar1":
-                let scalar = Tr3ValScalar(tr3)
+                let scalar = Tr3ValScalar(tr3, "scalar1")
                 val.deepAddVal(scalar)
                 parseDeepScalar(scalar, par)
 
-            case "data":  val.deepAddVal(Tr3ValData(tr3))
-            case "exprs": val.deepAddVal(Tr3Exprs(tr3))
+            case "data":  val.deepAddVal(Tr3ValData(tr3,"data"))
+            case "exprs": val.deepAddVal(Tr3Exprs(tr3, "exprs"))
             default: parseDeepVal(tr3, val.getVal(), par) // decorate deepest non tern value
         }
     }
@@ -211,7 +211,7 @@ public class Tr3Parse {
             }
         }
         func addDeepScalar(_ nextPar: ParItem) {
-            scalar = Tr3ValScalar(tr3)
+            scalar = Tr3ValScalar(tr3, name ?? "addDeepScalar")
             guard let scalar else { return }
 
             if hasOp {
@@ -271,7 +271,7 @@ public class Tr3Parse {
             case "many",
                 "child":
 
-                tr3.val = Tr3Exprs(tr3)
+                tr3.val = Tr3Exprs(tr3, prior)
                 
             case "edges":
 
@@ -304,9 +304,9 @@ public class Tr3Parse {
             // nil in `a*_`
             switch pattern {
                 case "embed"    : tr3.val = Tr3ValEmbed(tr3, str: par.getFirstValue())
-                case "scalar1"  : tr3.val = Tr3ValScalar(tr3)
-                case "data"     : tr3.val = Tr3ValData(tr3)
-                case "exprs"    : tr3.val = Tr3Exprs(tr3)
+                case "scalar1"  : tr3.val = Tr3ValScalar(tr3, pattern)
+                case "data"     : tr3.val = Tr3ValData(tr3, pattern)
+                case "exprs"    : tr3.val = Tr3Exprs(tr3, pattern)
                 default         : break
             }
         } else {
@@ -337,9 +337,9 @@ public class Tr3Parse {
                 }
                 switch pattern {
                     case "embed"   : addVal(Tr3ValEmbed(tr3, str: par.getFirstValue()))
-                    case "scalar1" : addVal(Tr3ValScalar(tr3))
-                    case "data"    : addVal(Tr3ValData(tr3))
-                    case "exprs"   : addVal(Tr3Exprs(tr3))
+                    case "scalar1" : addVal(Tr3ValScalar(tr3, pattern))
+                    case "data"    : addVal(Tr3ValData(tr3, pattern))
+                    case "exprs"   : addVal(Tr3Exprs(tr3, pattern))
                     case "ternIf"  : addVal(Tr3ValTern(tr3, level))
                     default        : break
                 }

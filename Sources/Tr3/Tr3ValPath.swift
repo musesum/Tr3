@@ -12,14 +12,15 @@ public class Tr3ValPath: Tr3Val {
     @objc  var path = ""
     var pathTr3s = [Tr3]()
 
-    override init(_ tr3: Tr3?) {
-        super.init(tr3)
+    override init(_ tr3: Tr3, _ name: String) {
+        super.init(tr3, name)
     }
 
-    init(_ tr3: Tr3? = nil, with path: String) {
-        super.init(tr3)
+    init(_ tr3: Tr3, with path: String) {
+        super.init(tr3, path)
         self.path = path
     }
+    
     init(with: Tr3ValPath) {
         super.init(with: with)
         path = with.path

@@ -40,7 +40,7 @@ public enum Tr3TernState { case
 ///     w << (a ? a1 : a2 ) | (b ? b2 : b2) | (c ? c1 : c2)
 ///     w << (a ? a1 : a2   |  b ? b1 : b2  |  c ? c1 : c2)
 ///     w <<  a ? a1 : a2   |  b ? b1 : b2  |  c ? c1 : c2
-///
+
 public class Tr3ValTern: Tr3ValPath {
     
     static var ternStack = [Tr3ValTern]() // only single threaded parse allowed
@@ -76,7 +76,7 @@ public class Tr3ValTern: Tr3ValPath {
         }
         else {
             //TODO: placeholder?
-            super.init(Tr3())
+            super.init(Tr3(),"ternary")
         }
     }
     override func copy() -> Tr3ValTern {
@@ -85,7 +85,7 @@ public class Tr3ValTern: Tr3ValPath {
     }
 
     init(_ tr3: Tr3, _ parseLevel: Int) {
-        super.init(tr3)
+        super.init(tr3, "ternary")
         self.tr3 = tr3
         self.parseLevel = parseLevel
     }

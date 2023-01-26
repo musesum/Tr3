@@ -16,7 +16,7 @@ extension Tr3Exprs { // + set
             n.addFlag(.now)
         }
         else {
-            nameAny["val"] = Tr3ValScalar(tr3, num: v) //TODO: remove this kludge for DeepMenu
+            nameAny["val"] = Tr3ValScalar(tr3, name: "val", num: v) //TODO: remove this kludge for DeepMenu
         }
         return true
     }
@@ -30,7 +30,6 @@ extension Tr3Exprs { // + set
             return true
         }
         let copy = copy()
-        copy.tr3 = nil
         copy.injectNameNum("x", Double(p.x))
         copy.injectNameNum("y", Double(p.y))
         return evalExprs(copy, visitor)
@@ -142,9 +141,11 @@ extension Tr3Exprs { // + set
     func setSetters(_ mySetters: ExprSetters,
                     _ visitor: Visitor) {
 
+
         if !visitor.newVisit(id) { return }
         
         for (name,val) in mySetters {
+
             switch val {
                 case let val as Tr3ValScalar:
                     if let toVal = nameAny[name] as? Tr3Val {
@@ -156,7 +157,7 @@ extension Tr3Exprs { // + set
                     }
                 case let val as Double:
 
-                    nameAny[name] = Tr3ValScalar(num: val)
+                    nameAny[name] = Tr3ValScalar(tr3, name: name, num: val)
 
                 case let val as String:
                     if let toVal = nameAny[name] as? Tr3Val {

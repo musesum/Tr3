@@ -10,6 +10,15 @@
       }
     },
     {
+      "identity" : "mutime",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/musesum/MuTime.git",
+      "state" : {
+        "revision" : "38d57f280b615f0efb7c744c180ef3ee29a0d9f4",
+        "version" : "0.3.230125"
+      }
+    },
+    {
       "identity" : "par",
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/musesum/Par.git",

@@ -95,7 +95,7 @@ public class Tr3EdgeDefs {
      */
     public func parseEdgeExprs(_ tr3: Tr3) {
         if let pathVals = edgeDefs.last?.pathVals {
-            pathVals.add(val: Tr3Exprs(tr3))
+            pathVals.add(val: Tr3Exprs(tr3, "edge")) //?? 
         }
         else {
             print("🚫 \(#function) no edgeDefs to add edge")

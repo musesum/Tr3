@@ -10,16 +10,16 @@ import Par // visitor
 extension Tr3 {
 
     /// combine several expressions into one transaction and activate the callbacks only once
-    public func setAnys(_ anys: [Any],
-                        _ options: Tr3SetOptions,
-                        _ visitor: Visitor) {
+    public func setNameAnys(_ nameAnys: [(String,Any)],
+                            _ options: Tr3SetOptions,
+                            _ visitor: Visitor) {
 
         // defer activation until after setting value
         let noActivate = options.subtracting(.activate)
 
         // set all the expressions
-        for any in anys {
-            setAny(any, noActivate, visitor)
+        for nameAny in nameAnys {
+            setAny(nameAny, noActivate, visitor)
         }
         // do the deferred activations, if there was one
         if options.activate {
@@ -35,11 +35,8 @@ extension Tr3 {
         if val is Tr3ValPath {
             val = nil
         }
-        if options.cache {
-            Tr3Cache.add(self, any, options, visitor)
-        }
         // any is a Tr3Val
-        else if let fromVal = any as? Tr3Val {
+        if let fromVal = any as? Tr3Val {
 
             if passthrough {
                 // no defined value, so activate will pass fromVal onto edge successors
@@ -62,9 +59,9 @@ extension Tr3 {
             passthrough = false
 
             switch any {
-                case let v as Int:                val = Tr3ValScalar(self, num: Double(v))
-                case let v as Double:             val = Tr3ValScalar(self, num: v)
-                case let v as CGFloat:            val = Tr3ValScalar(self, num: Double(v))
+                case let v as Int:                val = Tr3ValScalar(self, name: name, num: Double(v))
+                case let v as Double:             val = Tr3ValScalar(self, name: name, num: v)
+                case let v as CGFloat:            val = Tr3ValScalar(self, name: name, num: Double(v))
                 case let v as CGPoint:            val = Tr3Exprs(self, point: v)
                 case let v as [(String, Double)]: val = Tr3Exprs(self, nameNums: v)
                 default: print("🚫 unknown val(\(any))")

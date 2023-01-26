@@ -7,11 +7,6 @@ import CoreGraphics
 import MuTime
 import Par
 
-//protocol Tr3ValScriptProtocol {
-//    func printVal() -> String
-//    func scriptVal(_ scriptFlags: Tr3ScriptFlags) -> String
-//}
-
 protocol Tr3ValProtocal {
 
     func copy() -> Tr3Val
@@ -21,10 +16,11 @@ protocol Tr3ValProtocal {
 
 open class Tr3Val: Comparable {
 
-    var id = Visitor.nextId()
+    var id = -Visitor.nextId()
     var valFlags = Tr3ValFlags(rawValue: 0) // which combination of the following?
+    var name: String
 
-    public var tr3: Tr3?  // tr3 that declared and contains this value
+    public var tr3: Tr3  // tr3 that declared and contains this value
 
     public static func == (lhs: Tr3Val, rhs: Tr3Val) -> Bool {
         return lhs.valFlags == rhs.valFlags
@@ -33,11 +29,13 @@ open class Tr3Val: Comparable {
         return lhs.id < rhs.id
     }
 
-    init(_ tr3: Tr3?) {
+    init(_ tr3: Tr3, _ name: String) {
         self.tr3 = tr3
+        self.name = name
     }
     init(with: Tr3Val) {
         self.tr3 = with.tr3
+        self.name = with.name
         self.valFlags = with.valFlags
     }
     func parse(string: String) -> Bool {

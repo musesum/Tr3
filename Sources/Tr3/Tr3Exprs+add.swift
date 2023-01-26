@@ -20,13 +20,13 @@ extension Tr3Exprs {
     }
     func addNameNum(_ name: String, _ num: Double) {
         addName(name)
-        addDeepScalar(Tr3ValScalar(tr3, num: num))
+        addDeepScalar(Tr3ValScalar(tr3, name: name, num: num))
     }
     func injectNameNum(_ name: String, _ num: Double) {
         if let val = nameAny[name] as? Tr3ValScalar {
             val.now = num
         } else {
-            nameAny[name] = Tr3ValScalar(tr3, num: num)
+            nameAny[name] = Tr3ValScalar(tr3, name: name, num: num)
         }
         opSet.insert(.name)
         opSet.insert(.scalar)

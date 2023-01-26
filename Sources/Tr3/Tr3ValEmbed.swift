@@ -12,7 +12,7 @@ public class Tr3ValEmbed: Tr3Val {
     var embed = ""
 
     init(_ tr3: Tr3, str: String?) {
-        super.init(tr3)
+        super.init(tr3, "embed")
         embed = str ?? "??"
     }
     public static func == (lhs: Tr3ValEmbed, rhs: Tr3ValEmbed) -> Bool {

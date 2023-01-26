@@ -44,7 +44,7 @@ extension Tr3ValTern {
                 tern.recalc(prevTr3, nextTr3, act, visitor)
             }
             else if act != .sneak {
-                _ = tr3?.setEdgeVal(val, visitor)
+                _ = tr3.setEdgeVal(val, visitor)
             }
         }
         func neitherPathVal(_ val: Tr3Val?) {

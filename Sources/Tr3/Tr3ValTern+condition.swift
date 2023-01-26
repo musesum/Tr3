@@ -24,7 +24,7 @@ extension Tr3ValTern {
             }
         }
         else if pathTr3s.count > 0,
-            let rightVal = compareRight?.tr3?.val {
+            let rightVal = compareRight?.tr3.val {
 
             for pathTr3 in pathTr3s {
                 if let pathVal = pathTr3.val {

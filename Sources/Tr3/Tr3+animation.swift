@@ -7,6 +7,7 @@ extension Tr3 { // + animation
 
     func setAnimation(_ fromTr3: Tr3) {
         if let val {
+            val.valFlags.insert(.anim)
             switch val {
                 case let v as Tr3ValScalar: v.setAnimation(fromTr3)
                 case let v as Tr3Exprs:     v.setAnimation(fromTr3)
